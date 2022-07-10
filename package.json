@@ -13,7 +13,6 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint-config-pa": "workspace:*",
     "prettier": "latest",
     "turbo": "latest"
   },
@@ -22,5 +21,5 @@
     "node": ">=14.0.0"
   },
   "dependencies": {},
-  "packageManager": "pnpm@7.3.0"
+  "packageManager": "yarn@1.22.10"
 }
