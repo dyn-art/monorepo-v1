@@ -8,9 +8,10 @@
     ],
     "module": "ESNext",
     "target": "ES6",
-    "jsx": "react-jsx",
-    "outDir": "dist",
-    "rootDir": "src"
+    "jsx": "react-jsx"
+    // Has to be defined in each package seperatly due to abstract path
+    // "outDir": "dist", 
+    // "rootDir": "src"
   },
   "include": ["src", "README.md"]
 }

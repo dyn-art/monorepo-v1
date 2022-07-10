@@ -36,3 +36,7 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# npm packages
+dist
+tsconfig.tsbuildinfo
