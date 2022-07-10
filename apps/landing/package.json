@@ -1,0 +1,30 @@
+{
+  "name": "landing",
+  "description": "An example using TypeScript in Hydrogen",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "shopify hydrogen dev",
+    "build": "shopify hydrogen build",
+    "start": "yarn run preview",
+    "preview": "shopify hydrogen preview",
+    "lint": "eslint src/**/*"
+  },
+  "devDependencies": {
+    "@pa/config": "workspace:*",
+    "@shopify/cli": "3.0.27",
+    "@shopify/cli-hydrogen": "3.0.27",
+    "@types/react": "^18.0.9",
+    "eslint": "7.32.0",
+    "eslint-config-pa": "workspace:*",
+    "typescript": "^4.6.4",
+    "vite": "^2.9.0"
+  },
+  "dependencies": {
+    "@shopify/hydrogen": "^1.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "author": "benno"
+}

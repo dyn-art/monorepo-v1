@@ -1,0 +1,11 @@
+{
+  "extends": "@pa/config/tsconfig.hydrogen.json",
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
