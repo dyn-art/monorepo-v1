@@ -1,5 +1,4 @@
 {
-  "extends": "@pa/config/react-library.json",
-  "include": ["."],
-  "exclude": ["dist", "build", "node_modules"]
+  "extends": "@pa/config/tsconfig.react-library.json",
+  "include": ["src", "README.md"]
 }

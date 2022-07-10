@@ -75,3 +75,17 @@ Learn more about the power of Turborepo:
 - [Scoped Tasks](https://turborepo.org/docs/core-concepts/scopes)
 - [Configuration Options](https://turborepo.org/docs/reference/configuration)
 - [CLI Usage](https://turborepo.org/docs/reference/command-line-reference)
+
+## Learnings
+
+### Turbo
+> https://turborepo.org/
+
+- https://www.youtube.com/watch?v=YX5yoApjI3M&t=2131s
+
+### next-transpile-modules
+> https://www.npmjs.com/package/next-transpile-modules
+
+Makes it easy to have local libraries and keep a slick, manageable dev experience.
+For example we don't have to rebuild the `ui` package on a change. 
+Instead the `ui` package is hot loaded into the next app.
