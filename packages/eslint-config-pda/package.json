@@ -1,0 +1,22 @@
+{
+  "name": "eslint-config-pda",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.7.0",
+    "eslint-config-turbo": "latest",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.4",
+    "typescript": "^4.5.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
