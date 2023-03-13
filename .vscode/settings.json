@@ -1,0 +1,18 @@
+{
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false,
+    "eslint.enable": true,
+    "eslint.alwaysShowStatus": true,
+    "eslint.validate": [
+        "javascript",
+        "typescript"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.workingDirectories": [
+        "./apps",
+        "./packages"
+    ],
+    "files.associations": { "*.scss": "postcss" }
+}

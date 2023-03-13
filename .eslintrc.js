@@ -1,5 +1,8 @@
+const OFF = 0;
+const WARNING = 1;
+const ERROR = 2;
+
 module.exports = {
   root: true,
-  // This tells ESLint to load the config from the package `eslint-config-pda`
   extends: ["pda"]
 };

@@ -1,0 +1,33 @@
+{
+  "name": "@pda/maptiler-api",
+  "version": "0.0.0",
+  "description": "MapTiler API",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "shx rm -rf dist && tsc",
+    "start:dev": "tsc -w",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "install:clean": "shx rm -rf dist && shx rm -rf node_modules && pnpm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@pda/tsconfig": "workspace:*",
+    "axios": "^1.3.4",
+    "eslint": "^7.32.0",
+    "eslint-config-pda": "workspace:*",
+    "typescript": "^4.5.2"
+  },
+  "peerDependencies": {
+    "axios": "^1.3.4"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}

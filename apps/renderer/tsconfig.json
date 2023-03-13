@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "extends": "@pda/tsconfig/node.json",
+  "include": ["src"]
+}
