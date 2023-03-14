@@ -1,15 +1,17 @@
 {
-  "name": "@pda/spotify-api",
+  "name": "@pda/etsy",
   "version": "0.0.0",
-  "description": "Spotify API",
+  "description": "Utility library to communicate with Etsy",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "source": "./src/index.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "shx rm -rf dist && tsc",
     "start:dev": "tsc -w",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
-    "install:clean": "shx rm -rf dist && shx rm -rf node_modules && pnpm install",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -20,7 +22,7 @@
     "@pda/tsconfig": "workspace:*",
     "axios": "^1.3.4",
     "eslint": "^7.32.0",
-    "eslint-config-pda": "workspace:*",
+    "eslint-config-pda-base": "workspace:*",
     "typescript": "^4.5.2"
   },
   "peerDependencies": {

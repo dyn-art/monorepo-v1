@@ -5,6 +5,8 @@
   "main": "./index.tsx",
   "types": "./index.tsx",
   "scripts": {
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
     "lint": "eslint --cache \"**/*.{js,ts,tsx}\""
   },
   "keywords": [],
@@ -15,7 +17,7 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "eslint": "^7.32.0",
-    "eslint-config-pda": "workspace:*",
+    "eslint-config-pda-base": "workspace:*",
     "react": "^18.2.0",
     "@pda/tsconfig": "workspace:*",
     "typescript": "^4.5.2"

@@ -1,23 +1,26 @@
 {
-  "name": "eslint-config-pda",
+  "name": "eslint-config-pda-base",
   "version": "0.0.0",
   "description": "Eslint Configuration",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "clean": "shx rm -rf node_modules && shx -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install"
+  },
   "keywords": [],
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
-    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.7.0",
     "eslint-config-turbo": "latest",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.32.2",
-    "prettier": "^2.8.4"
+    "eslint-plugin-react": "^7.32.2"
   },
   "devDependencies": {
+    "eslint": "^7.32.0",
+    "prettier": "^2.8.4",
     "typescript": "^4.5.2"
   },
   "publishConfig": {
