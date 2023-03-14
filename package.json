@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "start:dev": "turbo run start:dev",
+    "clean": "turbo run clean",
     "install:clean": "turbo run install:clean",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{js,ts,tsx,md}\""
@@ -17,8 +18,6 @@
   "author": "@bennodev19",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "latest",
-    "eslint-config-pda-base": "workspace:*",
     "prettier": "latest",
     "shx": "latest",
     "turbo": "latest"
