@@ -10,9 +10,23 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
+    "search.exclude": {
+	    "**/node_modules": true,
+	},
     "eslint.workingDirectories": [
-        "./apps",
-        "./packages"
+        "./apps/chrome",
+        "./apps/core",
+        "./apps/render-worker",
+        "./apps/web",
+        "./packages/etsy",
+        "./packages/logger",
+        "./packages/map",
+        "./packages/music",
+        "./packages/renderer",
+        "./packages/ui",
+    ],
+    "cSpell.words": [
+        "pda"
     ],
     "files.associations": { "*.scss": "postcss" }
 }

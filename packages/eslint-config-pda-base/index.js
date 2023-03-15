@@ -15,7 +15,7 @@ module.exports = {
   ],
   parserOptions: {
     project: ['tsconfig.json'],
-    tsconfigRootDir: __dirname, // https://stackoverflow.com/questions/64933543/parsing-error-cannot-read-file-tsconfig-json-eslint
+    // tsconfigRootDir: __dirname, // https://stackoverflow.com/questions/64933543/parsing-error-cannot-read-file-tsconfig-json-eslint
   },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
