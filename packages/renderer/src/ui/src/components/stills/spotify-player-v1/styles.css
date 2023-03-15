@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700;900');
+
+.slider {
+  @apply appearance-none 
+  w-full 
+  h-1 
+  bg-[#424141] 
+  outline-none 
+  rounded-lg;
+  background-image: linear-gradient(white, white);
+  background-repeat: no-repeat;
+}
+
+.slider::-webkit-slider-thumb {
+  @apply appearance-none 
+  w-3 
+  h-3 
+  rounded-full 
+  bg-white;
+}
