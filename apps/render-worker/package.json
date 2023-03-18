@@ -16,6 +16,8 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
+    "@pda/logger": "workspace:*",
+    "@pda/renderer": "workspace:*",
     "dotenv": "^16.0.3",
     "express": "^4.18.2"
   },
