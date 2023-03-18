@@ -30,7 +30,7 @@ const SpotifyCode: React.FC<TProps> = (props) => {
 
         // Query SVG Elements
         const beamRectElements = svgDoc.querySelectorAll(
-          'rect[fill="#ffffff"]'
+          'rect:not([x="0"]):not([y="0"])'
         );
         const logoPathElement = svgDoc.querySelector('g path');
 
@@ -49,7 +49,7 @@ const SpotifyCode: React.FC<TProps> = (props) => {
         // Update SVG
         const divElement = spotifyCodeRef.current;
         if (divElement != null) {
-          divElement.appendChild(svgDoc.documentElement);
+          divElement.replaceChildren(svgDoc.documentElement);
         }
       } catch (e) {
         console.error('Failed to fetch Spotify Code!', e);

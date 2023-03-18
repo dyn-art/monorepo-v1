@@ -51,7 +51,7 @@ export const RemotionRoot: React.FC = () => {
           trackId: '5PNzt1Rvt7PUVaGhbq0OVt',
           imageUrl:
             'https://cdn.pixabay.com/photo/2017/07/31/21/04/people-2561053_960_720.jpg',
-          theme: 'dark',
+          theme: 'light',
         }}
       />
     </>

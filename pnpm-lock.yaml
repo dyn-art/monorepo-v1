@@ -167,6 +167,7 @@ importers:
       autoprefixer: ^10.4.14
       axios: ^1.3.4
       axios-hooks: ^4.0.0
+      clsx: ^1.2.1
       css-loader: ^6.7.3
       d3: ^7.8.2
       d3-geo: ^3.1.0
@@ -189,6 +190,7 @@ importers:
       '@remotion/cli': 3.3.76_biqbaboplfbrettd7655fr4n2y
       '@remotion/renderer': 3.3.76_biqbaboplfbrettd7655fr4n2y
       axios-hooks: 4.0.0_axios@1.3.4+react@18.2.0
+      clsx: 1.2.1
       d3: 7.8.2
       d3-geo: 3.1.0
       geojson: 0.5.0
@@ -2419,6 +2421,11 @@ packages:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
     dev: true
+
+  /clsx/1.2.1:
+    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
+    dev: false
 
   /co/4.6.0:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}

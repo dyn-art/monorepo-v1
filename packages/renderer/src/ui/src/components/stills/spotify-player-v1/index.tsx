@@ -1,5 +1,6 @@
 import React from 'react';
 import BackSvg from './components/BackSvg';
+import CustomSlider from './components/CustomSlider';
 import HeartSvg from './components/HeartSvg';
 import PlaySvg from './components/PlaySvg';
 import RepeatSvg from './components/RepeatSvg';
@@ -7,7 +8,7 @@ import ShuffleSvg from './components/ShuffleSvg';
 import SkipSvg from './components/SkipSvg';
 import SpotifyCode from './components/SpotifyCode';
 import { THEMES, TTheme } from './core';
-import { formatDuration, getSliderBackgroundSize } from './service';
+import { applyOpacityToHex, formatDuration } from './service';
 import './styles.css';
 
 const SpotifyPlayerV1: React.FC<TProps> = (props) => {
@@ -48,17 +49,16 @@ const SpotifyPlayerV1: React.FC<TProps> = (props) => {
         </div>
 
         {/* Player Timeline */}
-        <div className={'mt-2 w-full'}>
-          <input
-            type="range"
-            min={0}
+        <div className={'mt-4 w-full'}>
+          <CustomSlider
+            current={time.current}
             max={time.total}
-            value={time.current}
-            className={'slider'}
-            style={{
-              //  ...sliderStyles,
-              ...getSliderBackgroundSize(time.current, time.total),
+            color={{
+              background: applyOpacityToHex(theme.text, 0.2),
+              activeBackground: theme.text,
+              thumb: theme.text,
             }}
+            className={'mb-2'}
           />
           <div className={'flex w-full items-center justify-between'}>
             <span
@@ -82,9 +82,9 @@ const SpotifyPlayerV1: React.FC<TProps> = (props) => {
         >
           <ShuffleSvg color={theme.text} />
           <div className={'flex flex-row items-center'}>
-            <SkipSvg />
-            <PlaySvg className={'mx-8'} />
-            <BackSvg />
+            <SkipSvg color={theme.text} />
+            <PlaySvg color={theme.text} className={'mx-8'} />
+            <BackSvg color={theme.text} />
           </div>
           <RepeatSvg color={theme.primary} />
         </div>
@@ -117,23 +117,4 @@ type TProps = {
   trackId: string;
   imageUrl: string;
   theme: TTheme | keyof typeof THEMES;
-};
-
-const sliderStyles: React.CSSProperties = {
-  appearance: 'none',
-  width: '100%',
-  height: '1px',
-  backgroundColor: '#424141',
-  outline: 'none',
-  borderRadius: 'lg',
-  backgroundImage: 'linear-gradient(white, white)',
-  backgroundRepeat: 'no-repeat',
-};
-
-const sliderThumbStyles: React.CSSProperties = {
-  appearance: 'none',
-  width: '3px',
-  height: '3px',
-  borderRadius: 'full',
-  backgroundColor: 'white',
 };

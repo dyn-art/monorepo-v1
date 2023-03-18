@@ -18,10 +18,6 @@ export function formatDuration(duration: number) {
   return ret;
 }
 
-export function getSliderBackgroundSize(current: number, total: number) {
-  return { backgroundSize: `${(current * 100) / total}% 100%` };
-}
-
 export function getSpotifyCodeUrl(options: {
   backgroundColor: string;
   color: 'black' | 'white';
@@ -29,4 +25,26 @@ export function getSpotifyCodeUrl(options: {
 }) {
   const backgroundColor = options.backgroundColor.replace('#', '');
   return `https://scannables.scdn.co/uri/plain/svg/${backgroundColor}/${options.color}/640/spotify:track:${options.trackId}`;
+}
+
+export function applyOpacityToHex(hex: string, opacity: number): string {
+  let hexWithoutHash = hex.replace('#', '');
+
+  // Convert shorthand hex notation to full notation if necessary
+  if (hexWithoutHash.length === 3) {
+    hexWithoutHash = hexWithoutHash
+      .split('')
+      .map((char) => `${char}${char}`)
+      .join('');
+  }
+
+  if (hexWithoutHash.length !== 6) {
+    return hex;
+  }
+
+  const r = parseInt(hexWithoutHash.substring(0, 2), 16);
+  const g = parseInt(hexWithoutHash.substring(2, 4), 16);
+  const b = parseInt(hexWithoutHash.substring(4, 6), 16);
+
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
