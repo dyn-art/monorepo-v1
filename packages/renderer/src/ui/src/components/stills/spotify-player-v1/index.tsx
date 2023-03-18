@@ -5,37 +5,46 @@ import PlaySvg from './components/PlaySvg';
 import RepeatSvg from './components/RepeatSvg';
 import ShuffleSvg from './components/ShuffleSvg';
 import SkipSvg from './components/SkipSvg';
-import {
-  formatDuration,
-  getSliderBackgroundSize,
-  getSpotifyCodeUrl,
-} from './service';
+import SpotifyCode from './components/SpotifyCode';
+import { THEMES, TTheme } from './core';
+import { formatDuration, getSliderBackgroundSize } from './service';
 import './styles.css';
 
 const SpotifyPlayerV1: React.FC<TProps> = (props) => {
   const { title, subtitle, time, spotifyCode, trackId, imageUrl } = props;
+  const theme: TTheme =
+    typeof props.theme === 'string' ? THEMES[props.theme] : props.theme;
+
+  if (theme == null) {
+    return <p className={'text-white'}>Failed to load Theme {theme}</p>;
+  }
 
   return (
-    <div className={'h-full w-full bg-[#131212] p-16'}>
-      <img src={imageUrl} />
+    <div
+      className={'h-full w-full p-16'}
+      style={{ background: theme.background }}
+    >
+      <img src={imageUrl} className={'object-cover w-[467px] h-[467px]'} />
 
       {/* Content */}
       <div className={'mt-6'}>
         {/* Title Playing */}
         <div className={'flex flex-row items-center justify-between'}>
           <div>
-            <p className={'font-[Montserrat] text-3xl font-bold text-white'}>
+            <p
+              className={'font-[Montserrat] text-[28px] font-bold'}
+              style={{ color: theme.text }}
+            >
               {title}
             </p>
             <p
-              className={
-                'mt-1 font-[Montserrat] text-base font-normal text-[#B3B3B3]'
-              }
+              className={'font-[Montserrat] text-base font-normal'}
+              style={{ color: theme.textSecondary }}
             >
               {subtitle}
             </p>
           </div>
-          <HeartSvg />
+          <HeartSvg color={theme.primary} />
         </div>
 
         {/* Player Timeline */}
@@ -46,16 +55,21 @@ const SpotifyPlayerV1: React.FC<TProps> = (props) => {
             max={time.total}
             value={time.current}
             className={'slider'}
-            style={getSliderBackgroundSize(time.current, time.total)}
+            style={{
+              //  ...sliderStyles,
+              ...getSliderBackgroundSize(time.current, time.total),
+            }}
           />
           <div className={'flex w-full items-center justify-between'}>
             <span
-              className={'font-[Montserrat] text-sm font-bold text-[#B3B3B3]'}
+              className={'font-[Montserrat] text-sm font-bold'}
+              style={{ color: theme.textSecondary }}
             >
               {formatDuration(time.current)}
             </span>
             <span
-              className={'font-[Montserrat] text-sm font-bold text-[#B3B3B3]'}
+              className={'font-[Montserrat] text-sm font-bold'}
+              style={{ color: theme.textSecondary }}
             >
               {formatDuration(time.total)}
             </span>
@@ -66,24 +80,22 @@ const SpotifyPlayerV1: React.FC<TProps> = (props) => {
         <div
           className={'mt-4 flex w-full flex-row items-center justify-between'}
         >
-          <ShuffleSvg />
+          <ShuffleSvg color={theme.text} />
           <div className={'flex flex-row items-center'}>
             <SkipSvg />
             <PlaySvg className={'mx-8'} />
             <BackSvg />
           </div>
-          <RepeatSvg />
+          <RepeatSvg color={theme.primary} />
         </div>
 
         {/* Spotify Code */}
         {spotifyCode && (
           <div className={'mt-4 flex w-full items-center justify-center'}>
-            <img
-              src={getSpotifyCodeUrl({
-                backgroundColor: '131212',
-                trackId,
-              })}
-              className={'h-12'}
+            <SpotifyCode
+              backgroundColor={theme.background}
+              color={theme.text}
+              trackId={trackId}
             />
           </div>
         )}
@@ -104,4 +116,24 @@ type TProps = {
   spotifyCode: boolean;
   trackId: string;
   imageUrl: string;
+  theme: TTheme | keyof typeof THEMES;
+};
+
+const sliderStyles: React.CSSProperties = {
+  appearance: 'none',
+  width: '100%',
+  height: '1px',
+  backgroundColor: '#424141',
+  outline: 'none',
+  borderRadius: 'lg',
+  backgroundImage: 'linear-gradient(white, white)',
+  backgroundRepeat: 'no-repeat',
+};
+
+const sliderThumbStyles: React.CSSProperties = {
+  appearance: 'none',
+  width: '3px',
+  height: '3px',
+  borderRadius: 'full',
+  backgroundColor: 'white',
 };

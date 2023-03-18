@@ -24,7 +24,9 @@ export function getSliderBackgroundSize(current: number, total: number) {
 
 export function getSpotifyCodeUrl(options: {
   backgroundColor: string;
+  color: 'black' | 'white';
   trackId: string;
 }) {
-  return `https://scannables.scdn.co/uri/plain/svg/${options.backgroundColor}/white/640/spotify:track:${options.trackId}`;
+  const backgroundColor = options.backgroundColor.replace('#', '');
+  return `https://scannables.scdn.co/uri/plain/svg/${backgroundColor}/${options.color}/640/spotify:track:${options.trackId}`;
 }
