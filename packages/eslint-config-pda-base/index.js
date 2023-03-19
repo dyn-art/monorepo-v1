@@ -25,5 +25,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': WARNING,
     '@typescript-eslint/ban-ts-comment': WARNING,
     '@typescript-eslint/no-var-requires': WARNING,
+    '@typescript-eslint/no-empty-interface': WARNING,
+    '@typescript-eslint/ban-types': WARNING,
   },
 };
