@@ -1,3 +1,10 @@
-console.log('Hello World from @pda/renderer');
+import { renderByCompositionName } from '@pda/renderer';
 
-export {};
+async function run() {
+  const { outputPath, clear } = await renderByCompositionName(
+    'spotify-player-v1',
+    'png'
+  );
+  console.log(outputPath);
+}
+run();

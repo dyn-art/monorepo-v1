@@ -18,6 +18,7 @@
   "author": "@bennodev19",
   "license": "ISC",
   "devDependencies": {
+    "esno": "latest",
     "prettier": "latest",
     "shx": "latest",
     "turbo": "latest"
