@@ -2,13 +2,14 @@ import { getCompositions, renderStill } from '@remotion/renderer';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import { getWebpackBundleLocation } from './bundler';
+import { TCompMetadata } from 'remotion';
+import { getWebpackBundleLocation } from './bundle';
 import { hashObject } from './utils';
 
 async function getCompositionByName(
   compositionName: string,
   inputProps: Record<string, any> = {}
-) {
+): Promise<TCompMetadata | null> {
   // Get compositions from webpack bundle
   const webpackBundleLocation = await getWebpackBundleLocation();
   const compositions = await getCompositions(webpackBundleLocation, {
@@ -16,7 +17,7 @@ async function getCompositionByName(
   });
 
   // Find composition
-  const composition = compositions.find((c) => c.id === compositionName);
+  const composition = compositions.find((name) => name.id === compositionName);
 
   return composition ?? null;
 }
@@ -40,10 +41,10 @@ export async function renderByCompositionName(
     path.join(os.tmpdir(), 'remotion-')
   );
   const outputPath = `${path.join(tempDir, hash)}.${imageFormat}`;
-  const webpackBundleLocation = await getWebpackBundleLocation();
+  const webpackBundleLocation = getWebpackBundleLocation();
   const composition = await getCompositionByName(compositionName, inputProps);
 
-  // Render image to 'output' in temp dir
+  // Render image to output path in temp directory
   if (composition != null) {
     await renderStill({
       composition,
@@ -59,7 +60,7 @@ export async function renderByCompositionName(
   return {
     outputPath,
     clear: async () => {
-      // Delete file at output path
+      // Delete file located at output path
       await fs.promises.unlink(outputPath);
     },
   };
