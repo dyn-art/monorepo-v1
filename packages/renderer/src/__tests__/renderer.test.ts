@@ -10,6 +10,7 @@ describe('renderer tests', () => {
 
     // Assert
     expect(outputPath).not.toBeNull();
+    console.log(outputPath);
 
     // Teardown
     await clear();
