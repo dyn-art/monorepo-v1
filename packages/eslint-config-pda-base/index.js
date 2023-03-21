@@ -15,9 +15,8 @@ module.exports = {
   ],
   parserOptions: {
     project: ['tsconfig.json'],
-    // tsconfigRootDir: __dirname, // https://stackoverflow.com/questions/64933543/parsing-error-cannot-read-file-tsconfig-json-eslint
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', 'node_modules', 'jest.config.js'],
   rules: {
     '@typescript-eslint/no-use-before-define': OFF,
     '@typescript-eslint/lines-between-class-members': OFF,
@@ -25,5 +24,9 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': WARNING,
     '@typescript-eslint/ban-ts-comment': WARNING,
     '@typescript-eslint/no-var-requires': WARNING,
+    '@typescript-eslint/no-empty-interface': WARNING,
+    '@typescript-eslint/ban-types': WARNING,
+
+    'turbo/no-undeclared-env-vars': WARNING,
   },
 };
