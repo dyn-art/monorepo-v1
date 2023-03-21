@@ -3,9 +3,9 @@ import { spotifyConfig } from '../environment';
 import { TSpotifyAuthResponseDto } from './types';
 
 export class OAuth2Service {
-  private httpClient: AxiosInstance;
+  private readonly httpClient: AxiosInstance;
 
-  private config: TOAuth2Config;
+  private readonly config: TOAuth2Config;
 
   private accessToken: string | null = null;
   private expiresAt = 0;

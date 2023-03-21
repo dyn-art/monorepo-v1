@@ -7,8 +7,8 @@ import {
 } from './types';
 
 export class SpotifyClient {
-  private httpClient: AxiosInstance;
-  private authService: OAuth2Service;
+  private readonly httpClient: AxiosInstance;
+  private readonly authService: OAuth2Service;
 
   constructor(authService: OAuth2Service) {
     this.authService = authService;
@@ -37,12 +37,24 @@ export class SpotifyClient {
     );
   }
 
-  public async search(options: { params: TSpotifySearchForItemParameterDto }) {
+  // https://developer.spotify.com/documentation/web-api/reference/#/operations/search
+  public async search(options: {
+    query: TSpotifySearchForItemParameterDto['q'];
+    type?: TSpotifySearchForItemParameterDto['type'];
+    market?: TSpotifySearchForItemParameterDto['market'];
+    limit?: TSpotifySearchForItemParameterDto['limit'];
+  }) {
+    const { query, type, market, limit = 5 } = options;
     try {
       const response = await this.httpClient.get<TSpotifySearchResponseDto>(
         '/search',
         {
-          params: options.params,
+          params: {
+            q: query,
+            type,
+            market,
+            limit,
+          } as TSpotifySearchForItemParameterDto,
         }
       );
       return response.data;

@@ -18,10 +18,11 @@
   "author": "@bennodev19",
   "license": "MIT",
   "devDependencies": {
-    "@pda/jest-presets": "workspace:^0.0.0",
+    "@pda/jest-presets": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@types/jest": "^29.4.1",
     "axios": "^1.3.4",
+    "dotenv": "^16.0.3",
     "eslint": "^7.32.0",
     "eslint-config-pda-base": "workspace:*",
     "jest": "^29.5.0",
@@ -29,9 +30,6 @@
   },
   "peerDependencies": {
     "axios": "^1.3.4"
-  },
-  "jest": {
-    "preset": "@pda/jest-presets/jest/node"
   },
   "files": [
     "dist",
