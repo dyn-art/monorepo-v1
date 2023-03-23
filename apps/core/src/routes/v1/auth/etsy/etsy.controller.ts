@@ -43,11 +43,10 @@ export async function handleOAuthRedirect(
   }
 
   // Token exchange
-  const response =
-    await etsyClient.authService.retrieveAccessTokenByAuthorizationCode(
-      code,
-      state
-    );
+  const tokens = await etsyClient.authService.retrieveTokensByAuthorizationCode(
+    code,
+    state
+  );
 
-  res.send(response);
+  res.send({ tokens, success: tokens != null });
 }

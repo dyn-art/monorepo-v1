@@ -40,7 +40,7 @@ export class OAuth2Service {
     }
 
     if (this.refreshToken != null && Date.now() < this.refreshTokenExpiresAt) {
-      return await this.retrieveAccessTokenByRefreshToken(this.refreshToken);
+      return this.retrieveAccessTokenByRefreshToken(this.refreshToken);
     } else {
       console.error(
         'Refresh Token expired and the access needs to be regranted via manual authorization!'
@@ -85,10 +85,13 @@ export class OAuth2Service {
       .trim();
   }
 
-  public async retrieveAccessTokenByAuthorizationCode(
+  public async retrieveTokensByAuthorizationCode(
     code: string,
     state: string
-  ): Promise<string | null> {
+  ): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  } | null> {
     try {
       const codeVerifier = this.codeVerifiers[state];
       if (codeVerifier == null) {
@@ -111,12 +114,12 @@ export class OAuth2Service {
         body
       );
 
-      const accessToken = this.handleRetrieveAccessTokenResponse(response.data);
+      const tokens = this.handleRetrieveAccessTokenResponse(response.data);
 
       // Delete code verifier as the code can only be used once
       delete this.codeVerifiers[state];
 
-      return accessToken;
+      return tokens;
     } catch (error) {
       console.log(error);
     }
@@ -140,7 +143,8 @@ export class OAuth2Service {
         body
       );
 
-      return this.handleRetrieveAccessTokenResponse(response.data);
+      const tokens = this.handleRetrieveAccessTokenResponse(response.data);
+      return tokens?.accessToken ?? null;
     } catch (error) {
       console.error(error);
     }
@@ -170,7 +174,10 @@ export class OAuth2Service {
       ).toLocaleTimeString()}`
     );
 
-    return this.accessToken;
+    return {
+      accessToken: this.accessToken,
+      refreshToken: this.refreshToken,
+    };
   }
 }
 
