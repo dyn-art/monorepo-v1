@@ -5,7 +5,7 @@ import { TEtsyPingResponseDto, TGetMeResponseDto } from './types';
 
 export class EtsyClient {
   private readonly httpClient: AxiosInstance;
-  private readonly authService: OAuth2Service;
+  public readonly authService: OAuth2Service;
 
   constructor(authService: OAuth2Service) {
     this.authService = authService;
