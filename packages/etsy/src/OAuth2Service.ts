@@ -23,7 +23,7 @@ export class OAuth2Service {
       redirectUrl: config.redirectUrl,
       scopes: config.scopes,
     };
-    if (config.refresh) {
+    if (config.refresh != null) {
       this.refreshToken = config.refresh.refreshToken;
       this.refreshTokenExpiresAt = config.refresh.expiresAt;
     }
@@ -48,6 +48,13 @@ export class OAuth2Service {
     }
 
     return null;
+  }
+
+  public getRefreshTokenInfo() {
+    return {
+      refreshToken: this.refreshToken,
+      expiresAt: this.refreshTokenExpiresAt,
+    };
   }
 
   // https://developers.etsy.com/documentation/tutorials/quickstart#generate-the-pkce-code-challenge
@@ -85,13 +92,10 @@ export class OAuth2Service {
       .trim();
   }
 
-  public async retrieveTokensByAuthorizationCode(
+  public async retrieveAccessTokenByAuthorizationCode(
     code: string,
     state: string
-  ): Promise<{
-    accessToken: string;
-    refreshToken: string;
-  } | null> {
+  ): Promise<string | null> {
     try {
       const codeVerifier = this.codeVerifiers[state];
       if (codeVerifier == null) {
@@ -114,14 +118,12 @@ export class OAuth2Service {
         body
       );
 
-      const tokens = this.handleRetrieveAccessTokenResponse(response.data);
-
       // Delete code verifier as the code can only be used once
       delete this.codeVerifiers[state];
 
-      return tokens;
+      return this.handleRetrieveAccessTokenResponse(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     return null;
   }
@@ -143,8 +145,7 @@ export class OAuth2Service {
         body
       );
 
-      const tokens = this.handleRetrieveAccessTokenResponse(response.data);
-      return tokens?.accessToken ?? null;
+      return this.handleRetrieveAccessTokenResponse(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -162,10 +163,10 @@ export class OAuth2Service {
     this.accessToken = data.access_token;
     this.accessTokenExpiresAt =
       Date.now() + (data.expires_in - this.accessTokenPuffer) * 1000;
-    this.refreshToken = data.refresh_token;
+
     if (data.refresh_token !== this.refreshToken) {
       this.refreshToken = data.refresh_token;
-      this.refreshTokenExpiresAt = Date.now() + 89 * 24 * 60 * 60 * 1000;
+      this.refreshTokenExpiresAt = Date.now() + (90 - 5) * 24 * 60 * 60 * 1000; // 90 days - 5 days as puffer
     }
 
     console.log(
@@ -174,10 +175,7 @@ export class OAuth2Service {
       ).toLocaleTimeString()}`
     );
 
-    return {
-      accessToken: this.accessToken,
-      refreshToken: this.refreshToken,
-    };
+    return this.accessToken;
   }
 }
 
