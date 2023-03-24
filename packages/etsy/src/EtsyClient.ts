@@ -1,7 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
 import { etsyConfig } from './environment';
 import { OAuth2Service } from './OAuth2Service';
-import { TEtsyPingResponseDto, TGetMeResponseDto } from './types';
+import {
+  TGetMeResponseDto,
+  TGetShopReceiptsQueryParametersDto,
+  TPingResponseDto,
+} from './types';
 
 export class EtsyClient {
   private readonly httpClient: AxiosInstance;
@@ -38,7 +42,7 @@ export class EtsyClient {
   public async ping(): Promise<boolean> {
     try {
       // Send request
-      const response = await this.httpClient.get<TEtsyPingResponseDto>(
+      const response = await this.httpClient.get<TPingResponseDto>(
         '/application/openapi-ping'
       );
       return response.data.application_id != null;
@@ -60,11 +64,14 @@ export class EtsyClient {
     return null;
   }
 
-  // TODO
-  public async getShopReceipts(shopId: string): Promise<any> {
+  public async getShopReceipts(
+    shopId: string,
+    params: TGetShopReceiptsQueryParametersDto = {}
+  ): Promise<any> {
     try {
       const response = await this.httpClient.get<any>(
-        `/application/shops/${shopId}/receipts`
+        `/application/shops/${shopId}/receipts`,
+        { params }
       );
       return response.data;
     } catch (error) {

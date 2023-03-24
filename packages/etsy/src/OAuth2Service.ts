@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import crypto from 'crypto';
 import { etsyConfig } from './environment';
-import { TEtsyAuthResponseDto } from './types';
+import { TAuthResponseDto } from './types';
 
 export class OAuth2Service {
   private readonly httpClient: AxiosInstance;
@@ -113,7 +113,7 @@ export class OAuth2Service {
       };
 
       // Send request
-      const response = await this.httpClient.post<TEtsyAuthResponseDto>(
+      const response = await this.httpClient.post<TAuthResponseDto>(
         etsyConfig.auth.tokenEndpoint,
         body
       );
@@ -140,7 +140,7 @@ export class OAuth2Service {
       };
 
       // Send request
-      const response = await this.httpClient.post<TEtsyAuthResponseDto>(
+      const response = await this.httpClient.post<TAuthResponseDto>(
         etsyConfig.auth.tokenEndpoint,
         body
       );
@@ -152,7 +152,7 @@ export class OAuth2Service {
     return null;
   }
 
-  private handleRetrieveAccessTokenResponse(data: TEtsyAuthResponseDto) {
+  private handleRetrieveAccessTokenResponse(data: TAuthResponseDto) {
     if (
       data.access_token == null ||
       data.expires_in == null ||
