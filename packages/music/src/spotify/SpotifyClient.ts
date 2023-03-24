@@ -8,7 +8,7 @@ import {
 
 export class SpotifyClient {
   private readonly httpClient: AxiosInstance;
-  private readonly authService: OAuth2Service;
+  public readonly authService: OAuth2Service;
 
   constructor(authService: OAuth2Service) {
     this.authService = authService;

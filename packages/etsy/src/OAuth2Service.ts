@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import crypto from 'crypto';
 import { etsyConfig } from './environment';
-import { TEtsyAuthResponseDto } from './types';
+import { TAuthResponseDto } from './types';
 
 export class OAuth2Service {
   private readonly httpClient: AxiosInstance;
@@ -23,7 +23,7 @@ export class OAuth2Service {
       redirectUrl: config.redirectUrl,
       scopes: config.scopes,
     };
-    if (config.refresh) {
+    if (config.refresh != null) {
       this.refreshToken = config.refresh.refreshToken;
       this.refreshTokenExpiresAt = config.refresh.expiresAt;
     }
@@ -40,7 +40,7 @@ export class OAuth2Service {
     }
 
     if (this.refreshToken != null && Date.now() < this.refreshTokenExpiresAt) {
-      return await this.retrieveAccessTokenByRefreshToken(this.refreshToken);
+      return this.retrieveAccessTokenByRefreshToken(this.refreshToken);
     } else {
       console.error(
         'Refresh Token expired and the access needs to be regranted via manual authorization!'
@@ -48,6 +48,13 @@ export class OAuth2Service {
     }
 
     return null;
+  }
+
+  public getRefreshTokenInfo() {
+    return {
+      refreshToken: this.refreshToken,
+      expiresAt: this.refreshTokenExpiresAt,
+    };
   }
 
   // https://developers.etsy.com/documentation/tutorials/quickstart#generate-the-pkce-code-challenge
@@ -106,19 +113,17 @@ export class OAuth2Service {
       };
 
       // Send request
-      const response = await this.httpClient.post<TEtsyAuthResponseDto>(
+      const response = await this.httpClient.post<TAuthResponseDto>(
         etsyConfig.auth.tokenEndpoint,
         body
       );
 
-      const accessToken = this.handleRetrieveAccessTokenResponse(response.data);
-
       // Delete code verifier as the code can only be used once
       delete this.codeVerifiers[state];
 
-      return accessToken;
+      return this.handleRetrieveAccessTokenResponse(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     return null;
   }
@@ -135,7 +140,7 @@ export class OAuth2Service {
       };
 
       // Send request
-      const response = await this.httpClient.post<TEtsyAuthResponseDto>(
+      const response = await this.httpClient.post<TAuthResponseDto>(
         etsyConfig.auth.tokenEndpoint,
         body
       );
@@ -147,7 +152,7 @@ export class OAuth2Service {
     return null;
   }
 
-  private handleRetrieveAccessTokenResponse(data: TEtsyAuthResponseDto) {
+  private handleRetrieveAccessTokenResponse(data: TAuthResponseDto) {
     if (
       data.access_token == null ||
       data.expires_in == null ||
@@ -158,10 +163,10 @@ export class OAuth2Service {
     this.accessToken = data.access_token;
     this.accessTokenExpiresAt =
       Date.now() + (data.expires_in - this.accessTokenPuffer) * 1000;
-    this.refreshToken = data.refresh_token;
+
     if (data.refresh_token !== this.refreshToken) {
       this.refreshToken = data.refresh_token;
-      this.refreshTokenExpiresAt = Date.now() + 89 * 24 * 60 * 60 * 1000;
+      this.refreshTokenExpiresAt = Date.now() + (90 - 5) * 24 * 60 * 60 * 1000; // 90 days - 5 days as puffer
     }
 
     console.log(
