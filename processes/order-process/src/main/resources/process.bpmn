@@ -24,7 +24,7 @@
     <bpmn:sequenceFlow id="Flow_1u9ki5k" sourceRef="Gateway_0ofdss9" targetRef="Activity_076fzxp" />
     <bpmn:sequenceFlow id="Flow_195exqk" sourceRef="Activity_076fzxp" targetRef="Activity_0j6w1po" />
     <bpmn:sequenceFlow id="Flow_1xcmvhx" sourceRef="Activity_0j6w1po" targetRef="Activity_1lyogmk" />
-    <bpmn:serviceTask id="Activity_076fzxp" name="Fetch additional personalization Data" camunda:type="external" camunda:topic="">
+    <bpmn:serviceTask id="Activity_076fzxp" name="Fetch additional personalization Data" camunda:type="external" camunda:topic="fetchAdditionalPersonalizationData">
       <bpmn:incoming>Flow_1u9ki5k</bpmn:incoming>
       <bpmn:outgoing>Flow_195exqk</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -32,11 +32,11 @@
       <bpmn:incoming>Flow_1f9glje</bpmn:incoming>
       <bpmn:outgoing>Flow_1q2lte7</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_0qhn2hv" name="Parse Etsy Order" camunda:type="external" camunda:topic="">
+    <bpmn:serviceTask id="Activity_0qhn2hv" name="Parse Etsy Order" camunda:type="external" camunda:topic="parseOrder">
       <bpmn:incoming>Flow_1salur3</bpmn:incoming>
       <bpmn:outgoing>Flow_0029fqj</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Activity_0j6w1po" name="Render Preview Image" camunda:type="external" camunda:topic="">
+    <bpmn:serviceTask id="Activity_0j6w1po" name="Render Preview Image" camunda:type="external" camunda:topic="renderPreview">
       <bpmn:incoming>Flow_05djz85</bpmn:incoming>
       <bpmn:incoming>Flow_195exqk</bpmn:incoming>
       <bpmn:outgoing>Flow_1xcmvhx</bpmn:outgoing>
@@ -53,7 +53,7 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_0lao688" sourceRef="Activity_1lyogmk" targetRef="Gateway_0rb2vlh" />
     <bpmn:sequenceFlow id="Flow_1e6ok5r" sourceRef="Gateway_0rb2vlh" targetRef="Activity_0knidq3" />
-    <bpmn:serviceTask id="Activity_0knidq3" name="Render final Image" camunda:type="external" camunda:topic="">
+    <bpmn:serviceTask id="Activity_0knidq3" name="Render final Image" camunda:type="external" camunda:topic="renderFinal">
       <bpmn:incoming>Flow_1e6ok5r</bpmn:incoming>
       <bpmn:outgoing>Flow_1qdn4yp</bpmn:outgoing>
     </bpmn:serviceTask>

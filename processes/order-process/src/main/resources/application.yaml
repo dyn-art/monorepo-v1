@@ -1,5 +1,13 @@
-spring.datasource.url: jdbc:h2:file:./camunda-h2-database
+spring.datasource:
+  url: jdbc:postgresql://localhost:5001/pda
+  username: postgres
+  password: postgres
+  driver-class-name: org.postgresql.Driver
 
-camunda.bpm.admin-user:
-  id: demo
-  password: demo
+camunda.bpm:
+  admin-user:
+    id: demo
+    password: demo
+  database:
+    type: postgres
+    table-prefix: order-process
