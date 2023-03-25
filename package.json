@@ -12,7 +12,10 @@
     "clean": "turbo run clean",
     "install:clean": "turbo run install:clean",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{js,ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{js,ts,tsx,md}\"",
+    "dc:build": "docker-compose build --progress=plain --no-cache",
+    "dc:up": "docker-compose up --build -d",
+    "dc:down": "docker-compose down"
   },
   "keywords": [],
   "author": "@bennodev19",

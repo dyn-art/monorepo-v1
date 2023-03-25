@@ -4,6 +4,7 @@ import { OAuth2Service } from './OAuth2Service';
 import {
   TGetMeResponseDto,
   TGetShopReceiptsQueryParametersDto,
+  TGetShopReceiptsResponseDto,
   TPingResponseDto,
 } from './types';
 
@@ -67,7 +68,7 @@ export class EtsyClient {
   public async getShopReceipts(
     shopId: string,
     params: TGetShopReceiptsQueryParametersDto = {}
-  ): Promise<any> {
+  ): Promise<TGetShopReceiptsResponseDto | null> {
     try {
       const response = await this.httpClient.get<any>(
         `/application/shops/${shopId}/receipts`,
