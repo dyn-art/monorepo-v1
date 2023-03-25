@@ -1,5 +1,5 @@
 import express from 'express';
-import { etsyClient } from '../../../../core';
+import { etsyClient } from '../../../../core/services';
 import { AppError } from '../../../../middlewares';
 
 export async function getPing(req: express.Request, res: express.Response) {

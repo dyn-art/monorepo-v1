@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { appConfig, STAGE } from '../../environment';
 
 export class PrismaConnection {
@@ -8,20 +8,20 @@ export class PrismaConnection {
    * Connect to the database and initialize the PrismaClient instance
    */
   public connectDB(): PrismaClient {
-    const logs: Record<string, string> = {}; // <level, emit>
-    logs['error'] = 'stdout';
+    const logs: Record<string, Prisma.LogDefinition> = {}; // <level, emit>
+    logs['error'] = { level: 'error', emit: 'stdout' };
     if (appConfig.stage === STAGE.LOCAL) {
-      logs['query'] = 'event';
+      logs['query'] = { level: 'query', emit: 'event' };
     }
 
     // Initialize Prisma instance
     if (this.db === null) {
       this.db = new PrismaClient({
-        log: Object.keys(logs).map((key) => ({ level: key, emit: logs[key] })),
+        log: Object.keys(logs).map((key) => logs[key]),
       });
 
       // Register Events
-      if (logs['query'] === 'event') {
+      if (logs['query'] != null && logs['query'].emit === 'event') {
         this.db.$on('query' as any, (event: any) => {
           console.log(`Executed Query: `, event.query, {
             params: event.params,

@@ -1,4 +1,4 @@
-import { replaceBracket } from '../../utils';
+import { replaceBracket } from '../../core/utils';
 import { STAGE } from './types';
 
 const port = process.env.APP_PORT ?? 9000;

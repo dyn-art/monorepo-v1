@@ -1,4 +1,5 @@
 import { createServer as createHttpServer } from 'http';
+import { cronTasks } from './core/cron';
 import { dbConnection } from './core/db';
 import { appConfig } from './environment';
 
@@ -7,6 +8,10 @@ async function initAsyncDependencies() {
 
   // Init DB connection
   dbConnection.connectDB();
+
+  // Start cron tasks/jobs
+
+  cronTasks.forEach((task) => task.start());
 
   console.log('Initialized async modules.');
 }

@@ -1,6 +1,6 @@
 import { Router } from 'express';
+import { controllerWrapper } from '../../../../core/utils/controller-wrapper';
 import { STAGE } from '../../../../environment';
-import { controllerWrapper } from '../../../../utils/controller-wrapper';
 import {
   getOAuthChallenge,
   getPing,
