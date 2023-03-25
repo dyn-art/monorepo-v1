@@ -1,5 +1,5 @@
 spring.datasource:
-  url: jdbc:postgresql://localhost:5001/pda
+  url: jdbc:postgresql://localhost:5001/pda?autoReconnect=true
   username: postgres
   password: postgres
   driver-class-name: org.postgresql.Driver
@@ -10,4 +10,5 @@ camunda.bpm:
     password: demo
   database:
     type: postgres
-    table-prefix: order-process
+    schema-name: order-process
+    table-prefix: order-process.
