@@ -1,14 +1,16 @@
 spring.datasource:
-  url: jdbc:postgresql://localhost:5001/pda?autoReconnect=true
+  url: jdbc:postgresql://localhost:5001/pda?autoReconnect=true&currentSchema=order_process
   username: postgres
   password: postgres
   driver-class-name: org.postgresql.Driver
 
+# https://docs.camunda.org/manual/7.18/user-guide/spring-boot-integration/configuration/
 camunda.bpm:
   admin-user:
     id: demo
     password: demo
+  # https://docs.camunda.org/manual/7.18/user-guide/process-engine/database/
   database:
     type: postgres
-    schema-name: order-process
-    table-prefix: order-process.
+    schema-name: order_process
+    table-prefix: order_process.
