@@ -1,4 +1,8 @@
 import { EtsyClient } from './EtsyClient';
+import {
+  TGetShopReceiptsQueryParametersDto,
+  TGetShopReceiptsResponseDto,
+} from './types';
 
 export class EtsyService {
   private readonly etsyClient: EtsyClient;
@@ -25,9 +29,11 @@ export class EtsyService {
     };
   }
 
-  public async getShopReceipts(): Promise<any | null> {
+  public async getShopReceipts(
+    options: TGetShopReceiptsQueryParametersDto = {}
+  ): Promise<TGetShopReceiptsResponseDto | null> {
     const me = await this.getMe();
     if (me == null) return null;
-    return this.etsyClient.getShopReceipts(me.shopId);
+    return this.etsyClient.getShopReceipts(me.shopId, options);
   }
 }

@@ -1,6 +1,6 @@
 import express from 'express';
-import { appConfig, STAGE } from '../environment';
-import { AppError } from '../middlewares';
+import { appConfig, STAGE } from '../../environment';
+import { AppError } from '../../middlewares';
 
 /**
  * Wrapper function for Express controllers to handle errors and stage-based activation.

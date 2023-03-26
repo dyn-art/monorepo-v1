@@ -6,5 +6,4 @@ const ERROR = 2;
 module.exports = {
   root: true,
   extends: ['pda-base'],
-  ignorePatterns: ['ui'],
 };

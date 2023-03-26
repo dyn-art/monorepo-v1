@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import { spotifyConfig } from '../environment';
-import { TSpotifyAuthResponseDto } from './types';
+import { TAuthResponseDto } from './types';
 
 export class OAuth2Service {
   private readonly httpClient: AxiosInstance;
@@ -54,7 +54,7 @@ export class OAuth2Service {
       const body = 'grant_type=client_credentials';
 
       // Send request
-      const response = await this.httpClient.post<TSpotifyAuthResponseDto>(
+      const response = await this.httpClient.post<TAuthResponseDto>(
         spotifyConfig.auth.tokenEndpoint,
         body,
         { headers }
@@ -71,7 +71,7 @@ export class OAuth2Service {
   }
 
   private handleRetrieveAccessTokenByCredentialsFlowAuthResponse(
-    data: TSpotifyAuthResponseDto
+    data: TAuthResponseDto
   ): string | null {
     if (data.access_token == null || data.expires_in == null) return null;
 
