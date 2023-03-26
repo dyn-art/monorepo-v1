@@ -2,8 +2,9 @@ import axios, { AxiosInstance } from 'axios';
 import { spotifyConfig } from '../environment';
 import { OAuth2Service } from './OAuth2Service';
 import {
-  TSpotifySearchForItemParameterDto,
-  TSpotifySearchResponseDto,
+  TGetTrackResponseDto,
+  TSearchForItemParameterDto,
+  TSearchResponseDto,
 } from './types';
 
 export class SpotifyClient {
@@ -39,14 +40,14 @@ export class SpotifyClient {
 
   // https://developer.spotify.com/documentation/web-api/reference/#/operations/search
   public async search(options: {
-    query: TSpotifySearchForItemParameterDto['q'];
-    type?: TSpotifySearchForItemParameterDto['type'];
-    market?: TSpotifySearchForItemParameterDto['market'];
-    limit?: TSpotifySearchForItemParameterDto['limit'];
-  }) {
+    query: TSearchForItemParameterDto['q'];
+    type?: TSearchForItemParameterDto['type'];
+    market?: TSearchForItemParameterDto['market'];
+    limit?: TSearchForItemParameterDto['limit'];
+  }): Promise<TSearchResponseDto | null> {
     const { query, type, market, limit = 5 } = options;
     try {
-      const response = await this.httpClient.get<TSpotifySearchResponseDto>(
+      const response = await this.httpClient.get<TSearchResponseDto>(
         '/search',
         {
           params: {
@@ -54,8 +55,20 @@ export class SpotifyClient {
             type,
             market,
             limit,
-          } as TSpotifySearchForItemParameterDto,
+          } as TSearchForItemParameterDto,
         }
+      );
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+    return null;
+  }
+
+  public async getTrack(id: string): Promise<TGetTrackResponseDto | null> {
+    try {
+      const response = await this.httpClient.get<TGetTrackResponseDto>(
+        `/tracks/${id}`
       );
       return response.data;
     } catch (error) {

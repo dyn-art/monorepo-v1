@@ -24,7 +24,7 @@
     "remotion": "^3.3.76"
   },
   "devDependencies": {
-    "@pda/jest-presets": "workspace:^0.0.0",
+    "@pda/jest-presets": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@remotion/bundler": "^3.3.76",
     "@remotion/cli": "^3.3.76",

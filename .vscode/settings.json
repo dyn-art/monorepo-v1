@@ -23,6 +23,7 @@
         "./packages/map",
         "./packages/music",
         "./packages/renderer",
+        "./packages/renderer/ui",
         "./packages/ui",
     ],
     "cSpell.words": [

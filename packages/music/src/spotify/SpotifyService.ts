@@ -13,4 +13,8 @@ export class SpotifyService {
     }`;
     return this.spotifyClient.search({ query, type: 'track' });
   }
+
+  public getTrackById(trackId: string) {
+    return this.spotifyClient.getTrack(trackId);
+  }
 }

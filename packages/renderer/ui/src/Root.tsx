@@ -1,10 +1,11 @@
 import useAxios from 'axios-hooks';
 import React from 'react';
-import { Still } from 'remotion';
+import { Composition, Still } from 'remotion';
 
 // Compositions
 import SimpleCityMapV1 from './components/stills/simple-city-map-v1';
 import SpotifyPlayerV1 from './components/stills/spotify-player-v1';
+import MusicVideo from './components/videos/music-video';
 
 // Global Styles
 import './style.css';
@@ -52,6 +53,20 @@ export const RemotionRoot: React.FC = () => {
           imageUrl:
             'https://cdn.pixabay.com/photo/2017/07/31/21/04/people-2561053_960_720.jpg',
           theme: 'light',
+        }}
+      />
+      <Composition
+        id="music-video-poc"
+        component={MusicVideo}
+        durationInFrames={820} // Song duration in sec * fps
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{
+          audioUrl:
+            'https://p.scdn.co/mp3-preview/5cbd78e57a060c14d123b113f14edcb77605632e?cid=5ad995bc32154d29913c000650abde66',
+          imageUrl:
+            'https://i.scdn.co/image/ab67616d0000b2737359994525d219f64872d3b1',
         }}
       />
     </>
