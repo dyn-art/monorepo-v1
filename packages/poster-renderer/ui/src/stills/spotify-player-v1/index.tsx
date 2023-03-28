@@ -12,7 +12,7 @@ import { applyOpacityToHex, formatDuration } from './service';
 import './styles.css';
 
 const SpotifyPlayerV1: React.FC<TProps> = (props) => {
-  const { title, subtitle, time, spotifyCode, trackId, imageUrl } = props;
+  const { title, subtitle, track, spotifyCode } = props;
   const theme: TTheme =
     typeof props.theme === 'string' ? THEMES[props.theme] : props.theme;
 
@@ -25,7 +25,10 @@ const SpotifyPlayerV1: React.FC<TProps> = (props) => {
       className={'h-full w-full p-16'}
       style={{ background: theme.background }}
     >
-      <img src={imageUrl} className={'object-cover w-[467px] h-[467px]'} />
+      <img
+        src={track.imageUrl}
+        className={'object-cover w-[467px] h-[467px]'}
+      />
 
       {/* Content */}
       <div className={'mt-6'}>
@@ -51,8 +54,8 @@ const SpotifyPlayerV1: React.FC<TProps> = (props) => {
         {/* Player Timeline */}
         <div className={'mt-4 w-full'}>
           <CustomSlider
-            current={time.current}
-            max={time.total}
+            current={track.time.current}
+            max={track.time.total}
             color={{
               background: applyOpacityToHex(theme.text, 0.2),
               activeBackground: theme.text,
@@ -65,13 +68,13 @@ const SpotifyPlayerV1: React.FC<TProps> = (props) => {
               className={'font-[Montserrat] text-sm font-bold'}
               style={{ color: theme.textSecondary }}
             >
-              {formatDuration(time.current)}
+              {formatDuration(track.time.current)}
             </span>
             <span
               className={'font-[Montserrat] text-sm font-bold'}
               style={{ color: theme.textSecondary }}
             >
-              {formatDuration(time.total)}
+              {formatDuration(track.time.total)}
             </span>
           </div>
         </div>
@@ -95,7 +98,7 @@ const SpotifyPlayerV1: React.FC<TProps> = (props) => {
             <SpotifyCode
               backgroundColor={theme.background}
               color={theme.text}
-              trackId={trackId}
+              trackId={track.id}
             />
           </div>
         )}
@@ -107,14 +110,16 @@ const SpotifyPlayerV1: React.FC<TProps> = (props) => {
 export default SpotifyPlayerV1;
 
 type TProps = {
+  track: {
+    id: string;
+    imageUrl: string;
+    time: {
+      total: number;
+      current: number;
+    };
+  };
   title: string;
   subtitle: string;
-  time: {
-    total: number;
-    current: number;
-  };
   spotifyCode: boolean;
-  trackId: string;
-  imageUrl: string;
   theme: TTheme | keyof typeof THEMES;
 };

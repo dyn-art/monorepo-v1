@@ -28,6 +28,7 @@
     "@pda/tsconfig": "workspace:*",
     "@remotion/bundler": "^3.3.76",
     "@remotion/cli": "^3.3.76",
+    "@remotion/media-utils": "^3.3.79",
     "@types/jest": "^29.4.1",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",

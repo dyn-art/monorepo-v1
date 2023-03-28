@@ -6,4 +6,10 @@ const ERROR = 2;
 module.exports = {
   root: true,
   extends: ['pda-base'],
+  ignorePatterns: [
+    'postcss.config.js',
+    'remotion.config.ts',
+    'tailwind.config.js',
+    'webpack-override.ts',
+  ],
 };

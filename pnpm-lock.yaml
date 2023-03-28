@@ -92,6 +92,7 @@ importers:
       '@pda/tsconfig': workspace:*
       '@remotion/bundler': ^3.3.76
       '@remotion/cli': ^3.3.76
+      '@remotion/media-utils': ^3.3.79
       '@remotion/renderer': ^3.3.76
       '@types/jest': ^29.4.1
       '@types/react': ^18.0.17
@@ -126,6 +127,7 @@ importers:
       '@pda/tsconfig': link:../tsconfig
       '@remotion/bundler': 3.3.76_biqbaboplfbrettd7655fr4n2y
       '@remotion/cli': 3.3.76_biqbaboplfbrettd7655fr4n2y
+      '@remotion/media-utils': 3.3.79_biqbaboplfbrettd7655fr4n2y
       '@types/jest': 29.4.1
       '@types/react': 18.0.28
       '@types/react-dom': 18.0.11
@@ -1862,6 +1864,17 @@ packages:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       remotion: 3.3.76_biqbaboplfbrettd7655fr4n2y
+    dev: true
+
+  /@remotion/media-utils/3.3.79_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-XPpGNCP0zz4txDo16UXdGawGl/Af7zz1/IJ2DLvfEZ5WX2tSUFHoTo6ipDeL8fzN57GfExRKJWLvlHXpUGSINQ==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      remotion: 3.3.79_biqbaboplfbrettd7655fr4n2y
     dev: true
 
   /@remotion/player/3.3.76_biqbaboplfbrettd7655fr4n2y:
@@ -6276,6 +6289,16 @@ packages:
     dependencies:
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+
+  /remotion/3.3.79_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-Jg5Dr7aWm1cxURg2chL6j9yOo9qau1UiYHrwu0y4m3xtRr/LB233wovbEeQ1MWBryuoBzGJVQfApH2yi7v8dtA==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: true
 
   /require-directory/2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
