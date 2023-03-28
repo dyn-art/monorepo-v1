@@ -22,8 +22,11 @@
         "./packages/logger",
         "./packages/map",
         "./packages/music",
-        "./packages/renderer",
-        "./packages/renderer/ui",
+        "./packages/ads-renderer",
+        "./packages/ads-renderer/ui",
+        "./packages/poster-renderer/ui",
+        "./packages/poster-renderer",
+        "./packages/poster-renderer/ui",
         "./packages/ui",
     ],
     "cSpell.words": [
