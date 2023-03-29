@@ -47,39 +47,59 @@ const MusicVideo: React.FC<TProps> = (props) => {
       <div className={'relative'}>
         <div
           className={
-            'absolute left-0 right-0 top-[-200px] ml-auto mr-auto w-[820px] h-[820px]'
+            'absolute left-0 right-0 top-[-200px] ml-auto mr-auto w-[820px] h-[820px] rounded-full'
           }
           style={{
-            transform: `rotate(${rotation}deg)`,
-            transformOrigin: 'center',
+            boxShadow:
+              '16px 32px 48px rgba(0, 0, 0, 0.64), 8px 12px 32px rgba(0, 0, 0, 0.32)',
           }}
         >
-          <img src={record} className={'absolute top-0 left-0 w-full h-full'} />
           <div
-            className={
-              'absolute top-0 left-0 w-full h-full rounded-full mix-blend-color-dodge'
-            }
+            className={'w-full h-full'}
             style={{
-              background: `linear-gradient(to right, black, ${modifyHex(color, {
-                darken: 20,
-                opacity: 0.5,
-              })}, black)`,
+              transform: `rotate(${rotation}deg)`,
+              transformOrigin: 'center',
             }}
-          />
-          <div
-            className={
-              'absolute top-0 left-0 w-full h-full rounded-full mix-blend-color-dodge'
-            }
-            style={{
-              background: `linear-gradient(to top, black, ${modifyHex(color, {
-                darken: 20,
-                opacity: 0.5,
-              })}, black)`,
-            }}
-          />
+          >
+            <img
+              src={record}
+              className={'absolute top-0 left-0 w-full h-full'}
+            />
+            <div
+              className={
+                'absolute top-0 left-0 w-full h-full rounded-full mix-blend-color-dodge'
+              }
+              style={{
+                background: `linear-gradient(to right, black, ${modifyHex(
+                  '#ffffff',
+                  {
+                    darken: 20,
+                    opacity: 0.5,
+                  }
+                )}, black)`,
+              }}
+            />
+            <div
+              className={
+                'absolute top-0 left-0 w-full h-full rounded-full mix-blend-color-dodge'
+              }
+              style={{
+                background: `linear-gradient(to top, black, ${modifyHex(
+                  '#ffffff',
+                  {
+                    darken: 20,
+                    opacity: 0.5,
+                  }
+                )}, black)`,
+              }}
+            />
+          </div>
         </div>
 
-        <div className="relative w-[890px] h-[890px] rounded-[64px] overflow-hidden">
+        <div
+          className="relative w-[890px] h-[890px] rounded-[64px] overflow-hidden"
+          style={{ filter: 'drop-shadow(16px 32px 48px rgba(0, 0, 0, 0.64))' }}
+        >
           <img
             src={track.imageUrl}
             className={'absolute top-0 left-0 w-full h-full'}
