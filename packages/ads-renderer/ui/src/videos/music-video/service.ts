@@ -27,7 +27,18 @@ export function getSpotifyCodeUrl(options: {
   return `https://scannables.scdn.co/uri/plain/svg/${backgroundColor}/${options.color}/640/spotify:track:${options.trackId}`;
 }
 
-export function applyOpacityToHex(hex: string, opacity: number): string {
+/**
+ * Darkens or applies opacity to a hex color.
+ *
+ * @param hex - The hex color to modify.
+ * @param options - An object with `darken` and `opacity` options to apply.
+ * @returns The modified hex color string.
+ */
+export function modifyHex(
+  hex: string,
+  options: { darken?: number; opacity?: number } = {}
+): string {
+  const { darken = 0, opacity = 1 } = options;
   let hexWithoutHash = hex.replace('#', '');
 
   // Convert shorthand hex notation to full notation if necessary
@@ -42,9 +53,24 @@ export function applyOpacityToHex(hex: string, opacity: number): string {
     return hex;
   }
 
+  // Convert hex to RGB
   const r = parseInt(hexWithoutHash.substring(0, 2), 16);
   const g = parseInt(hexWithoutHash.substring(2, 4), 16);
   const b = parseInt(hexWithoutHash.substring(4, 6), 16);
 
-  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  // Darken RGB values
+  const amount = darken / 100;
+  const darkenedR = Math.round(r * (1 - amount));
+  const darkenedG = Math.round(g * (1 - amount));
+  const darkenedB = Math.round(b * (1 - amount));
+
+  // Convert darkened RGB values back to hex
+  const darkenedHex = `#${((darkenedR << 16) | (darkenedG << 8) | darkenedB)
+    .toString(16)
+    .padStart(6, '0')}`;
+
+  // Apply opacity to darkened hex
+  const rgba = `rgba(${darkenedR}, ${darkenedG}, ${darkenedB}, ${opacity})`;
+
+  return opacity === 1 ? darkenedHex : rgba;
 }

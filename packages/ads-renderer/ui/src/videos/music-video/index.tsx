@@ -1,13 +1,17 @@
 import React from 'react';
-import { Audio } from 'remotion';
-import Visualizer from './components/Visualizer';
+import { Audio, useCurrentFrame } from 'remotion';
 
+// Assets
 import paperTexture from './assets/paper-texture.png';
 import recordCaseTexture from './assets/record-case-texture.png';
+import record from './assets/record.png';
+import { modifyHex } from './service';
 
 const MusicVideo: React.FC<TProps> = (props) => {
   const [color] = React.useState('#F5C26E');
   const { track, showSpotifyCode } = props;
+  const frame = useCurrentFrame();
+  const rotation = ((frame / 100) * 360) % 360;
 
   return (
     <div className={'flex items-center justify-center w-full h-full'}>
@@ -15,7 +19,7 @@ const MusicVideo: React.FC<TProps> = (props) => {
       <Audio src={track.previewUrl} />
 
       {/* Background */}
-      <div className={'absolute top-0 left-0 w-full h-full z-0'}>
+      <div className={'absolute top-0 left-0 w-full h-full z-[-10]'}>
         <div
           style={{
             position: 'absolute',
@@ -35,30 +39,65 @@ const MusicVideo: React.FC<TProps> = (props) => {
             width: '100%',
             height: '100%',
             opacity: 0.15,
-            backgroundBlendMode: 'hard-light',
+            backgroundBlendMode: 'exclusion',
           }}
         />
       </div>
 
-      <div
-        className="w-[890px] h-[890px]"
-        style={{
-          boxShadow: 'inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1)',
-        }}
-      >
-        <img
-          src={track.imageUrl}
-          className={'absolute top-0 left-0 w-[890px] h-[890px]'}
-        />
-        <img
-          src={recordCaseTexture}
+      <div className={'relative'}>
+        <div
           className={
-            'absolute top-0 left-0 w-[890px] h-[890px] mix-blend-difference'
+            'absolute left-0 right-0 top-[-200px] ml-auto mr-auto w-[820px] h-[820px]'
           }
-        />
-      </div>
+          style={{
+            transform: `rotate(${rotation}deg)`,
+            transformOrigin: 'center',
+          }}
+        >
+          <img src={record} className={'absolute top-0 left-0 w-full h-full'} />
+          <div
+            className={
+              'absolute top-0 left-0 w-full h-full rounded-full mix-blend-color-dodge'
+            }
+            style={{
+              background: `linear-gradient(to right, black, ${modifyHex(color, {
+                darken: 20,
+                opacity: 0.5,
+              })}, black)`,
+            }}
+          />
+          <div
+            className={
+              'absolute top-0 left-0 w-full h-full rounded-full mix-blend-color-dodge'
+            }
+            style={{
+              background: `linear-gradient(to top, black, ${modifyHex(color, {
+                darken: 20,
+                opacity: 0.5,
+              })}, black)`,
+            }}
+          />
+        </div>
 
-      <Visualizer audioSource={track.previewUrl} />
+        <div className="relative w-[890px] h-[890px] rounded-[64px] overflow-hidden">
+          <img
+            src={track.imageUrl}
+            className={'absolute top-0 left-0 w-full h-full'}
+          />
+          <img
+            src={recordCaseTexture}
+            className={
+              'absolute top-0 left-0 w-full h-full mix-blend-difference'
+            }
+          />
+          <div
+            className={'absolute inset-0 rounded-[inherit]'}
+            style={{
+              boxShadow: 'inset 0px 0px 0px 8px rgba(0, 0, 0, 0.2)',
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };
