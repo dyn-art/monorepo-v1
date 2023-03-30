@@ -1,5 +1,10 @@
 # `ads-renderer`
 
+## 🔴 Canceled
+Canceled due to Spotify Developer Policy conflicts. Quoted from [Developer Policy](https://developer.spotify.com/policy):
+- "Do not create any product or service which is integrated with streams or content from another service."
+- "Do not synchronize any sound recordings with any visual media, including any advertising, film, television program, slideshow, video, or similar content."
+
 ## Assets
 - `paper-texture.png` - Commercial Use - [Bought](https://bort.gumroad.com/l/printedpaper2)
 - `record-case-texture.png` - Commercial Use (CC0) - [Copied](https://twitter.com/Mrdodobird/status/1617851130498945024)
