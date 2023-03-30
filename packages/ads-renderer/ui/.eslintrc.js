@@ -5,7 +5,7 @@ const ERROR = 2;
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
-  extends: ['pda-base'],
+  extends: ['pda-base', 'plugin:tailwindcss-jsx/recommended'],
   ignorePatterns: [
     'postcss.config.js',
     'remotion.config.ts',

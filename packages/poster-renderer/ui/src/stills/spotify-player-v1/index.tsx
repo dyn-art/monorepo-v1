@@ -95,11 +95,7 @@ const SpotifyPlayerV1: React.FC<TProps> = (props) => {
         {/* Spotify Code */}
         {spotifyCode && (
           <div className={'mt-4 flex w-full items-center justify-center'}>
-            <SpotifyCode
-              backgroundColor={theme.background}
-              color={theme.text}
-              trackId={track.id}
-            />
+            <SpotifyCode color={theme.text} trackId={track.id} />
           </div>
         )}
       </div>

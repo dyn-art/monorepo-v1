@@ -42,6 +42,7 @@
     "d3-geo": "^3.1.0",
     "eslint": "^7.32.0",
     "eslint-config-pda-base": "workspace:*",
+    "eslint-plugin-tailwindcss-jsx": "^0.0.1",
     "geojson": "^0.5.0",
     "jest": "^29.5.0",
     "postcss": "^8.4.21",

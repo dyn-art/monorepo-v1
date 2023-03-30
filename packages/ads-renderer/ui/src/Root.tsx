@@ -29,6 +29,8 @@ export const RemotionRoot: React.FC = () => {
               'https://i.scdn.co/image/ab67616d0000b273a358003c337056b9965a9c0f',
           },
           showSpotifyCode: true,
+          backgroundColor: '#F5C26E',
+          textColor: '#000000',
         }}
       />
     </>

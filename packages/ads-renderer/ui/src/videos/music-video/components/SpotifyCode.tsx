@@ -3,15 +3,15 @@ import React from 'react';
 import { getSpotifyCodeUrl } from '../service';
 
 const SpotifyCode: React.FC<TProps> = (props) => {
-  const { backgroundColor, trackId, color } = props;
+  const { trackId, color, backgroundColor, height = 48 } = props;
   const spotifyCodeUrl = React.useMemo<string>(
     () =>
       getSpotifyCodeUrl({
-        backgroundColor,
+        backgroundColor: '#ff0000',
         color: 'white',
         trackId,
       }),
-    [backgroundColor, trackId]
+    [trackId]
   );
   const spotifyCodeRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -21,7 +21,6 @@ const SpotifyCode: React.FC<TProps> = (props) => {
         const response = await axios.get<string>(spotifyCodeUrl);
         const svgString = response.data;
         console.log({ svgString });
-        // @ts-ignore
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(
           svgString.trim(),
@@ -30,8 +29,9 @@ const SpotifyCode: React.FC<TProps> = (props) => {
 
         // Query SVG Elements
         const beamRectElements = svgDoc.querySelectorAll(
-          'rect:not([x="0"]):not([y="0"])'
+          'rect:not([x="0"][y="0"])'
         );
+        const background = svgDoc.querySelector('rect[x="0"][y="0"]');
         const logoPathElement = svgDoc.querySelector('g path');
 
         // Apply new colors to queried SVG Elements
@@ -39,12 +39,13 @@ const SpotifyCode: React.FC<TProps> = (props) => {
           rect.setAttribute('fill', color);
         });
         logoPathElement?.setAttribute('fill', color);
+        background?.setAttribute('fill', backgroundColor ?? 'none');
 
         // Add viewBox and height attributes
         const svgElement = svgDoc.querySelector('svg');
         console.log({ svgElement });
         svgElement?.setAttribute('viewBox', '0 0 400 100');
-        svgElement?.setAttribute('height', '48');
+        svgElement?.setAttribute('height', height.toString());
 
         // Update SVG
         const divElement = spotifyCodeRef.current;
@@ -56,7 +57,7 @@ const SpotifyCode: React.FC<TProps> = (props) => {
       }
     };
     fetchSvg();
-  }, [color]);
+  }, [color, backgroundColor, height]);
 
   return <div ref={spotifyCodeRef} />;
 };
@@ -64,7 +65,8 @@ const SpotifyCode: React.FC<TProps> = (props) => {
 export default SpotifyCode;
 
 type TProps = {
-  backgroundColor: string;
+  backgroundColor?: string;
   color: string;
   trackId: string;
+  height?: number;
 };
