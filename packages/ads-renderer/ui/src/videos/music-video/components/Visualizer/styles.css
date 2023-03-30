@@ -1,0 +1,19 @@
+:root {
+  --base-size: 48px;
+}
+
+.audio-viz {
+  display: flex;
+  flex-direction: row;
+  height: calc(var(--base-size) * 4);
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--base-size) * 0.25);
+  margin-top: var(--base-size);
+}
+
+.bar {
+  background-color: rgba(252, 211, 77, 1);
+  border-radius: calc(var(--base-size) * 0.25);
+  width: calc(var(--base-size) * 0.25);
+}

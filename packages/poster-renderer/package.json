@@ -1,5 +1,5 @@
 {
-  "name": "@pda/renderer",
+  "name": "@pda/poster-renderer",
   "version": "0.0.0",
   "description": "Utility library to work with Music and communicate with Spotify or Genius",
   "private": true,
