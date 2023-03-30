@@ -1,9 +1,16 @@
 import React from 'react';
-import { Audio, useCurrentFrame } from 'remotion';
+import {
+  Audio,
+  interpolate,
+  spring,
+  useCurrentFrame,
+  useVideoConfig,
+} from 'remotion';
 import SpotifyCode from './components/SpotifyCode';
 import { modifyHex } from './service';
 
 // Assets
+import noise from './assets/noise.mp3';
 import paperTexture from './assets/paper-texture.png';
 import recordCaseTexture from './assets/record-case-texture.png';
 import record from './assets/record.png';
@@ -13,8 +20,18 @@ import './styles.css';
 const MusicVideo: React.FC<TProps> = (props) => {
   const { track, showSpotifyCode, backgroundColor, textColor } = props;
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
 
-  const rotation = ((frame / 100) * 360) % 360;
+  const recordTranslateY = spring({
+    fps,
+    frame,
+  });
+  const recordInterpolatedTranslateY = interpolate(
+    recordTranslateY,
+    [0, 1],
+    [0, -200]
+  );
+  const recordRotation = ((frame / 100) * 360) % 360;
 
   return (
     <div
@@ -24,6 +41,7 @@ const MusicVideo: React.FC<TProps> = (props) => {
     >
       {/* Audio */}
       <Audio src={track.previewUrl} volume={0.01} />
+      <Audio src={noise} volume={0.1} loop={true} />
 
       {/* Background */}
       <div className={'absolute top-0 left-0 z-[-10] h-full w-full'}>
@@ -82,17 +100,18 @@ const MusicVideo: React.FC<TProps> = (props) => {
           {/* Record */}
           <div
             className={
-              'absolute left-0 right-0 top-[-200px] ml-auto mr-auto h-[820px] w-[820px] rounded-full'
+              'absolute left-0 right-0 top-0 ml-auto mr-auto h-[820px] w-[820px] rounded-full'
             }
             style={{
               boxShadow:
                 '16px 32px 48px rgba(0, 0, 0, 0.64), 8px 12px 32px rgba(0, 0, 0, 0.32)',
+              transform: `translateY(${recordInterpolatedTranslateY}px)`,
             }}
           >
             <div
               className={'h-full w-full'}
               style={{
-                transform: `rotate(${rotation}deg)`,
+                transform: `rotate(${recordRotation}deg)`,
                 transformOrigin: 'center',
               }}
             >
