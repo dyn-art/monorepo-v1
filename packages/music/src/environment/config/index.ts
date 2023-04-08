@@ -6,7 +6,7 @@ export const config = {
   genius: geniusConfig,
 };
 
-console.log('Loaded configuration', config);
+console.log('[@pda/music] Loaded configuration', config);
 
 export default config;
 
