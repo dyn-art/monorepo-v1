@@ -1,5 +1,5 @@
 {
-  "name": "@pda/render-worker",
+  "name": "@pda/order-worker",
   "version": "0.0.0",
   "description": "Renderer Backend",
   "private": true,

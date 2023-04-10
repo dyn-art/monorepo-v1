@@ -18,6 +18,7 @@
         "./apps/core",
         "./apps/render-worker",
         "./apps/web",
+        "./packages/ai",
         "./packages/etsy",
         "./packages/logger",
         "./packages/map",
