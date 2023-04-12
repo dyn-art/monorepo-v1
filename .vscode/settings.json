@@ -16,8 +16,9 @@
     "eslint.workingDirectories": [
         "./apps/chrome",
         "./apps/core",
-        "./apps/render-worker",
+        "./apps/discord",
         "./apps/web",
+        "./apps/order-worker",
         "./packages/ai",
         "./packages/etsy",
         "./packages/logger",

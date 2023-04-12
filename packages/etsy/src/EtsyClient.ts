@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
-import { etsyConfig } from './environment';
 import { OAuth2Service } from './OAuth2Service';
+import { etsyConfig } from './environment';
 import {
   TGetMeResponseDto,
   TGetShopReceiptsQueryParametersDto,
@@ -9,12 +9,12 @@ import {
 } from './types';
 
 export class EtsyClient {
-  private readonly httpClient: AxiosInstance;
-  public readonly authService: OAuth2Service;
+  private readonly _httpClient: AxiosInstance;
+  public readonly _authService: OAuth2Service;
 
   constructor(authService: OAuth2Service) {
-    this.authService = authService;
-    this.httpClient = axios.create({
+    this._authService = authService;
+    this._httpClient = axios.create({
       baseURL: etsyConfig.baseUrl,
       headers: {
         'Content-Type': 'application/json',
@@ -25,13 +25,13 @@ export class EtsyClient {
 
   private setupInterceptors() {
     // Intercept requests to inject the Authorization header
-    this.httpClient.interceptors.request.use(
+    this._httpClient.interceptors.request.use(
       async (config) => {
-        const token = await this.authService.getAccessToken();
+        const token = await this._authService.getAccessToken();
         if (token != null) {
           config.headers.Authorization = `Bearer ${token}`;
         }
-        config.headers['x-api-key'] = this.authService.config.clientId;
+        config.headers['x-api-key'] = this._authService._config.clientId;
         return config;
       },
       (error) => {
@@ -43,7 +43,7 @@ export class EtsyClient {
   public async ping(): Promise<boolean> {
     try {
       // Send request
-      const response = await this.httpClient.get<TPingResponseDto>(
+      const response = await this._httpClient.get<TPingResponseDto>(
         '/application/openapi-ping'
       );
       return response.data.application_id != null;
@@ -55,7 +55,7 @@ export class EtsyClient {
 
   public async getMe(): Promise<TGetMeResponseDto | null> {
     try {
-      const response = await this.httpClient.get<TGetMeResponseDto>(
+      const response = await this._httpClient.get<TGetMeResponseDto>(
         '/application/users/me'
       );
       return response.data;
@@ -70,7 +70,7 @@ export class EtsyClient {
     params: TGetShopReceiptsQueryParametersDto = {}
   ): Promise<TGetShopReceiptsResponseDto | null> {
     try {
-      const response = await this.httpClient.get<any>(
+      const response = await this._httpClient.get<any>(
         `/application/shops/${shopId}/receipts`,
         { params }
       );

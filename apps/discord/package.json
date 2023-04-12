@@ -1,0 +1,31 @@
+{
+  "name": "@pda/discord",
+  "version": "0.0.0",
+  "description": "Core Backend",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "build": "shx rm -rf dist && tsc",
+    "start:dev": "nodemon --config ./nodemon.json",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.9.0",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "@pda/tsconfig": "workspace:*",
+    "@types/node": "^18.15.3",
+    "eslint": "^7.32.0",
+    "eslint-config-pda-base": "workspace:*",
+    "nodemon": "^2.0.21",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.5.2"
+  }
+}
