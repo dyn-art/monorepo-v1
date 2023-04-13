@@ -25,21 +25,28 @@
 
 function mergeDeep<
   TTarget extends Record<string, unknown>,
-  TSource extends Record<string, unknown>
+  TSource extends RequiredDeepOptionalAttributes<TTarget>
 >(
   target: TTarget,
   source: TSource,
   overwriteUndefinedProperties: boolean
-): TTarget & TSource {
+): TTarget {
   // Shallow copy target
   const output = Object.assign({}, target) as Record<string, unknown>;
 
   for (const key in source) {
+    const sourceValue = source[key as keyof TSource];
+    const targetValue = target[key as keyof TTarget];
+
     // Go deep
-    if (source[key] instanceof Object) {
+    if (
+      typeof sourceValue === 'object' &&
+      !Array.isArray(sourceValue) &&
+      sourceValue !== null
+    ) {
       output[key] = mergeDeep(
-        target[key] || {},
-        source[key] as Record<string, unknown>,
+        targetValue || {},
+        sourceValue,
         overwriteUndefinedProperties
       );
     }
@@ -48,18 +55,19 @@ function mergeDeep<
       !Object.prototype.hasOwnProperty.call(target, key) ||
       (overwriteUndefinedProperties && target[key] === undefined)
     ) {
-      output[key] = source[key];
+      output[key] = sourceValue;
     }
   }
 
-  return output as TTarget & TSource;
+  return output as TTarget;
 }
 
 export function defineConfig<
-  TConfig extends Record<string, unknown> = Record<string, unknown>
+  TConfig extends Record<string, unknown>,
+  TDefaults extends RequiredDeepOptionalAttributes<TConfig>
 >(
   config: TConfig,
-  defaults: RequiredDeepOptionalAttributes<TConfig>,
+  defaults: TDefaults,
   overwriteUndefinedProperties = true
 ): DeepRequired<TConfig> {
   return mergeDeep(
@@ -72,17 +80,17 @@ export function defineConfig<
 type DeepOptionalAttributes<T> = {
   [K in keyof T as undefined extends T[K] ? K : never]: T[K] extends object
     ? DeepOptionalAttributes<T[K]>
-    : Exclude<T[K], undefined>;
+    : T[K];
 };
 
 type RequiredDeepOptionalAttributes<T> = Required<DeepOptionalAttributes<T>>;
 
-type IsClass<T> = T extends new (...args: any[]) => any ? true : false;
-
-type DeepRequired<T> = {
-  [K in keyof T]-?: T[K] extends object
-    ? IsClass<T[K]> extends true
-      ? T[K]
-      : DeepRequired<T[K]>
-    : T[K];
-};
+type DeepRequired<T> = T extends any[] // Handle Array
+  ? T
+  : T extends (...args: any[]) => any // Handle Class & Function
+  ? T
+  : T extends null // Handle Null
+  ? T
+  : T extends object // Handle Object
+  ? { [K in keyof T]-?: DeepRequired<T[K]> }
+  : T;

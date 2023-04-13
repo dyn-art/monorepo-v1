@@ -4,7 +4,7 @@ import { TCommandsHandlerConfig } from './CommandsHandler';
 import { defineConfig } from './utils/define-config';
 
 export default class DcClientHandler {
-  private readonly _client: typeof Client;
+  private readonly _client: Client;
   private readonly _config: TDcClientHandlerConfig;
 
   private _adminIds: string[] = [];
@@ -22,14 +22,14 @@ export default class DcClientHandler {
       adminIds: [],
     });
 
-    this._client = _config.client;
+    this._client = _config.client as Client;
     this._config = {
       fileSuffixes: _config.fileSuffixes,
     };
 
     this.initAdmins(_config.adminIds);
     this.initCommands(
-      _config.commands.commandsDir,
+      _config.commands.commandPrefix,
       _config.commands.commandPrefix
     );
     this.initEvents(_config.eventsDir);
@@ -63,7 +63,7 @@ export default class DcClientHandler {
 }
 
 type TDcClientHandlerConstructorConfig = {
-  client: typeof Client;
+  client: Client;
   adminIds?: string[];
   eventsDir?: string;
   commands?: Partial<TCommandsHandlerConfig>;
