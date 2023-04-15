@@ -1,38 +1,38 @@
 import { Client } from 'discord.js';
-import Command from './Command';
-import { TCommandsHandlerConfig } from './CommandsHandler';
+import CommandsHandler from './commands/CommandsHandler';
+import EventsHandler from './events/EventsHandler';
 import { defineConfig } from './utils/define-config';
 
 export default class DcClientHandler {
   private readonly _client: Client;
-  private readonly _config: TDcClientHandlerConfig;
 
   private _adminIds: string[] = [];
+  private _testServers: string[] = [];
 
-  private _commands: { [key: string]: Command } = {};
+  private _commandsHandler?: CommandsHandler;
+  private _eventsHandler?: EventsHandler;
 
-  constructor(config: TDcClientHandlerConstructorConfig) {
+  constructor(client: Client, config: TDcClientHandlerConfig = {}) {
     const _config = defineConfig(config, {
       commands: {
         commandsDir: 'commands',
         commandPrefix: 'pda.',
+        fileSuffixes: ['.ts', '.js'],
       },
-      eventsDir: 'events',
-      fileSuffixes: ['.ts', '.js'],
+      events: {
+        eventsDir: 'events',
+        fileSuffixes: ['.ts', '.js'],
+      },
       adminIds: [],
+      testServerIds: [],
     });
 
-    this._client = _config.client as Client;
-    this._config = {
-      fileSuffixes: _config.fileSuffixes,
-    };
+    this._client = client;
+    this._testServers = _config.testServerIds;
 
     this.initAdmins(_config.adminIds);
-    this.initCommands(
-      _config.commands.commandPrefix,
-      _config.commands.commandPrefix
-    );
-    this.initEvents(_config.eventsDir);
+    this.initCommands(_config.commands);
+    this.initEvents(_config.events);
   }
 
   public get client() {
@@ -53,22 +53,36 @@ export default class DcClientHandler {
     return adminIds;
   }
 
-  private async initCommands(commandsDir: string, commandPrefix: string) {
-    // TODO
+  private async initCommands(
+    config: Required<TDcClientHandlerConfig['commands']>
+  ) {
+    if (config == null) return;
+    this._commandsHandler = new CommandsHandler(this, {
+      commandPrefix: config.commandPrefix,
+      commandsDir: config.commandsDir,
+      fileSuffixes: config.fileSuffixes,
+    });
   }
 
-  private async initEvents(eventsDir: string) {
-    // TODO
+  private async initEvents(config: Required<TDcClientHandlerConfig['events']>) {
+    if (config == null) return;
+    this._eventsHandler = new EventsHandler(this, {
+      eventsDir: config.eventsDir,
+      fileSuffixes: config.fileSuffixes,
+    });
   }
 }
 
-type TDcClientHandlerConstructorConfig = {
-  client: Client;
-  adminIds?: string[];
-  eventsDir?: string;
-  commands?: Partial<TCommandsHandlerConfig>;
-} & Partial<TDcClientHandlerConfig>;
-
 type TDcClientHandlerConfig = {
-  fileSuffixes: string[];
+  adminIds?: string[];
+  testServerIds?: string[];
+  events?: {
+    fileSuffixes?: string[];
+    eventsDir?: string;
+  };
+  commands?: {
+    commandsDir?: string;
+    commandPrefix?: string;
+    fileSuffixes?: string[];
+  };
 };

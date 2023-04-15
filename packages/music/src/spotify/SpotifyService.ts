@@ -1,20 +1,20 @@
 import { SpotifyClient } from './SpotifyClient';
 
 export class SpotifyService {
-  private readonly spotifyClient: SpotifyClient;
+  private readonly _spotifyClient: SpotifyClient;
 
   constructor(spotifyClient: SpotifyClient) {
-    this.spotifyClient = spotifyClient;
+    this._spotifyClient = spotifyClient;
   }
 
   public searchTrackByName(trackKeyword: string, artistKeyword?: string) {
     const query = `track:${trackKeyword}${
       artistKeyword != null ? ` artist:${artistKeyword}` : ''
     }`;
-    return this.spotifyClient.search({ query, type: 'track' });
+    return this._spotifyClient.search({ query, type: 'track' });
   }
 
   public getTrackById(trackId: string) {
-    return this.spotifyClient.getTrack(trackId);
+    return this._spotifyClient.getTrack(trackId);
   }
 }

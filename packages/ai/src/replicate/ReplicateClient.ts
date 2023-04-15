@@ -3,21 +3,21 @@ import { replicateConfig } from '../environment';
 import { TPredictionResponseDto, TTrainingsPayloadDto } from './types';
 
 export class ReplicateClient {
-  private readonly httpClient: AxiosInstance;
-  private readonly dreamboothExperimentalHttpClient: AxiosInstance;
+  private readonly _httpClient: AxiosInstance;
+  private readonly _dreamboothExperimentalHttpClient: AxiosInstance;
 
-  private readonly config: Omit<TReplicateClientConfig, 'apiToken'>;
+  private readonly _config: Omit<TReplicateClientConfig, 'apiToken'>;
 
   constructor(config: TReplicateClientConfig) {
-    this.config = config;
-    this.httpClient = axios.create({
+    this._config = config;
+    this._httpClient = axios.create({
       baseURL: replicateConfig.baseUrl,
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Token ${config.apiToken}`,
       },
     });
-    this.dreamboothExperimentalHttpClient = axios.create({
+    this._dreamboothExperimentalHttpClient = axios.create({
       baseURL: replicateConfig.dreamboothExperimentalBaseUrl,
       headers: {
         'Content-Type': 'application/json',
@@ -32,19 +32,19 @@ export class ReplicateClient {
   ): Promise<TTrainingsPayloadDto | null> {
     try {
       const response =
-        await this.dreamboothExperimentalHttpClient.post<TTrainingsPayloadDto>(
+        await this._dreamboothExperimentalHttpClient.post<TTrainingsPayloadDto>(
           '/trainings',
           {
             input: {
-              instance_prompt: `a photo of a ${this.config.instanceToken} ${instanceClass}`,
+              instance_prompt: `a photo of a ${this._config.instanceToken} ${instanceClass}`,
               class_prompt: `a photo of a ${instanceClass}`,
-              instance_data: this.config.webhooks.instanceData(userId),
-              max_train_steps: this.config.maxTrainingSteps || 2000,
+              instance_data: this._config.webhooks.instanceData(userId),
+              max_train_steps: this._config.maxTrainingSteps || 2000,
               num_class_images: 200,
               learning_rate: 1e-6,
             },
-            model: `${this.config.username}/${userId}`,
-            webhook_completed: this.config.webhooks.completed(userId),
+            model: `${this._config.username}/${userId}`,
+            webhook_completed: this._config.webhooks.completed(userId),
           }
         );
       return response.data;
@@ -58,7 +58,7 @@ export class ReplicateClient {
     userId: string
   ): Promise<TTrainingsPayloadDto | null> {
     try {
-      const response = await this.httpClient.get<TTrainingsPayloadDto>(
+      const response = await this._httpClient.get<TTrainingsPayloadDto>(
         `/trainings/${userId}`
       );
       return response.data;
@@ -72,7 +72,7 @@ export class ReplicateClient {
     predictId: string
   ): Promise<TPredictionResponseDto | null> {
     try {
-      const response = await this.httpClient.get(`predictions/${predictId}`);
+      const response = await this._httpClient.get(`predictions/${predictId}`);
       return response.data;
     } catch (error) {
       console.error(error);
@@ -84,7 +84,7 @@ export class ReplicateClient {
     config: TPredictionConfig
   ): Promise<TPredictionResponseDto | null> {
     try {
-      const response = await this.httpClient.post<TPredictionResponseDto>(
+      const response = await this._httpClient.post<TPredictionResponseDto>(
         '/predictions',
         {
           input: {
