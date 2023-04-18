@@ -13,26 +13,31 @@ export default class DcClientHandler {
   private _eventsHandler?: EventsHandler;
 
   constructor(client: Client, config: TDcClientHandlerConfig = {}) {
-    const _config = defineConfig(config, {
-      commands: {
-        commandsDir: 'commands',
-        commandPrefix: 'pda.',
-        fileSuffixes: ['.ts', '.js'],
-      },
-      events: {
-        eventsDir: 'events',
-        fileSuffixes: ['.ts', '.js'],
-      },
-      adminIds: [],
-      testServerIds: [],
-    });
+    const { adminIds = [], testServerIds = [], commands, events } = config;
+    const commandsConfig =
+      commands != null
+        ? defineConfig(commands, {
+            commandPrefix: 'pda.',
+            fileSuffixes: ['.ts', '.js'],
+          })
+        : null;
+    const eventsConfig =
+      events != null
+        ? defineConfig(events, {
+            fileSuffixes: ['.ts', '.js'],
+          })
+        : null;
 
     this._client = client;
-    this._testServerIds = _config.testServerIds;
+    this._testServerIds = testServerIds;
 
-    this.initAdmins(_config.adminIds);
-    this.initCommands(_config.commands);
-    this.initEvents(_config.events);
+    this.initAdmins(adminIds);
+    if (commandsConfig != null) {
+      this.initCommands(commandsConfig);
+    }
+    if (eventsConfig) {
+      this.initEvents(eventsConfig);
+    }
   }
 
   public get client() {
@@ -77,11 +82,11 @@ type TDcClientHandlerConfig = {
   adminIds?: string[];
   testServerIds?: string[];
   events?: {
+    eventsDir: string;
     fileSuffixes?: string[];
-    eventsDir?: string;
   };
   commands?: {
-    commandsDir?: string;
+    commandsDir: string;
     commandPrefix?: string;
     fileSuffixes?: string[];
   };

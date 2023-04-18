@@ -1,13 +1,25 @@
 import fs, { Dirent } from 'fs';
 
-export async function readFile<T = unknown>(filePath: string): Promise<T> {
-  return await import(filePath);
+export async function readFile<T = unknown>(
+  filePath: string
+): Promise<T | null> {
+  try {
+    return await import(filePath);
+  } catch (error) {
+    console.error(`Failed to resolve file at path: '${filePath}'`, error);
+  }
+  return null;
 }
 
 export function readDir(dirPath: string): Dirent[] {
-  return fs.readdirSync(dirPath, {
-    withFileTypes: true, // Allows to detect folders (via isDirectory())
-  });
+  try {
+    return fs.readdirSync(dirPath, {
+      withFileTypes: true, // Allows to detect folders (via isDirectory())
+    });
+  } catch (error) {
+    console.error(`Failed to resolve directory at path: '${dirPath}'`, error);
+  }
+  return [];
 }
 
 export async function getFilesTree(
@@ -16,13 +28,11 @@ export async function getFilesTree(
 ): Promise<TDirectory> {
   const fileTree: TDirectory = {
     type: 'directory',
-    name: path.replace(/^.*[\\\\/]/, ''),
+    name: path.replace(/^.*[\\\\/]/, ''), // Replace everything in front of the last '/'
     path,
     content: [],
   };
-  const files: Dirent[] = fs.readdirSync(path, {
-    withFileTypes: true, // Allows to detect folders (via isDirectory())
-  });
+  const files = readDir(path);
 
   for (const file of files) {
     // Handle directory
@@ -39,7 +49,9 @@ export async function getFilesTree(
         const fileContent = await readFile(filePath);
         fileTree.content.push({
           type: 'file',
-          name: filePath.replace(/^.*[\\\\/]/, ''),
+          name: filePath
+            .replace(/^.*[\\\\/]/, '') // Replace everything in front of the last '/'
+            .replace(/\..*$/, ''), // Replace everything after the last '.' (-> '.ts')
           path: filePath,
           content: fileContent,
         });
@@ -49,6 +61,33 @@ export async function getFilesTree(
   }
 
   return fileTree;
+}
+
+export function flattenFileTree(
+  fileTree: TDirectory,
+  ignorePrefix = true
+): TFile[] {
+  const files: TFile[] = [];
+  for (const content of fileTree.content) {
+    if (content.type === 'directory') {
+      const updatedDirectory = ignorePrefix
+        ? content
+        : {
+            ...content,
+            name: `${fileTree.name}.${content.name}`,
+          };
+      files.push(...flattenFileTree(updatedDirectory, false));
+    } else if (content.type === 'file') {
+      const updatedFile = ignorePrefix
+        ? content
+        : {
+            ...content,
+            name: `${fileTree.name}.${content.name}`,
+          };
+      files.push(updatedFile);
+    }
+  }
+  return files;
 }
 
 type TFile<T = unknown> = {

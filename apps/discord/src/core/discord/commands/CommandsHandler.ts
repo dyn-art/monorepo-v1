@@ -1,5 +1,5 @@
 import DcClientHandler from '../DcClientHandler';
-import { getFilesTree } from '../utils/get-file-tree';
+import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import Command from './Command';
 
 // TODO https://github.dev/AlexzanderFlores/WOKCommands-v2
@@ -22,7 +22,11 @@ export default class CommandsHandler {
       this._config.commandsDir,
       this._config.fileSuffixes
     );
-    // TODO
+    const commandFiles = flattenFileTree(fileTree);
+
+    console.log({ fileTree, commandFiles });
+
+    // TODO: handle files
   }
 }
 

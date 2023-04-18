@@ -49,7 +49,11 @@ type TCommandMetaBoth = {
   type: CommandType.BOTH;
 } & Omit<TCommandMetaLegacy, 'type'> &
   Omit<TCommandMetaSlash, 'type'>;
-type TCommandMeta = TCommandMetaSlash | TCommandMetaLegacy | TCommandMetaBoth;
+
+export type TCommandMeta =
+  | TCommandMetaSlash
+  | TCommandMetaLegacy
+  | TCommandMetaBoth;
 
 type TCommandUsage = {
   client: Client;
