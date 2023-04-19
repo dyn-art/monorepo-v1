@@ -1,3 +1,4 @@
+import { CommandInteraction, Message } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
 import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import Command, { TCommandMeta } from './Command';
@@ -28,12 +29,28 @@ export default class CommandsHandler {
     );
     const commandFiles = flattenFileTree(fileTree);
 
+    // Get global previous SlashCommands
     const globalPreviousSlashCommands =
       await this._slashCommandHelper.getCommands();
     let globalToRemoveSlashCommandNames =
       globalPreviousSlashCommands?.cache != null
         ? globalPreviousSlashCommands.cache.map((command) => command.name)
         : [];
+
+    // Get test only previous SlashCommands
+    const testOnlyToRemoveSlashCommandNamesMap = new Map<string, string[]>();
+    for (const guildId of this._instance.testGuildIds) {
+      const testOnlyPreviousSlashCommands =
+        await this._slashCommandHelper.getCommands(guildId);
+      const testOnlyToRemoveSlashCommandNames =
+        testOnlyPreviousSlashCommands?.cache != null
+          ? testOnlyPreviousSlashCommands.cache.map((command) => command.name)
+          : [];
+      testOnlyToRemoveSlashCommandNamesMap.set(
+        guildId,
+        testOnlyToRemoveSlashCommandNames
+      );
+    }
 
     // Create Commands
     for (const commandFile of commandFiles) {
@@ -81,13 +98,26 @@ export default class CommandsHandler {
 
         // If 'testOnly', register SlashCommand only to test servers
         if (testOnly) {
-          for (const guildId of this._instance.testServerIds) {
+          for (const guildId of this._instance.testGuildIds) {
             this._slashCommandHelper.create(
               name,
               description ?? 'not-set',
               options,
               guildId
             );
+
+            // Remove test only SlashCommand from 'globalToRemoveSlashCommandNames' list,
+            // so it doesn't get removed
+            const toRemoveSlashCommandNames =
+              testOnlyToRemoveSlashCommandNamesMap.get(guildId);
+            if (toRemoveSlashCommandNames != null) {
+              testOnlyToRemoveSlashCommandNamesMap.set(
+                guildId,
+                toRemoveSlashCommandNames?.filter(
+                  (toDeleteName) => toDeleteName !== name
+                )
+              );
+            }
           }
         }
         // Otherwise register SlashCommand globally
@@ -98,7 +128,7 @@ export default class CommandsHandler {
             options
           );
 
-          // Remove SlashCommand from 'globalToRemoveSlashCommandNames' list,
+          // Remove global SlashCommand from 'globalToRemoveSlashCommandNames' list,
           // so it doesn't get removed
           globalToRemoveSlashCommandNames =
             globalToRemoveSlashCommandNames.filter(
@@ -109,12 +139,29 @@ export default class CommandsHandler {
     }
 
     // Remove globally not used SlashCommands from the DiscordAPI
+    // Note: No need to await
     for (const toRemoveSlashCommandName of globalToRemoveSlashCommandNames) {
-      await this._slashCommandHelper.delete(toRemoveSlashCommandName);
+      this._slashCommandHelper.delete(toRemoveSlashCommandName);
     }
 
-    // Remove testOnly not used SlashCommands from the DiscordAPI
-    // TODO:
+    // Remove test only not used SlashCommands from the DiscordAPI
+    // Note: No need to await
+    testOnlyToRemoveSlashCommandNamesMap.forEach(
+      (toRemoveSlashCommandNames, guildId) => {
+        for (const toRemoveSlashCommandName of toRemoveSlashCommandNames) {
+          this._slashCommandHelper.delete(toRemoveSlashCommandName, guildId);
+        }
+      }
+    );
+  }
+
+  public async runCommand(
+    command: Command,
+    args: string[],
+    message: Message | null,
+    interaction: CommandInteraction | null
+  ) {
+    // TODO
   }
 }
 
