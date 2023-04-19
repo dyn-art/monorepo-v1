@@ -14,9 +14,13 @@ import CommandType from './CommandType';
 export default class Command {
   private readonly _instance: DcClientHandler;
   public readonly name: string;
-  public readonly meta: TCommandMeta;
+  public readonly meta: Omit<TCommandMeta, 'name'>;
 
-  constructor(instance: DcClientHandler, name: string, meta: TCommandMeta) {
+  constructor(
+    instance: DcClientHandler,
+    name: string,
+    meta: Omit<TCommandMeta, 'name'>
+  ) {
     this._instance = instance;
     this.name = name;
     this.meta = meta;
@@ -71,4 +75,5 @@ type TCommandUsage = {
 type TOnInitData = {
   client: Client;
   instance: DcClientHandler;
+  command: Command;
 };

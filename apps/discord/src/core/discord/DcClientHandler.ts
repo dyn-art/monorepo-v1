@@ -7,7 +7,7 @@ export default class DcClientHandler {
   private readonly _client: Client;
 
   private _adminIds: string[] = [];
-  private _testServerIds: string[] = [];
+  public readonly testServerIds: string[] = [];
 
   private _commandsHandler?: CommandsHandler;
   private _eventsHandler?: EventsHandler;
@@ -29,7 +29,7 @@ export default class DcClientHandler {
         : null;
 
     this._client = client;
-    this._testServerIds = testServerIds;
+    this.testServerIds = testServerIds;
 
     this.initAdmins(adminIds);
     if (commandsConfig != null) {
