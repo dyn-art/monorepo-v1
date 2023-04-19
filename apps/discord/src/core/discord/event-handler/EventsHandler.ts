@@ -12,10 +12,10 @@ export default class EventsHandler {
     this._instance = instance;
     this._config = config;
 
-    this.readFiles();
+    this.initializeEventsFromDirectory();
   }
 
-  private async readFiles() {
+  private async initializeEventsFromDirectory() {
     const fileTree = await getFilesTree(
       this._config.eventsDir,
       this._config.fileSuffixes

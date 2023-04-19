@@ -1,6 +1,6 @@
 import { Client } from 'discord.js';
-import CommandsHandler from './commands/CommandsHandler';
-import EventsHandler from './events/EventsHandler';
+import CommandsHandler from './command-handler/CommandsHandler';
+import EventsHandler from './event-handler/EventsHandler';
 import { defineConfig } from './utils/define-config';
 
 export default class DcClientHandler {
@@ -13,7 +13,7 @@ export default class DcClientHandler {
   private _eventsHandler?: EventsHandler;
 
   constructor(client: Client, config: TDcClientHandlerConfig = {}) {
-    const { adminIds = [], testServerIds = [], commands, events } = config;
+    const { adminIds = [], testGuildIds = [], commands, events } = config;
     const commandsConfig =
       commands != null
         ? defineConfig(commands, {
@@ -29,7 +29,7 @@ export default class DcClientHandler {
         : null;
 
     this._client = client;
-    this.testGuildIds = testServerIds;
+    this.testGuildIds = testGuildIds;
 
     this.initAdmins(adminIds);
     if (commandsConfig != null) {
@@ -41,7 +41,7 @@ export default class DcClientHandler {
   }
 
   public get client() {
-    return this.client;
+    return this._client;
   }
 
   public get adminIds() {
@@ -80,7 +80,7 @@ export default class DcClientHandler {
 
 type TDcClientHandlerConfig = {
   adminIds?: string[];
-  testServerIds?: string[];
+  testGuildIds?: string[];
   events?: {
     eventsDir: string;
     fileSuffixes?: string[];

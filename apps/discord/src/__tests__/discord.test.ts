@@ -3,7 +3,7 @@ import path from 'path';
 import DcClientHandler from '../core/discord/DcClientHandler';
 
 describe('discord tests', () => {
-  it('should work', () => {
+  it('should work', async () => {
     const client = new Client({
       intents: [
         IntentsBitField.Flags.Guilds,
@@ -16,6 +16,8 @@ describe('discord tests', () => {
         commandsDir: commandsDir,
       },
     });
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     expect(dcClientHandler).not.toBeNull();
   });

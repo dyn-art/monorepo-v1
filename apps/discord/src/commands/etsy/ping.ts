@@ -1,5 +1,5 @@
-import { TCommandMeta } from '../../core/discord/commands/Command';
-import CommandType from '../../core/discord/commands/CommandType';
+import { TCommandMeta } from '../../core/discord/command-handler/Command';
+import CommandType from '../../core/discord/command-handler/CommandType';
 
 export default {
   type: CommandType.BOTH,

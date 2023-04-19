@@ -39,17 +39,17 @@ type TCommandMetaBase = {
   callback: (usage: TCommandUsage) => Promise<void>;
 };
 
-type TCommandMetaSlash = {
+export type TCommandMetaSlash = {
   type: CommandType.SLASH;
   options?: ApplicationCommandOption[];
 } & TCommandMetaBase;
 
-type TCommandMetaLegacy = {
+export type TCommandMetaLegacy = {
   type: CommandType.LEGACY;
   delete?: boolean;
 } & TCommandMetaBase;
 
-type TCommandMetaBoth = {
+export type TCommandMetaBoth = {
   type: CommandType.BOTH;
 } & Omit<TCommandMetaLegacy, 'type'> &
   Omit<TCommandMetaSlash, 'type'>;
