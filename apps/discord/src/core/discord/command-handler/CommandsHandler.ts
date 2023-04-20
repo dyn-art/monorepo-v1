@@ -1,4 +1,10 @@
-import { ApplicationCommand, CommandInteraction, Message } from 'discord.js';
+import {
+  ApplicationCommand,
+  CommandInteraction,
+  Message,
+  MessagePayload,
+  MessageReplyOptions,
+} from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
 import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import Command, { TCommandMeta, TCommandMetaBoth } from './Command';
@@ -10,27 +16,31 @@ import SlashCommandHelper from './SlashCommandHelper';
 export default class CommandsHandler {
   private readonly _instance: DcClientHandler;
   private readonly _slashCommandHelper: SlashCommandHelper;
-  private readonly _config: TCommandsHandlerConfig;
+  public readonly config: TCommandsHandlerConfig;
 
   private _commands: Map<string, Command> = new Map();
 
   constructor(instance: DcClientHandler, config: TCommandsHandlerConfig) {
     this._instance = instance;
     this._slashCommandHelper = new SlashCommandHelper(this._instance.client);
-    this._config = config;
+    this.config = config;
 
     this.initializeCommandsFromDirectory(
-      this._config.commandsDir,
-      this._config.fileSuffixes
+      this.config.commandsDir,
+      this.config.fileSuffixes
     );
+  }
+
+  public get commands(): ReadonlyMap<string, Command> {
+    return this._commands;
   }
 
   private async initializeCommandsFromDirectory(
     commandsDir: string,
-    fileSuffixes: string[]
+    fileSuffixes: string[] = []
   ) {
-    const fileTree = await getFilesTree(commandsDir, fileSuffixes);
-    const commandFiles = flattenFileTree(fileTree);
+    const commandsFileTree = await getFilesTree(commandsDir, fileSuffixes);
+    const commandFiles = flattenFileTree(commandsFileTree);
 
     // Create Commands
     for (const commandFile of commandFiles) {
@@ -66,12 +76,12 @@ export default class CommandsHandler {
     // Register SlashCommands
     await Promise.all(
       Array.from(this._commands.values()).map((command) =>
-        this.registerSlashCommands(command)
+        this.registerSlashCommand(command)
       )
     );
   }
 
-  private async registerSlashCommands(command: Command) {
+  private async registerSlashCommand(command: Command) {
     if (
       command.meta.type !== CommandType.SLASH &&
       command.meta.type !== CommandType.BOTH
@@ -164,13 +174,15 @@ export default class CommandsHandler {
     args: string[],
     message: Message | null,
     interaction: CommandInteraction | null
-  ) {
-    // TODO: run events
+  ): Promise<string | MessagePayload | MessageReplyOptions | null> {
+    // TODO: run commands
+
+    return null;
   }
 }
 
 export type TCommandsHandlerConfig = {
   commandsDir: string;
-  commandPrefix: string;
-  fileSuffixes: string[];
+  commandPrefix?: string;
+  fileSuffixes?: string[];
 };

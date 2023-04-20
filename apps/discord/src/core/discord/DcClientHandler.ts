@@ -48,6 +48,14 @@ export default class DcClientHandler {
     return this._adminIds;
   }
 
+  public get commandsHandler() {
+    return this._commandsHandler;
+  }
+
+  public get eventsHandler() {
+    return this._eventsHandler;
+  }
+
   private async initAdmins(adminIds: string[]) {
     await this._client.application?.fetch();
     const ownerId = this._client.application?.owner?.id;

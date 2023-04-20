@@ -28,12 +28,15 @@ export default class Command {
 }
 
 type TCommandMetaBase = {
-  name?: string; // By default file name command is in
+  name?: string; // By default file name command is specified in
   description?: string;
 
   testOnly?: boolean;
   guildOnly?: boolean;
   adminsOnly?: boolean;
+
+  reply?: boolean;
+  sendTyping?: boolean;
 
   onInit?: (data: TOnInitData) => Promise<void>;
   callback: (usage: TCommandUsage) => Promise<void>;

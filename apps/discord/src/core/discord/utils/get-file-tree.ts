@@ -90,14 +90,14 @@ export function flattenFileTree(
   return files;
 }
 
-type TFile<T = unknown> = {
+export type TFile<T = unknown> = {
   type: 'file';
   name: string;
   path: string;
   content: T;
 };
 
-type TDirectory = {
+export type TDirectory = {
   type: 'directory';
   name: string;
   path: string;
