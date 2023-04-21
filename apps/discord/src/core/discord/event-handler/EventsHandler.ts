@@ -65,9 +65,15 @@ export default class EventsHandler {
 
   private registerEvents(events: Event[]) {
     for (const event of events) {
-      this._instance.client.on(event.meta.type, async (...args) => {
-        // @ts-ignore
-        event.meta.callback({ instance: this._instance, args });
+      // @ts-ignore
+      this._instance.client.on(event.meta.type, async (...args: any[]) => {
+        if (
+          event.meta.shouldExecuteCallback == null ||
+          // @ts-ignore
+          event.meta.shouldExecuteCallback(...args)
+        ) {
+          event.meta.callback(this._instance, ...args);
+        }
       });
     }
   }

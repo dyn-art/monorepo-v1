@@ -20,12 +20,12 @@
   "devDependencies": {
     "@pda/jest-presets": "workspace:*",
     "@pda/tsconfig": "workspace:*",
-    "@types/jest": "^29.4.1",
-    "@types/node": "^18.15.1",
-    "eslint": "^7.32.0",
+    "@types/jest": "^29.5.1",
+    "@types/node": "^18.15.13",
+    "eslint": "^8.38.0",
     "eslint-config-pda-base": "workspace:*",
     "jest": "^29.5.0",
-    "typescript": "^4.5.2"
+    "typescript": "^5.0.4"
   },
   "files": [
     "dist",

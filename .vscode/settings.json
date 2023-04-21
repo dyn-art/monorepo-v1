@@ -34,5 +34,5 @@
     "cSpell.words": [
         "pda"
     ],
-    "files.associations": { "*.scss": "postcss" }
+    "files.associations": { "*.scss": "postcss" },
 }

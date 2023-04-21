@@ -69,7 +69,9 @@ export default class DcClientHandler {
   private async initCommands(
     config: Required<TDcClientHandlerConfig['commands']>
   ) {
-    if (config == null) return;
+    if (config == null) {
+      return;
+    }
     this._commandsHandler = new CommandsHandler(this, {
       commandPrefix: config.commandPrefix,
       commandsDir: config.commandsDir,
@@ -78,10 +80,9 @@ export default class DcClientHandler {
   }
 
   private async initEvents(config: Required<TDcClientHandlerConfig['events']>) {
-    if (config == null) return;
     this._eventsHandler = new EventsHandler(this, {
-      eventsDir: config.eventsDir,
-      fileSuffixes: config.fileSuffixes,
+      eventsDir: config?.eventsDir,
+      fileSuffixes: config?.fileSuffixes,
     });
   }
 }

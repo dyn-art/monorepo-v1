@@ -21,10 +21,11 @@ export default class Event {
 type TEventMetaBase<EventType extends keyof ClientEvents> = {
   name?: string; // By default file name command is specified in
   type: EventType;
-  callback: (data: {
-    instance: DcClientHandler;
-    args: ClientEvents[EventType];
-  }) => Promise<void>;
+  shouldExecuteCallback?: (...args: ClientEvents[EventType]) => boolean;
+  callback: (
+    instance: DcClientHandler,
+    ...args: ClientEvents[EventType]
+  ) => Promise<void>;
 };
 
 export type TEventMeta = {

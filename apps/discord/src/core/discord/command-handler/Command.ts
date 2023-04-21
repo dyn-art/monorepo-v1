@@ -1,5 +1,6 @@
 import {
   ApplicationCommandOption,
+  AutocompleteInteraction,
   Client,
   CommandInteraction,
   Guild,
@@ -11,20 +12,36 @@ import {
 import DcClientHandler from '../DcClientHandler';
 import CommandType from './CommandType';
 
-export default class Command {
+export default class Command<TMeta extends TCommandMeta = TCommandMeta> {
   private readonly _instance: DcClientHandler;
   public readonly name: string;
-  public readonly meta: Omit<TCommandMeta, 'name'>;
+  public readonly meta: Omit<TMeta, 'name'>;
 
   constructor(
     instance: DcClientHandler,
     name: string,
-    meta: Omit<TCommandMeta, 'name'>
+    meta: Omit<TMeta, 'name'>
   ) {
     this._instance = instance;
     this.name = name;
     this.meta = meta;
   }
+}
+
+export function isLegacy(
+  command: Command
+): command is Command<TCommandMetaLegacy> {
+  return command.meta.type === CommandType.LEGACY;
+}
+
+export function isSlash(
+  command: Command
+): command is Command<TCommandMetaSlash> {
+  return command.meta.type === CommandType.SLASH;
+}
+
+export function isBoth(command: Command): command is Command<TCommandMetaBoth> {
+  return command.meta.type === CommandType.BOTH;
 }
 
 type TCommandMetaBase = {
@@ -35,22 +52,37 @@ type TCommandMetaBase = {
   guildOnly?: boolean;
   adminsOnly?: boolean;
 
-  reply?: boolean;
   sendTyping?: boolean;
 
   onInit?: (data: TOnInitData) => Promise<void>;
-  callback: (usage: TCommandUsage) => Promise<void>;
 };
 
 export type TCommandMetaSlash = {
   type: CommandType.SLASH;
   options?: ApplicationCommandOption[];
+  autocomplete?: (
+    command: Command,
+    argument: string,
+    interaction: AutocompleteInteraction
+  ) => Promise<string[]>;
+  callback: (usage: TCommandUsageSlash) => TCommandMetaSlashCallbackReturnType;
 } & TCommandMetaBase;
+
+export type TCommandMetaSlashCallbackReturnType = Promise<
+  | Parameters<CommandInteraction['reply']>[0]
+  | Parameters<CommandInteraction['editReply']>[0]
+>;
 
 export type TCommandMetaLegacy = {
   type: CommandType.LEGACY;
   delete?: boolean;
+  reply?: boolean;
+  callback: (usage: TCommandUsageSlash) => TCommandMetaLegacyCallbackReturnType;
 } & TCommandMetaBase;
+
+export type TCommandMetaLegacyCallbackReturnType = Promise<
+  Parameters<Message['reply']>[0] | Parameters<Message['channel']['send']>[0]
+>;
 
 export type TCommandMetaBoth = {
   type: CommandType.BOTH;
@@ -62,11 +94,9 @@ export type TCommandMeta =
   | TCommandMetaLegacy
   | TCommandMetaBoth;
 
-type TCommandUsage = {
+type TCommandUsageBase = {
   client: Client;
   instance: DcClientHandler;
-  message?: Message;
-  interaction?: CommandInteraction | null;
   args: string[];
   text: string;
   guild?: Guild;
@@ -74,6 +104,14 @@ type TCommandUsage = {
   user: User;
   channel?: TextChannel;
 };
+
+type TCommandUsageSlash = {
+  interaction: CommandInteraction;
+} & TCommandUsageBase;
+
+type TCommandUsageLegacy = {
+  message: Message;
+} & TCommandUsageBase;
 
 type TOnInitData = {
   client: Client;

@@ -1,39 +1,44 @@
+import Command, {
+  TCommandMetaLegacy,
+  isBoth,
+  isLegacy,
+} from '../../command-handler/Command';
 import { TEventMeta } from '../Event';
 
 export default {
   type: 'messageCreate',
   name: 'legacy-command',
-  callback: async ({ instance, args: [message] }) => {
+  shouldExecuteCallback: (message) => !message.author.bot,
+  callback: async (instance, message) => {
     const { commandsHandler } = instance;
-    if (commandsHandler == null) return;
-    const { commandPrefix: prefix } = commandsHandler.config;
+    if (commandsHandler == null) {
+      return;
+    }
 
     // Check whether message starts with prefix
+    const { commandPrefix: prefix } = commandsHandler.config;
     if (prefix && !message.content.startsWith(prefix)) {
       return;
     }
 
     const args = message.content.split(/\s+/);
 
-    // Get Command name
+    // Get & format Command name
     let commandName = args.shift();
     if (commandName == null) {
       return;
     }
-
-    // Format Command name
-    if (commandName != null) {
-      commandName = commandName.toLowerCase();
-      if (prefix != null) {
-        commandName = commandName.substring(prefix.length);
-      }
+    commandName = commandName.toLowerCase();
+    if (prefix != null) {
+      commandName = commandName.substring(prefix.length);
     }
 
     // Get Command
-    const command = commandsHandler.commands.get(commandName);
-    if (command == null) {
+    const _command = commandsHandler.commands.get(commandName);
+    if (_command == null || !isBoth(_command) || !isLegacy(_command)) {
       return;
     }
+    const command = _command as Command<TCommandMetaLegacy>;
     const { reply, sendTyping } = command.meta;
 
     if (sendTyping) {
@@ -41,12 +46,7 @@ export default {
     }
 
     // Run Command
-    const response = await commandsHandler.runCommand(
-      command,
-      args,
-      message,
-      null
-    );
+    const response = await commandsHandler.runCommand(command, args, message);
     if (response == null) {
       return;
     }

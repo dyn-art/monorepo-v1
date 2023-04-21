@@ -1,13 +1,14 @@
-import {
-  ApplicationCommand,
-  CommandInteraction,
-  Message,
-  MessagePayload,
-  MessageReplyOptions,
-} from 'discord.js';
+import { ApplicationCommand, CommandInteraction, Message } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
 import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
-import Command, { TCommandMeta, TCommandMetaBoth } from './Command';
+import Command, {
+  TCommandMeta,
+  TCommandMetaBoth,
+  TCommandMetaLegacy,
+  TCommandMetaLegacyCallbackReturnType,
+  TCommandMetaSlash,
+  TCommandMetaSlashCallbackReturnType,
+} from './Command';
 import CommandType from './CommandType';
 import SlashCommandHelper from './SlashCommandHelper';
 
@@ -170,14 +171,25 @@ export default class CommandsHandler {
   }
 
   public async runCommand(
-    command: Command,
+    command: Command<TCommandMetaLegacy>,
     args: string[],
-    message: Message | null,
-    interaction: CommandInteraction | null
-  ): Promise<string | MessagePayload | MessageReplyOptions | null> {
+    message: Message
+  ): Promise<TCommandMetaLegacyCallbackReturnType>;
+  public async runCommand(
+    command: Command<TCommandMetaSlash>,
+    args: string[],
+    interaction: CommandInteraction
+  ): Promise<TCommandMetaSlashCallbackReturnType>;
+  public async runCommand(
+    command: Command<TCommandMetaLegacy | TCommandMetaSlash>,
+    args: string[],
+    messageOrInteraction?: Message | CommandInteraction
+  ): Promise<
+    TCommandMetaLegacyCallbackReturnType | TCommandMetaSlashCallbackReturnType
+  > {
     // TODO: run commands
 
-    return null;
+    return null as any;
   }
 }
 
