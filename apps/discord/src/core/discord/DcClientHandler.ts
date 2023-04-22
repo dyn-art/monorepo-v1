@@ -35,9 +35,7 @@ export default class DcClientHandler {
     if (commandsConfig != null) {
       this.initCommands(commandsConfig);
     }
-    if (eventsConfig) {
-      this.initEvents(eventsConfig);
-    }
+    this.initEvents(eventsConfig);
   }
 
   public get client() {
@@ -79,7 +77,9 @@ export default class DcClientHandler {
     });
   }
 
-  private async initEvents(config: Required<TDcClientHandlerConfig['events']>) {
+  private async initEvents(
+    config: Required<TDcClientHandlerConfig['events']> | null
+  ) {
     this._eventsHandler = new EventsHandler(this, {
       eventsDir: config?.eventsDir,
       fileSuffixes: config?.fileSuffixes,

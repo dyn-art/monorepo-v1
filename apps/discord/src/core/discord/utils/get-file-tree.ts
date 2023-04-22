@@ -1,10 +1,16 @@
 import fs, { Dirent } from 'fs';
 
+// TODO: find cache busting mechanism that works with NodeJs
+async function importFresh(filePath: string) {
+  const cacheBustingModulePath = `${filePath}`;
+  return (await import(cacheBustingModulePath)).default;
+}
+
 export async function readFile<T = unknown>(
   filePath: string
 ): Promise<T | null> {
   try {
-    return await import(filePath);
+    return await importFresh(filePath);
   } catch (error) {
     console.error(`Failed to resolve file at path: '${filePath}'`, error);
   }

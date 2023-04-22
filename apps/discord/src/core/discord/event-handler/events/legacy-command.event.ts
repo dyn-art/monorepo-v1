@@ -3,7 +3,6 @@ import { TEventMeta } from '../Event';
 
 export default {
   type: 'messageCreate',
-  name: 'legacy-command',
   shouldExecuteCallback: (message) => !message.author.bot,
   callback: async (instance, message) => {
     const { commandsHandler } = instance;

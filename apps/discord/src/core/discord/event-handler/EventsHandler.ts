@@ -56,6 +56,10 @@ export default class EventsHandler {
 
     // Register Events
     this.registerEvents(Array.from(this._events.values()));
+
+    console.info('Registered Events', {
+      events: Array.from(this._events.values()).map((event) => event.name),
+    });
   }
 
   private createEvent(fileName: string, meta: TEventMeta) {
@@ -72,6 +76,7 @@ export default class EventsHandler {
           // @ts-ignore (Expression produces a union type that is too complex to represent.)
           event.meta.shouldExecuteCallback(...args)
         ) {
+          // @ts-ignore (Expression produces a union type that is too complex to represent.)
           event.meta.callback(this._instance, ...args);
         }
       });

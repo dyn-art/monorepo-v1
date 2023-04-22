@@ -83,7 +83,12 @@ export default class CommandsHandler {
 
     console.info('Registered Commands', {
       commands: Array.from(this._commands.values()).map(
-        (command) => command.name
+        (command) =>
+          `${
+            command.meta.type === CommandType.SLASH
+              ? '/'
+              : this.config.commandPrefix ?? ''
+          }${command.name}`
       ),
     });
   }

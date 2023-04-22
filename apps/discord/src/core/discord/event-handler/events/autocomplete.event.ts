@@ -1,14 +1,10 @@
-import {
-  AutocompleteInteraction,
-  Interaction,
-  InteractionType,
-} from 'discord.js';
+import { AutocompleteInteraction, InteractionType } from 'discord.js';
 import { Command, TCommandMetaSlash, isSlash } from '../../command-handler';
 import { TEventMeta } from '../Event';
 
 export default {
   type: 'interactionCreate',
-  shouldExecuteCallback: (interaction: Interaction) =>
+  shouldExecuteCallback: (interaction) =>
     interaction.type === InteractionType.ApplicationCommandAutocomplete,
   callback: async (instance, interaction: AutocompleteInteraction) => {
     const { commandsHandler } = instance;

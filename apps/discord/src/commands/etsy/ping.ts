@@ -3,6 +3,9 @@ import CommandType from '../../core/discord/command-handler/CommandType';
 
 export default {
   type: CommandType.LEGACY,
+  // name: 'jeff',
+  reply: true,
+  sendTyping: true,
   callback: async ({ message, args }) => {
     console.log(args);
     return {
