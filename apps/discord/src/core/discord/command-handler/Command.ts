@@ -1,4 +1,5 @@
 import {
+  APIInteractionGuildMember,
   ApplicationCommandOption,
   AutocompleteInteraction,
   Client,
@@ -6,14 +7,14 @@ import {
   Guild,
   GuildMember,
   Message,
-  TextChannel,
+  TextBasedChannel,
   User,
 } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
 import CommandType from './CommandType';
 
 export default class Command<TMeta extends TCommandMeta = TCommandMeta> {
-  private readonly _instance: DcClientHandler;
+  public readonly instance: DcClientHandler;
   public readonly name: string;
   public readonly meta: Omit<TMeta, 'name'>;
 
@@ -22,7 +23,7 @@ export default class Command<TMeta extends TCommandMeta = TCommandMeta> {
     name: string,
     meta: Omit<TMeta, 'name'>
   ) {
-    this._instance = instance;
+    this.instance = instance;
     this.name = name;
     this.meta = meta;
   }
@@ -38,10 +39,6 @@ export function isSlash(
   command: Command
 ): command is Command<TCommandMetaSlash> {
   return command.meta.type === CommandType.SLASH;
-}
-
-export function isBoth(command: Command): command is Command<TCommandMetaBoth> {
-  return command.meta.type === CommandType.BOTH;
 }
 
 type TCommandMetaBase = {
@@ -77,41 +74,37 @@ export type TCommandMetaLegacy = {
   type: CommandType.LEGACY;
   delete?: boolean;
   reply?: boolean;
-  callback: (usage: TCommandUsageSlash) => TCommandMetaLegacyCallbackReturnType;
+  callback: (
+    usage: TCommandUsageLegacy
+  ) => TCommandMetaLegacyCallbackReturnType;
 } & TCommandMetaBase;
 
 export type TCommandMetaLegacyCallbackReturnType = Promise<
   Parameters<Message['reply']>[0] | Parameters<Message['channel']['send']>[0]
 >;
 
-export type TCommandMetaBoth = {
-  type: CommandType.BOTH;
-} & Omit<TCommandMetaLegacy, 'type'> &
-  Omit<TCommandMetaSlash, 'type'>;
+export type TCommandMeta = TCommandMetaSlash | TCommandMetaLegacy;
 
-export type TCommandMeta =
-  | TCommandMetaSlash
-  | TCommandMetaLegacy
-  | TCommandMetaBoth;
-
-type TCommandUsageBase = {
+export type TCommandUsageBase = {
   client: Client;
   instance: DcClientHandler;
   args: string[];
   text: string;
-  guild?: Guild;
-  member?: GuildMember;
+  guild: Guild | null;
+  member: GuildMember | APIInteractionGuildMember | null;
   user: User;
-  channel?: TextChannel;
+  channel: TextBasedChannel | null;
 };
 
-type TCommandUsageSlash = {
+export type TCommandUsageSlash = {
   interaction: CommandInteraction;
 } & TCommandUsageBase;
 
-type TCommandUsageLegacy = {
+export type TCommandUsageLegacy = {
   message: Message;
 } & TCommandUsageBase;
+
+export type TCommandUsage = TCommandUsageSlash | TCommandUsageLegacy;
 
 type TOnInitData = {
   client: Client;

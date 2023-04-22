@@ -58,18 +58,18 @@ export default class EventsHandler {
     this.registerEvents(Array.from(this._events.values()));
   }
 
-  private createEvent(fileName, meta) {
+  private createEvent(fileName: string, meta: TEventMeta) {
     const name = meta.name ?? fileName;
+    // @ts-ignore (Expression produces a union type that is too complex to represent.)
     return new Event(this._instance, name, meta);
   }
 
   private registerEvents(events: Event[]) {
     for (const event of events) {
-      // @ts-ignore
       this._instance.client.on(event.meta.type, async (...args: any[]) => {
         if (
           event.meta.shouldExecuteCallback == null ||
-          // @ts-ignore
+          // @ts-ignore (Expression produces a union type that is too complex to represent.)
           event.meta.shouldExecuteCallback(...args)
         ) {
           event.meta.callback(this._instance, ...args);

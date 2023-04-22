@@ -1,18 +1,18 @@
 import { ClientEvents } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
 
-export default class Event {
-  private readonly _instance: DcClientHandler;
+export default class Event<TMeta extends TEventMeta = TEventMeta> {
+  public readonly instance: DcClientHandler;
 
   public name: string;
-  public readonly meta: Omit<TEventMeta, 'name'>;
+  public readonly meta: Omit<TMeta, 'name'>;
 
   constructor(
     instance: DcClientHandler,
     name: string,
-    meta: Omit<TEventMeta, 'name'>
+    meta: Omit<TMeta, 'name'>
   ) {
-    this._instance = instance;
+    this.instance = instance;
     this.name = name;
     this.meta = meta;
   }

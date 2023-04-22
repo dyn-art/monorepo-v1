@@ -3,16 +3,16 @@ import DcClientHandler from '../DcClientHandler';
 import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import Command, {
   TCommandMeta,
-  TCommandMetaBoth,
   TCommandMetaLegacy,
   TCommandMetaLegacyCallbackReturnType,
   TCommandMetaSlash,
   TCommandMetaSlashCallbackReturnType,
+  TCommandUsage,
+  TCommandUsageBase,
+  isSlash,
 } from './Command';
 import CommandType from './CommandType';
 import SlashCommandHelper from './SlashCommandHelper';
-
-// TODO https://github.dev/AlexzanderFlores/WOKCommands-v2
 
 export default class CommandsHandler {
   private readonly _instance: DcClientHandler;
@@ -83,13 +83,10 @@ export default class CommandsHandler {
   }
 
   private async registerSlashCommand(command: Command) {
-    if (
-      command.meta.type !== CommandType.SLASH &&
-      command.meta.type !== CommandType.BOTH
-    ) {
+    if (!isSlash(command)) {
       return;
     }
-    const meta = command.meta as TCommandMetaBoth;
+    const { meta } = command;
 
     const options = meta.options ?? [];
 
@@ -156,10 +153,7 @@ export default class CommandsHandler {
       .toLowerCase()
       .replace(/\W/g, '-') // Replace none letters, digits, and underscores with '-' (https://www.w3schools.com/jsref/jsref_regexp_wordchar.asp)
       .replace(/^[-_]+|[-_]+$/g, ''); // Replace starting and ending '-' or '_'
-    if (
-      (meta.type === CommandType.SLASH || meta.type === CommandType.BOTH) &&
-      name.length > 32
-    ) {
+    if (meta.type === CommandType.SLASH && name.length > 32) {
       console.error(
         `Slash command names must be no more than 32 characters. The provided command name '${name}' is ${name.length} characters long.`
       );
@@ -183,13 +177,32 @@ export default class CommandsHandler {
   public async runCommand(
     command: Command<TCommandMetaLegacy | TCommandMetaSlash>,
     args: string[],
-    messageOrInteraction?: Message | CommandInteraction
+    messageOrInteraction: Message | CommandInteraction
   ): Promise<
     TCommandMetaLegacyCallbackReturnType | TCommandMetaSlashCallbackReturnType
   > {
-    // TODO: run commands
+    const usageBase: TCommandUsageBase = {
+      client: command.instance.client,
+      instance: command.instance,
+      args,
+      text: args.join(' '),
+      guild: messageOrInteraction.guild,
+      member: messageOrInteraction.member,
+      user:
+        messageOrInteraction instanceof Message
+          ? messageOrInteraction.author
+          : messageOrInteraction.user,
+      channel: messageOrInteraction.channel,
+    };
 
-    return null as any;
+    let usage: TCommandUsage;
+    if (messageOrInteraction instanceof Message) {
+      usage = { ...usageBase, message: messageOrInteraction };
+    } else {
+      usage = { ...usageBase, interaction: messageOrInteraction };
+    }
+
+    return await command.meta.callback(usage as any);
   }
 }
 
