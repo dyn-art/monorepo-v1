@@ -62,13 +62,14 @@ export type TCommandMetaSlash = {
     argument: string,
     interaction: AutocompleteInteraction
   ) => Promise<string[]>;
-  callback: (usage: TCommandUsageSlash) => TCommandMetaSlashCallbackReturnType;
+  callback: (
+    usage: TCommandUsageSlash
+  ) => Promise<TCommandMetaSlashCallbackReturnType | void>;
 } & TCommandMetaBase;
 
-export type TCommandMetaSlashCallbackReturnType = Promise<
+export type TCommandMetaSlashCallbackReturnType =
   | Parameters<CommandInteraction['reply']>[0]
-  | Parameters<CommandInteraction['editReply']>[0]
->;
+  | Parameters<CommandInteraction['editReply']>[0];
 
 export type TCommandMetaLegacy = {
   type: CommandType.LEGACY;
@@ -76,12 +77,12 @@ export type TCommandMetaLegacy = {
   reply?: boolean;
   callback: (
     usage: TCommandUsageLegacy
-  ) => TCommandMetaLegacyCallbackReturnType;
+  ) => Promise<TCommandMetaLegacyCallbackReturnType | void>;
 } & TCommandMetaBase;
 
-export type TCommandMetaLegacyCallbackReturnType = Promise<
-  Parameters<Message['reply']>[0] | Parameters<Message['channel']['send']>[0]
->;
+export type TCommandMetaLegacyCallbackReturnType =
+  | Parameters<Message['reply']>[0]
+  | Parameters<Message['channel']['send']>[0];
 
 export type TCommandMeta = TCommandMetaSlash | TCommandMetaLegacy;
 

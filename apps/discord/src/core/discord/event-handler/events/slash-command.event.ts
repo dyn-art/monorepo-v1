@@ -1,9 +1,5 @@
 import { CommandInteraction, InteractionType } from 'discord.js';
-import Command, {
-  TCommandMetaSlash,
-  isBoth,
-  isSlash,
-} from '../../command-handler/Command';
+import { Command, TCommandMetaSlash, isSlash } from '../../command-handler';
 import { TEventMeta } from '../Event';
 
 export default {
@@ -23,7 +19,7 @@ export default {
 
     // Get Command
     const _command = commandsHandler.commands.get(interaction.commandName);
-    if (_command == null || !isBoth(_command) || !isSlash(_command)) {
+    if (_command == null || !isSlash(_command)) {
       return;
     }
     const command = _command as Command<TCommandMetaSlash>;

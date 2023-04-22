@@ -1,8 +1,4 @@
-import Command, {
-  TCommandMetaLegacy,
-  isBoth,
-  isLegacy,
-} from '../../command-handler/Command';
+import { Command, TCommandMetaLegacy, isLegacy } from '../../command-handler';
 import { TEventMeta } from '../Event';
 
 export default {
@@ -35,7 +31,7 @@ export default {
 
     // Get Command
     const _command = commandsHandler.commands.get(commandName);
-    if (_command == null || !isBoth(_command) || !isLegacy(_command)) {
+    if (_command == null || !isLegacy(_command)) {
       return;
     }
     const command = _command as Command<TCommandMetaLegacy>;

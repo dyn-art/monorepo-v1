@@ -1,6 +1,6 @@
 import { Client } from 'discord.js';
-import CommandsHandler from './command-handler/CommandsHandler';
-import EventsHandler from './event-handler/EventsHandler';
+import { CommandsHandler } from './command-handler';
+import { EventsHandler } from './event-handler';
 import { defineConfig } from './utils/define-config';
 
 export default class DcClientHandler {

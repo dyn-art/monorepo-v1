@@ -80,6 +80,12 @@ export default class CommandsHandler {
         this.registerSlashCommand(command)
       )
     );
+
+    console.info('Registered Commands', {
+      commands: Array.from(this._commands.values()).map(
+        (command) => command.name
+      ),
+    });
   }
 
   private async registerSlashCommand(command: Command) {
@@ -129,6 +135,7 @@ export default class CommandsHandler {
 
   private async removeUnusedSlashCommands(usedCommandNames: Set<string>) {
     const globalToRemove = await this.getUnusedSlashCommands(usedCommandNames);
+    if (globalToRemove.length <= 0) return;
 
     // Remove globally not used SlashCommands from the DiscordAPI
     for (const command of globalToRemove) {
@@ -145,19 +152,25 @@ export default class CommandsHandler {
         this._slashCommandHelper.delete(command.name, guildId);
       }
     }
+
+    console.info('Removed unused commands', {
+      commands: globalToRemove.map((command) => command.name),
+    });
   }
 
   private createCommand(fileName: string, meta: TCommandMeta): Command | null {
     // Parse Command name
-    const name = (meta.name ?? fileName)
-      .toLowerCase()
-      .replace(/\W/g, '-') // Replace none letters, digits, and underscores with '-' (https://www.w3schools.com/jsref/jsref_regexp_wordchar.asp)
-      .replace(/^[-_]+|[-_]+$/g, ''); // Replace starting and ending '-' or '_'
-    if (meta.type === CommandType.SLASH && name.length > 32) {
-      console.error(
-        `Slash command names must be no more than 32 characters. The provided command name '${name}' is ${name.length} characters long.`
-      );
-      return null;
+    let name = (meta.name ?? fileName).toLowerCase();
+    if (meta.type === CommandType.SLASH) {
+      name = name
+        .replace(/\W/g, '-') // Replace none letters, digits, and underscores with '-' (https://www.w3schools.com/jsref/jsref_regexp_wordchar.asp)
+        .replace(/^[-_]+|[-_]+$/g, ''); // Replace starting and ending '-' or '_'
+      if (name.length > 32) {
+        console.error(
+          `Slash command names must be no more than 32 characters. The provided command name '${name}' is ${name.length} characters long.`
+        );
+        return null;
+      }
     }
 
     // Create Command instance
@@ -179,7 +192,9 @@ export default class CommandsHandler {
     args: string[],
     messageOrInteraction: Message | CommandInteraction
   ): Promise<
-    TCommandMetaLegacyCallbackReturnType | TCommandMetaSlashCallbackReturnType
+    | TCommandMetaLegacyCallbackReturnType
+    | TCommandMetaSlashCallbackReturnType
+    | null
   > {
     const usageBase: TCommandUsageBase = {
       client: command.instance.client,
@@ -202,7 +217,8 @@ export default class CommandsHandler {
       usage = { ...usageBase, interaction: messageOrInteraction };
     }
 
-    return await command.meta.callback(usage as any);
+    const response = await command.meta.callback(usage as any);
+    return response ?? null;
   }
 }
 

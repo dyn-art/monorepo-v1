@@ -1,10 +1,16 @@
-import { TCommandMeta } from '../core/discord/command-handler/Command';
-import CommandType from '../core/discord/command-handler/CommandType';
+import { CommandType, TCommandMeta } from '../core';
 
 export default {
-  type: CommandType.BOTH,
-  callback: ({ message, args }) => {
+  type: CommandType.SLASH,
+  callback: async ({ interaction, args }) => {
     console.log(args);
-    message?.reply('pong');
+
+    // interaction.reply({
+    //   content: 'Pong',
+    // });
+
+    return {
+      content: 'Pong',
+    };
   },
 } as TCommandMeta;
