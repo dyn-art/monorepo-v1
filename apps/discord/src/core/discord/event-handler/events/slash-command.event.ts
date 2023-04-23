@@ -1,5 +1,10 @@
 import { CommandInteraction, InteractionType } from 'discord.js';
-import { Command, TCommandMetaSlash, isSlash } from '../../command-handler';
+import {
+  Command,
+  TCommandArgument,
+  TCommandMetaSlash,
+  isSlash,
+} from '../../command-handler';
 import { TEventMeta } from '../Event';
 
 export default {
@@ -13,9 +18,12 @@ export default {
     }
 
     // Get arguments
-    const args = interaction.options.data.map(({ value }) => {
-      return String(value);
-    });
+    const args: TCommandArgument[] = interaction.options.data.map(
+      ({ value, name }) => ({
+        value,
+        name,
+      })
+    );
 
     // Get Command
     const _command = commandsHandler.commands.get(interaction.commandName);
@@ -26,7 +34,9 @@ export default {
     const { sendTyping } = command.meta;
 
     if (sendTyping) {
-      interaction.deferReply();
+      await interaction.deferReply(
+        typeof sendTyping === 'object' ? sendTyping : {}
+      );
     }
 
     // Run Command

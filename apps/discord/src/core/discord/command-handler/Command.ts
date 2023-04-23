@@ -6,6 +6,7 @@ import {
   CommandInteraction,
   Guild,
   GuildMember,
+  InteractionDeferReplyOptions,
   Message,
   TextBasedChannel,
   User,
@@ -57,6 +58,7 @@ type TCommandMetaBase = {
 export type TCommandMetaSlash = {
   type: CommandType.SLASH;
   options?: ApplicationCommandOption[];
+  sendTyping?: InteractionDeferReplyOptions | boolean;
   autocomplete?: (
     command: Command,
     argument: string,
@@ -65,7 +67,7 @@ export type TCommandMetaSlash = {
   callback: (
     usage: TCommandUsageSlash
   ) => Promise<TCommandMetaSlashCallbackReturnType | void>;
-} & TCommandMetaBase;
+} & Omit<TCommandMetaBase, 'sendTyping'>;
 
 export type TCommandMetaSlashCallbackReturnType =
   | Parameters<CommandInteraction['reply']>[0]
@@ -97,9 +99,16 @@ export type TCommandUsageBase = {
   channel: TextBasedChannel | null;
 };
 
+export type TCommandArgument = {
+  name: string;
+  value?: string | number | boolean;
+  subArgs?: TCommandArgument[]; // --v 1.0 --ar 16:5 --tags jeff,billy,willy --quality 8
+};
+
 export type TCommandUsageSlash = {
   interaction: CommandInteraction;
-} & TCommandUsageBase;
+  args: string[] | TCommandArgument[];
+} & Omit<TCommandUsageBase, 'args'>;
 
 export type TCommandUsageLegacy = {
   message: Message;

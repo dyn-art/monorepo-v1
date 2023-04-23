@@ -1,4 +1,4 @@
-import { TCommandMeta } from '../../core/discord/command-handler/Command';
+import { TCommandMeta } from '../../core';
 import CommandType from '../../core/discord/command-handler/CommandType';
 
 export default {
@@ -6,8 +6,7 @@ export default {
   // name: 'jeff',
   reply: true,
   sendTyping: true,
-  callback: async ({ message, args }) => {
-    console.log(args);
+  callback: async () => {
     return {
       content: 'Pong',
     };

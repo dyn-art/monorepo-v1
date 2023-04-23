@@ -2,6 +2,7 @@ import { ApplicationCommand, CommandInteraction, Message } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
 import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import Command, {
+  TCommandArgument,
   TCommandMeta,
   TCommandMetaLegacy,
   TCommandMetaLegacyCallbackReturnType,
@@ -184,17 +185,17 @@ export default class CommandsHandler {
 
   public async runCommand(
     command: Command<TCommandMetaLegacy>,
-    args: string[],
+    args: string[] | TCommandArgument[],
     message: Message
   ): Promise<TCommandMetaLegacyCallbackReturnType>;
   public async runCommand(
     command: Command<TCommandMetaSlash>,
-    args: string[],
+    args: string[] | TCommandArgument[],
     interaction: CommandInteraction
   ): Promise<TCommandMetaSlashCallbackReturnType>;
   public async runCommand(
     command: Command<TCommandMetaLegacy | TCommandMetaSlash>,
-    args: string[],
+    args: string[] | TCommandArgument[],
     messageOrInteraction: Message | CommandInteraction
   ): Promise<
     | TCommandMetaLegacyCallbackReturnType
@@ -204,7 +205,7 @@ export default class CommandsHandler {
     const usageBase: TCommandUsageBase = {
       client: command.instance.client,
       instance: command.instance,
-      args,
+      args: args as any,
       text: args.join(' '),
       guild: messageOrInteraction.guild,
       member: messageOrInteraction.member,
