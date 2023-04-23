@@ -1,10 +1,11 @@
 import { CommandInteraction, InteractionType } from 'discord.js';
 import {
   Command,
-  TCommandArgument,
+  TCommandArg,
   TCommandMetaSlash,
   isSlash,
 } from '../../command-handler';
+import { parseArgs } from '../../utils/parse-args';
 import { TEventMeta } from '../Event';
 
 export default {
@@ -18,20 +19,38 @@ export default {
     }
 
     // Get arguments
-    const args: TCommandArgument[] = interaction.options.data.map(
-      ({ value, name }) => ({
-        value,
-        name,
-      })
-    );
+    const args = interaction.options.data.map(({ value, name }) => ({
+      value: value ?? null,
+      name,
+    }));
 
-    // Get Command
+    // Get command
     const _command = commandsHandler.commands.get(interaction.commandName);
     if (_command == null || !isSlash(_command)) {
       return;
     }
     const command = _command as Command<TCommandMetaSlash>;
-    const { sendTyping } = command.meta;
+    const { sendTyping, argsOptions } = command.meta;
+
+    // Parse arguments
+    const parsedArgs: Map<string, TCommandArg> = new Map();
+    args.forEach((arg) => {
+      const argOptions = argsOptions?.find(
+        (option) => option.name === arg.name
+      );
+      let parsedSubArgs: Map<string, TCommandArg> | undefined = undefined;
+      if (argOptions?.subArgsOptions != null) {
+        const _parsedSubArgs = new Map<string, TCommandArg>();
+        parseArgs(
+          typeof arg.value === 'string' ? arg.value.split(' ') : [],
+          argOptions.subArgsOptions
+        ).forEach((value, key) => {
+          _parsedSubArgs.set(key, { value });
+        });
+        parsedSubArgs = _parsedSubArgs;
+      }
+      parsedArgs.set(arg.name, { value: arg.value, subArgs: parsedSubArgs });
+    });
 
     if (sendTyping) {
       await interaction.deferReply(
@@ -42,7 +61,8 @@ export default {
     // Run Command
     const response = await commandsHandler.runCommand(
       command,
-      args,
+      parsedArgs,
+      args.join(' '),
       interaction
     );
     if (response == null) {

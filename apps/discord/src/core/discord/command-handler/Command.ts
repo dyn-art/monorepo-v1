@@ -12,6 +12,7 @@ import {
   User,
 } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
+import { TParseArgsConfig } from '../utils/parse-args';
 import CommandType from './CommandType';
 
 export default class Command<TMeta extends TCommandMeta = TCommandMeta> {
@@ -57,7 +58,9 @@ type TCommandMetaBase = {
 
 export type TCommandMetaSlash = {
   type: CommandType.SLASH;
-  options?: ApplicationCommandOption[];
+  argsOptions?: (ApplicationCommandOption & {
+    subArgsOptions: TParseArgsConfig;
+  })[];
   sendTyping?: InteractionDeferReplyOptions | boolean;
   autocomplete?: (
     command: Command,
@@ -75,6 +78,7 @@ export type TCommandMetaSlashCallbackReturnType =
 
 export type TCommandMetaLegacy = {
   type: CommandType.LEGACY;
+  argsOptions?: TParseArgsConfig;
   delete?: boolean;
   reply?: boolean;
   callback: (
@@ -91,7 +95,7 @@ export type TCommandMeta = TCommandMetaSlash | TCommandMetaLegacy;
 export type TCommandUsageBase = {
   client: Client;
   instance: DcClientHandler;
-  args: string[];
+  args: string[] | Map<string, TCommandArg>;
   text: string;
   guild: Guild | null;
   member: GuildMember | APIInteractionGuildMember | null;
@@ -99,16 +103,14 @@ export type TCommandUsageBase = {
   channel: TextBasedChannel | null;
 };
 
-export type TCommandArgument = {
-  name: string;
-  value?: string | number | boolean;
-  subArgs?: TCommandArgument[]; // --v 1.0 --ar 16:5 --tags jeff,billy,willy --quality 8
+export type TCommandArg = {
+  value: string | number | boolean | string[] | number[] | boolean[] | null;
+  subArgs?: Map<string, TCommandArg>;
 };
 
 export type TCommandUsageSlash = {
   interaction: CommandInteraction;
-  args: string[] | TCommandArgument[];
-} & Omit<TCommandUsageBase, 'args'>;
+} & TCommandUsageBase;
 
 export type TCommandUsageLegacy = {
   message: Message;

@@ -1,10 +1,14 @@
 import { CommandType, TCommandMeta } from '../core';
 
 export default {
-  type: CommandType.SLASH,
-  callback: async () => {
+  type: CommandType.LEGACY,
+  argsOptions: { options: [{ type: 'boolean', name: 'evil', short: 'e' }] },
+  callback: async ({ args }) => {
+    console.log(args);
+
     return {
-      content: 'Pong',
+      // @ts-ignore
+      content: args.get('evil') ? 'Evil Pong' : 'Pong',
     };
   },
 } as TCommandMeta;

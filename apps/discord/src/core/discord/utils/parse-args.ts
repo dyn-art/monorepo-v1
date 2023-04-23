@@ -1,106 +1,165 @@
+const DEFAULT_ARGUMENT_IDENTIFIER_CHAR = '-';
+const DEFAULT_SPLIT_BY = ' ';
+const DEFAULT_ARRAY_SPLIT_BY = ',';
+
 export function parseArgs(potentialArgs: string[], config: TParseArgsConfig) {
-  const { argumentIdentifierChar = '-', splitBy = ' ' } = config;
+  const {
+    argumentIdentifierChar = DEFAULT_ARGUMENT_IDENTIFIER_CHAR,
+    splitBy = DEFAULT_SPLIT_BY,
+  } = config;
 
   // Extract relevant arguments
+  const relevantArgs = extractRelevantArguments(
+    potentialArgs,
+    config,
+    argumentIdentifierChar
+  );
+
+  // Parse the relevant arguments
+  return parseRelevantArguments(relevantArgs, config, splitBy);
+}
+
+// Helper function to extract relevant arguments from potentialArgs
+function extractRelevantArguments(
+  potentialArgs: string[],
+  config: TParseArgsConfig,
+  argumentIdentifierChar: string
+) {
   const relevantArgs: Map<
     string,
-    { values: string[]; option: TParseArgsOption }
+    { values: string[]; options: TParseArgsOptions }
   > = new Map();
   let activeArgumentKey: string | null = null;
-  for (let i = 0; i < potentialArgs.length; i++) {
-    const argOption = potentialArgs[i].startsWith(argumentIdentifierChar)
+
+  // Loop through potentialArgs to identify relevant arguments by 'argumentIdentifierChar'
+  for (const potentialArg of potentialArgs) {
+    // Check if the current argument matches any of the options in the config
+    const argsOptions = potentialArg.startsWith(argumentIdentifierChar)
       ? config.options.find(
-          (argOption) =>
-            `${argumentIdentifierChar}${argumentIdentifierChar}${argOption.name}` ===
-              potentialArgs[i] ||
-            `${argumentIdentifierChar}${argOption.short}` === potentialArgs[i]
+          (argOptions) =>
+            `${argumentIdentifierChar}${argumentIdentifierChar}${argOptions.name}` ===
+              potentialArg ||
+            `${argumentIdentifierChar}${argOptions.short}` === potentialArg
         )
       : null;
-    if (argOption != null) {
-      activeArgumentKey = argOption.name;
+
+    // If the current argument matches an option, update the activeArgumentKey
+    // and store the option in relevantArgs
+    if (argsOptions != null) {
+      activeArgumentKey = argsOptions.name;
       if (!relevantArgs.has(activeArgumentKey)) {
         relevantArgs.set(activeArgumentKey, {
           values: [],
-          option: argOption,
+          options: argsOptions,
         });
       }
-    } else if (
-      activeArgumentKey != null &&
-      relevantArgs.has(activeArgumentKey)
-    ) {
-      relevantArgs.get(activeArgumentKey)?.values.push(potentialArgs[i]);
+    }
+    // If the current argument is a value for the active option, add it to relevantArgs
+    else if (activeArgumentKey != null && relevantArgs.has(activeArgumentKey)) {
+      relevantArgs.get(activeArgumentKey)?.values.push(potentialArg);
     }
   }
 
-  // Parse relevant arguments
-  const result: Record<
-    string,
-    string | number | boolean | string[] | number[] | boolean[] | null
-  > = {};
-  for (const searchedArgOption of config.options) {
-    const relevantArg = relevantArgs.get(searchedArgOption.name);
+  return relevantArgs;
+}
+
+// Helper function to parse relevant arguments and generate the result
+function parseRelevantArguments(
+  relevantArgs: Map<string, { values: string[]; options: TParseArgsOptions }>,
+  config: TParseArgsConfig,
+  splitBy: string
+) {
+  const result: TParsedArgs = new Map();
+
+  // Loop through the config options and parse the relevant argument values
+  for (const searchedArgOptions of config.options) {
+    const relevantArg = relevantArgs.get(searchedArgOptions.name);
+
+    // If the relevant argument is not found, set value to null
+    // (exception with boolean as it can be assumed that if it is not set it is false)
     if (relevantArg == null) {
-      result[searchedArgOption.name] =
-        searchedArgOption.type === 'boolean' ? false : null;
+      result.set(
+        searchedArgOptions.name,
+        searchedArgOptions.type === 'boolean' ? false : null
+      );
       continue;
     }
-    const option = relevantArg.option;
+
+    const option = relevantArg.options;
     const values = relevantArg.values;
 
+    // Try to parse the values based on the option type
     try {
       switch (option.type) {
+        // Parse string
         case 'string':
           if (option.isArray) {
             const combined = values.join(splitBy);
-            result[option.name] = combined.split(
-              typeof option.isArray !== 'boolean' ? option.isArray.splitBy : ','
+            result.set(
+              option.name,
+              combined.split(
+                typeof option.isArray !== 'boolean'
+                  ? option.isArray.splitBy
+                  : DEFAULT_ARRAY_SPLIT_BY
+              )
             );
           } else if (values.length > 0) {
-            result[option.name] = values.join(splitBy);
+            result.set(option.name, values.join(splitBy));
           } else {
-            result[option.name] = null;
+            result.set(option.name, null);
           }
           break;
+
+        // Parse number
         case 'number':
           if (option.isArray) {
             const combined = values.join(splitBy);
-            result[option.name] = combined
-              .split(
-                typeof option.isArray !== 'boolean'
-                  ? option.isArray.splitBy
-                  : ','
-              )
-              .map((value) => {
-                const parsedValue = parseNumber(value);
-                if (parsedValue == null) throw Error();
-                return parsedValue;
-              });
+            result.set(
+              option.name,
+              combined
+                .split(
+                  typeof option.isArray !== 'boolean'
+                    ? option.isArray.splitBy
+                    : DEFAULT_ARRAY_SPLIT_BY
+                )
+                .map((value) => {
+                  const parsedValue = parseNumber(value);
+                  if (parsedValue == null) throw Error();
+                  return parsedValue;
+                })
+            );
           } else if (values.length > 0) {
-            result[option.name] = parseNumber(values[0]);
+            result.set(option.name, parseNumber(values[0]));
           } else {
-            result[option.name] = null;
+            result.set(option.name, null);
           }
           break;
+
+        // Parse boolean
         case 'boolean':
           if (option.isArray) {
             const combined = values.join(splitBy);
-            result[option.name] = combined
-              .split(
-                typeof option.isArray !== 'boolean'
-                  ? option.isArray.splitBy
-                  : ','
-              )
-              .map((value) => {
-                const parsedValue = parseBoolean(value);
-                if (parsedValue == null) throw Error();
-                return parsedValue;
-              });
+            result.set(
+              option.name,
+              combined
+                .split(
+                  typeof option.isArray !== 'boolean'
+                    ? option.isArray.splitBy
+                    : DEFAULT_ARRAY_SPLIT_BY
+                )
+                .map((value) => {
+                  const parsedValue = parseBoolean(value);
+                  if (parsedValue == null) throw Error();
+                  return parsedValue;
+                })
+            );
           } else if (values.length > 0) {
-            result[option.name] = parseBoolean(values[0]);
+            result.set(option.name, parseBoolean(values[0]));
           } else {
-            result[option.name] = true;
+            result.set(option.name, true);
           }
           break;
+
         default:
         // do nothing
       }
@@ -108,13 +167,14 @@ export function parseArgs(potentialArgs: string[], config: TParseArgsConfig) {
       console.error(
         `Failed to parse argument '${option.name}' with value '${values}'!`
       );
-      result[searchedArgOption.name] = null;
+      result.set(searchedArgOptions.name, null);
     }
   }
 
   return result;
 }
 
+// Helper function to parse a boolean value from a string
 function parseBoolean(input: string): boolean | null {
   try {
     const match = input.match(/\b(true|false)\b/g);
@@ -125,6 +185,7 @@ function parseBoolean(input: string): boolean | null {
   return null;
 }
 
+// Helper function to parse a number value from a string
 function parseNumber(input: string): number | null {
   try {
     const parsed = input
@@ -138,7 +199,7 @@ function parseNumber(input: string): number | null {
   return null;
 }
 
-type TParseArgsOption = {
+type TParseArgsOptions = {
   type: 'string' | 'number' | 'boolean';
   name: string;
   short?: string;
@@ -151,7 +212,12 @@ type TParseArgsOption = {
 };
 
 export type TParseArgsConfig = {
-  options: TParseArgsOption[];
+  options: TParseArgsOptions[];
   argumentIdentifierChar?: string;
   splitBy?: string;
 };
+
+export type TParsedArgs = Map<
+  string,
+  string | number | boolean | string[] | number[] | boolean[] | null
+>;

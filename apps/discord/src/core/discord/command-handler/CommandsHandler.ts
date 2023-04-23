@@ -2,7 +2,7 @@ import { ApplicationCommand, CommandInteraction, Message } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
 import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import Command, {
-  TCommandArgument,
+  TCommandArg,
   TCommandMeta,
   TCommandMetaLegacy,
   TCommandMetaLegacyCallbackReturnType,
@@ -100,7 +100,7 @@ export default class CommandsHandler {
     }
     const { meta } = command;
 
-    const options = meta.options ?? [];
+    const options = meta.argsOptions ?? [];
 
     // If 'testOnly', register SlashCommand only to test servers
     if (meta.testOnly) {
@@ -185,17 +185,20 @@ export default class CommandsHandler {
 
   public async runCommand(
     command: Command<TCommandMetaLegacy>,
-    args: string[] | TCommandArgument[],
+    args: string[] | Map<string, TCommandArg>,
+    text: string,
     message: Message
   ): Promise<TCommandMetaLegacyCallbackReturnType>;
   public async runCommand(
     command: Command<TCommandMetaSlash>,
-    args: string[] | TCommandArgument[],
+    args: string[] | Map<string, TCommandArg>,
+    text: string,
     interaction: CommandInteraction
   ): Promise<TCommandMetaSlashCallbackReturnType>;
   public async runCommand(
     command: Command<TCommandMetaLegacy | TCommandMetaSlash>,
-    args: string[] | TCommandArgument[],
+    args: string[] | Map<string, TCommandArg>,
+    text: string,
     messageOrInteraction: Message | CommandInteraction
   ): Promise<
     | TCommandMetaLegacyCallbackReturnType
@@ -205,8 +208,8 @@ export default class CommandsHandler {
     const usageBase: TCommandUsageBase = {
       client: command.instance.client,
       instance: command.instance,
-      args: args as any,
-      text: args.join(' '),
+      args,
+      text,
       guild: messageOrInteraction.guild,
       member: messageOrInteraction.member,
       user:

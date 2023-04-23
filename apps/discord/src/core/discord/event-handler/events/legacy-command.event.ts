@@ -1,4 +1,10 @@
-import { Command, TCommandMetaLegacy, isLegacy } from '../../command-handler';
+import {
+  Command,
+  TCommandArg,
+  TCommandMetaLegacy,
+  isLegacy,
+} from '../../command-handler';
+import { parseArgs } from '../../utils/parse-args';
 import { TEventMeta } from '../Event';
 
 export default {
@@ -18,7 +24,7 @@ export default {
 
     const args = message.content.split(/\s+/);
 
-    // Get & format Command name
+    // Get & format command name
     let commandName = args.shift();
     if (commandName == null) {
       return;
@@ -28,20 +34,36 @@ export default {
       commandName = commandName.substring(prefix.length);
     }
 
-    // Get Command
+    // Get command
     const _command = commandsHandler.commands.get(commandName);
     if (_command == null || !isLegacy(_command)) {
       return;
     }
     const command = _command as Command<TCommandMetaLegacy>;
-    const { reply, sendTyping } = command.meta;
+    const { reply, sendTyping, argsOptions } = command.meta;
+
+    // Get arguments
+    let parsedArgs: string[] | Map<string, TCommandArg> = args;
+    if (argsOptions != null) {
+      parsedArgs = new Map<string, TCommandArg>();
+      const _parsedArgs = new Map<string, TCommandArg>();
+      parseArgs(args, argsOptions).forEach((value, key) =>
+        _parsedArgs.set(key, { value })
+      );
+      parsedArgs = _parsedArgs;
+    }
 
     if (sendTyping) {
       message.channel.sendTyping();
     }
 
-    // Run Command
-    const response = await commandsHandler.runCommand(command, args, message);
+    // Run command
+    const response = await commandsHandler.runCommand(
+      command,
+      parsedArgs,
+      message.content,
+      message
+    );
     if (response == null) {
       return;
     }

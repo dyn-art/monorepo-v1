@@ -5,7 +5,7 @@ export default {
   type: CommandType.SLASH,
   description: 'Creates an Etsy listing.',
   sendTyping: true,
-  options: [
+  argsOptions: [
     {
       name: 'name',
       description: 'Enter the name',
@@ -17,6 +17,9 @@ export default {
       description: 'Enter the description',
       type: ApplicationCommandOptionType.String,
       required: true,
+      subArgsOptions: {
+        options: [{ name: 'format', type: 'boolean', short: 'f' }],
+      },
     },
     {
       name: 'image',
