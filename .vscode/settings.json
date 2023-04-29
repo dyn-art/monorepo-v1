@@ -20,16 +20,15 @@
         "./apps/web",
         "./apps/order-worker",
         "./packages/ai",
+        "./packages/discord-handler",
         "./packages/etsy",
         "./packages/logger",
         "./packages/map",
         "./packages/music",
         "./packages/ads-renderer",
         "./packages/ads-renderer/ui",
-        "./packages/poster-renderer/ui",
         "./packages/poster-renderer",
-        "./packages/poster-renderer/ui",
-        "./packages/ui",
+        "./packages/utils",
     ],
     "cSpell.words": [
         "pda"

@@ -8,7 +8,7 @@ export default {
 
     return {
       // @ts-ignore
-      content: args.get('evil') ? 'Evil Pong' : 'Pong',
+      content: args.get('evil').value ? 'Evil Pong' : 'Pong',
     };
   },
 } as TCommandMeta;

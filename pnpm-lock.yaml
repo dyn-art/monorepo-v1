@@ -83,6 +83,9 @@ importers:
 
   apps/discord:
     dependencies:
+      '@pda/discord-handler':
+        specifier: workspace:^
+        version: link:../../packages/discord-handler
       discord.js:
         specifier: ^14.9.0
         version: 14.9.0
@@ -153,10 +156,10 @@ importers:
         version: 2.0.22
       ts-node:
         specifier: ^10.9.1
-        version: 10.9.1(@types/node@18.15.13)(typescript@5.0.4)
+        version: 10.9.1(@types/node@18.15.13)(typescript@4.9.5)
       typescript:
-        specifier: ^5.0.4
-        version: 5.0.4
+        specifier: ^4.9.5
+        version: 4.9.5
 
   packages/ads-renderer:
     dependencies:
@@ -281,6 +284,40 @@ importers:
       dotenv:
         specifier: ^16.0.3
         version: 16.0.3
+      eslint:
+        specifier: ^8.38.0
+        version: 8.38.0
+      eslint-config-pda-base:
+        specifier: workspace:*
+        version: link:../eslint-config-pda-base
+      jest:
+        specifier: ^29.5.0
+        version: 29.5.0(@types/node@18.15.13)(ts-node@10.9.1)
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
+
+  packages/discord-handler:
+    dependencies:
+      '@pda/utils':
+        specifier: workspace:*
+        version: link:../utils
+      discord.js:
+        specifier: ^14.9.0
+        version: 14.9.0
+    devDependencies:
+      '@pda/jest-presets':
+        specifier: workspace:*
+        version: link:../jest-presets
+      '@pda/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/jest':
+        specifier: ^29.5.1
+        version: 29.5.1
+      '@types/node':
+        specifier: ^18.15.13
+        version: 18.15.13
       eslint:
         specifier: ^8.38.0
         version: 8.38.0
@@ -547,26 +584,29 @@ importers:
 
   packages/tsconfig: {}
 
-  packages/ui:
+  packages/utils:
     devDependencies:
+      '@pda/jest-presets':
+        specifier: workspace:*
+        version: link:../jest-presets
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@types/react':
-        specifier: ^18.0.37
-        version: 18.0.37
-      '@types/react-dom':
-        specifier: ^18.0.11
-        version: 18.0.11
+      '@types/jest':
+        specifier: ^29.5.1
+        version: 29.5.1
+      '@types/node':
+        specifier: ^18.15.13
+        version: 18.15.13
       eslint:
         specifier: ^8.38.0
         version: 8.38.0
       eslint-config-pda-base:
         specifier: workspace:*
         version: link:../eslint-config-pda-base
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
+      jest:
+        specifier: ^29.5.0
+        version: 29.5.0(@types/node@18.15.13)(ts-node@10.9.1)
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
@@ -7396,37 +7436,6 @@ packages:
       yn: 3.1.1
     dev: true
 
-  /ts-node@10.9.1(@types/node@18.15.13)(typescript@5.0.4):
-    resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
-    hasBin: true
-    peerDependencies:
-      '@swc/core': '>=1.2.50'
-      '@swc/wasm': '>=1.2.50'
-      '@types/node': '*'
-      typescript: '>=2.7'
-    peerDependenciesMeta:
-      '@swc/core':
-        optional: true
-      '@swc/wasm':
-        optional: true
-    dependencies:
-      '@cspotcode/source-map-support': 0.8.1
-      '@tsconfig/node10': 1.0.9
-      '@tsconfig/node12': 1.0.11
-      '@tsconfig/node14': 1.0.3
-      '@tsconfig/node16': 1.0.3
-      '@types/node': 18.15.13
-      acorn: 8.8.2
-      acorn-walk: 8.2.0
-      arg: 4.1.3
-      create-require: 1.1.1
-      diff: 4.0.2
-      make-error: 1.3.6
-      typescript: 5.0.4
-      v8-compile-cache-lib: 3.0.1
-      yn: 3.1.1
-    dev: true
-
   /tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
 
@@ -7555,12 +7564,6 @@ packages:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
-
-  /typescript@5.0.4:
-    resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}
-    engines: {node: '>=12.20'}
-    hasBin: true
-    dev: true
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}

@@ -1,7 +1,7 @@
+import { defineConfig } from '@pda/utils';
 import { Client } from 'discord.js';
 import { CommandsHandler } from './command-handler';
 import { EventsHandler } from './event-handler';
-import { defineConfig } from './utils/define-config';
 
 export default class DcClientHandler {
   private readonly _client: Client;

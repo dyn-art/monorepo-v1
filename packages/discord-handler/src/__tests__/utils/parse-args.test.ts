@@ -1,9 +1,6 @@
-import {
-  TParseArgsConfig,
-  parseArgs,
-} from '../../core/discord/utils/parse-args';
+import { TParseArgsConfig, parseArgs } from '../../utils/parse-args';
 
-describe('parseArgs() tests', () => {
+describe('parseArgs() method tests', () => {
   const testCases: [string[], TParseArgsConfig, Map<string, any>][] = [
     // Test case 1: Basic string option
     [

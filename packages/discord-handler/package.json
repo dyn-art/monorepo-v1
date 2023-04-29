@@ -1,12 +1,14 @@
 {
-  "name": "@pda/discord",
+  "name": "@pda/discord-handler",
   "version": "0.0.0",
-  "description": "Core Backend",
+  "description": "Discord Command Handler",
   "private": true,
-  "main": "index.js",
+  "main": "./dist/index.js",
+  "source": "./src/index.ts",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "shx rm -rf dist && tsc",
-    "start:dev": "nodemon --config ./nodemon.json",
+    "start:dev": "tsc -w",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",
@@ -16,20 +18,24 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/discord-handler": "workspace:^",
-    "discord.js": "^14.9.0",
-    "dotenv": "^16.0.3"
+    "@pda/utils": "workspace:*"
+  },
+  "peerDependencies": {
+    "discord.js": "^14.9.0"
   },
   "devDependencies": {
     "@pda/jest-presets": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@types/jest": "^29.5.1",
     "@types/node": "^18.15.13",
+    "discord.js": "^14.9.0",
     "eslint": "^8.38.0",
     "eslint-config-pda-base": "workspace:*",
     "jest": "^29.5.0",
-    "nodemon": "^2.0.22",
-    "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
-  }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
 }
