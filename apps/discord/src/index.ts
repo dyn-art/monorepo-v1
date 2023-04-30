@@ -1,6 +1,6 @@
+import { DCClientHandler } from '@pda/discord-handler';
 import { Client, IntentsBitField } from 'discord.js';
 import path from 'path';
-import { DCClientHandler } from './core';
 import { discordConfig } from './environment';
 
 const client = new Client({

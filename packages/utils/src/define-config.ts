@@ -1,10 +1,10 @@
 /**
- * Merges the default values object ('source') into the configuration object ('target') with a flat merge strategy.
+ * Merges the default values object ('source') into the configuration object ('target') using a flat merge strategy.
  *
- * @public
- * @param target - The configuration object to merge the default values into.
- * @param source - The default values object to be merged into the configuration object.
+ * @param target - The target configuration object to merge the default values into.
+ * @param source - The source default values object to be merged into the target configuration object.
  * @param overwriteUndefinedProperties - Flag to overwrite 'undefined' properties in the target with default values from the source.
+ * @returns A new object with the merged properties of the target and source, with undefined properties in the target being overwritten by the source if the flag is set to true.
  */
 export function defineConfig<
   TTarget extends Record<string, unknown>,

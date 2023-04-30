@@ -1,5 +1,5 @@
+import { CommandType, TCommandMeta } from '@pda/discord-handler';
 import { ApplicationCommandOptionType } from 'discord.js';
-import { CommandType, TCommandMeta } from '../../core';
 
 export default {
   type: CommandType.SLASH,

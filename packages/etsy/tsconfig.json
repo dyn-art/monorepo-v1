@@ -4,5 +4,9 @@
     "rootDir": "./src"
   },
   "extends": "@pda/tsconfig/node.json",
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "**/__tests__/*",
+    "**/*.test.ts"
+  ]
 }

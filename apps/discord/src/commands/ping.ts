@@ -1,4 +1,4 @@
-import { CommandType, TCommandMeta } from '../core';
+import { CommandType, TCommandMeta } from '@pda/discord-handler';
 
 export default {
   type: CommandType.LEGACY,

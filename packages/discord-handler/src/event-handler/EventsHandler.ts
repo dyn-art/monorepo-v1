@@ -1,3 +1,4 @@
+import { uuidv4 } from '@pda/utils';
 import path from 'path';
 import DcClientHandler from '../DcClientHandler';
 import { TFile, flattenFileTree, getFilesTree } from '../utils/get-file-tree';
@@ -27,12 +28,13 @@ export default class EventsHandler {
   ) {
     const eventFiles: TFile[] = [];
     if (eventsDir) {
-      const eventsFileTree = await getFilesTree(eventsDir, fileSuffixes);
+      const eventsFileTree = await getFilesTree(eventsDir, {
+        suffixes: fileSuffixes,
+      });
       eventFiles.push(...flattenFileTree(eventsFileTree));
     }
     const defaultEventsFileTree = await getFilesTree(
-      EventsHandler.DEFAULT_EVENTS_DIR,
-      ['.ts']
+      EventsHandler.DEFAULT_EVENTS_DIR
     );
     eventFiles.push(...flattenFileTree(defaultEventsFileTree));
 
@@ -46,7 +48,7 @@ export default class EventsHandler {
       // Add Event to events
       if (this._events.has(event.name)) {
         const previousName = event.name;
-        event.name = `${event.name}_${'jeff'}`;
+        event.name = `${event.name}_${uuidv4()}`;
         console.warn(
           `The event name '${previousName}' has already been used. It has been renamed to '${event.name}'.`
         );
@@ -63,7 +65,7 @@ export default class EventsHandler {
   }
 
   private createEvent(fileName: string, meta: TEventMeta) {
-    const name = meta.name ?? fileName;
+    const name = meta?.name ?? fileName;
     // @ts-ignore (Expression produces a union type that is too complex to represent.)
     return new Event(this._instance, name, meta);
   }

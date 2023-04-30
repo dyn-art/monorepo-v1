@@ -30,8 +30,9 @@ export function readDir(dirPath: string): Dirent[] {
 
 export async function getFilesTree(
   path: string,
-  suffixes: string[]
+  config: { suffixes?: string[]; toIgnoreSuffixes?: string[] } = {}
 ): Promise<TDirectory> {
+  const { suffixes = ['.js', '.ts'], toIgnoreSuffixes = ['.d.ts'] } = config;
   const fileTree: TDirectory = {
     type: 'directory',
     name: path.replace(/^.*[\\\\/]/, ''), // Replace everything in front of the last '/'
@@ -43,26 +44,33 @@ export async function getFilesTree(
   for (const file of files) {
     // Handle directory
     if (file.isDirectory()) {
-      const directory = await getFilesTree(`${path}/${file.name}`, suffixes);
+      const directory = await getFilesTree(`${path}/${file.name}`, {
+        suffixes,
+        toIgnoreSuffixes,
+      });
       fileTree.content.push(directory);
       continue;
     }
 
     // Handle file with suffix (e.g. ['.js', '.ts'])
-    for (const suffix of suffixes) {
-      if (file.name.endsWith(suffix)) {
-        const filePath = `${path}/${file.name}`;
-        const fileContent = await readFile(filePath);
-        fileTree.content.push({
-          type: 'file',
-          name: filePath
-            .replace(/^.*[\\\\/]/, '') // Replace everything in front of the last '/'
-            .replace(/\..*$/, ''), // Replace everything after the last '.' (-> '.ts')
-          path: filePath,
-          content: fileContent,
-        });
-        break;
-      }
+    if (
+      (suffixes.length === 0 ||
+        suffixes.some((suffix) => file.name.endsWith(suffix))) &&
+      (toIgnoreSuffixes.length === 0 ||
+        !toIgnoreSuffixes.some((toIgnoreSuffix) =>
+          file.name.endsWith(toIgnoreSuffix)
+        ))
+    ) {
+      const filePath = `${path}/${file.name}`;
+      const fileContent = await readFile(filePath);
+      fileTree.content.push({
+        type: 'file',
+        name: filePath
+          .replace(/^.*[\\\\/]/, '') // Replace everything in front of the last '/'
+          .replace(/\..*$/, ''), // Replace everything after the last '.' (-> '.ts')
+        path: filePath,
+        content: fileContent,
+      });
     }
   }
 

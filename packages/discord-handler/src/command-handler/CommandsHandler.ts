@@ -41,7 +41,9 @@ export default class CommandsHandler {
     commandsDir: string,
     fileSuffixes: string[] = []
   ) {
-    const commandsFileTree = await getFilesTree(commandsDir, fileSuffixes);
+    const commandsFileTree = await getFilesTree(commandsDir, {
+      suffixes: fileSuffixes,
+    });
     const commandFiles = flattenFileTree(commandsFileTree);
 
     // Create Commands
