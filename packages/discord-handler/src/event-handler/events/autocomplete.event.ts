@@ -1,5 +1,4 @@
 import { AutocompleteInteraction, InteractionType } from 'discord.js';
-import { Command, TCommandMetaSlash, isSlash } from '../../command-handler';
 import { TEventMeta } from '../Event';
 
 export default {
@@ -13,12 +12,10 @@ export default {
     }
 
     // Get Command associated with the interaction
-    const { commands } = commandsHandler;
-    const _command = commands.get(interaction.commandName);
-    if (_command == null || !isSlash(_command)) {
+    const command = commandsHandler.slashCommands.get(interaction.commandName);
+    if (command == null) {
       return;
     }
-    const command = _command as Command<TCommandMetaSlash>;
 
     // Check whether to autocomplete
     const { autocomplete } = command.meta;

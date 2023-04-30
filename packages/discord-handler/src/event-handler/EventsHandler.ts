@@ -1,6 +1,7 @@
 import { uuidv4 } from '@pda/utils';
 import path from 'path';
 import DcClientHandler from '../DcClientHandler';
+import { logger } from '../logger';
 import { TFile, flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import Event, { TEventMeta } from './Event';
 
@@ -49,7 +50,7 @@ export default class EventsHandler {
       if (this._events.has(event.name)) {
         const previousName = event.name;
         event.name = `${event.name}_${uuidv4()}`;
-        console.warn(
+        logger.warn(
           `The event name '${previousName}' has already been used. It has been renamed to '${event.name}'.`
         );
       }
@@ -59,7 +60,7 @@ export default class EventsHandler {
     // Register Events
     this.registerEvents(Array.from(this._events.values()));
 
-    console.info('Registered Events', {
+    logger.info('Registered Events', {
       events: Array.from(this._events.values()).map((event) => event.name),
     });
   }

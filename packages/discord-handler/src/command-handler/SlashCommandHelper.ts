@@ -4,6 +4,7 @@ import {
   Client,
   GuildApplicationCommandManager,
 } from 'discord.js';
+import { logger } from '../logger';
 
 export default class SlashCommandHelper {
   private _client: Client;
@@ -60,7 +61,7 @@ export default class SlashCommandHelper {
   ) {
     const commands = await this.getCommands(guildId);
     if (commands == null) {
-      console.error(
+      logger.error(
         `Failed to create slash command with name '${name}'! Could not find commands for guild ${guildId} or application.`
       );
       return;
@@ -79,7 +80,7 @@ export default class SlashCommandHelper {
         description !== existingDescription ||
         this.areOptionsDifferent(options, existingOptions)
       ) {
-        console.info(`Updating existing SlashCommand with the name '${name}'.`);
+        logger.info(`Updating existing SlashCommand with the name '${name}'.`);
         await commands.edit(existingCommand.id, {
           description,
           options,
@@ -89,7 +90,7 @@ export default class SlashCommandHelper {
     }
 
     // Create new Command
-    console.info(`Create new SlashCommand with the name '${name}'.`);
+    logger.info(`Create new SlashCommand with the name '${name}'.`);
     await commands.create({
       name,
       description,

@@ -1,5 +1,6 @@
 import { ApplicationCommand, CommandInteraction, Message } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
+import { logger } from '../logger';
 import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import Command, {
   TCommandArg,
@@ -10,7 +11,9 @@ import Command, {
   TCommandMetaSlashCallbackReturnType,
   TCommandUsage,
   TCommandUsageBase,
-  isSlash,
+  isCommandMeta,
+  isLegacyCommand,
+  isSlashCommand,
 } from './Command';
 import CommandType from './CommandType';
 import SlashCommandHelper from './SlashCommandHelper';
@@ -20,7 +23,10 @@ export default class CommandsHandler {
   private readonly _slashCommandHelper: SlashCommandHelper;
   public readonly config: TCommandsHandlerConfig;
 
-  private _commands: Map<string, Command> = new Map();
+  // Note: Not doing shared _commands map as the same command name might exist
+  // as both: legacy and slash command
+  private _slashCommands: Map<string, Command<TCommandMetaSlash>> = new Map();
+  private _legacyCommands: Map<string, Command<TCommandMetaLegacy>> = new Map();
 
   constructor(instance: DcClientHandler, config: TCommandsHandlerConfig) {
     this._instance = instance;
@@ -33,8 +39,19 @@ export default class CommandsHandler {
     );
   }
 
-  public get commands(): ReadonlyMap<string, Command> {
-    return this._commands;
+  public get slashCommands(): ReadonlyMap<string, Command<TCommandMetaSlash>> {
+    return this._slashCommands;
+  }
+
+  public get legacyCommands(): ReadonlyMap<
+    string,
+    Command<TCommandMetaLegacy>
+  > {
+    return this._legacyCommands;
+  }
+
+  public get commands(): ReadonlyArray<Command> {
+    return [...this._slashCommands.values(), ...this._legacyCommands.values()];
   }
 
   private async initializeCommandsFromDirectory(
@@ -48,44 +65,76 @@ export default class CommandsHandler {
 
     // Create Commands
     for (const commandFile of commandFiles) {
-      const meta = commandFile.content as TCommandMeta;
+      const fileContent = commandFile.content;
+      const metas: TCommandMeta[] = [];
 
-      // Initialize Command
-      const command = this.createCommand(commandFile.name, meta);
-      if (command == null) continue;
-
-      // Init
-      if (meta.onInit != null) {
-        await meta.onInit({
-          client: this._instance.client,
-          instance: this._instance,
-          command,
-        });
+      // Try to extract meta objects from file content
+      if (Array.isArray(fileContent)) {
+        for (const content of fileContent) {
+          if (isCommandMeta(content)) {
+            metas.push(content);
+          }
+        }
+      } else if (isCommandMeta(fileContent)) {
+        metas.push(fileContent);
       }
 
-      // Add Command to commands
-      if (!this._commands.has(command.name)) {
-        this._commands.set(command.name, command);
-      } else {
-        console.error(
-          `The command name '${command.name}' has already been used. Please choose a unique name to avoid conflicts.`
+      if (metas.length <= 0) {
+        logger.warn(
+          `Couldn't find valid meta object in file '${commandFile.name}' at '${commandFile.path}'!`
         );
+      }
+
+      for (const meta of metas) {
+        // Initialize Command
+        const command = this.createCommand(commandFile.name, meta);
+        if (command == null) continue;
+
+        // Init
+        if (meta.onInit != null) {
+          await meta.onInit({
+            client: this._instance.client,
+            instance: this._instance,
+            command,
+          });
+        }
+
+        // Add Slash Command
+        if (isSlashCommand(command)) {
+          if (!this._slashCommands.has(command.name)) {
+            this._slashCommands.set(command.name, command);
+          } else {
+            logger.error(
+              `The command name '${command.name}' has already been used as Slash Command. Please choose a unique name to avoid conflicts.`
+            );
+          }
+        }
+
+        // Add Legacy Command
+        if (isLegacyCommand(command)) {
+          if (!this._legacyCommands.has(command.name)) {
+            this._legacyCommands.set(command.name, command);
+          } else {
+            logger.error(
+              `The command name '${command.name}' has already been used as Legacy Command. Please choose a unique name to avoid conflicts.`
+            );
+          }
+        }
       }
     }
 
-    // Remove unused Commands
-    const usedCommandNames = new Set(this._commands.keys());
-    await this.removeUnusedSlashCommands(usedCommandNames);
+    // Remove unused SlashCommands
+    await this.removeUnusedSlashCommands(
+      Array.from(this._slashCommands.values()).map((value) => value.name)
+    );
 
     // Register SlashCommands
     await Promise.all(
-      Array.from(this._commands.values()).map((command) =>
-        this.registerSlashCommand(command)
-      )
+      this.commands.map((command) => this.registerSlashCommand(command))
     );
 
-    console.info('Registered Commands', {
-      commands: Array.from(this._commands.values()).map(
+    logger.info('Registered Commands', {
+      commands: this.commands.map(
         (command) =>
           `${
             command.meta.type === CommandType.SLASH
@@ -97,7 +146,7 @@ export default class CommandsHandler {
   }
 
   private async registerSlashCommand(command: Command) {
-    if (!isSlash(command)) {
+    if (!isSlashCommand(command)) {
       return;
     }
     const { meta } = command;
@@ -126,7 +175,7 @@ export default class CommandsHandler {
   }
 
   private async getUnusedSlashCommands(
-    usedCommandNames: Set<string>,
+    usedCommandNames: string[],
     guildId?: string
   ): Promise<ApplicationCommand[]> {
     const previousCommands = await this._slashCommandHelper.getCommands(
@@ -134,14 +183,17 @@ export default class CommandsHandler {
     );
     let unusedCommands: ApplicationCommand[] = [];
     if (previousCommands != null) {
-      unusedCommands = previousCommands.cache
-        .filter((command) => !usedCommandNames.has(command.name))
-        .map((command) => command[1]); // Map to ApplicationCommand
+      unusedCommands = Array.from(
+        previousCommands.cache.filter(
+          (command) => !usedCommandNames.includes(command.name)
+        ),
+        ([, value]) => value
+      );
     }
     return unusedCommands;
   }
 
-  private async removeUnusedSlashCommands(usedCommandNames: Set<string>) {
+  private async removeUnusedSlashCommands(usedCommandNames: string[]) {
     const globalToRemove = await this.getUnusedSlashCommands(usedCommandNames);
     if (globalToRemove.length <= 0) return;
 
@@ -161,8 +213,8 @@ export default class CommandsHandler {
       }
     }
 
-    console.info('Removed unused commands', {
-      commands: globalToRemove.map((command) => command.name),
+    logger.info('Removed unused SlashCommands', {
+      slashCommands: globalToRemove.map((command) => command.name),
     });
   }
 
@@ -174,7 +226,7 @@ export default class CommandsHandler {
         .replace(/\W/g, '-') // Replace none letters, digits, and underscores with '-' (https://www.w3schools.com/jsref/jsref_regexp_wordchar.asp)
         .replace(/^[-_]+|[-_]+$/g, ''); // Replace starting and ending '-' or '_'
       if (name.length > 32) {
-        console.error(
+        logger.error(
           `Slash command names must be no more than 32 characters. The provided command name '${name}' is ${name.length} characters long.`
         );
         return null;

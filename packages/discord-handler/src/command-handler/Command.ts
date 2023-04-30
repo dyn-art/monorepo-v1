@@ -31,16 +31,28 @@ export default class Command<TMeta extends TCommandMeta = TCommandMeta> {
   }
 }
 
-export function isLegacy(
+export function isLegacyCommand(
   command: Command
 ): command is Command<TCommandMetaLegacy> {
   return command.meta.type === CommandType.LEGACY;
 }
 
-export function isSlash(
+export function isSlashCommand(
   command: Command
 ): command is Command<TCommandMetaSlash> {
   return command.meta.type === CommandType.SLASH;
+}
+
+export function isCommandMeta(value: any): value is TCommandMeta {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const validTypes = [CommandType.SLASH, CommandType.LEGACY];
+  const hasValidType = value.type != null && validTypes.includes(value.type);
+  const hasCallback = typeof value.callback === 'function';
+
+  return hasValidType && hasCallback;
 }
 
 type TCommandMetaBase = {

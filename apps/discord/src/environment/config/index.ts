@@ -14,6 +14,6 @@ export const config = {
 export * from './types';
 export { appConfig, discordConfig };
 
-console.log(`Loaded configuration object.`, config);
+// console.log(`Loaded configuration object.`, config);
 
 export default config;

@@ -1,3 +1,5 @@
+import { logger } from '../logger';
+
 const DEFAULT_ARGUMENT_IDENTIFIER_CHAR = '-';
 const DEFAULT_SPLIT_BY = ' ';
 const DEFAULT_ARRAY_SPLIT_BY = ',';
@@ -164,7 +166,7 @@ function parseRelevantArguments(
         // do nothing
       }
     } catch (error) {
-      console.error(
+      logger.error(
         `Failed to parse argument '${option.name}' with value '${values}'!`
       );
       result.set(searchedArgOptions.name, null);
@@ -180,7 +182,7 @@ function parseBoolean(input: string): boolean | null {
     const match = input.match(/\b(true|false)\b/g);
     return match != null ? match[0] === 'true' : null;
   } catch (error) {
-    console.error(`Failed to parse '${input}' to boolean!`);
+    logger.error(`Failed to parse '${input}' to boolean!`);
   }
   return null;
 }
@@ -194,7 +196,7 @@ function parseNumber(input: string): number | null {
     const result = parseFloat(parsed);
     return isNaN(result) ? null : result;
   } catch (error) {
-    console.error(`Failed to parse '${input}' to number!`);
+    logger.error(`Failed to parse '${input}' to number!`);
   }
   return null;
 }

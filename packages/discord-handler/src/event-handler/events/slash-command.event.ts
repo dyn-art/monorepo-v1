@@ -1,10 +1,5 @@
 import { CommandInteraction, InteractionType } from 'discord.js';
-import {
-  Command,
-  TCommandArg,
-  TCommandMetaSlash,
-  isSlash,
-} from '../../command-handler';
+import { TCommandArg } from '../../command-handler';
 import { parseArgs } from '../../utils/parse-args';
 import { TEventMeta } from '../Event';
 
@@ -25,11 +20,10 @@ export default {
     }));
 
     // Get command
-    const _command = commandsHandler.commands.get(interaction.commandName);
-    if (_command == null || !isSlash(_command)) {
+    const command = commandsHandler.slashCommands.get(interaction.commandName);
+    if (command == null) {
       return;
     }
-    const command = _command as Command<TCommandMetaSlash>;
     const { sendTyping, argsOptions } = command.meta;
 
     // Parse arguments

@@ -1,9 +1,4 @@
-import {
-  Command,
-  TCommandArg,
-  TCommandMetaLegacy,
-  isLegacy,
-} from '../../command-handler';
+import { TCommandArg } from '../../command-handler';
 import { parseArgs } from '../../utils/parse-args';
 import { TEventMeta } from '../Event';
 
@@ -35,11 +30,10 @@ export default {
     }
 
     // Get command
-    const _command = commandsHandler.commands.get(commandName);
-    if (_command == null || !isLegacy(_command)) {
+    const command = commandsHandler.legacyCommands.get(commandName);
+    if (command == null) {
       return;
     }
-    const command = _command as Command<TCommandMetaLegacy>;
     const { reply, sendTyping, argsOptions } = command.meta;
 
     // Get arguments

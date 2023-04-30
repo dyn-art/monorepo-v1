@@ -18,6 +18,7 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
+    "@pda/logger": "workspace:*",
     "@pda/utils": "workspace:*"
   },
   "peerDependencies": {
