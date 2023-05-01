@@ -37,7 +37,7 @@ export function isCommandMeta(value: any): value is TCommandMeta {
 // ============================================================================
 
 export type TCommandMetaBase<TCommand extends BaseCommand = BaseCommand> = {
-  name?: string; // By default file name command is specified in
+  key?: string; // By default file name command is specified in
   description?: string;
 
   testOnly?: boolean;

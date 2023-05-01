@@ -8,10 +8,10 @@ export default class ModalComponent extends BaseComponent<TModalComponentMeta> {
 
   constructor(
     instance: DcClientHandler,
-    name: string,
+    key: string,
     meta: Omit<TModalComponentMeta, 'name'>
   ) {
-    super(instance, name, meta);
+    super(instance, key, meta);
     this.type = meta.type;
   }
 }

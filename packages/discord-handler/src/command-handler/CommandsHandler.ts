@@ -24,7 +24,7 @@ export default class CommandsHandler {
   private readonly _slashCommandHelper: SlashCommandHelper;
   public readonly config: TCommandsHandlerConfig;
 
-  // Note: Not doing shared _commands map as the same command name might exist
+  // Note: Not doing shared _commands map as the same command key might exist
   // as both: legacy and slash command
   private _slashCommands: Map<string, SlashCommand> = new Map();
   private _legacyCommands: Map<string, LegacyCommand> = new Map();
@@ -99,22 +99,22 @@ export default class CommandsHandler {
 
         // Add Slash Command
         if (command instanceof SlashCommand) {
-          if (!this._slashCommands.has(command.name)) {
-            this._slashCommands.set(command.name, command);
+          if (!this._slashCommands.has(command.key)) {
+            this._slashCommands.set(command.key, command);
           } else {
             logger.error(
-              `The command name '${command.name}' has already been used as Slash Command. Please choose a unique name to avoid conflicts.`
+              `The command name '${command.key}' has already been used as Slash Command! Choose a unique name to avoid conflicts.`
             );
           }
         }
 
         // Add Legacy Command
         if (command instanceof LegacyCommand) {
-          if (!this._legacyCommands.has(command.name)) {
-            this._legacyCommands.set(command.name, command);
+          if (!this._legacyCommands.has(command.key)) {
+            this._legacyCommands.set(command.key, command);
           } else {
             logger.error(
-              `The command name '${command.name}' has already been used as Legacy Command. Please choose a unique name to avoid conflicts.`
+              `The command name '${command.key}' has already been used as Legacy Command! Choose a unique name to avoid conflicts.`
             );
           }
         }
@@ -123,7 +123,7 @@ export default class CommandsHandler {
 
     // Remove unused SlashCommands
     await this.removeUnusedSlashCommands(
-      Array.from(this._slashCommands.values()).map((value) => value.name)
+      Array.from(this._slashCommands.values()).map((value) => value.key)
     );
 
     // Register SlashCommands
@@ -140,7 +140,7 @@ export default class CommandsHandler {
             command instanceof SlashCommand
               ? '/'
               : this.config.commandPrefix ?? ''
-          }${command.name}`
+          }${command.key}`
       ),
     });
   }
@@ -154,7 +154,7 @@ export default class CommandsHandler {
     if (meta.testOnly) {
       for (const guildId of this._instance.testGuildIds) {
         this._slashCommandHelper.create(
-          command.name,
+          command.key,
           meta.description ?? 'No description provided.',
           options,
           guildId
@@ -164,7 +164,7 @@ export default class CommandsHandler {
     // Otherwise register SlashCommand globally
     else {
       this._slashCommandHelper.create(
-        command.name,
+        command.key,
         meta.description ?? 'not-set',
         options
       );
@@ -172,7 +172,7 @@ export default class CommandsHandler {
   }
 
   private async getUnusedSlashCommands(
-    usedCommandNames: string[],
+    usedCommandKeys: string[],
     guildId?: string
   ): Promise<ApplicationCommand[]> {
     const previousCommands = await this._slashCommandHelper.getCommands(
@@ -182,7 +182,7 @@ export default class CommandsHandler {
     if (previousCommands != null) {
       unusedCommands = Array.from(
         previousCommands.cache.filter(
-          (command) => !usedCommandNames.includes(command.name)
+          (command) => !usedCommandKeys.includes(command.name)
         ),
         ([, value]) => value
       );
@@ -190,8 +190,8 @@ export default class CommandsHandler {
     return unusedCommands;
   }
 
-  private async removeUnusedSlashCommands(usedCommandNames: string[]) {
-    const globalToRemove = await this.getUnusedSlashCommands(usedCommandNames);
+  private async removeUnusedSlashCommands(usedCommandKeys: string[]) {
+    const globalToRemove = await this.getUnusedSlashCommands(usedCommandKeys);
     if (globalToRemove.length <= 0) return;
 
     // Remove globally not used SlashCommands from the DiscordAPI
@@ -202,7 +202,7 @@ export default class CommandsHandler {
     // Remove test only not used SlashCommands from the DiscordAPI
     for (const guildId of this._instance.testGuildIds) {
       const testOnlyToRemove = await this.getUnusedSlashCommands(
-        usedCommandNames,
+        usedCommandKeys,
         guildId
       );
       for (const command of testOnlyToRemove) {
@@ -220,7 +220,7 @@ export default class CommandsHandler {
     meta: TCommandMeta
   ): BaseCommand | null {
     // Parse Command name
-    let name = (meta.name ?? fileName).toLowerCase();
+    let name = (meta.key ?? fileName).toLowerCase();
     if (meta.type === CommandType.SLASH) {
       name = name
         .replace(/\W/g, '-') // Replace none letters, digits, and underscores with '-' (https://www.w3schools.com/jsref/jsref_regexp_wordchar.asp)

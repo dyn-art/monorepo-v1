@@ -1,6 +1,7 @@
 import { defineConfig } from '@pda/utils';
 import { Client } from 'discord.js';
 import { CommandsHandler } from './command-handler';
+import { ComponentsHandler } from './components-handler';
 import { EventsHandler } from './event-handler';
 
 export default class DcClientHandler {
@@ -11,6 +12,7 @@ export default class DcClientHandler {
 
   private _commandsHandler?: CommandsHandler;
   private _eventsHandler?: EventsHandler;
+  private _componentsHandler?: ComponentsHandler;
 
   constructor(client: Client, config: TDcClientHandlerConfig = {}) {
     const { adminIds = [], testGuildIds = [], commands, events } = config;
@@ -36,6 +38,7 @@ export default class DcClientHandler {
       this.initCommands(commandsConfig);
     }
     this.initEvents(eventsConfig);
+    this.initComponents();
   }
 
   public get client() {
@@ -52,6 +55,10 @@ export default class DcClientHandler {
 
   public get eventsHandler() {
     return this._eventsHandler;
+  }
+
+  public get componentsHandler() {
+    return this._componentsHandler;
   }
 
   private async initAdmins(adminIds: string[]) {
@@ -84,6 +91,10 @@ export default class DcClientHandler {
       eventsDir: config?.eventsDir,
       fileSuffixes: config?.fileSuffixes,
     });
+  }
+
+  private async initComponents() {
+    this._componentsHandler = new ComponentsHandler(this);
   }
 }
 

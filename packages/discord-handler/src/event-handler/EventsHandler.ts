@@ -42,33 +42,29 @@ export default class EventsHandler {
     // Create Events
     for (const eventFile of eventFiles) {
       const meta = eventFile.content as TEventMeta;
-
-      // Initialize Event
       const event = this.createEvent(eventFile.name, meta);
-
-      // Add Event to events
-      if (this._events.has(event.name)) {
-        const previousName = event.name;
-        event.name = `${event.name}_${uuidv4()}`;
-        logger.warn(
-          `The event name '${previousName}' has already been used. It has been renamed to '${event.name}'.`
-        );
-      }
-      this._events.set(event.name, event);
+      this._events.set(event.key, event);
     }
 
     // Register Events
     this.registerEvents(Array.from(this._events.values()));
 
     logger.info('Registered Events', {
-      events: Array.from(this._events.values()).map((event) => event.name),
+      events: Array.from(this._events.values()).map((event) => event.key),
     });
   }
 
   private createEvent(fileName: string, meta: TEventMeta) {
-    const name = meta?.name ?? fileName;
+    let key = meta?.key ?? fileName;
+    if (this._events.has(key)) {
+      const previousKey = key;
+      key = `${key}_${uuidv4()}`;
+      logger.warn(
+        `The Event name '${previousKey}' has already been used! The Event has been renamed to '${key}'.`
+      );
+    }
     // @ts-ignore (Expression produces a union type that is too complex to represent.)
-    return new Event(this._instance, name, meta);
+    return new Event(this._instance, key, meta);
   }
 
   private registerEvents(events: Event[]) {

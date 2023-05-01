@@ -65,7 +65,7 @@ export default {
 
     // Handle modal response
     if (isComponentLegacyCommandModalMetaType(response)) {
-      // TODO:
+      instance.componentsHandler?.addModal(response);
       return;
     }
 

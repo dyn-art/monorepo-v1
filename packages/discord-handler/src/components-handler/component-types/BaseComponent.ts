@@ -5,16 +5,16 @@ export default class BaseComponent<
   TMeta extends TComponentMeta = TComponentMeta
 > {
   public readonly instance: DcClientHandler;
-  public readonly name: string;
+  public readonly key: string;
   public readonly meta: TBaseComponentMeta<TMeta>;
 
   constructor(
     instance: DcClientHandler,
-    name: string,
+    key: string,
     meta: TBaseComponentMeta<TMeta>
   ) {
     this.instance = instance;
-    this.name = name;
+    this.key = key;
     this.meta = meta;
   }
 }

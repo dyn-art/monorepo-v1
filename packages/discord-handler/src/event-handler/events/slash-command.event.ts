@@ -66,7 +66,7 @@ export default {
 
     // Handle modal response
     if (isComponentSlashCommandModalMetaType(response)) {
-      // TODO:
+      instance.componentsHandler?.addModal(response);
       return;
     }
 
