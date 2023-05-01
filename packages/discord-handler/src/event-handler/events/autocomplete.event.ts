@@ -1,8 +1,8 @@
-import { AutocompleteInteraction, InteractionType } from 'discord.js';
+import { AutocompleteInteraction, Events, InteractionType } from 'discord.js';
 import { TEventMeta } from '../Event';
 
 export default {
-  type: 'interactionCreate',
+  type: Events.InteractionCreate,
   shouldExecuteCallback: (interaction) =>
     interaction.type === InteractionType.ApplicationCommandAutocomplete,
   callback: async (instance, interaction: AutocompleteInteraction) => {

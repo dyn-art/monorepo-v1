@@ -17,4 +17,4 @@ export default class BaseCommand<TMeta extends TCommandMeta = TCommandMeta> {
   }
 }
 
-type TBaseCommandMeta<TCommandMeta> = Omit<Omit<TCommandMeta, 'name'>, 'type'>;
+type TBaseCommandMeta<TCommandMeta> = Omit<Omit<TCommandMeta, 'key'>, 'type'>;

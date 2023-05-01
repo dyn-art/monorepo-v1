@@ -69,16 +69,28 @@ export default class EventsHandler {
 
   private registerEvents(events: Event[]) {
     for (const event of events) {
-      this._instance.client.on(event.meta.type, async (...args: any[]) => {
-        if (
-          event.meta.shouldExecuteCallback == null ||
+      if (event.meta.once) {
+        this._instance.client.once(event.meta.type, (...args) =>
           // @ts-ignore (Expression produces a union type that is too complex to represent.)
-          event.meta.shouldExecuteCallback(...args)
-        ) {
+          this.onEvent(event, args)
+        );
+      } else {
+        this._instance.client.on(event.meta.type, (...args) =>
           // @ts-ignore (Expression produces a union type that is too complex to represent.)
-          event.meta.callback(this._instance, ...args);
-        }
-      });
+          this.onEvent(event, args)
+        );
+      }
+    }
+  }
+
+  private async onEvent(event: Event, args: any[]) {
+    if (
+      event.meta.shouldExecuteCallback == null ||
+      // @ts-ignore (Expression produces a union type that is too complex to represent.)
+      event.meta.shouldExecuteCallback(...args)
+    ) {
+      // @ts-ignore (Expression produces a union type that is too complex to represent.)
+      event.meta.callback(this._instance, ...args);
     }
   }
 }

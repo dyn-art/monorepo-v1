@@ -19,7 +19,4 @@ export default class BaseComponent<
   }
 }
 
-type TBaseComponentMeta<TCommandMeta> = Omit<
-  Omit<TCommandMeta, 'name'>,
-  'type'
->;
+type TBaseComponentMeta<TCommandMeta> = Omit<Omit<TCommandMeta, 'key'>, 'type'>;

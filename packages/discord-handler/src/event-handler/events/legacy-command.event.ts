@@ -1,10 +1,11 @@
+import { Events } from 'discord.js';
 import { TCommandArg } from '../../command-handler';
 import { isComponentLegacyCommandModalMetaType } from '../../components-handler';
 import { parseArgs } from '../../utils/parse-args';
 import { TEventMeta } from '../Event';
 
 export default {
-  type: 'messageCreate',
+  type: Events.MessageCreate,
   shouldExecuteCallback: (message) => !message.author.bot,
   callback: async (instance, message) => {
     const { commandsHandler } = instance;

@@ -1,7 +1,7 @@
-import { InteractionType, ModalSubmitInteraction } from 'discord.js';
+import { Events, InteractionType, ModalSubmitInteraction } from 'discord.js';
 
 export default {
-  type: 'interactionCreate',
+  type: Events.InteractionCreate,
   shouldExecuteCallback: (interaction) =>
     interaction.type === InteractionType.ModalSubmit,
   callback: async (instance, interaction: ModalSubmitInteraction) => {

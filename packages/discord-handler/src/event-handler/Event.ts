@@ -4,12 +4,12 @@ import DcClientHandler from '../DcClientHandler';
 export default class Event<TMeta extends TEventMeta = TEventMeta> {
   public readonly instance: DcClientHandler;
   public readonly key: string;
-  public readonly meta: Omit<TMeta, 'name'>;
+  public readonly meta: Omit<TMeta, 'key'>;
 
   constructor(
     instance: DcClientHandler,
     key: string,
-    meta: Omit<TMeta, 'name'>
+    meta: Omit<TMeta, 'key'>
   ) {
     this.instance = instance;
     this.key = key;
@@ -20,6 +20,7 @@ export default class Event<TMeta extends TEventMeta = TEventMeta> {
 type TEventMetaBase<EventType extends keyof ClientEvents> = {
   key?: string; // By default file name command is specified in
   type: EventType;
+  once?: boolean;
   shouldExecuteCallback?: (...args: ClientEvents[EventType]) => boolean;
   callback: (
     instance: DcClientHandler,
