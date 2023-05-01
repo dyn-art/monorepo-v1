@@ -1,5 +1,4 @@
 import { Message } from 'discord.js';
-import { TComponentLegacyCommandModalMeta } from '../../components-handler';
 import { TParseArgsConfig } from '../../utils/parse-args';
 import CommandType from '../CommandType';
 import BaseCommand from './BaseCommand';
@@ -32,7 +31,6 @@ export type TCommandMetaLegacy = {
 export type TCommandLegacyCallbackReturnType =
   | Parameters<Message['reply']>[0]
   | Parameters<Message['channel']['send']>[0]
-  | TComponentLegacyCommandModalMeta
   | void;
 
 export type TCommandUsageLegacy = {

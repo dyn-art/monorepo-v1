@@ -1,6 +1,5 @@
 enum ComponentType {
-  MODAL_SLASH,
-  MODAL_LEGACY,
+  MODAL,
 }
 
 export default ComponentType;

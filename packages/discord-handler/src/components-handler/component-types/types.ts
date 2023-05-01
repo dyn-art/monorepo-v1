@@ -1,8 +1,3 @@
-import {
-  TComponentLegacyCommandModalMeta,
-  TComponentSlashCommandModalMeta,
-} from './ModalComponent';
+import { TComponentModalMeta } from './ModalComponent';
 
-export type TComponentMeta =
-  | TComponentSlashCommandModalMeta
-  | TComponentLegacyCommandModalMeta;
+export type TComponentMeta = TComponentModalMeta;

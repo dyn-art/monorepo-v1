@@ -1,4 +1,4 @@
-import { CommandType, TCommandMeta } from '@pda/discord-handler';
+import { CommandType, ComponentType, TCommandMeta } from '@pda/discord-handler';
 import {
   ActionRowBuilder,
   ModalActionRowComponentBuilder,
@@ -42,10 +42,16 @@ export default [
 
       modal.addComponents(actionRow);
 
-      await interaction.showModal(modal);
-
       return {
-        content: 'Pong',
+        type: ComponentType.MODAL,
+        modal,
+        callback: async ({ interaction }) => {
+          await interaction.reply({
+            content: `Hello There: ${interaction.fields.getTextInputValue(
+              'title'
+            )}`,
+          });
+        },
       };
     },
   },

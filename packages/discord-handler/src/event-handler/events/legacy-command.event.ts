@@ -1,6 +1,5 @@
 import { Events } from 'discord.js';
 import { TCommandArg } from '../../command-handler';
-import { isComponentLegacyCommandModalMetaType } from '../../components-handler';
 import { parseArgs } from '../../utils/parse-args';
 import { TEventMeta } from '../Event';
 
@@ -61,12 +60,6 @@ export default {
       message
     );
     if (response == null) {
-      return;
-    }
-
-    // Handle modal response
-    if (isComponentLegacyCommandModalMetaType(response)) {
-      instance.componentsHandler?.addModal(response);
       return;
     }
 

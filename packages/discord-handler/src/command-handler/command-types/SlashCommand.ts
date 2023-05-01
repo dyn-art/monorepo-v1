@@ -4,7 +4,7 @@ import {
   CommandInteraction,
   InteractionDeferReplyOptions,
 } from 'discord.js';
-import { TComponentSlashCommandModalMeta } from '../../components-handler';
+import { TComponentModalMeta } from '../../components-handler';
 import { TParseArgsConfig } from '../../utils/parse-args';
 import CommandType from '../CommandType';
 import BaseCommand from './BaseCommand';
@@ -43,7 +43,7 @@ export type TCommandMetaSlash = {
 export type TCommandSlashCallbackReturnType =
   | Parameters<CommandInteraction['reply']>[0]
   | Parameters<CommandInteraction['editReply']>[0]
-  | TComponentSlashCommandModalMeta
+  | TComponentModalMeta
   | void;
 
 export type TCommandUsageSlash = {

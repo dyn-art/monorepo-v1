@@ -6,12 +6,12 @@ export default class BaseComponent<
 > {
   public readonly instance: DcClientHandler;
   public readonly key: string;
-  public readonly meta: TBaseComponentMeta<TMeta>;
+  public readonly meta: TComponentBaseMeta<TMeta>;
 
   constructor(
     instance: DcClientHandler,
     key: string,
-    meta: TBaseComponentMeta<TMeta>
+    meta: TComponentBaseMeta<TMeta>
   ) {
     this.instance = instance;
     this.key = key;
@@ -19,4 +19,4 @@ export default class BaseComponent<
   }
 }
 
-type TBaseComponentMeta<TCommandMeta> = Omit<Omit<TCommandMeta, 'key'>, 'type'>;
+type TComponentBaseMeta<TCommandMeta> = Omit<Omit<TCommandMeta, 'key'>, 'type'>;

@@ -1,43 +1,20 @@
-import { CommandInteraction, Message, ModalBuilder } from 'discord.js';
-import DcClientHandler from '../../DcClientHandler';
+import { ModalBuilder, ModalSubmitInteraction } from 'discord.js';
 import ComponentType from '../ComponentType';
 import BaseComponent from './BaseComponent';
 
-export default class ModalComponent extends BaseComponent<TModalComponentMeta> {
-  public readonly type: ComponentType.MODAL_LEGACY | ComponentType.MODAL_SLASH;
-
-  constructor(
-    instance: DcClientHandler,
-    key: string,
-    meta: Omit<TModalComponentMeta, 'name'>
-  ) {
-    super(instance, key, meta);
-    this.type = meta.type;
-  }
-}
+export default class ModalComponent extends BaseComponent<TComponentModalMeta> {}
 
 // ============================================================================
 // Type Methods
 // ============================================================================
 
-export function isComponentLegacyCommandModalMetaType(
+export function isComponentModalMetaType(
   value: any
-): value is TComponentLegacyCommandModalMeta {
+): value is TComponentModalMeta {
   return (
     value != null &&
-    (value.type === ComponentType.MODAL_LEGACY ||
-      (value.model instanceof ModalBuilder &&
-        typeof value.callback === 'function'))
-  );
-}
-
-export function isComponentSlashCommandModalMetaType(
-  value: any
-): value is TComponentSlashCommandModalMeta {
-  return (
-    value != null &&
-    (value.type === ComponentType.MODAL_SLASH ||
-      (value.model instanceof ModalBuilder &&
+    (value.type === ComponentType.MODAL ||
+      (value.modal instanceof ModalBuilder &&
         typeof value.callback === 'function'))
   );
 }
@@ -46,18 +23,11 @@ export function isComponentSlashCommandModalMetaType(
 // Base Types
 // ============================================================================
 
-export type TModalComponentMeta =
-  | TComponentSlashCommandModalMeta
-  | TComponentLegacyCommandModalMeta;
-
-export type TComponentSlashCommandModalMeta = {
-  type: ComponentType.MODAL_SLASH;
+export type TComponentModalMeta = {
+  type: ComponentType;
   modal: ModalBuilder;
-  callback: (content: { interaction: CommandInteraction }) => Promise<void>;
-};
-
-export type TComponentLegacyCommandModalMeta = {
-  type: ComponentType.MODAL_LEGACY;
-  modal: ModalBuilder;
-  callback: (content: { message: Message }) => Promise<void>;
+  callback: (content: {
+    modalComponent: ModalComponent;
+    interaction: ModalSubmitInteraction;
+  }) => Promise<void>;
 };

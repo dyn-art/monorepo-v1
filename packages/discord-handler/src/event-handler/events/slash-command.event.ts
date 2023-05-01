@@ -1,6 +1,6 @@
 import { CommandInteraction, InteractionType } from 'discord.js';
 import { TCommandArg } from '../../command-handler';
-import { isComponentSlashCommandModalMetaType } from '../../components-handler';
+import { isComponentModalMetaType } from '../../components-handler';
 import { parseArgs } from '../../utils/parse-args';
 import { TEventMeta } from '../Event';
 
@@ -9,7 +9,7 @@ export default {
   shouldExecuteCallback: (interaction) =>
     interaction.type === InteractionType.ApplicationCommand,
   callback: async (instance, interaction: CommandInteraction) => {
-    const { commandsHandler } = instance;
+    const { commandsHandler, componentsHandler } = instance;
     if (commandsHandler == null) {
       return;
     }
@@ -65,8 +65,11 @@ export default {
     }
 
     // Handle modal response
-    if (isComponentSlashCommandModalMetaType(response)) {
-      instance.componentsHandler?.addModal(response);
+    if (isComponentModalMetaType(response)) {
+      if (componentsHandler != null) {
+        componentsHandler.addModal(response);
+        await interaction.showModal(response.modal);
+      }
       return;
     }
 

@@ -4,7 +4,7 @@ import { logger } from '../logger';
 import {
   BaseComponent,
   ModalComponent,
-  TModalComponentMeta,
+  TComponentModalMeta,
 } from './component-types';
 
 export default class ComponentsHandler {
@@ -24,7 +24,7 @@ export default class ComponentsHandler {
     return [...this._modals.values()];
   }
 
-  public addModal(meta: TModalComponentMeta) {
+  public addModal(meta: TComponentModalMeta) {
     // Set up unique key/name
     let key = meta.modal.data.custom_id;
     if (key == null) {
