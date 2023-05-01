@@ -1,8 +1,8 @@
-import Command from './Command';
 import CommandsHandler from './CommandsHandler';
 import CommandType from './CommandType';
 
-export * from './Command';
+export * from './command-types';
+export * from './command-types/BaseCommand';
 export * from './CommandsHandler';
 export * from './CommandType';
-export { Command, CommandsHandler, CommandType };
+export { CommandsHandler, CommandType };

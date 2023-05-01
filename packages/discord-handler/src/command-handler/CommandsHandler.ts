@@ -2,21 +2,22 @@ import { ApplicationCommand, CommandInteraction, Message } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
 import { logger } from '../logger';
 import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
-import Command, {
+import CommandType from './CommandType';
+import SlashCommandHelper from './SlashCommandHelper';
+import {
+  BaseCommand,
+  LegacyCommand,
+  SlashCommand,
   TCommandArg,
+  TCommandLegacyCallbackReturnType,
   TCommandMeta,
-  TCommandMetaLegacy,
-  TCommandMetaLegacyCallbackReturnType,
-  TCommandMetaSlash,
-  TCommandMetaSlashCallbackReturnType,
+  TCommandSlashCallbackReturnType,
   TCommandUsage,
   TCommandUsageBase,
   isCommandMeta,
-  isLegacyCommand,
-  isSlashCommand,
-} from './Command';
-import CommandType from './CommandType';
-import SlashCommandHelper from './SlashCommandHelper';
+  isLegacyCommandMeta,
+  isSlashCommandMeta,
+} from './command-types';
 
 export default class CommandsHandler {
   private readonly _instance: DcClientHandler;
@@ -25,8 +26,8 @@ export default class CommandsHandler {
 
   // Note: Not doing shared _commands map as the same command name might exist
   // as both: legacy and slash command
-  private _slashCommands: Map<string, Command<TCommandMetaSlash>> = new Map();
-  private _legacyCommands: Map<string, Command<TCommandMetaLegacy>> = new Map();
+  private _slashCommands: Map<string, SlashCommand> = new Map();
+  private _legacyCommands: Map<string, LegacyCommand> = new Map();
 
   constructor(instance: DcClientHandler, config: TCommandsHandlerConfig) {
     this._instance = instance;
@@ -39,18 +40,15 @@ export default class CommandsHandler {
     );
   }
 
-  public get slashCommands(): ReadonlyMap<string, Command<TCommandMetaSlash>> {
+  public get slashCommands(): ReadonlyMap<string, SlashCommand> {
     return this._slashCommands;
   }
 
-  public get legacyCommands(): ReadonlyMap<
-    string,
-    Command<TCommandMetaLegacy>
-  > {
+  public get legacyCommands(): ReadonlyMap<string, LegacyCommand> {
     return this._legacyCommands;
   }
 
-  public get commands(): ReadonlyArray<Command> {
+  public get commands(): ReadonlyArray<BaseCommand> {
     return [...this._slashCommands.values(), ...this._legacyCommands.values()];
   }
 
@@ -95,12 +93,12 @@ export default class CommandsHandler {
           await meta.onInit({
             client: this._instance.client,
             instance: this._instance,
-            command,
+            command: command as any,
           });
         }
 
         // Add Slash Command
-        if (isSlashCommand(command)) {
+        if (command instanceof SlashCommand) {
           if (!this._slashCommands.has(command.name)) {
             this._slashCommands.set(command.name, command);
           } else {
@@ -111,7 +109,7 @@ export default class CommandsHandler {
         }
 
         // Add Legacy Command
-        if (isLegacyCommand(command)) {
+        if (command instanceof LegacyCommand) {
           if (!this._legacyCommands.has(command.name)) {
             this._legacyCommands.set(command.name, command);
           } else {
@@ -130,14 +128,16 @@ export default class CommandsHandler {
 
     // Register SlashCommands
     await Promise.all(
-      this.commands.map((command) => this.registerSlashCommand(command))
+      Array.from(this._slashCommands.values()).map((command) =>
+        this.registerSlashCommand(command)
+      )
     );
 
     logger.info('Registered Commands', {
       commands: this.commands.map(
         (command) =>
           `${
-            command.meta.type === CommandType.SLASH
+            command instanceof SlashCommand
               ? '/'
               : this.config.commandPrefix ?? ''
           }${command.name}`
@@ -145,10 +145,7 @@ export default class CommandsHandler {
     });
   }
 
-  private async registerSlashCommand(command: Command) {
-    if (!isSlashCommand(command)) {
-      return;
-    }
+  private async registerSlashCommand(command: SlashCommand) {
     const { meta } = command;
 
     const options = meta.argsOptions ?? [];
@@ -218,7 +215,10 @@ export default class CommandsHandler {
     });
   }
 
-  private createCommand(fileName: string, meta: TCommandMeta): Command | null {
+  private createCommand(
+    fileName: string,
+    meta: TCommandMeta
+  ): BaseCommand | null {
     // Parse Command name
     let name = (meta.name ?? fileName).toLowerCase();
     if (meta.type === CommandType.SLASH) {
@@ -234,30 +234,35 @@ export default class CommandsHandler {
     }
 
     // Create Command instance
-    return new Command(this._instance, name, meta);
+    let command: BaseCommand | null = null;
+    if (isLegacyCommandMeta(meta)) {
+      command = new LegacyCommand(this._instance, name, meta);
+    } else if (isSlashCommandMeta(meta)) {
+      command = new SlashCommand(this._instance, name, meta);
+    }
+
+    return command;
   }
 
   public async runCommand(
-    command: Command<TCommandMetaLegacy>,
+    command: LegacyCommand,
     args: string[] | Map<string, TCommandArg>,
     text: string,
     message: Message
-  ): Promise<TCommandMetaLegacyCallbackReturnType>;
+  ): Promise<TCommandLegacyCallbackReturnType>;
   public async runCommand(
-    command: Command<TCommandMetaSlash>,
+    command: SlashCommand,
     args: string[] | Map<string, TCommandArg>,
     text: string,
     interaction: CommandInteraction
-  ): Promise<TCommandMetaSlashCallbackReturnType>;
+  ): Promise<TCommandSlashCallbackReturnType>;
   public async runCommand(
-    command: Command<TCommandMetaLegacy | TCommandMetaSlash>,
+    command: BaseCommand,
     args: string[] | Map<string, TCommandArg>,
     text: string,
     messageOrInteraction: Message | CommandInteraction
   ): Promise<
-    | TCommandMetaLegacyCallbackReturnType
-    | TCommandMetaSlashCallbackReturnType
-    | null
+    TCommandLegacyCallbackReturnType | TCommandSlashCallbackReturnType | null
   > {
     const usageBase: TCommandUsageBase = {
       client: command.instance.client,

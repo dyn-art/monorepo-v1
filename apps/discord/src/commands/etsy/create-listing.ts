@@ -31,10 +31,6 @@ export default {
   callback: async ({ interaction, args }) => {
     console.log(args);
 
-    // interaction.reply({
-    //   content: 'Pong',
-    // });
-
     return {
       content: 'Jeff',
     };

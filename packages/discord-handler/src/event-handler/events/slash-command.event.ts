@@ -1,5 +1,6 @@
 import { CommandInteraction, InteractionType } from 'discord.js';
 import { TCommandArg } from '../../command-handler';
+import { isComponentSlashCommandModalMetaType } from '../../components-handler';
 import { parseArgs } from '../../utils/parse-args';
 import { TEventMeta } from '../Event';
 
@@ -63,7 +64,13 @@ export default {
       return;
     }
 
-    // Send response
+    // Handle modal response
+    if (isComponentSlashCommandModalMetaType(response)) {
+      // TODO:
+      return;
+    }
+
+    // Handle reply & edit response
     if (sendTyping) {
       interaction.editReply(response).catch(() => {
         // do nothing

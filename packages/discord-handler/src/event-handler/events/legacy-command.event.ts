@@ -1,4 +1,5 @@
 import { TCommandArg } from '../../command-handler';
+import { isComponentLegacyCommandModalMetaType } from '../../components-handler';
 import { parseArgs } from '../../utils/parse-args';
 import { TEventMeta } from '../Event';
 
@@ -62,7 +63,13 @@ export default {
       return;
     }
 
-    // Send response
+    // Handle modal response
+    if (isComponentLegacyCommandModalMetaType(response)) {
+      // TODO:
+      return;
+    }
+
+    // Handle reply & edit response
     if (reply) {
       message.reply(response).catch(() => {
         // do nothing
