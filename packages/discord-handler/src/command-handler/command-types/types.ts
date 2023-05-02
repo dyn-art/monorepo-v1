@@ -64,8 +64,8 @@ export type TCommandUsageBase = {
   member: GuildMember | APIInteractionGuildMember | null;
   user: User;
   channel: TextBasedChannel | null;
-  registerModal?: (meta: TComponentModalMeta) => void;
-  registerButton?: (meta: TComponentButtonMeta) => void;
+  registerModal: (meta: Omit<TComponentModalMeta, 'type'>) => void;
+  registerButton: (meta: Omit<TComponentButtonMeta, 'type'>) => void;
 };
 
 export type TCommandArg = {

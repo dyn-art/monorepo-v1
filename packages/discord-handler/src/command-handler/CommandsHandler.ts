@@ -1,5 +1,9 @@
 import { ApplicationCommand, CommandInteraction, Message } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
+import {
+  TComponentButtonMeta,
+  TComponentModalMeta,
+} from '../components-handler';
 import { logger } from '../logger';
 import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import CommandType from './CommandType';
@@ -276,8 +280,12 @@ export default class CommandsHandler {
           ? messageOrInteraction.author
           : messageOrInteraction.user,
       channel: messageOrInteraction.channel,
-      registerButton: this._instance.componentsHandler?.registerButton,
-      registerModal: this._instance.componentsHandler?.registerModal,
+      registerButton: (meta: Omit<TComponentButtonMeta, 'type'>) => {
+        this._instance.componentsHandler?.registerButton(meta);
+      },
+      registerModal: (meta: Omit<TComponentModalMeta, 'type'>) => {
+        this._instance.componentsHandler?.registerModal(meta);
+      },
     };
 
     let usage: TCommandUsage;

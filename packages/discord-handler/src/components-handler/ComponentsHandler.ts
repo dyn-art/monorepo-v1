@@ -32,7 +32,7 @@ export default class ComponentsHandler {
     return [...this._modals.values(), ...this._buttons.values()];
   }
 
-  public registerModal(meta: TComponentModalMeta) {
+  public registerModal(meta: Omit<TComponentModalMeta, 'type'>) {
     const { removeAfterSubmit = false, modal } = meta;
     const customId = modal?.data.custom_id;
     let key = meta.key ?? customId ?? uuidv4();
@@ -62,7 +62,7 @@ export default class ComponentsHandler {
     return this._modals.delete(key);
   }
 
-  public registerButton(meta: TComponentButtonMeta) {
+  public registerButton(meta: Omit<TComponentButtonMeta, 'type'>) {
     const { removeAfterSubmit = false, button } = meta;
     const customId = button?.data['custom_id'];
     let key = meta.key ?? customId ?? uuidv4();

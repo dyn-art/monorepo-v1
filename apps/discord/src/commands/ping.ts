@@ -1,6 +1,8 @@
 import { CommandType, ComponentType, TCommandMeta } from '@pda/discord-handler';
 import {
   ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   ModalActionRowComponentBuilder,
   ModalBuilder,
   TextInputBuilder,
@@ -11,7 +13,7 @@ export default [
   {
     type: CommandType.LEGACY,
     argsOptions: { options: [{ type: 'boolean', name: 'cat', short: 'c' }] },
-    callback: async ({ args, client }) => {
+    callback: async ({ args, client, registerButton }) => {
       const botTestingChannel = client.channels.cache.get(
         '1099266406828220498'
       );
@@ -19,9 +21,25 @@ export default [
         botTestingChannel.send('/imagine prompt:a boat');
       }
 
+      const againButton = new ButtonBuilder()
+        .setCustomId('again')
+        .setLabel('Again')
+        .setStyle(ButtonStyle.Success);
+
+      const actionRow = new ActionRowBuilder().addComponents(againButton);
+      registerButton({
+        button: againButton,
+        callback: async ({ interaction }) => {
+          await interaction.reply({
+            content: 'Pong again :)',
+          });
+        },
+      });
+
       return {
         // @ts-ignore
         content: args.get('cat')?.value ? 'Pong to cat' : 'Pong',
+        components: [actionRow],
       };
     },
   },
