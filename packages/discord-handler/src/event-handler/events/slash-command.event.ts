@@ -67,7 +67,7 @@ export default {
     // Handle modal response
     if (isComponentModalMetaType(response)) {
       if (componentsHandler != null) {
-        componentsHandler.addModal(response);
+        componentsHandler.registerModal(response);
         if (response.modal != null) {
           await interaction.showModal(response.modal);
         }

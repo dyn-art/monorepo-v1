@@ -11,6 +11,10 @@ import {
   User,
 } from 'discord.js';
 import DcClientHandler from '../../DcClientHandler';
+import {
+  TComponentButtonMeta,
+  TComponentModalMeta,
+} from '../../components-handler';
 import CommandType from '../CommandType';
 import BaseCommand from './BaseCommand';
 import { TCommandMetaLegacy, TCommandUsageLegacy } from './LegacyCommand';
@@ -60,6 +64,8 @@ export type TCommandUsageBase = {
   member: GuildMember | APIInteractionGuildMember | null;
   user: User;
   channel: TextBasedChannel | null;
+  registerModal?: (meta: TComponentModalMeta) => void;
+  registerButton?: (meta: TComponentButtonMeta) => void;
 };
 
 export type TCommandArg = {

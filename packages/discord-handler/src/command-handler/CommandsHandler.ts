@@ -276,6 +276,8 @@ export default class CommandsHandler {
           ? messageOrInteraction.author
           : messageOrInteraction.user,
       channel: messageOrInteraction.channel,
+      registerButton: this._instance.componentsHandler?.registerButton,
+      registerModal: this._instance.componentsHandler?.registerModal,
     };
 
     let usage: TCommandUsage;
