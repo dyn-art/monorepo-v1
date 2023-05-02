@@ -11,27 +11,30 @@ export default [
   {
     type: CommandType.LEGACY,
     argsOptions: { options: [{ type: 'boolean', name: 'cat', short: 'c' }] },
-    callback: async ({ args }) => {
-      console.log(args);
+    callback: async ({ args, client }) => {
+      const botTestingChannel = client.channels.cache.get(
+        '1099266406828220498'
+      );
+      if (botTestingChannel != null && botTestingChannel.isTextBased()) {
+        botTestingChannel.send('/imagine prompt:a boat');
+      }
 
       return {
         // @ts-ignore
-        content: args.get('evil').value ? 'Cat Pong' : 'Pong',
+        content: args.get('cat')?.value ? 'Pong to cat' : 'Pong',
       };
     },
   },
   {
     type: CommandType.SLASH,
-    callback: async ({ interaction }) => {
-      // TODO:
-
+    callback: async () => {
       const modal = new ModalBuilder()
-        .setCustomId('test')
-        .setTitle('My Test Modal');
+        .setCustomId('ping')
+        .setTitle('My Ping Modal');
 
       const title = new TextInputBuilder()
-        .setCustomId('title')
-        .setLabel('Title')
+        .setCustomId('name')
+        .setLabel('Your Name')
         .setRequired(true)
         .setStyle(TextInputStyle.Short);
 
@@ -45,11 +48,12 @@ export default [
       return {
         type: ComponentType.MODAL,
         modal,
+        // removeAfterSubmit: true,
         callback: async ({ interaction }) => {
           await interaction.reply({
-            content: `Hello There: ${interaction.fields.getTextInputValue(
-              'title'
-            )}`,
+            content: `Pong to '${interaction.fields.getTextInputValue(
+              'name'
+            )}'`,
           });
         },
       };

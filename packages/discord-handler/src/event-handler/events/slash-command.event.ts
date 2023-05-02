@@ -68,7 +68,9 @@ export default {
     if (isComponentModalMetaType(response)) {
       if (componentsHandler != null) {
         componentsHandler.addModal(response);
-        await interaction.showModal(response.modal);
+        if (response.modal != null) {
+          await interaction.showModal(response.modal);
+        }
       }
       return;
     }

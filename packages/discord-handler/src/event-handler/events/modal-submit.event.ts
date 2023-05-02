@@ -12,15 +12,19 @@ export default {
     }
 
     // Get Modal Component
-    const modalComponent = componentsHandler?.modals.get(interaction.customId);
+    const key = interaction.customId;
+    const modalComponent = componentsHandler.modals.get(key);
     if (modalComponent == null) {
       return;
     }
 
-    // Call callback
+    // Call callback and remove
     modalComponent.meta.callback({
       interaction,
-      modalComponent: modalComponent as any,
+      modalComponent,
     });
+    if (modalComponent.meta.removeAfterSubmit) {
+      componentsHandler.removeModal(key);
+    }
   },
 } as TEventMeta;
