@@ -8,7 +8,6 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "pnpm run bundle && shx rm -rf dist && tsc",
-    "bundle": "shx rm -rf bundle && esno ./scripts/bundle",
     "start:dev": "tsc -w",
     "start:remotion": "remotion preview ./ui/src/index.ts --config ./ui/remotion.config.ts",
     "lint": "eslint --cache \"**/*.{js,ts}\"",

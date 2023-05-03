@@ -1,4 +1,4 @@
-import { renderByCompositionName } from '@pda/poster-renderer';
+import { renderByCompositionName } from '@pda/product-renderer';
 
 async function run() {
   const { outputPath, clear } = await renderByCompositionName(

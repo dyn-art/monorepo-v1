@@ -1,14 +1,14 @@
 {
-  "name": "@pda/poster-renderer",
+  "name": "@pda/product-renderer",
   "version": "0.0.0",
-  "description": "Utility library to work with Music and communicate with Spotify or Genius",
+  "description": "Render Products using Remotion",
   "private": true,
   "main": "dist/index.js",
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "pnpm run bundle && shx rm -rf dist && tsc",
-    "bundle": "shx rm -rf bundle && esno ./scripts/bundle",
+    "bundle": "shx rm -rf bundle && ts-node ./scripts/bundle",
     "start:dev": "tsc -w",
     "start:remotion": "remotion preview ./ui/src/index.ts --config ./ui/remotion.config.ts",
     "lint": "eslint --cache \"**/*.{js,ts}\"",

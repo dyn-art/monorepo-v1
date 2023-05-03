@@ -27,11 +27,16 @@
         "./packages/music",
         "./packages/ads-renderer",
         "./packages/ads-renderer/ui",
-        "./packages/poster-renderer",
+        "./packages/product-renderer",
+        "./packages/product-renderer/ui",
+        "./packages/product-renderer/scripts",
         "./packages/utils",
     ],
     "cSpell.words": [
         "pda"
     ],
-    "files.associations": { "*.scss": "postcss" },
+    "files.associations": { 
+        "*.scss": "postcss",
+        "*.ts": "typescript",
+    },
 }
