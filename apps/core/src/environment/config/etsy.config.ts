@@ -1,9 +1,9 @@
 import appConfig from './app.config';
 
-const appName = process.env.ETSY_APP_NAME ?? 'unknown';
-const clientId = process.env.ETSY_KEY_STRING ?? 'unknown';
-const sharedSecret = process.env.ETSY_SHARED_SECRET ?? 'unknown';
-const refreshToken = process.env.ETSY_REFRESH_TOKEN ?? 'unknown';
+const appName = process.env.ETSY_APP_NAME ?? 'not-set';
+const clientId = process.env.ETSY_KEY_STRING ?? 'not-set';
+const sharedSecret = process.env.ETSY_SHARED_SECRET ?? 'not-set';
+const refreshToken = process.env.ETSY_REFRESH_TOKEN ?? 'not-set';
 const refreshTokenExpiresAt = process.env.ETSY_REFRESH_TOKEN_EXPIRES_AT;
 
 export default {

@@ -7,7 +7,7 @@ const packageVersion = process.env.npm_package_version;
 const baseUrl = process.env.APP_BASE_URL ?? 'http://localhost:{}';
 const corsOrigins = process.env.APP_CORS_ORIGIN ?? 'http://localhost:3000';
 const nodeEnv = process.env.NODE_ENV ?? STAGE.LOCAL;
-const rootPath = process.cwd() ?? 'unknown';
+const rootPath = process.cwd() ?? 'not-set';
 
 export default {
   version,

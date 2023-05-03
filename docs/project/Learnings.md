@@ -1,4 +1,4 @@
-👨‍🏫 Learnings
+# 👨‍🏫 Learnings
 
 ## [Prisma](https://www.prisma.io/)
 - [How to Build a REST API with Prisma and PostgreSQL](https://www.digitalocean.com/community/tutorials/how-to-build-a-rest-api-with-prisma-and-postgresql)
@@ -55,3 +55,11 @@ SET search_path = my_schema, public;
 This sets the search path to first look for objects in the my_schema schema, then in the public schema (the default schema). You can use the SHOW search_path command to view the current search path.
 
 In summary, schemas are a powerful tool for organizing your database objects in PostgreSQL, and can help you avoid naming conflicts, provide better security, and manage your database more effectively.
+
+## [DiscordJs](https://discord.js.org/#/)
+
+### How to use `/commands`
+> https://www.youtube.com/watch?v=pXehoXnFxPM
+
+### How to create own `Command Handler`
+> https://www.youtube.com/watch?v=0NqG6tq-TLc

@@ -8,12 +8,12 @@ import {
 } from './types';
 
 export class SpotifyClient {
-  private readonly httpClient: AxiosInstance;
-  public readonly authService: OAuth2Service;
+  private readonly _httpClient: AxiosInstance;
+  public readonly _authService: OAuth2Service;
 
   constructor(authService: OAuth2Service) {
-    this.authService = authService;
-    this.httpClient = axios.create({
+    this._authService = authService;
+    this._httpClient = axios.create({
       baseURL: spotifyConfig.baseUrl,
       headers: {
         'Content-Type': 'application/json',
@@ -24,9 +24,9 @@ export class SpotifyClient {
 
   private setupInterceptors() {
     // Intercept requests to inject the Authorization header
-    this.httpClient.interceptors.request.use(
+    this._httpClient.interceptors.request.use(
       async (config) => {
-        const token = await this.authService.getAccessToken();
+        const token = await this._authService.getAccessToken();
         if (token != null) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -47,7 +47,7 @@ export class SpotifyClient {
   }): Promise<TSearchResponseDto | null> {
     const { query, type, market, limit = 5 } = options;
     try {
-      const response = await this.httpClient.get<TSearchResponseDto>(
+      const response = await this._httpClient.get<TSearchResponseDto>(
         '/search',
         {
           params: {
@@ -67,7 +67,7 @@ export class SpotifyClient {
 
   public async getTrack(id: string): Promise<TGetTrackResponseDto | null> {
     try {
-      const response = await this.httpClient.get<TGetTrackResponseDto>(
+      const response = await this._httpClient.get<TGetTrackResponseDto>(
         `/tracks/${id}`
       );
       return response.data;

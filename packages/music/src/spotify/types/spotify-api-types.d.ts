@@ -1832,7 +1832,7 @@ declare namespace SpotifyApi {
     is_playing: boolean;
     item: TrackObjectFull | EpisodeObject | null;
     context: ContextObject | null;
-    currently_playing_type: 'track' | 'episode' | 'ad' | 'unknown';
+    currently_playing_type: 'track' | 'episode' | 'ad' | 'not-set';
   }
 
   interface UserDevice {

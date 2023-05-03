@@ -3,17 +3,17 @@ import { spotifyConfig } from '../environment';
 import { TAuthResponseDto } from './types';
 
 export class OAuth2Service {
-  private readonly httpClient: AxiosInstance;
+  private readonly _httpClient: AxiosInstance;
 
-  public readonly config: TOAuth2Config;
+  private readonly _config: TOAuth2Config;
 
-  private accessToken: string | null = null;
-  private accessTokenExpiresAt = 0;
-  private readonly accessTokenPuffer = 60 * 5; // 5min
+  private _accessToken: string | null = null;
+  private _accessTokenExpiresAt = 0;
+  private readonly _accessTokenPuffer = 60 * 5; // 5min
 
   constructor(config: TOAuth2Config, httpClient: AxiosInstance = axios) {
-    this.config = config;
-    this.httpClient = httpClient;
+    this._config = config;
+    this._httpClient = httpClient;
   }
 
   /**
@@ -23,11 +23,11 @@ export class OAuth2Service {
    */
   public async getAccessToken(force = false): Promise<string | null> {
     if (
-      Date.now() < this.accessTokenExpiresAt &&
-      this.accessToken != null &&
+      Date.now() < this._accessTokenExpiresAt &&
+      this._accessToken != null &&
       !force
     ) {
-      return this.accessToken;
+      return this._accessToken;
     }
     return await this.retrieveAccessTokenByClientCredentialsFlow();
   }
@@ -43,7 +43,7 @@ export class OAuth2Service {
   > {
     try {
       // Prepare headers
-      const authString = `${this.config.clientId}:${this.config.clientSecret}`;
+      const authString = `${this._config.clientId}:${this._config.clientSecret}`;
       const encodedAuthString = Buffer.from(authString).toString('base64');
       const headers = {
         Authorization: `Basic ${encodedAuthString}`,
@@ -54,7 +54,7 @@ export class OAuth2Service {
       const body = 'grant_type=client_credentials';
 
       // Send request
-      const response = await this.httpClient.post<TAuthResponseDto>(
+      const response = await this._httpClient.post<TAuthResponseDto>(
         spotifyConfig.auth.tokenEndpoint,
         body,
         { headers }
@@ -75,17 +75,17 @@ export class OAuth2Service {
   ): string | null {
     if (data.access_token == null || data.expires_in == null) return null;
 
-    this.accessToken = data.access_token;
-    this.accessTokenExpiresAt =
-      Date.now() + (data.expires_in - this.accessTokenPuffer) * 1000;
+    this._accessToken = data.access_token;
+    this._accessTokenExpiresAt =
+      Date.now() + (data.expires_in - this._accessTokenPuffer) * 1000;
 
     console.log(
       `Successfully retrieved new Spotify Access Token that will expire at ${new Date(
-        this.accessTokenExpiresAt
+        this._accessTokenExpiresAt
       ).toLocaleTimeString()}`
     );
 
-    return this.accessToken;
+    return this._accessToken;
   }
 }
 

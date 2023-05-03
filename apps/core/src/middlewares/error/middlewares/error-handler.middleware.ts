@@ -17,7 +17,7 @@ export function errorHandlerMiddleware(
 ) {
   let statusCode = 500;
   const jsonResponse: TErrorJsonResponseDto = {
-    error: 'unknown',
+    error: 'not-set',
     error_description: null,
     error_uri: null,
   };
