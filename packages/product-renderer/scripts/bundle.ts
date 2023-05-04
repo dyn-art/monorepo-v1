@@ -1,6 +1,6 @@
 import { bundle as bundleRemotion } from '@remotion/bundler';
 import path from 'path';
-import { webpackOverride } from './webpack-override';
+import { webpackOverride } from '../ui/webpack-override';
 
 const ENTRY = path.join(__dirname, '../ui/src/index.ts');
 const OUT = path.join(__dirname, '../bundle');

@@ -1,10 +1,5 @@
 import { WebpackConfiguration } from 'remotion';
-
-// Using 'require' instead of 'import' to bypass TypeScript compilation issue
-// when loading 'postcss.config.js' located outside the 'rootDir'.
-// This is a workaround to avoid the error:
-// "File 'postcss.config.js' is not under 'rootDir'. 'rootDir' is expected to contain all source files."
-const postcssConfig = require('../ui/postcss.config.js');
+import * as postcssConfig from './postcss.config';
 
 // Based on:
 // https://github.com/remotion-dev/template-tailwind
