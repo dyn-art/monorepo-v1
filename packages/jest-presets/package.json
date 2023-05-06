@@ -1,0 +1,21 @@
+{
+  "name": "@pda/jest-presets",
+  "version": "0.0.0",
+  "description": "Jest Configuration",
+  "private": true,
+  "scripts": {
+    "clean": "shx rm -rf node_modules && shx -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install"
+  },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^4.9.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

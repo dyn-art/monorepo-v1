@@ -6,7 +6,8 @@
     "lib": ["es2015"],
     "target": "esnext",
     "module": "commonjs",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
   "include": ["src"]
 }

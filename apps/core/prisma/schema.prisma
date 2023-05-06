@@ -1,0 +1,31 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// Models
+// ============================================================================
+
+model Configuration {
+  id                  Int      @id @default(autoincrement())
+  last_poll_timestamp DateTime @default(now())
+}
+
+model EtsyUser {
+  id          Int    @id
+  email       String
+  name        String
+  first_line  String
+  second_line String
+  city        String
+  state       String
+  zip         String
+}

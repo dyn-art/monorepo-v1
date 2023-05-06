@@ -1,10 +1,17 @@
 {
   "name": "@pda/tsconfig",
   "version": "0.0.0",
+  "description": "Typescript Configuration",
   "private": true,
+  "scripts": {},
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {},
   "files": [
     "base.json",
-    "nextjs.json",
+    "node.json",
     "react-library.json"
   ]
 }

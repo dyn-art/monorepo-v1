@@ -8,18 +8,26 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "start:dev": "turbo run start:dev",
+    "clean": "turbo run clean",
+    "install:clean": "turbo run install:clean",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{js,ts,tsx,md}\"",
+    "dc:build": "docker-compose build --progress=plain --no-cache",
+    "dc:up": "docker-compose up --build -d",
+    "dc:down": "docker-compose down"
   },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "ISC",
   "devDependencies": {
-    "eslint-config-pda": "workspace:*",
-    "prettier": "latest",
-    "turbo": "latest"
+    "esno": "^0.16.3",
+    "prettier": "^2.8.7",
+    "shx": "^0.3.4",
+    "turbo": "^1.9.3"
   },
   "engines": {
     "node": ">=14.0.0"
   },
-  "dependencies": {},
-  "packageManager": "pnpm@7.13.6"
+  "packageManager": "pnpm@8.3.1"
 }

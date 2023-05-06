@@ -9,7 +9,13 @@
     "lint": {
       "outputs": []
     },
-    "dev": {
+    "start:dev": {
+      "cache": false
+    },
+    "install:clean": {
+      "cache": false
+    },
+    "clean": {
       "cache": false
     }
   }

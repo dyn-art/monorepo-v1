@@ -1,47 +1,51 @@
-# Turborepo starter
+<p align="center">
+  <a href="#">
+    
+  </a>
+  <p align="center">
+   <img width="150" height="150" src="./docs/resources/assets/images/logo-rounded.png" alt="Logo">
+  </p>
+  <h1 align="center"><b>Physical.Art</b></h1>
+  <p align="center">
+  From digital to your wall.
+    <br />
+    <a href="https://physical.art"><strong>physical.art »</strong></a>
+    <br />
+    <br />
+    <b>Check us out on </b>
+    <a href="https://www.etsy.com/">Etsy</a>
+    ·
+    <a href="https://twitter.com/physicaldotart">Twitter</a>
+    ·
+    <a href="https://discord.gg/VDgNgundYf">Discord</a>
+    ·
+    Instagram
+    ·
+    TikTok
+    ·
+    YouTube
+  </p>
+</p>
 
-This is an official pnpm starter turborepo.
+---
 
-## WIP
-- https://github.com/vercel/turbo/blob/main/examples/with-tailwind/
-  https://github.com/physical-art/physicaldotart/blob/master/packages/
+# 🆔 License
+`physicaldotart` monorepo is licensed under the [GNU GENERAL PUBLIC License](https://opensource.org/license/gpl-3-0/).
 
-## What's inside?
+---
+# 🙏 Contribution
 
-This turborepo uses [pnpm](https://pnpm.io) as a package manager. It includes the following packages/apps:
+### 🔴 Debug via Jest Test
+- [StackOverflow](https://stackoverflow.com/questions/33247602/how-do-you-debug-jest-tests)
 
-### Apps and Packages
+1. Start `Javascript Debug` Terminal
+2. Set `🔴 Debug` Point
+3. Run test via `pnpm run test --watch`, for example:
+   ```sh
+   pnpm run test -- my-test --watch
+   ```
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+---
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm run build
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm run dev
-```
+# 🌟 Credit
+- Mono repo based on [`kitchen-sink` example](https://github.com/vercel/turbo/tree/main/examples/kitchen-sink)
