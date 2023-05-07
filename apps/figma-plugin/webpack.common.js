@@ -7,7 +7,7 @@ const postcssConfig = require('./postcss.config');
 /** @type { import('webpack').Configuration } */
 module.exports = {
   entry: {
-    ui: path.resolve('./src/index.tsx'),
+    ui: path.resolve('./src/root.tsx'),
     code: path.resolve('./src/code.ts'),
   },
   module: {
