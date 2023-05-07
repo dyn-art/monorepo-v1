@@ -7,8 +7,8 @@ const postcssConfig = require('./postcss.config');
 /** @type { import('webpack').Configuration } */
 module.exports = {
   entry: {
-    ui: path.resolve('./src/root.tsx'),
-    code: path.resolve('./src/code.ts'),
+    ui: path.resolve('./src/ui/index.tsx'),
+    code: path.resolve('./src/background/index.ts'),
   },
   module: {
     rules: [
@@ -48,7 +48,7 @@ module.exports = {
     }),
     // Html Loader (from React Component chunk)
     new HtmlPlugin({
-      template: './src/root.html',
+      template: './src/ui/index.html',
       filename: `ui.html`,
       chunks: ['ui'],
     }),
