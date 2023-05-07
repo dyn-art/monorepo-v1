@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@figma"
+    ],
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
   },
   "extends": "@pda/tsconfig/react-base.json",
   "include": ["src"]

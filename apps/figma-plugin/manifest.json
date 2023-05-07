@@ -1,0 +1,10 @@
+{
+  "name": "physical.art",
+  "id": "1236939453125573819",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": ["figma"],
+  "ui": "ui.html"
+}

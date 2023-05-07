@@ -17,6 +17,7 @@
         "./apps/chrome",
         "./apps/core",
         "./apps/discord",
+        "./apps/figma-plugin",
         "./apps/web",
         "./apps/order-worker",
         "./packages/ai",

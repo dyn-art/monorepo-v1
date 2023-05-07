@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx",
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "extends": "@pda/tsconfig/node.json",
+  "extends": "@pda/tsconfig/react-base.json",
   "include": ["src"]
 }

@@ -1,7 +1,7 @@
 {
   "name": "@pda/discord",
   "version": "0.0.0",
-  "description": "Core Backend",
+  "description": "Discord App",
   "private": true,
   "main": "index.js",
   "scripts": {

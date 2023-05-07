@@ -1,3 +1,3 @@
-import A3Canvas from './a3-canvas';
+import ImageComposition from './ImageComposition';
 
-export { A3Canvas };
+export { ImageComposition };
