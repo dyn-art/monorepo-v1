@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@figma"
+    ],
     "outDir": "./dist",
     "rootDir": "./src"
   },
   "extends": "@pda/tsconfig/node.json",
-  "include": ["src", "types"],
+  "include": ["src"],
   "exclude": [
     "**/__tests__/*",
     "**/*.test.ts"

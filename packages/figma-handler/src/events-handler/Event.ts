@@ -4,7 +4,7 @@ import {
   DocumentChangeEvent,
   DropEvent,
   RunEvent,
-} from '../types/figma';
+} from './types';
 
 export default class Event<TMeta extends TEventMeta = TEventMeta> {
   public readonly instance: FigmaClientHandler;
@@ -39,12 +39,15 @@ export type TUIEvents = {
 // Event Types
 // ============================================================================
 
-export type TEvents = {
+export type TBaseEvents = {
   run: [RunEvent];
   drop: [DropEvent];
   documentchange: [DocumentChangeEvent];
-} & ArgFreeEvents &
-  RemappedNestedEvents<'ui', TUIEvents>;
+};
+
+export type TEvents = ArgFreeEvents &
+  RemappedNestedEvents<'ui', TUIEvents> &
+  TBaseEvents;
 
 // ============================================================================
 // Base Types
