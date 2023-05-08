@@ -81,7 +81,7 @@ importers:
   apps/discord:
     dependencies:
       '@pda/discord-handler':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/discord-handler
       discord.js:
         specifier: ^14.9.0
@@ -123,6 +123,9 @@ importers:
 
   apps/figma-plugin:
     dependencies:
+      '@pda/figma-handler':
+        specifier: workspace:*
+        version: link:../../packages/figma-handler
       daisyui:
         specifier: ^2.51.6
         version: 2.51.6(autoprefixer@10.4.14)(postcss@8.4.23)(ts-node@10.9.1)

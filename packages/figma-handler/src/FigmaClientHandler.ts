@@ -1,49 +1,30 @@
-import { defineConfig } from '@pda/utils';
+import { TEventMeta } from './events-handler';
 import EventsHandler from './events-handler/EventsHandler';
 
 export default class FigmaClientHandler {
-  private readonly _figma: typeof figma;
+  private readonly _client: typeof figma;
 
   private _eventsHandler?: EventsHandler;
 
-  constructor(
-    figmaInstance: typeof figma,
-    config: TFigmaClientHandlerConfig = {}
-  ) {
-    const { events } = config;
-    const eventsConfig =
-      events != null
-        ? defineConfig(events, {
-            fileSuffixes: ['.ts', '.js'],
-          })
-        : null;
-
-    this._figma = figmaInstance;
-
-    this.initEvents(eventsConfig);
+  constructor(client: typeof figma, config: TFigmaClientHandlerConfig = {}) {
+    const { events = [] } = config;
+    this._client = client;
+    this.initEvents(events);
   }
 
-  public get figma() {
-    return this._figma;
+  public get client() {
+    return this._client;
   }
 
   public get eventsHandler() {
     return this._eventsHandler;
   }
 
-  private async initEvents(
-    config: Required<TFigmaClientHandlerConfig['events']> | null
-  ) {
-    this._eventsHandler = new EventsHandler(this, {
-      eventsDir: config?.eventsDir,
-      fileSuffixes: config?.fileSuffixes,
-    });
+  private async initEvents(events: TEventMeta[]) {
+    this._eventsHandler = new EventsHandler(this, events);
   }
 }
 
 type TFigmaClientHandlerConfig = {
-  events?: {
-    eventsDir: string;
-    fileSuffixes?: string[];
-  };
+  events?: TEventMeta[];
 };

@@ -1,7 +1,8 @@
-import { TFile, flattenFileTree, getFilesTree, uuidv4 } from '@pda/utils';
+import { uuidv4 } from '@pda/utils';
 import path from 'path';
 import DcClientHandler from '../DcClientHandler';
 import { logger } from '../logger';
+import { TFile, flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import Event, { TEventMeta } from './Event';
 
 export default class EventsHandler {

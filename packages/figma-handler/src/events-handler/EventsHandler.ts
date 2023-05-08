@@ -1,47 +1,23 @@
-import { TFile, flattenFileTree, getFilesTree, uuidv4 } from '@pda/utils';
-import path from 'path';
+import { uuidv4 } from '@pda/utils';
 import FigmaClientHandler from '../FigmaClientHandler';
 import { logger } from '../logger';
 import Event, { TEventMeta } from './Event';
+import defaultEvents from './events';
 
 export default class EventsHandler {
   private readonly _instance: FigmaClientHandler;
-  private readonly _config: TEventsHandlerConfig;
 
   private _events: Map<string, Event> = new Map();
 
-  private static DEFAULT_EVENTS_DIR = path.join(__dirname, 'events');
-
-  constructor(instance: FigmaClientHandler, config: TEventsHandlerConfig) {
+  constructor(instance: FigmaClientHandler, events: TEventMeta[] = []) {
     this._instance = instance;
-    this._config = config;
-
-    this.initializeEventsFromDirectory(
-      this._config.eventsDir,
-      this._config.fileSuffixes
-    );
+    this.initializeEvents([...defaultEvents, ...events]);
   }
 
-  private async initializeEventsFromDirectory(
-    eventsDir?: string,
-    fileSuffixes: string[] = []
-  ) {
-    const eventFiles: TFile[] = [];
-    if (eventsDir) {
-      const eventsFileTree = await getFilesTree(eventsDir, {
-        suffixes: fileSuffixes,
-      });
-      eventFiles.push(...flattenFileTree(eventsFileTree));
-    }
-    const defaultEventsFileTree = await getFilesTree(
-      EventsHandler.DEFAULT_EVENTS_DIR
-    );
-    eventFiles.push(...flattenFileTree(defaultEventsFileTree));
-
+  private async initializeEvents(events: TEventMeta[]) {
     // Create Events
-    for (const eventFile of eventFiles) {
-      const meta = eventFile.content as TEventMeta;
-      const event = this.createEvent(eventFile.name, meta);
+    for (const meta of events) {
+      const event = this.createEvent(meta);
       this._events.set(event.key, event);
     }
 
@@ -53,8 +29,8 @@ export default class EventsHandler {
     });
   }
 
-  private createEvent(fileName: string, meta: TEventMeta) {
-    let key = meta?.key ?? fileName;
+  private createEvent(meta: TEventMeta) {
+    let key = meta?.key ?? uuidv4();
     if (this._events.has(key)) {
       const previousKey = key;
       key = `${key}_${uuidv4()}`;
@@ -78,22 +54,22 @@ export default class EventsHandler {
       // Register UI Events
       if (typeCategory === 'ui') {
         if (event.meta.once) {
-          this._instance.figma.ui.once(type as any, (...args) => {
+          this._instance.client.ui.once(type as any, (...args) => {
             this.onEvent(event, args);
           });
         } else {
-          this._instance.figma.ui.on(type as any, (...args) => {
+          this._instance.client.ui.on(type as any, (...args) => {
             this.onEvent(event, args);
           });
         }
         // Register General Events
       } else {
         if (event.meta.once) {
-          this._instance.figma.once(type as any, (...args) => {
+          this._instance.client.once(type as any, (...args) => {
             this.onEvent(event, args);
           });
         } else {
-          this._instance.figma.on(type as any, (...args) => {
+          this._instance.client.on(type as any, (...args) => {
             this.onEvent(event, args);
           });
         }
@@ -114,6 +90,5 @@ export default class EventsHandler {
 }
 
 export type TEventsHandlerConfig = {
-  eventsDir?: string;
-  fileSuffixes?: string[];
+  events?: TEventMeta[];
 };

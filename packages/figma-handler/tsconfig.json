@@ -3,10 +3,11 @@
     "typeRoots": [
       "./node_modules/@figma"
     ],
+    "target": "es5",
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "extends": "@pda/tsconfig/node.json",
+  "extends": "@pda/tsconfig/shared-libraries.json",
   "include": ["src"],
   "exclude": [
     "**/__tests__/*",

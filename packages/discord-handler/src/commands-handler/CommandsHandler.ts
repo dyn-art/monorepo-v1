@@ -1,4 +1,3 @@
-import { flattenFileTree, getFilesTree } from '@pda/utils';
 import { ApplicationCommand, CommandInteraction, Message } from 'discord.js';
 import DcClientHandler from '../DcClientHandler';
 import {
@@ -6,6 +5,7 @@ import {
   TComponentModalMeta,
 } from '../components-handler';
 import { logger } from '../logger';
+import { flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import CommandType from './CommandType';
 import SlashCommandHelper from './SlashCommandHelper';
 import {
@@ -22,7 +22,6 @@ import {
   isLegacyCommandMeta,
   isSlashCommandMeta,
 } from './command-types';
-
 export default class CommandsHandler {
   private readonly _instance: DcClientHandler;
   private readonly _slashCommandHelper: SlashCommandHelper;
