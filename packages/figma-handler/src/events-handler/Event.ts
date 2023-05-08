@@ -1,10 +1,4 @@
 import FigmaClientHandler from '../FigmaClientHandler';
-import {
-  ArgFreeEventType,
-  DocumentChangeEvent,
-  DropEvent,
-  RunEvent,
-} from './types';
 
 export default class Event<TMeta extends TEventMeta = TEventMeta> {
   public readonly instance: FigmaClientHandler;
@@ -22,37 +16,6 @@ export default class Event<TMeta extends TEventMeta = TEventMeta> {
   }
 }
 
-// ============================================================================
-// UI Event Types
-// ============================================================================
-
-export type TUIMessageEvent = {
-  type: string;
-  args: any;
-};
-
-export type TUIEvents = {
-  message: [TUIMessageEvent];
-};
-
-// ============================================================================
-// Event Types
-// ============================================================================
-
-export type TBaseEvents = {
-  run: [RunEvent];
-  drop: [DropEvent];
-  documentchange: [DocumentChangeEvent];
-};
-
-export type TEvents = ArgFreeEvents &
-  RemappedNestedEvents<'ui', TUIEvents> &
-  TBaseEvents;
-
-// ============================================================================
-// Base Types
-// ============================================================================
-
 type TUIEventMetaBase<EventType extends keyof TEvents> = {
   key?: string; // By default file name command is specified in
   type: EventType;
@@ -68,17 +31,26 @@ export type TEventMeta = {
   [K in keyof TEvents]: TUIEventMetaBase<K>;
 }[keyof TEvents];
 
-// ============================================================================
-// Helper Types
-// ============================================================================
-
-type ArgFreeEvents = {
-  [K in ArgFreeEventType]: [];
+export type TUIMessageEvent = {
+  type: string;
+  args: any;
 };
 
-type RemappedNestedEvents<TName extends string, TNestedEvent> = {
-  [K in Extract<
-    keyof TNestedEvent,
-    string
-  > as `${TName}.${K}`]: TNestedEvent[K];
+// Note add to hardcode events as the Typescript compiler failed with more dynamic types based on @figma/..
+export type TEvents = {
+  run: [event: RunEvent];
+  drop: [event: DropEvent];
+  documentchange: [event: DocumentChangeEvent];
+  // UI Events
+  'ui.message': [event: TUIMessageEvent];
+  // ArgFree Events (ArgFreeEventType)
+  selectionchange: [];
+  currentpagechange: [];
+  close: [];
+  timerstart: [];
+  timerstop: [];
+  timerpause: [];
+  timerresume: [];
+  timeradjust: [];
+  timerdone: [];
 };
