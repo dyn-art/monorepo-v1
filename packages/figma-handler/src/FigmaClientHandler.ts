@@ -1,13 +1,14 @@
 import { defineConfig } from '@pda/utils';
 import EventsHandler from './events-handler/EventsHandler';
+import { PluginAPI } from './types/figma';
 
 export default class FigmaClientHandler {
-  private readonly _figma: typeof figma;
+  private readonly _figma: PluginAPI;
 
   private _eventsHandler?: EventsHandler;
 
   constructor(
-    figmaInstance: typeof figma,
+    figmaInstance: PluginAPI,
     config: TFigmaClientHandlerConfig = {}
   ) {
     const { events } = config;

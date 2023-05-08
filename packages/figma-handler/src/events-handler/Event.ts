@@ -1,4 +1,10 @@
 import FigmaClientHandler from '../FigmaClientHandler';
+import {
+  ArgFreeEventType,
+  DocumentChangeEvent,
+  DropEvent,
+  RunEvent,
+} from '../types/figma';
 
 export default class Event<TMeta extends TEventMeta = TEventMeta> {
   public readonly instance: FigmaClientHandler;

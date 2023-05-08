@@ -71,29 +71,29 @@ export default class EventsHandler {
       let typeCategory: string | null = null;
       const typeParts = type.split('.');
       if (typeParts.length === 2) {
-        typeCategory = typeCategory[0];
-        type = typeCategory[1];
+        typeCategory = typeParts[0];
+        type = typeParts[1];
       }
 
       // Register UI Events
       if (typeCategory === 'ui') {
         if (event.meta.once) {
-          this._instance.figma.ui.once(type, (...args) => {
+          this._instance.figma.ui.once(type as any, (...args) => {
             this.onEvent(event, args);
           });
         } else {
-          this._instance.figma.ui.on(type, (...args) => {
+          this._instance.figma.ui.on(type as any, (...args) => {
             this.onEvent(event, args);
           });
         }
         // Register General Events
       } else {
         if (event.meta.once) {
-          this._instance.figma.once(type, (...args) => {
+          this._instance.figma.once(type as any, (...args) => {
             this.onEvent(event, args);
           });
         } else {
-          this._instance.figma.on(type, (...args) => {
+          this._instance.figma.on(type as any, (...args) => {
             this.onEvent(event, args);
           });
         }
