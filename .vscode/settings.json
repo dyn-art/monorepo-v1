@@ -23,6 +23,7 @@
         "./packages/ai",
         "./packages/discord-handler",
         "./packages/etsy",
+        "./packages/figma-handler",
         "./packages/logger",
         "./packages/map",
         "./packages/music",

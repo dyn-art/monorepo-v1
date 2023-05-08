@@ -474,6 +474,34 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
 
+  packages/figma-handler:
+    dependencies:
+      '@pda/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@pda/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@figma/plugin-typings':
+        specifier: ^1.64.0
+        version: 1.64.0
+      '@pda/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/node':
+        specifier: ^18.15.13
+        version: 18.15.13
+      eslint:
+        specifier: ^8.38.0
+        version: 8.38.0
+      eslint-config-pda-base:
+        specifier: workspace:*
+        version: link:../eslint-config-pda-base
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
+
   packages/jest-presets:
     devDependencies:
       jest:

@@ -1,19 +1,18 @@
-import { uuidv4 } from '@pda/utils';
+import { TFile, flattenFileTree, getFilesTree, uuidv4 } from '@pda/utils';
 import path from 'path';
-import DcClientHandler from '../DcClientHandler';
+import FigmaClientHandler from '../FigmaClientHandler';
 import { logger } from '../logger';
-import { TFile, flattenFileTree, getFilesTree } from '../utils/get-file-tree';
 import Event, { TEventMeta } from './Event';
 
 export default class EventsHandler {
-  private readonly _instance: DcClientHandler;
+  private readonly _instance: FigmaClientHandler;
   private readonly _config: TEventsHandlerConfig;
 
   private _events: Map<string, Event> = new Map();
 
   private static DEFAULT_EVENTS_DIR = path.join(__dirname, 'events');
 
-  constructor(instance: DcClientHandler, config: TEventsHandlerConfig) {
+  constructor(instance: FigmaClientHandler, config: TEventsHandlerConfig) {
     this._instance = instance;
     this._config = config;
 
@@ -63,22 +62,41 @@ export default class EventsHandler {
         `The Event name '${previousKey}' has already been used! The Event has been renamed to '${key}'.`
       );
     }
-    // @ts-ignore (Expression produces a union type that is too complex to represent.)
     return new Event(this._instance, key, meta);
   }
 
   private registerEvents(events: Event[]) {
     for (const event of events) {
-      if (event.meta.once) {
-        this._instance.client.once(event.meta.type, (...args) =>
-          // @ts-ignore (Expression produces a union type that is too complex to represent.)
-          this.onEvent(event, args)
-        );
+      let type: string = event.meta.type;
+      let typeCategory: string | null = null;
+      const typeParts = type.split('.');
+      if (typeParts.length === 2) {
+        typeCategory = typeCategory[0];
+        type = typeCategory[1];
+      }
+
+      // Register UI Events
+      if (typeCategory === 'ui') {
+        if (event.meta.once) {
+          this._instance.figma.ui.once(type, (...args) => {
+            this.onEvent(event, args);
+          });
+        } else {
+          this._instance.figma.ui.on(type, (...args) => {
+            this.onEvent(event, args);
+          });
+        }
+        // Register General Events
       } else {
-        this._instance.client.on(event.meta.type, (...args) =>
-          // @ts-ignore (Expression produces a union type that is too complex to represent.)
-          this.onEvent(event, args)
-        );
+        if (event.meta.once) {
+          this._instance.figma.once(type, (...args) => {
+            this.onEvent(event, args);
+          });
+        } else {
+          this._instance.figma.on(type, (...args) => {
+            this.onEvent(event, args);
+          });
+        }
       }
     }
   }

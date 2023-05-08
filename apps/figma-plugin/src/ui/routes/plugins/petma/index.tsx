@@ -27,7 +27,7 @@ const PetmaPlugin: React.FC = () => {
 
   const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    parent.postMessage({ pluginMessage: formState }, '*');
+    parent.postMessage({ pluginMessage: { type: 'petma', formState } }, '*');
   };
 
   return (

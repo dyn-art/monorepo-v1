@@ -1,5 +1,5 @@
 import { CommandInteraction, InteractionType } from 'discord.js';
-import { TCommandArg } from '../../command-handler';
+import { TCommandArg } from '../../commands-handler';
 import { isComponentModalMetaType } from '../../components-handler';
 import { parseArgs } from '../../utils/parse-args';
 import { TEventMeta } from '../Event';

@@ -12,6 +12,15 @@ const Home: React.FC = () => {
         <li>
           <Link to="/plugins/petma">Petma</Link>
         </li>
+        <li>
+          <div
+            onClick={() => {
+              parent.postMessage({ pluginMessage: { type: 'test' } }, '*');
+            }}
+          >
+            Test
+          </div>
+        </li>
         <li className="menu-title">
           <span>Other</span>
         </li>
