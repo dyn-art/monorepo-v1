@@ -54,22 +54,22 @@ export default class EventsHandler {
       // Register UI Events
       if (typeCategory === 'ui') {
         if (event.meta.once) {
-          this._instance.client.ui.once(type as any, (...args) => {
+          this._instance.figma.ui.once(type as any, (...args) => {
             this.onEvent(event, args);
           });
         } else {
-          this._instance.client.ui.on(type as any, (...args) => {
+          this._instance.figma.ui.on(type as any, (...args) => {
             this.onEvent(event, args);
           });
         }
         // Register General Events
       } else {
         if (event.meta.once) {
-          this._instance.client.once(type as any, (...args) => {
+          this._instance.figma.once(type as any, (...args) => {
             this.onEvent(event, args);
           });
         } else {
-          this._instance.client.on(type as any, (...args) => {
+          this._instance.figma.on(type as any, (...args) => {
             this.onEvent(event, args);
           });
         }
@@ -80,13 +80,18 @@ export default class EventsHandler {
   private async onEvent(event: Event, args: any[]) {
     const { meta } = event;
     if (
-      (meta.shouldExecuteCallback == null ||
-        // @ts-ignore (Expression produces a union type that is too complex to represent.)
-        meta.shouldExecuteCallback(...args)) &&
-      (meta.type !== 'ui.message' || args[0]?.type === event.key)
-    ) {
+      meta.shouldExecuteCallback == null ||
       // @ts-ignore (Expression produces a union type that is too complex to represent.)
-      meta.callback(this._instance, ...args);
+      meta.shouldExecuteCallback(...args)
+    ) {
+      if (meta.type === 'ui.message') {
+        if (args[0]?.key === event.key) {
+          meta.callback(this._instance, args[0]?.args);
+        }
+      } else {
+        // @ts-ignore (Expression produces a union type that is too complex to represent.)
+        meta.callback(this._instance, ...args);
+      }
     }
   }
 }

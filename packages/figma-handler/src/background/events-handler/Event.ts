@@ -1,3 +1,4 @@
+import { TBaseUIMessageEvent } from '../../types';
 import FigmaBackgroundHandler from '../FigmaBackgroundHandler';
 
 export default class Event<TMeta extends TEventMeta = TEventMeta> {
@@ -19,8 +20,8 @@ export default class Event<TMeta extends TEventMeta = TEventMeta> {
 type TKeyForEventType<
   TUIMessageEvent extends TBaseUIMessageEvent,
   EventType extends keyof TEvents<TUIMessageEvent>
-> = TEvents<TUIMessageEvent>[EventType][0] extends { type: infer TType }
-  ? TType
+> = TEvents<TUIMessageEvent>[EventType][0] extends { key: infer TKey }
+  ? TKey
   : string | undefined;
 
 type TEventMetaBase<
@@ -32,7 +33,7 @@ type TEventMetaBase<
   once?: boolean;
   shouldExecuteCallback?: (
     ...args: TEvents<TUIMessageEvent>[EventType][0] extends {
-      type: TKeyForEventType<TUIMessageEvent, EventType>;
+      key: TKeyForEventType<TUIMessageEvent, EventType>;
       args: infer TArgs;
     }
       ? [args: TArgs]
@@ -41,7 +42,7 @@ type TEventMetaBase<
   callback: (
     instance: FigmaBackgroundHandler,
     ...args: TEvents<TUIMessageEvent>[EventType][0] extends {
-      type: TKeyForEventType<TUIMessageEvent, EventType>;
+      key: TKeyForEventType<TUIMessageEvent, EventType>;
       args: infer TArgs;
     }
       ? [args: TArgs]
@@ -82,9 +83,4 @@ export type TEvents<TUIMessageEvent extends TBaseUIMessageEvent> = {
   timerresume: [];
   timeradjust: [];
   timerdone: [];
-};
-
-export type TBaseUIMessageEvent = {
-  type: string;
-  args: any;
 };

@@ -15,7 +15,7 @@ export default class FigmaBackgroundHandler {
     this.initEvents(events);
   }
 
-  public get client() {
+  public get figma() {
     return this._figma;
   }
 

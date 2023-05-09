@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { uiHandler } from '../ui-handler';
 
 const Home: React.FC = () => {
   return (
@@ -12,7 +13,9 @@ const Home: React.FC = () => {
         <li>
           <div
             onClick={() => {
-              parent.postMessage({ pluginMessage: { type: 'test' } }, '*');
+              uiHandler.postMessage('intermediate-format-export-event', {
+                selectedElement: 'test',
+              });
             }}
           >
             Test
