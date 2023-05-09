@@ -10,9 +10,6 @@ const Home: React.FC = () => {
           <span>Plugins</span>
         </li>
         <li>
-          <Link to="/plugins/petma">Petma</Link>
-        </li>
-        <li>
           <div
             onClick={() => {
               parent.postMessage({ pluginMessage: { type: 'test' } }, '*');

@@ -5,8 +5,6 @@ import events from './events';
 figma.showUI(__html__);
 figma.ui.resize(300, 500);
 
-console.log({ events, figma });
-
 // Init Figma Client Handler
 new FigmaClientHandler(figma, {
   events,

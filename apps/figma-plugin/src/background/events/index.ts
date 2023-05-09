@@ -1,6 +1,6 @@
 import { TEventMeta } from '@pda/figma-handler';
-import testEvent from './test.event';
+import intermediateFormatExportEvent from './intermediate-format-export.event';
 
-const events: TEventMeta[] = [testEvent];
+const events: TEventMeta[] = [intermediateFormatExportEvent];
 
 export default events;

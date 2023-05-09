@@ -1,19 +1,22 @@
 import { TEventMeta } from './events-handler';
 import EventsHandler from './events-handler/EventsHandler';
 
-export default class FigmaClientHandler {
-  private readonly _client: typeof figma;
+export default class FigmaBackgroundHandler {
+  private readonly _figma: typeof figma;
 
   private _eventsHandler?: EventsHandler;
 
-  constructor(client: typeof figma, config: TFigmaClientHandlerConfig = {}) {
+  constructor(
+    figmaInstance: typeof figma,
+    config: TFigmaClientHandlerConfig = {}
+  ) {
     const { events = [] } = config;
-    this._client = client;
+    this._figma = figmaInstance;
     this.initEvents(events);
   }
 
   public get client() {
-    return this._client;
+    return this._figma;
   }
 
   public get eventsHandler() {

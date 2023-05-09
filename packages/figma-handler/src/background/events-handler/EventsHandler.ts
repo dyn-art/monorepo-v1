@@ -1,15 +1,15 @@
 import { uuidv4 } from '@pda/utils';
-import FigmaClientHandler from '../FigmaClientHandler';
-import { logger } from '../logger';
+import { logger } from '../../logger';
+import FigmaBackgroundHandler from '../FigmaBackgroundHandler';
 import Event, { TEventMeta } from './Event';
 import defaultEvents from './events';
 
 export default class EventsHandler {
-  private readonly _instance: FigmaClientHandler;
+  private readonly _instance: FigmaBackgroundHandler;
 
   private _events: Map<string, Event> = new Map();
 
-  constructor(instance: FigmaClientHandler, events: TEventMeta[] = []) {
+  constructor(instance: FigmaBackgroundHandler, events: TEventMeta[] = []) {
     this._instance = instance;
     this.initializeEvents([...defaultEvents, ...events]);
   }
