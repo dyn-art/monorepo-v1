@@ -78,13 +78,15 @@ export default class EventsHandler {
   }
 
   private async onEvent(event: Event, args: any[]) {
+    const { meta } = event;
     if (
-      event.meta.shouldExecuteCallback == null ||
-      // @ts-ignore (Expression produces a union type that is too complex to represent.)
-      event.meta.shouldExecuteCallback(...args)
+      (meta.shouldExecuteCallback == null ||
+        // @ts-ignore (Expression produces a union type that is too complex to represent.)
+        meta.shouldExecuteCallback(...args)) &&
+      (meta.type !== 'ui.message' || args[0]?.type === event.key)
     ) {
       // @ts-ignore (Expression produces a union type that is too complex to represent.)
-      event.meta.callback(this._instance, ...args);
+      meta.callback(this._instance, ...args);
     }
   }
 }
