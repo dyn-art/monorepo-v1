@@ -1,18 +1,21 @@
+import { TBaseFigmaMessageEvent } from '../shared-types';
 import { TBackgroundEventMeta } from './events-handler';
 import BackgroundEventsHandler from './events-handler/BackgroundEventsHandler';
 
-export default class FigmaBackgroundHandler {
+export default class FigmaBackgroundHandler<
+  TFigmaMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent
+> {
   private readonly _figma: typeof figma;
 
   private _eventsHandler?: BackgroundEventsHandler;
 
   constructor(
     figmaInstance: typeof figma,
-    config: TFigmaClientHandlerConfig = {}
+    config: TFigmaBackgroundHandlerConfig = {}
   ) {
     const { events = [] } = config;
     this._figma = figmaInstance;
-    this.initEvents(events);
+    this._eventsHandler = new BackgroundEventsHandler(this, events);
   }
 
   public get figma() {
@@ -23,11 +26,18 @@ export default class FigmaBackgroundHandler {
     return this._eventsHandler;
   }
 
-  private async initEvents(events: TBackgroundEventMeta[]) {
-    this._eventsHandler = new BackgroundEventsHandler(this, events);
+  public registerEvent(meta: TBackgroundEventMeta<TFigmaMessageEvent>) {
+    this._eventsHandler?.registerEvent(meta);
+  }
+
+  public postMessage<TKey extends TFigmaMessageEvent['key']>(
+    key: TKey,
+    args: Extract<TFigmaMessageEvent, { key: TKey }>['args']
+  ) {
+    this._figma.ui.postMessage({ key, args });
   }
 }
 
-type TFigmaClientHandlerConfig = {
+type TFigmaBackgroundHandlerConfig = {
   events?: TBackgroundEventMeta[];
 };

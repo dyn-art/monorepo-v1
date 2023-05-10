@@ -1,22 +1,39 @@
 import { TBaseFigmaMessageEvent } from '../shared-types';
+import { TUIEventMeta, UIEventsHandler } from './events-handler';
 
 export default class FigmaUIHandler<
-  TUIMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent
+  TFigmaMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent
 > {
   private readonly _parent: Window;
 
-  constructor(parentInstance: Window) {
+  private _eventsHandler?: UIEventsHandler;
+
+  constructor(parentInstance: Window, config: TFigmaUIHandlerConfig) {
+    const { events = [] } = config;
     this._parent = parentInstance;
+    this._eventsHandler = new UIEventsHandler(this, events);
   }
 
   public get parent() {
     return this._parent;
   }
 
-  public postMessage<TKey extends TUIMessageEvent['key']>(
+  public get eventsHandler() {
+    return this._eventsHandler;
+  }
+
+  public registerEvent(meta: TUIEventMeta<TFigmaMessageEvent>) {
+    this._eventsHandler?.registerEvent(meta);
+  }
+
+  public postMessage<TKey extends TFigmaMessageEvent['key']>(
     key: TKey,
-    args: Extract<TUIMessageEvent, { key: TKey }>['args']
+    args: Extract<TFigmaMessageEvent, { key: TKey }>['args']
   ) {
     this._parent.postMessage({ pluginMessage: { key, args } }, '*');
   }
 }
+
+type TFigmaUIHandlerConfig = {
+  events?: TUIEventMeta[];
+};
