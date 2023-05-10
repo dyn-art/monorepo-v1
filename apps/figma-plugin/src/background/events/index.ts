@@ -1,6 +1,6 @@
-import { TEventMeta } from '@pda/figma-handler';
+import { TUIEventMeta } from '@pda/figma-handler';
 import intermediateFormatExportEvent from './intermediate-format-export.event';
 
-const events: TEventMeta[] = [intermediateFormatExportEvent];
+const events: TUIEventMeta[] = [intermediateFormatExportEvent];
 
 export default events;

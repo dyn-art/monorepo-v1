@@ -1,7 +1,7 @@
-import { TBaseUIMessageEvent } from '../types';
+import { TBaseFigmaMessageEvent } from '../shared-types';
 
 export default class FigmaUIHandler<
-  TUIMessageEvent extends TBaseUIMessageEvent = TBaseUIMessageEvent
+  TUIMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent
 > {
   private readonly _parent: Window;
 

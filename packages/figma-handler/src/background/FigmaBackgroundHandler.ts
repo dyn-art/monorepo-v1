@@ -1,10 +1,10 @@
-import { TEventMeta } from './events-handler';
-import EventsHandler from './events-handler/EventsHandler';
+import { TBackgroundEventMeta } from './events-handler';
+import BackgroundEventsHandler from './events-handler/BackgroundEventsHandler';
 
 export default class FigmaBackgroundHandler {
   private readonly _figma: typeof figma;
 
-  private _eventsHandler?: EventsHandler;
+  private _eventsHandler?: BackgroundEventsHandler;
 
   constructor(
     figmaInstance: typeof figma,
@@ -23,11 +23,11 @@ export default class FigmaBackgroundHandler {
     return this._eventsHandler;
   }
 
-  private async initEvents(events: TEventMeta[]) {
-    this._eventsHandler = new EventsHandler(this, events);
+  private async initEvents(events: TBackgroundEventMeta[]) {
+    this._eventsHandler = new BackgroundEventsHandler(this, events);
   }
 }
 
 type TFigmaClientHandlerConfig = {
-  events?: TEventMeta[];
+  events?: TBackgroundEventMeta[];
 };

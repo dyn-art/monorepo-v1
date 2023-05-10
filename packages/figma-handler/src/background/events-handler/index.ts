@@ -1,6 +1,6 @@
-import Event from './Event';
-import EventsHandler from './EventsHandler';
+import BackgroundEvent from './BackgroundEvent';
+import BackgroundEventsHandler from './BackgroundEventsHandler';
 
-export * from './Event';
-export * from './EventsHandler';
-export { Event, EventsHandler };
+export * from './BackgroundEvent';
+export * from './BackgroundEventsHandler';
+export { BackgroundEvent, BackgroundEventsHandler };

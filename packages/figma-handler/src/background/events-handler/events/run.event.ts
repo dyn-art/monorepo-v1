@@ -1,9 +1,9 @@
-import { logger } from '../../../logger';
-import { TEventMeta } from '../Event';
+import { backgroundLogger } from '../../logger';
+import { TBackgroundEventMeta } from '../BackgroundEvent';
 
 export default {
   type: 'run',
   callback: async (instance, event) => {
-    logger.info(`Plugin started running!`);
+    backgroundLogger.info(`Plugin started running!`);
   },
-} as TEventMeta;
+} as TBackgroundEventMeta;

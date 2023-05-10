@@ -16,6 +16,9 @@ const Home: React.FC = () => {
               uiHandler.postMessage('intermediate-format-export-event', {
                 selectedElement: 'test',
               });
+              uiHandler.parent.addEventListener('message', (ev) => {
+                console.log(ev.data);
+              });
             }}
           >
             Test

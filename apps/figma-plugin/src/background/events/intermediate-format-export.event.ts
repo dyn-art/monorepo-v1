@@ -1,4 +1,4 @@
-import { TEventMeta } from '@pda/figma-handler';
+import { TUIEventMeta } from '@pda/figma-handler';
 import { TUIMessageEvent } from '../../types';
 
 export default {
@@ -9,4 +9,4 @@ export default {
   callback: async (instance, event) => {
     console.log('Test Event', { event });
   },
-} as TEventMeta<TUIMessageEvent>;
+} as TUIEventMeta<TUIMessageEvent>;

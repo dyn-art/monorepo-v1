@@ -1,20 +1,23 @@
 import { uuidv4 } from '@pda/utils';
-import { logger } from '../../logger';
 import FigmaBackgroundHandler from '../FigmaBackgroundHandler';
-import Event, { TEventMeta } from './Event';
+import { backgroundLogger } from '../logger';
+import BackgroundEvent, { TBackgroundEventMeta } from './BackgroundEvent';
 import defaultEvents from './events';
 
-export default class EventsHandler {
+export default class BackgroundEventsHandler {
   private readonly _instance: FigmaBackgroundHandler;
 
-  private _events: Map<string, Event> = new Map();
+  private _events: Map<string, BackgroundEvent> = new Map();
 
-  constructor(instance: FigmaBackgroundHandler, events: TEventMeta[] = []) {
+  constructor(
+    instance: FigmaBackgroundHandler,
+    events: TBackgroundEventMeta[] = []
+  ) {
     this._instance = instance;
     this.initializeEvents([...defaultEvents, ...events]);
   }
 
-  private async initializeEvents(events: TEventMeta[]) {
+  private async initializeEvents(events: TBackgroundEventMeta[]) {
     // Create Events
     for (const meta of events) {
       const event = this.createEvent(meta);
@@ -24,24 +27,29 @@ export default class EventsHandler {
     // Register Events
     this.registerEvents(Array.from(this._events.values()));
 
-    logger.info('Registered Events', {
+    backgroundLogger.info('Registered Events', {
       events: Array.from(this._events.values()).map((event) => event.key),
     });
   }
 
-  private createEvent(meta: TEventMeta) {
+  public registerEvent(meta: TBackgroundEventMeta) {
+    const event = this.createEvent(meta);
+    this.registerEvents([event]);
+  }
+
+  private createEvent(meta: TBackgroundEventMeta) {
     let key = meta?.key ?? uuidv4();
     if (this._events.has(key)) {
       const previousKey = key;
       key = `${key}_${uuidv4()}`;
-      logger.warn(
+      backgroundLogger.warn(
         `The Event name '${previousKey}' has already been used! The Event has been renamed to '${key}'.`
       );
     }
-    return new Event(this._instance, key, meta);
+    return new BackgroundEvent(this._instance, key, meta);
   }
 
-  private registerEvents(events: Event[]) {
+  private registerEvents(events: BackgroundEvent[]) {
     for (const event of events) {
       let type: string = event.meta.type;
       let typeCategory: string | null = null;
@@ -51,33 +59,16 @@ export default class EventsHandler {
         type = typeParts[1];
       }
 
-      // Register UI Events
-      if (typeCategory === 'ui') {
-        if (event.meta.once) {
-          this._instance.figma.ui.once(type as any, (...args) => {
-            this.onEvent(event, args);
-          });
-        } else {
-          this._instance.figma.ui.on(type as any, (...args) => {
-            this.onEvent(event, args);
-          });
-        }
-        // Register General Events
-      } else {
-        if (event.meta.once) {
-          this._instance.figma.once(type as any, (...args) => {
-            this.onEvent(event, args);
-          });
-        } else {
-          this._instance.figma.on(type as any, (...args) => {
-            this.onEvent(event, args);
-          });
-        }
-      }
+      // Register Background Events
+      const onKeyword = event.meta.once ? 'once' : 'on';
+      const callKeyword = typeCategory != null ? typeCategory : '';
+      this._instance.figma[callKeyword][onKeyword](type as any, (...args) => {
+        this.onEvent(event, args);
+      });
     }
   }
 
-  private async onEvent(event: Event, args: any[]) {
+  private async onEvent(event: BackgroundEvent, args: any[]) {
     const { meta } = event;
     if (
       meta.shouldExecuteCallback == null ||
@@ -85,8 +76,9 @@ export default class EventsHandler {
       meta.shouldExecuteCallback(...args)
     ) {
       if (meta.type === 'ui.message') {
-        if (args[0]?.key === event.key) {
-          meta.callback(this._instance, args[0]?.args);
+        const arg = args[0];
+        if (arg != null && arg.key === event.key) {
+          meta.callback(this._instance, arg?.args);
         }
       } else {
         // @ts-ignore (Expression produces a union type that is too complex to represent.)
@@ -96,6 +88,6 @@ export default class EventsHandler {
   }
 }
 
-export type TEventsHandlerConfig = {
-  events?: TEventMeta[];
+export type TBackgroundsEventsHandlerConfig = {
+  events?: TBackgroundEventMeta[];
 };

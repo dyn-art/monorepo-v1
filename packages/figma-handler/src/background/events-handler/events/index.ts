@@ -1,6 +1,6 @@
-import { TEventMeta } from '../Event';
+import { TBackgroundEventMeta } from '../BackgroundEvent';
 import runEvent from './run.event';
 
-const defaultEvents: TEventMeta[] = [runEvent];
+const defaultEvents: TBackgroundEventMeta[] = [runEvent];
 
 export default defaultEvents;

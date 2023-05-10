@@ -1,3 +1,3 @@
 export * from './background';
-export * from './types';
+export * from './shared-types';
 export * from './ui';
