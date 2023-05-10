@@ -1,6 +1,6 @@
 import { TBackgroundEventMeta } from '@pda/figma-handler/dist/background';
-import { backgroundHandler } from '..';
 import { TBackgroundFigmaMessageEvent } from '../../shared-types';
+import { backgroundHandler } from '../background-handler';
 
 export default {
   type: 'selectionchange',

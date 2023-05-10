@@ -1,4 +1,4 @@
-import { TBackgroundEventMeta } from '@pda/figma-handler/dist/background';
+import { TBackgroundEventMeta } from '@pda/figma-handler';
 import { TBackgroundFigmaMessageEvent } from '../../shared-types';
 
 export default {
