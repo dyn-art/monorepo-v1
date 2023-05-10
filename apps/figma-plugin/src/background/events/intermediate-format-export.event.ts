@@ -1,6 +1,7 @@
-import { backgroundHandler } from '../background-handler';
+import { TBackgroundEventMeta } from '@pda/figma-handler/dist/background';
+import { TBackgroundFigmaMessageEvent } from '../../shared-types';
 
-backgroundHandler.registerEvent({
+export default {
   type: 'ui.message',
   key: 'intermediate-format-export-event',
   // shouldExecuteCallback: (event) =>
@@ -8,4 +9,4 @@ backgroundHandler.registerEvent({
   callback: async (instance, event) => {
     console.log('intermediate-format-export Event', { event });
   },
-});
+} as TBackgroundEventMeta<TBackgroundFigmaMessageEvent>;

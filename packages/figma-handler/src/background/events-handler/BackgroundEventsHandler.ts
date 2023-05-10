@@ -35,6 +35,7 @@ export default class BackgroundEventsHandler {
   public registerEvent(meta: TBackgroundEventMeta) {
     const event = this.createEvent(meta);
     this.registerEvents([event]);
+    backgroundLogger.info('Registered Event', { event });
   }
 
   private createEvent(meta: TBackgroundEventMeta) {
@@ -61,10 +62,15 @@ export default class BackgroundEventsHandler {
 
       // Register Background Events
       const onKeyword = event.meta.once ? 'once' : 'on';
-      const callKeyword = typeCategory != null ? typeCategory : '';
-      this._instance.figma[callKeyword][onKeyword](type as any, (...args) => {
-        this.onEvent(event, args);
-      });
+      if (typeCategory === 'ui') {
+        this._instance.figma.ui[onKeyword](type as any, (...args) => {
+          this.onEvent(event, args);
+        });
+      } else {
+        this._instance.figma[onKeyword](type as any, (...args) => {
+          this.onEvent(event, args);
+        });
+      }
     }
   }
 

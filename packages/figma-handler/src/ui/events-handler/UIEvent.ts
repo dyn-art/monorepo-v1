@@ -31,7 +31,11 @@ type TUIEventMetaBase<
       key: TKeyForEventType<TFigmaMessageEvent, EventType>;
       args: infer TArgs;
     }
-      ? [args: TArgs]
+      ? [
+          args: {
+            pluginId: string;
+          } & TArgs
+        ]
       : TUIEvents<TFigmaMessageEvent>[EventType]
   ) => boolean;
   callback: (
@@ -40,7 +44,11 @@ type TUIEventMetaBase<
       key: TKeyForEventType<TFigmaMessageEvent, EventType>;
       args: infer TArgs;
     }
-      ? [args: TArgs]
+      ? [
+          args: {
+            pluginId: string;
+          } & TArgs
+        ]
       : TUIEvents<TFigmaMessageEvent>[EventType]
   ) => Promise<void>;
 };

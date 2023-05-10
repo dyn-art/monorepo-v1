@@ -1,23 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { uiHandler } from '../ui-handler';
 
 const Home: React.FC = () => {
-  // React.useEffect(() => {
-  //   uiHandler.registerEvent({
-  //     type: 'figma.message',
-  //     key: 'on-select-event',
-  //     callback: async (instance, event) => {
-  //       console.log('on-select Event', { event });
-  //     },
-  //   });
-  //   uiHandler.registerEvent({
-  //     type: 'click',
-  //     key: 'click-event',
-  //     callback: async (instance, event) => {
-  //       console.log('click Event', { event });
-  //     },
-  //   });
-  // }, []);
+  React.useEffect(() => {
+    uiHandler.registerEvent({
+      type: 'figma.message',
+      key: 'on-select-event',
+      callback: async (instance, event) => {
+        console.log('on-select Event', { event });
+      },
+    });
+    uiHandler.registerEvent({
+      type: 'click',
+      key: 'click-event',
+      callback: async (instance, event) => {
+        console.log('click Event', { event });
+      },
+    });
+  }, []);
 
   return (
     <div className="m-4 space-y-4">
@@ -29,9 +30,9 @@ const Home: React.FC = () => {
         <li>
           <div
             onClick={() => {
-              // uiHandler.postMessage('intermediate-format-export-event', {
-              //   selectedElement: 'test',
-              // });
+              uiHandler.postMessage('intermediate-format-export-event', {
+                selectedElement: 'test',
+              });
             }}
           >
             Test

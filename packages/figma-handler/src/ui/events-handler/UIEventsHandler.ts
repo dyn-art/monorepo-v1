@@ -32,6 +32,7 @@ export default class UIEventsHandler {
   public registerEvent(meta: TUIEventMeta) {
     const event = this.createEvent(meta);
     this.registerEvents([event]);
+    uiLogger.info('Registered Event', { event });
   }
 
   private createEvent(meta: TUIEventMeta) {
@@ -54,7 +55,10 @@ export default class UIEventsHandler {
         type = typeParts[1];
       }
 
-      this._instance.parent.addEventListener(type as any, (...args) => {
+      // Directly calling global 'addEventListener' because if parent.x is called
+      // the "Uncaught (in promise) DOMException: Blocked a frame with origin "null" from accessing a cross-origin frame."
+      // error is thrown
+      addEventListener(type as any, (...args) => {
         this.onEvent(event, args);
       });
     }
@@ -68,13 +72,17 @@ export default class UIEventsHandler {
       meta.shouldExecuteCallback(...args)
     ) {
       if (meta.type === 'figma.message') {
-        const arg = args[0];
+        const data = args[0]?.data;
+        const pluginMessage = data?.pluginMessage;
         if (
-          arg instanceof MessageEvent &&
-          arg.data != null &&
-          arg.data.key === event.key
+          pluginMessage != null &&
+          pluginMessage?.key === event.key &&
+          typeof pluginMessage?.args === 'object'
         ) {
-          meta.callback(this._instance, arg.data?.arg);
+          meta.callback(this._instance, {
+            pluginId: data?.pluginId,
+            ...pluginMessage.args,
+          });
         }
       } else {
         // @ts-ignore (Expression produces a union type that is too complex to represent.)
