@@ -1,4 +1,4 @@
-import { FigmaUIHandler } from '@pda/figma-handler/dist/ui';
+import { FigmaUIHandler } from '@pda/figma-handler';
 import {
   TBackgroundFigmaMessageEvent,
   TUIFigmaMessageEvent,

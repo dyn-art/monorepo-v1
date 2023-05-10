@@ -20,65 +20,73 @@ export default class BackgroundEvent<
 }
 
 type TKeyForEventType<
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent,
-  EventType extends keyof TBackgroundEvents<TFigmaMessageEvent>
-> = TBackgroundEvents<TFigmaMessageEvent>[EventType][0] extends {
+  TFigmaBackgroundMessageEvent extends TBaseFigmaMessageEvent,
+  EventType extends keyof TBackgroundEvents<TFigmaBackgroundMessageEvent>
+> = TBackgroundEvents<TFigmaBackgroundMessageEvent>[EventType][0] extends {
   key: infer TKey;
 }
   ? TKey
   : string | undefined;
 
 type TBackgroundEventMetaBase<
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent,
-  EventType extends keyof TBackgroundEvents<TFigmaMessageEvent>
+  TFigmaBackgroundMessageEvent extends TBaseFigmaMessageEvent,
+  TFigmaUIMessageEvent extends TBaseFigmaMessageEvent,
+  EventType extends keyof TBackgroundEvents<TFigmaBackgroundMessageEvent>
 > = {
-  key: TKeyForEventType<TFigmaMessageEvent, EventType>;
+  key: TKeyForEventType<TFigmaBackgroundMessageEvent, EventType>;
   type: EventType;
   once?: boolean;
   shouldExecuteCallback?: (
-    ...args: TBackgroundEvents<TFigmaMessageEvent>[EventType][0] extends {
-      key: TKeyForEventType<TFigmaMessageEvent, EventType>;
+    ...args: TBackgroundEvents<TFigmaBackgroundMessageEvent>[EventType][0] extends {
+      key: TKeyForEventType<TFigmaBackgroundMessageEvent, EventType>;
       args: infer TArgs;
     }
       ? [args: TArgs]
-      : TBackgroundEvents<TFigmaMessageEvent>[EventType]
+      : TBackgroundEvents<TFigmaBackgroundMessageEvent>[EventType]
   ) => boolean;
   callback: (
+    // Note: To advanced for Typescript
+    // instance: FigmaBackgroundHandler<
+    //   TFigmaBackgroundMessageEvent,
+    //   TFigmaUIMessageEvent
+    // >,
     instance: FigmaBackgroundHandler,
-    ...args: TBackgroundEvents<TFigmaMessageEvent>[EventType][0] extends {
-      key: TKeyForEventType<TFigmaMessageEvent, EventType>;
+    ...args: TBackgroundEvents<TFigmaBackgroundMessageEvent>[EventType][0] extends {
+      key: TKeyForEventType<TFigmaBackgroundMessageEvent, EventType>;
       args: infer TArgs;
     }
       ? [args: TArgs]
-      : TBackgroundEvents<TFigmaMessageEvent>[EventType]
+      : TBackgroundEvents<TFigmaBackgroundMessageEvent>[EventType]
   ) => Promise<void>;
 };
 
 export type TBackgroundEventMeta<
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent
+  TFigmaBackgroundMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent,
+  TFigmaUIMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent
 > =
   // This conditional type check ensures that the TUIMessageEvent type parameter
   // is a valid subtype of TBaseUIMessageEvent. It was necessary with type safety and
   // proper inference of the 'args' type in the TEventMetaBase type for the TUIMessageEvent type.
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent
+  TFigmaBackgroundMessageEvent extends TBaseFigmaMessageEvent
     ? {
         [K in keyof TBackgroundEvents<TBaseFigmaMessageEvent>]: TBackgroundEventMetaBase<
-          TFigmaMessageEvent,
+          TFigmaBackgroundMessageEvent,
+          TFigmaUIMessageEvent,
           K
         >;
-      }[keyof TBackgroundEvents<TFigmaMessageEvent>]
+      }[keyof TBackgroundEvents<TFigmaBackgroundMessageEvent>]
     : never;
 
 // Note add to hardcode events as the Typescript compiler failed with more dynamic types based on @figma/..
 // with the good old "Cannot read properties of undefined (reading 'flags')" error
 export type TBackgroundEvents<
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent
+  TFigmaBackgroundMessageEvent extends TBaseFigmaMessageEvent
 > = {
   run: [event: RunEvent];
   drop: [event: DropEvent];
   documentchange: [event: DocumentChangeEvent];
   // UI Events
-  'ui.message': [event: TFigmaMessageEvent];
+  'ui.message': [event: TFigmaBackgroundMessageEvent];
   // ArgFree Events (ArgFreeEventType)
   selectionchange: [];
   currentpagechange: [];

@@ -1,4 +1,4 @@
-import { TBaseFigmaMessageEvent } from '../shared-types';
+import { AnyExtract, TBaseFigmaMessageEvent } from '../shared-types';
 import { TUIEventMeta, UIEventsHandler } from './events-handler';
 
 export default class FigmaUIHandler<
@@ -23,13 +23,15 @@ export default class FigmaUIHandler<
     return this._eventsHandler;
   }
 
-  public registerEvent(meta: TUIEventMeta<TFigmaUIMessageEvent>) {
+  public registerEvent(
+    meta: TUIEventMeta<TFigmaUIMessageEvent, TFigmaBackgroundMessageEvent>
+  ) {
     this._eventsHandler?.registerEvent(meta);
   }
 
   public postMessage<TKey extends TFigmaBackgroundMessageEvent['key']>(
     key: TKey,
-    args: Extract<TFigmaBackgroundMessageEvent, { key: TKey }>['args']
+    args: AnyExtract<TFigmaBackgroundMessageEvent, { key: TKey }>['args']
   ) {
     this._parent.postMessage({ pluginMessage: { key, args } }, '*');
   }

@@ -1,6 +1,8 @@
-import { TBackgroundEventMeta } from '@pda/figma-handler/dist/background';
-import { TBackgroundFigmaMessageEvent } from '../../shared-types';
-import { backgroundHandler } from '../background-handler';
+import { TBackgroundEventMeta } from '@pda/figma-handler';
+import {
+  TBackgroundFigmaMessageEvent,
+  TUIFigmaMessageEvent,
+} from '../../shared-types';
 
 export default {
   type: 'selectionchange',
@@ -10,8 +12,8 @@ export default {
     const frameSelected = selection.some((node) => node.type === 'FRAME');
     console.log('selection-change Event', { frameSelected });
     // TODO: make instance typesafe
-    backgroundHandler.postMessage('on-select-event', {
+    instance.postMessage('on-select-event', {
       selectedElement: frameSelected,
     });
   },
-} as TBackgroundEventMeta<TBackgroundFigmaMessageEvent>;
+} as TBackgroundEventMeta<TBackgroundFigmaMessageEvent, TUIFigmaMessageEvent>;

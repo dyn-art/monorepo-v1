@@ -14,21 +14,22 @@ export default class UIEvent<TMeta extends TUIEventMeta = TUIEventMeta> {
 }
 
 type TKeyForEventType<
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent,
-  EventType extends keyof TUIEvents<TFigmaMessageEvent>
-> = TUIEvents<TFigmaMessageEvent>[EventType][0] extends { key: infer TKey }
+  TFigmaUIMessageEvent extends TBaseFigmaMessageEvent,
+  EventType extends keyof TUIEvents<TFigmaUIMessageEvent>
+> = TUIEvents<TFigmaUIMessageEvent>[EventType][0] extends { key: infer TKey }
   ? TKey
   : string | undefined;
 
 type TUIEventMetaBase<
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent,
-  EventType extends keyof TUIEvents<TFigmaMessageEvent>
+  TFigmaUIMessageEvent extends TBaseFigmaMessageEvent,
+  TFigmaBackgroundMessageEvent extends TBaseFigmaMessageEvent,
+  EventType extends keyof TUIEvents<TFigmaUIMessageEvent>
 > = {
-  key: TKeyForEventType<TFigmaMessageEvent, EventType>;
+  key: TKeyForEventType<TFigmaUIMessageEvent, EventType>;
   type: EventType;
   shouldExecuteCallback?: (
-    ...args: TUIEvents<TFigmaMessageEvent>[EventType][0] extends {
-      key: TKeyForEventType<TFigmaMessageEvent, EventType>;
+    ...args: TUIEvents<TFigmaUIMessageEvent>[EventType][0] extends {
+      key: TKeyForEventType<TFigmaUIMessageEvent, EventType>;
       args: infer TArgs;
     }
       ? [
@@ -36,12 +37,17 @@ type TUIEventMetaBase<
             pluginId: string;
           } & TArgs
         ]
-      : TUIEvents<TFigmaMessageEvent>[EventType]
+      : TUIEvents<TFigmaUIMessageEvent>[EventType]
   ) => boolean;
   callback: (
+    // Note: To advanced for Typescript
+    // instance: FigmaUIHandler<
+    //   TFigmaUIMessageEvent,
+    //   TFigmaBackgroundMessageEvent
+    // >,
     instance: FigmaUIHandler,
-    ...args: TUIEvents<TFigmaMessageEvent>[EventType][0] extends {
-      key: TKeyForEventType<TFigmaMessageEvent, EventType>;
+    ...args: TUIEvents<TFigmaUIMessageEvent>[EventType][0] extends {
+      key: TKeyForEventType<TFigmaUIMessageEvent, EventType>;
       args: infer TArgs;
     }
       ? [
@@ -49,30 +55,32 @@ type TUIEventMetaBase<
             pluginId: string;
           } & TArgs
         ]
-      : TUIEvents<TFigmaMessageEvent>[EventType]
+      : TUIEvents<TFigmaUIMessageEvent>[EventType]
   ) => Promise<void>;
 };
 
 export type TUIEventMeta<
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent
+  TFigmaUIMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent,
+  TFigmaBackgroundMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent
 > =
   // This conditional type check ensures that the TUIMessageEvent type parameter
   // is a valid subtype of TBaseUIMessageEvent. It was necessary with type safety and
   // proper inference of the 'args' type in the TEventMetaBase type for the TUIMessageEvent type.
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent
+  TFigmaUIMessageEvent extends TBaseFigmaMessageEvent
     ? {
         [K in keyof TUIEvents<TBaseFigmaMessageEvent>]: TUIEventMetaBase<
-          TFigmaMessageEvent,
+          TFigmaUIMessageEvent,
+          TFigmaBackgroundMessageEvent,
           K
         >;
-      }[keyof TUIEvents<TFigmaMessageEvent>]
+      }[keyof TUIEvents<TFigmaUIMessageEvent>]
     : never;
 
 export type TUIEvents<
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent,
+  TFigmaUIMessageEvent extends TBaseFigmaMessageEvent,
   TWindowEventKeys extends keyof WindowEventMap = keyof WindowEventMap
 > = {
   [K in TWindowEventKeys]: [event: WindowEventMap[K]];
 } & {
-  'figma.message': [event: TFigmaMessageEvent];
+  'figma.message': [event: TFigmaUIMessageEvent];
 };
