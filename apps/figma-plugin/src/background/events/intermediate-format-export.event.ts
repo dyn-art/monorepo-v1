@@ -1,12 +1,11 @@
-import { TUIEventMeta } from '@pda/figma-handler';
-import { TUIMessageEvent } from '../../types';
+import { backgroundHandler } from '../background-handler';
 
-export default {
+backgroundHandler.registerEvent({
   type: 'ui.message',
   key: 'intermediate-format-export-event',
   // shouldExecuteCallback: (event) =>
   //   event.type === intermediateFormatExportEventKey,
   callback: async (instance, event) => {
-    console.log('Test Event', { event });
+    console.log('intermediate-format-export Event', { event });
   },
-} as TUIEventMeta<TUIMessageEvent>;
+});

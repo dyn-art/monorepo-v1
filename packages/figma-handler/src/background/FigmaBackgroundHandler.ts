@@ -3,7 +3,8 @@ import { TBackgroundEventMeta } from './events-handler';
 import BackgroundEventsHandler from './events-handler/BackgroundEventsHandler';
 
 export default class FigmaBackgroundHandler<
-  TFigmaMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent
+  TFigmaBackgroundMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent,
+  TFigmaUIMessageEvent extends TBaseFigmaMessageEvent = TBaseFigmaMessageEvent
 > {
   private readonly _figma: typeof figma;
 
@@ -26,13 +27,15 @@ export default class FigmaBackgroundHandler<
     return this._eventsHandler;
   }
 
-  public registerEvent(meta: TBackgroundEventMeta<TFigmaMessageEvent>) {
+  public registerEvent(
+    meta: TBackgroundEventMeta<TFigmaBackgroundMessageEvent>
+  ) {
     this._eventsHandler?.registerEvent(meta);
   }
 
-  public postMessage<TKey extends TFigmaMessageEvent['key']>(
+  public postMessage<TKey extends TFigmaUIMessageEvent['key']>(
     key: TKey,
-    args: Extract<TFigmaMessageEvent, { key: TKey }>['args']
+    args: Extract<TFigmaUIMessageEvent, { key: TKey }>['args']
   ) {
     this._figma.ui.postMessage({ key, args });
   }

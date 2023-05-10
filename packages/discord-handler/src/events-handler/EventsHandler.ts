@@ -42,7 +42,7 @@ export default class EventsHandler {
     // Create Events
     for (const eventFile of eventFiles) {
       const meta = eventFile.content as TEventMeta;
-      const event = this.createEvent(eventFile.name, meta);
+      const event = this.createEvent(meta, eventFile.name);
       this._events.set(event.key, event);
     }
 
@@ -54,8 +54,13 @@ export default class EventsHandler {
     });
   }
 
-  private createEvent(fileName: string, meta: TEventMeta) {
-    let key = meta?.key ?? fileName;
+  public registerEvent(meta: TEventMeta) {
+    const event = this.createEvent(meta);
+    this.registerEvents([event]);
+  }
+
+  private createEvent(meta: TEventMeta, fileName?: string) {
+    let key = meta?.key ?? fileName ?? uuidv4();
     if (this._events.has(key)) {
       const previousKey = key;
       key = `${key}_${uuidv4()}`;

@@ -1,9 +1,9 @@
-import { backgroundLogger } from '../../../background/logger';
+import { uiLogger } from '../../logger';
 import { TUIEventMeta } from '../UIEvent';
 
 export default {
   type: 'DOMContentLoaded',
   callback: async (instance, event) => {
-    backgroundLogger.info(`Plugin started running!`);
+    uiLogger.info(`Plugin started running!`);
   },
 } as TUIEventMeta;
