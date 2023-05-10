@@ -1,7 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { uiHandler } from '../ui-handler';
 
 const Home: React.FC = () => {
+  React.useEffect(() => {
+    uiHandler.registerEvent({
+      type: 'figma.message',
+      key: 'on-select-event',
+      callback: async (instance, event) => {
+        console.log('on-select Event', { event });
+      },
+    });
+    uiHandler.registerEvent({
+      type: 'click',
+      key: 'click-event',
+      callback: async (instance, event) => {
+        console.log('click Event', { event });
+      },
+    });
+  }, []);
+
   return (
     <div className="m-4 space-y-4">
       <h1 className="text-2xl font-bold">physical.art plugin</h1>
@@ -10,12 +28,11 @@ const Home: React.FC = () => {
           <span>Plugins</span>
         </li>
         <li>
-          <Link to="/plugins/petma">Petma</Link>
-        </li>
-        <li>
           <div
             onClick={() => {
-              parent.postMessage({ pluginMessage: { type: 'test' } }, '*');
+              uiHandler.postMessage('intermediate-format-export-event', {
+                selectedElement: 'test',
+              });
             }}
           >
             Test

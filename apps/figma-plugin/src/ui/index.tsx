@@ -19,6 +19,12 @@ function init() {
       <Routes />
     </MemoryRouter>
   );
+
+  // https://www.figma.com/plugin-docs/creating-ui#sending-a-message-from-the-plugin-code-to-the-ui
+  // Calling addEvent Listener leads to "Blocked a frame with origin "null" from accessing a cross-origin frame."
+  // parent.addEventListener('message', (messageEvent) => {
+  //   console.log(messageEvent);
+  // });
 }
 
 // The 'DOMContentLoaded' event listener ensures that the 'init' function is called
