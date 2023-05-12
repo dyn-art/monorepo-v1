@@ -1,8 +1,13 @@
 import { TBaseFigmaMessageEvent } from '@pda/figma-handler';
 
-export interface TOnSelectEvent extends TBaseFigmaMessageEvent {
-  key: 'on-select-event';
-  args: { selectedElement: any };
+export interface TOnSelectFrameEvent extends TBaseFigmaMessageEvent {
+  key: 'on-select-frame-event';
+  args: Pick<FrameNode, 'x' | 'y' | 'name'>[];
+}
+
+export interface TOnSelectNodeEvent extends TBaseFigmaMessageEvent {
+  key: 'on-select-node-event';
+  args: { selected: SceneNode[] };
 }
 
 export interface TUITestEvent extends TBaseFigmaMessageEvent {
@@ -10,4 +15,7 @@ export interface TUITestEvent extends TBaseFigmaMessageEvent {
   args: { test: number };
 }
 
-export type TUIFigmaMessageEvent = TOnSelectEvent | TUITestEvent;
+export type TUIFigmaMessageEvent =
+  | TOnSelectFrameEvent
+  | TUITestEvent
+  | TOnSelectNodeEvent;

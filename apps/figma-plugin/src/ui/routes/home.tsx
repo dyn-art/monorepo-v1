@@ -1,20 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { uiHandler } from '../ui-handler';
+import { TUIHandler, uiHandler } from '../ui-handler';
 
 const Home: React.FC = () => {
   React.useEffect(() => {
     uiHandler.registerEvent({
       type: 'figma.message',
-      key: 'on-select-event',
-      callback: async (instance, event) => {
-        console.log('on-select Event', { event });
+      key: 'on-select-frame-event',
+      callback: async (instance: TUIHandler, event) => {
+        console.log('on-select-frame Event', { event });
       },
     });
     uiHandler.registerEvent({
       type: 'click',
       key: 'click-event',
-      callback: async (instance, event) => {
+      callback: async (instance: TUIHandler, event) => {
         console.log('click Event', { event });
       },
     });

@@ -1,4 +1,4 @@
-import { AnyExtract, TBaseFigmaMessageEvent } from '../shared-types';
+import { TBaseFigmaMessageEvent } from '../shared-types';
 import { TBackgroundEventMeta } from './events-handler';
 import BackgroundEventsHandler from './events-handler/BackgroundEventsHandler';
 
@@ -38,7 +38,7 @@ export default class FigmaBackgroundHandler<
 
   public postMessage<TKey extends TFigmaUIMessageEvent['key']>(
     key: TKey,
-    args: AnyExtract<TFigmaUIMessageEvent, { key: TKey }>['args']
+    args: Extract<TFigmaUIMessageEvent, { key: TKey }>['args']
   ) {
     this._figma.ui.postMessage({ key, args });
   }

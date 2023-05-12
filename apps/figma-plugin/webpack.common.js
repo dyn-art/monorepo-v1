@@ -12,7 +12,7 @@ module.exports = {
   },
   module: {
     rules: [
-      // Typescript Loader
+      // Typescript Loader (Converts TypeScript code to JavaScript)
       {
         use: 'ts-loader',
         test: /\.([cm]?ts|tsx)$/,
@@ -48,6 +48,7 @@ module.exports = {
     }),
     // Html Loader (from React Component chunk)
     new HtmlPlugin({
+      inject: 'body',
       template: './src/ui/index.html',
       filename: `ui.html`,
       chunks: ['ui'],
@@ -59,7 +60,7 @@ module.exports = {
   ],
   resolve: {
     // Add `.ts` and `.tsx` as a resolvable extension.
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', 'jsx'],
     // Add support for TypeScripts fully qualified ESM imports.
     extensionAlias: {
       '.js': ['.js', '.ts'],

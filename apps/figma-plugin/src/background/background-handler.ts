@@ -5,7 +5,12 @@ import {
 } from '../shared-types';
 import { events } from './events';
 
-export const backgroundHandler = new FigmaBackgroundHandler<
+export const backgroundHandler: TBackgroundHandler = new FigmaBackgroundHandler<
   TBackgroundFigmaMessageEvent,
   TUIFigmaMessageEvent
 >(figma, { events });
+
+export type TBackgroundHandler = FigmaBackgroundHandler<
+  TBackgroundFigmaMessageEvent,
+  TUIFigmaMessageEvent
+>;

@@ -4,7 +4,12 @@ import {
   TUIFigmaMessageEvent,
 } from '../shared-types';
 
-export const uiHandler = new FigmaUIHandler<
+export const uiHandler: TUIHandler = new FigmaUIHandler<
   TUIFigmaMessageEvent,
   TBackgroundFigmaMessageEvent
 >(parent);
+
+export type TUIHandler = FigmaUIHandler<
+  TUIFigmaMessageEvent,
+  TBackgroundFigmaMessageEvent
+>;
