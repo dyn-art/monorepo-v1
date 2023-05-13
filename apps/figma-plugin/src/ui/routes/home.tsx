@@ -1,21 +1,25 @@
+import { clsx } from 'clsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { TOnSelectFrameEvent } from '../../shared';
 import { TUIHandler, uiHandler } from '../ui-handler';
 
 const Home: React.FC = () => {
+  const [selectedFrames, setSelectedFrames] = React.useState<
+    TOnSelectFrameEvent['args']['selected'] | null
+  >(null);
+
   React.useEffect(() => {
     uiHandler.registerEvent({
       type: 'figma.message',
       key: 'on-select-frame-event',
-      callback: async (instance: TUIHandler, event) => {
-        console.log('on-select-frame Event', { event });
-      },
-    });
-    uiHandler.registerEvent({
-      type: 'click',
-      key: 'click-event',
-      callback: async (instance: TUIHandler, event) => {
-        console.log('click Event', { event });
+      callback: async (instance: TUIHandler, args) => {
+        console.log('onselect', { args });
+        if (args.selected != null && args.selected.length > 0) {
+          setSelectedFrames(args.selected);
+        } else {
+          setSelectedFrames(null);
+        }
       },
     });
   }, []);
@@ -27,15 +31,24 @@ const Home: React.FC = () => {
         <li className="menu-title">
           <span>Plugins</span>
         </li>
-        <li>
+        <li
+          className={clsx({
+            disabled: selectedFrames == null || selectedFrames.length === 0,
+          })}
+        >
           <div
             onClick={() => {
-              uiHandler.postMessage('intermediate-format-export-event', {
-                selectedElement: 'test',
-              });
+              if (selectedFrames != null) {
+                uiHandler.postMessage('intermediate-format-export-event', {
+                  selectedElements: selectedFrames,
+                });
+              }
             }}
           >
-            Test
+            Export Frame
+            {selectedFrames != null && selectedFrames.length > 0
+              ? ` [${selectedFrames[0].name}] (${selectedFrames.length})`
+              : ''}
           </div>
         </li>
         <li className="menu-title">

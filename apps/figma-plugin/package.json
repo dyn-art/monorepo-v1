@@ -18,6 +18,8 @@
   "license": "MIT",
   "dependencies": {
     "@pda/figma-handler": "workspace:*",
+    "@pda/logger": "workspace:*",
+    "clsx": "^1.2.1",
     "daisyui": "^2.51.6",
     "dotenv": "^16.0.3",
     "react": "^18.2.0",

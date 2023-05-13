@@ -2,7 +2,8 @@ import { TBackgroundEventMeta } from '@pda/figma-handler';
 import {
   TBackgroundFigmaMessageEvent,
   TUIFigmaMessageEvent,
-} from '../../shared-types';
+  logger,
+} from '../../shared';
 import { TBackgroundHandler } from '../background-handler';
 import { extractNodeProperties } from '../utils';
 
@@ -11,21 +12,26 @@ export default {
   key: 'selection-change',
   callback: async (instance: TBackgroundHandler) => {
     const selection = figma.currentPage.selection;
-    const selectedFrames = selection.filter((node) => node.type === 'FRAME');
+    const selectedFrames = selection.filter(
+      (node) => node.type === 'FRAME' || node.type === 'COMPONENT'
+    );
 
-    console.log('selection-change', { instance, selection, selectedFrames });
+    logger.info(`Called Event: 'selectionchange'`, { selection });
 
     // Call UI events
     if (selectedFrames.length > 0) {
-      instance.postMessage(
-        'on-select-frame-event',
-        selectedFrames.map((frame) =>
-          extractNodeProperties(frame, ['x', 'y', 'name'])
-        )
-      );
+      instance.postMessage('on-select-frame-event', {
+        selected: selectedFrames.map((frame) =>
+          extractNodeProperties(frame, ['name', 'id'])
+        ),
+      });
+    } else {
+      instance.postMessage('on-select-frame-event', { selected: null });
     }
     instance.postMessage('on-select-node-event', {
-      selected: [...selection],
+      selected: selection.map((selection) =>
+        extractNodeProperties(selection, ['name', 'id'])
+      ),
     });
   },
 } as TBackgroundEventMeta<TBackgroundFigmaMessageEvent, TUIFigmaMessageEvent>;

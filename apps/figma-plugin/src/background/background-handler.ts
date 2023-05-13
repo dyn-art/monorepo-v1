@@ -1,8 +1,5 @@
 import { FigmaBackgroundHandler } from '@pda/figma-handler';
-import {
-  TBackgroundFigmaMessageEvent,
-  TUIFigmaMessageEvent,
-} from '../shared-types';
+import { TBackgroundFigmaMessageEvent, TUIFigmaMessageEvent } from '../shared';
 import { events } from './events';
 
 export const backgroundHandler: TBackgroundHandler = new FigmaBackgroundHandler<
