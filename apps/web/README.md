@@ -1,3 +1,0 @@
-# `@pda/web`
-
-> coming soon

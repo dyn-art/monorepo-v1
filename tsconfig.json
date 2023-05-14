@@ -2,9 +2,6 @@
     "files": [],
     "references": [
         {
-            "path": "apps/chrome"
-        },
-        {
             "path": "apps/core"
         },
         {
@@ -17,13 +14,7 @@
             "path": "apps/order-worker"
         },
         {
-            "path": "apps/web"
-        },
-        {
             "path": "packages/ads-renderer"
-        },
-        {
-            "path": "packages/ai"
         },
         {
             "path": "packages/discord-handler"
@@ -41,13 +32,13 @@
             "path": "packages/map"
         },
         {
-            "path": "packages/mockup-renderer"
-        },
-        {
             "path": "packages/music"
         },
         {
             "path": "packages/product-renderer"
+        },
+        {
+            "path": "packages/s3"
         },
         {
             "path": "packages/utils"
