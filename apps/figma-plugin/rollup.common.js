@@ -29,6 +29,15 @@ function parseDotenv(filePath) {
 /** @type {import('rollup').RollupOptions} */
 const sharedPlugins = {
   start: [
+    // Resolve and bundle dependencies from node_modules
+    nodeResolve(),
+    // Convert CommonJS modules (e.g. from node_module packages) to ES modules what is used in this app
+    commonjs(),
+    // TypeScript compilation
+    typescript({
+      tsconfig: path.resolve('./tsconfig.json'),
+      exclude: /node_modules/,
+    }),
     // Replace process.env.NODE_ENV with 'production' or 'development'
     replace({
       preventAssignment: true,
@@ -38,15 +47,6 @@ const sharedPlugins = {
       'process.env.NODE_ENV': JSON.stringify(
         isProduction ? 'production' : 'development'
       ),
-    }),
-    // Resolve and bundle dependencies from node_modules
-    nodeResolve(),
-    // Convert CommonJS modules (e.g. from node_module packages) to ES modules what is used in this app
-    commonjs(),
-    // TypeScript compilation
-    typescript({
-      tsconfig: path.resolve('./tsconfig.json'),
-      exclude: /node_modules/,
     }),
   ],
   end: [
@@ -65,12 +65,12 @@ export default [
       sourcemap: false,
     },
     plugins: [
+      ...sharedPlugins.start,
       // Parse environment variables
       replace({
         preventAssignment: true,
         ...parseDotenv(path.resolve('./.env.background')),
       }),
-      ...sharedPlugins.start,
       ...sharedPlugins.end,
     ],
     external: ['react', 'react-dom'],
@@ -84,12 +84,12 @@ export default [
       sourcemap: false,
     },
     plugins: [
+      ...sharedPlugins.start,
       // Parse environment variables
       replace({
         preventAssignment: true,
         ...parseDotenv(path.resolve('./.env.ui')),
       }),
-      ...sharedPlugins.start,
       // Generate HTML file with injected bundle
       html({
         fileName: `ui.html`,
@@ -112,10 +112,9 @@ export default [
       // Process and bundle CSS files
       postcss({
         config: {
-          path: './postcss.config.js',
+          path: path.resolve('./postcss.config.js'),
           ctx: {},
         },
-        extract: 'dist/ui.css',
         minimize: isProduction,
         sourceMap: !isProduction,
       }),
