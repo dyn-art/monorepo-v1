@@ -46,12 +46,12 @@ const sharedPlugins = {
       preferBuiltins: true,
       browser: true,
     }),
-    // Transpile the code to an earlier ECMAScript version
+    // Transpile the code to an earlier ECMAScript version (e.g. from 'node_modules' packages)
     // to ensure compatibility with environments that do not support
-    // some modern JavaScript syntax (e.g., object spread syntax).
+    // some modern JavaScript syntax (e.g. object spread syntax).
     babel({
       babelHelpers: 'bundled',
-      exclude: ['node_modules/**'],
+      // ignore: [/node_modules/],
       presets: [
         [
           '@babel/preset-env',
@@ -65,7 +65,7 @@ const sharedPlugins = {
         ],
       ],
     }),
-    // Convert CommonJS modules (e.g. from node_module packages) to ES modules what is used in this app
+    // Transpile CommonJS modules (e.g. from 'node_modules' packages) to ES modules
     commonjs(),
     // TypeScript compilation
     typescript({
