@@ -11,6 +11,8 @@ import copy from 'rollup-plugin-copy';
 import postcss from 'rollup-plugin-postcss';
 import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
+import json from '@rollup/plugin-json';
+import babel from '@rollup/plugin-babel';
 
 // Parse command line arguments using yargs
 const argv = yargs(hideBin(process.argv)).options({
@@ -40,7 +42,29 @@ function parseDotenv(filePath) {
 const sharedPlugins = {
   start: [
     // Resolve and bundle dependencies from node_modules
-    nodeResolve(),
+    nodeResolve({
+      preferBuiltins: true,
+      browser: true,
+    }),
+    // Transpile the code to an earlier ECMAScript version
+    // to ensure compatibility with environments that do not support
+    // some modern JavaScript syntax (e.g., object spread syntax).
+    babel({
+      babelHelpers: 'bundled',
+      exclude: ['node_modules/**'],
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            targets: {
+              // Only targeting browsers that support ES Modules as Figma does
+              // https://babeljs.io/docs/en/babel-preset-env
+              esmodules: true,
+            },
+          },
+        ],
+      ],
+    }),
     // Convert CommonJS modules (e.g. from node_module packages) to ES modules what is used in this app
     commonjs(),
     // TypeScript compilation
@@ -48,6 +72,8 @@ const sharedPlugins = {
       tsconfig: path.resolve('./tsconfig.json'),
       exclude: /node_modules/,
     }),
+    // Resolve JSON
+    json(),
     // Replace process.env.NODE_ENV with 'production' or 'development'
     replace({
       preventAssignment: true,
