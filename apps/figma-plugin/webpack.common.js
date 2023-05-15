@@ -72,30 +72,4 @@ module.exports = {
     // Creates and names bundles based on 'chunk' names
     filename: '[name].js',
   },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        ui: {
-          name: 'ui',
-          test: (m, chunks) => {
-            // Apply envUI only to the 'ui' chunk
-            if (chunks.some((chunk) => chunk.name === 'ui')) {
-              m.factory.arguments[0].plugins.unshift(defineEnv(envUI));
-            }
-            return false;
-          },
-        },
-        code: {
-          name: 'code',
-          test: (m, chunks) => {
-            // Apply envCode only to the 'code' chunk
-            if (chunks.some((chunk) => chunk.name === 'code')) {
-              m.factory.arguments[0].plugins.unshift(defineEnv(envCode));
-            }
-            return false;
-          },
-        },
-      },
-    },
-  },
 };
