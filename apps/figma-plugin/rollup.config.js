@@ -9,10 +9,21 @@ import fs from 'fs';
 import path from 'path';
 import copy from 'rollup-plugin-copy';
 import postcss from 'rollup-plugin-postcss';
+import yargs from 'yargs/yargs';
+import { hideBin } from 'yargs/helpers';
 
-const isProduction = false;
+// Parse command line arguments using yargs
+const argv = yargs(hideBin(process.argv)).options({
+  prod: {
+    type: 'boolean',
+    default: false,
+    description: 'Build in production mode',
+  },
+}).argv;
 
-// Reads and parses the dotenv file using the `dotenv` package
+const isProduction = argv.prod;
+
+// Reads and parses the dotenv file using the 'dotenv' package
 function parseDotenv(filePath) {
   const data = fs.readFileSync(filePath);
   const parsed = dotenv.parse(data);
@@ -26,7 +37,6 @@ function parseDotenv(filePath) {
   return env;
 }
 
-/** @type {import('rollup').RollupOptions} */
 const sharedPlugins = {
   start: [
     // Resolve and bundle dependencies from node_modules
@@ -55,6 +65,7 @@ const sharedPlugins = {
   ],
 };
 
+/** @type {import('rollup').RollupOptions} */
 export default [
   // Configuration for background code
   {

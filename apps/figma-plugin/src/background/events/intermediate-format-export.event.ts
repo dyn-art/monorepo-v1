@@ -32,9 +32,9 @@ export default {
       }
 
       // Export Node
-      const toExportNode = await formatNode(node);
+      // const toExportNode = await formatNode(node);
 
-      logger.info('Exported Node', { exportedNode: toExportNode });
+      logger.info('Exported Node', { exportedNode: [] });
     }
   },
 } as TBackgroundEventMeta<TBackgroundFigmaMessageEvent>;
