@@ -19,9 +19,9 @@
   "dependencies": {
     "@pda/figma-handler": "workspace:*",
     "@pda/logger": "workspace:*",
+    "@pda/s3": "workspace:^",
     "clsx": "^1.2.1",
     "daisyui": "^2.51.6",
-    "dotenv": "^16.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.1"
@@ -34,6 +34,8 @@
     "@types/react-dom": "^18.0.11",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
+    "dotenv": "^16.0.3",
+    "dotenv-webpack": "^8.0.1",
     "eslint": "^8.38.0",
     "eslint-config-pda-base": "workspace:*",
     "html-inline-script-webpack-plugin": "^3.1.0",

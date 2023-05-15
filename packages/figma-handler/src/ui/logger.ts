@@ -1,6 +1,6 @@
 import { LOG_LEVEL, Logger } from '@pda/logger';
 
 export const uiLogger = new Logger({
-  prefix: 'PDA Figma Handler UI',
+  prefix: '@pda/figma-handler - UI',
   level: LOG_LEVEL.INFO,
 });

@@ -129,15 +129,15 @@ importers:
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@pda/s3':
+        specifier: workspace:^
+        version: link:../../packages/s3
       clsx:
         specifier: ^1.2.1
         version: 1.2.1
       daisyui:
         specifier: ^2.51.6
         version: 2.51.6(autoprefixer@10.4.14)(postcss@8.4.23)(ts-node@10.9.1)
-      dotenv:
-        specifier: ^16.0.3
-        version: 16.0.3
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -169,6 +169,12 @@ importers:
       css-loader:
         specifier: ^6.7.3
         version: 6.7.3(webpack@5.80.0)
+      dotenv:
+        specifier: ^16.0.3
+        version: 16.0.3
+      dotenv-webpack:
+        specifier: ^8.0.1
+        version: 8.0.1(webpack@5.80.0)
       eslint:
         specifier: ^8.38.0
         version: 8.38.0
@@ -676,6 +682,12 @@ importers:
       '@aws-sdk/client-s3':
         specifier: ^3.332.0
         version: 3.332.0
+      '@aws-sdk/s3-request-presigner':
+        specifier: ^3.332.0
+        version: 3.332.0
+      '@pda/logger':
+        specifier: workspace:*
+        version: link:../logger
     devDependencies:
       '@pda/jest-presets':
         specifier: workspace:*
@@ -1430,6 +1442,21 @@ packages:
       tslib: 2.5.0
     dev: false
 
+  /@aws-sdk/s3-request-presigner@3.332.0:
+    resolution: {integrity: sha512-+gqb/Ce9LNCdwsUvZYyge382WX+l4qUPRmOiEx6tSorKcfHSA8259AN5obeg/6b+YjUhqQaQlB85ed8kd9m6zQ==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@aws-sdk/middleware-endpoint': 3.329.0
+      '@aws-sdk/protocol-http': 3.329.0
+      '@aws-sdk/signature-v4-multi-region': 3.329.0
+      '@aws-sdk/smithy-client': 3.329.0
+      '@aws-sdk/types': 3.329.0
+      '@aws-sdk/util-format-url': 3.329.0
+      tslib: 2.5.0
+    transitivePeerDependencies:
+      - '@aws-sdk/signature-v4-crt'
+    dev: false
+
   /@aws-sdk/service-error-classification@3.329.0:
     resolution: {integrity: sha512-TSNr0flOcCLe71aPp7MjblKNGsmxpTU4xR5772MDX9Cz9GUTNZCPFtvrcqd+wzEPP/AC7XwNXe8KjoXooZImUQ==}
     engines: {node: '>=14.0.0'}
@@ -1577,6 +1604,15 @@ packages:
     resolution: {integrity: sha512-nQx7AiOroMU2hj6h+umWOSZ+WECwxupaxFUK/PPKGW6NY/VdQE6LluYnXOtF5awlr8w1nPksT0Lq05PZutMDLA==}
     engines: {node: '>=14.0.0'}
     dependencies:
+      '@aws-sdk/types': 3.329.0
+      tslib: 2.5.0
+    dev: false
+
+  /@aws-sdk/util-format-url@3.329.0:
+    resolution: {integrity: sha512-FMokjI10Vzpfb+jeJ0y6TnutPcyessdEz6aKMwn5Ee8etnHaEVDXf5tp8bPZ5ii5WRWwgNNrAa+IkJ2KH4E43g==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@aws-sdk/querystring-builder': 3.329.0
       '@aws-sdk/types': 3.329.0
       tslib: 2.5.0
     dev: false
@@ -5004,9 +5040,30 @@ packages:
       tslib: 2.5.0
     dev: true
 
+  /dotenv-defaults@2.0.2:
+    resolution: {integrity: sha512-iOIzovWfsUHU91L5i8bJce3NYK5JXeAwH50Jh6+ARUdLiiGlYWfGw6UkzsYqaXZH/hjE/eCd/PlfM/qqyK0AMg==}
+    dependencies:
+      dotenv: 8.6.0
+    dev: true
+
+  /dotenv-webpack@8.0.1(webpack@5.80.0):
+    resolution: {integrity: sha512-CdrgfhZOnx4uB18SgaoP9XHRN2v48BbjuXQsZY5ixs5A8579NxQkmMxRtI7aTwSiSQcM2ao12Fdu+L3ZS3bG4w==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      webpack: ^4 || ^5
+    dependencies:
+      dotenv-defaults: 2.0.2
+      webpack: 5.80.0(webpack-cli@5.1.0)
+    dev: true
+
   /dotenv@16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
+
+  /dotenv@8.6.0:
+    resolution: {integrity: sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==}
+    engines: {node: '>=10'}
+    dev: true
 
   /dotenv@9.0.2:
     resolution: {integrity: sha512-I9OvvrHp4pIARv4+x9iuewrWycX6CcZtoAu1XrzPxc5UygMJXJZYmBsynku8IkrJwgypE5DGNjDPmPRhDCptUg==}
