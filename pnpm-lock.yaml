@@ -20,7 +20,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/etsy
       '@pda/logger':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/logger
       '@pda/s3':
         specifier: workspace:*
@@ -138,6 +138,12 @@ importers:
       clsx:
         specifier: ^1.2.1
         version: 1.2.1
+      crypto-es:
+        specifier: ^1.2.7
+        version: 1.2.7
+      crypto-js:
+        specifier: ^4.1.1
+        version: 4.1.1
       daisyui:
         specifier: ^2.51.6
         version: 2.51.6(autoprefixer@10.4.14)(postcss@8.4.23)(ts-node@10.9.1)
@@ -187,6 +193,9 @@ importers:
       '@rollup/plugin-typescript':
         specifier: ^11.1.1
         version: 11.1.1(rollup@3.21.7)(tslib@2.5.0)(typescript@4.9.5)
+      '@types/crypto-js':
+        specifier: ^4.1.1
+        version: 4.1.1
       '@types/node':
         specifier: ^18.15.13
         version: 18.15.13
@@ -4245,6 +4254,10 @@ packages:
       '@types/node': 18.15.13
     dev: true
 
+  /@types/crypto-js@4.1.1:
+    resolution: {integrity: sha512-BG7fQKZ689HIoc5h+6D2Dgq1fABRa0RbBWKBd9SP/MVRVXROflpm5fhwyATX5duFmbStzyzyycPB8qUYKDH3NA==}
+    dev: true
+
   /@types/eslint-scope@3.7.4:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
@@ -5512,6 +5525,14 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  /crypto-es@1.2.7:
+    resolution: {integrity: sha512-UUqiVJ2gUuZFmbFsKmud3uuLcNP2+Opt+5ysmljycFCyhA0+T16XJmo1ev/t5kMChMqWh7IEvURNCqsg+SjZGQ==}
+    dev: false
+
+  /crypto-js@4.1.1:
+    resolution: {integrity: sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==}
+    dev: false
 
   /css-blank-pseudo@5.0.2(postcss@8.4.23):
     resolution: {integrity: sha512-aCU4AZ7uEcVSUzagTlA9pHciz7aWPKA/YzrEkpdSopJ2pvhIxiQ5sYeMz1/KByxlIo4XBdvMNJAVKMg/GRnhfw==}
