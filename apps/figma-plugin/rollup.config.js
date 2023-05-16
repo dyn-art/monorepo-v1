@@ -46,26 +46,26 @@ const sharedPlugins = {
       preferBuiltins: true,
       browser: true,
     }),
-    // Transpile the code to an earlier ECMAScript version (e.g. from 'node_modules' packages)
+    // Transpile the code to an earlier ECMAScript version (ES6)
     // to ensure compatibility with environments that do not support
-    // some modern JavaScript syntax (e.g. object spread syntax).
+    // some modern JavaScript syntax (e.g. Array.includes(), Object.values()).
     babel({
       babelHelpers: 'bundled',
-      // ignore: [/node_modules/],
+      exclude: /node_modules/,
       presets: [
         [
           '@babel/preset-env',
           {
             targets: {
-              // Only targeting browsers that support ES Modules as Figma does
-              // https://babeljs.io/docs/en/babel-preset-env
+              // Target browsers that support ES Modules which is targeted by this app
+              // Reference: https://babeljs.io/docs/en/babel-preset-env
               esmodules: true,
             },
           },
         ],
       ],
     }),
-    // Transpile CommonJS modules (e.g. from 'node_modules' packages) to ES modules
+    // Convert CommonJS modules (e.g. from 'node_modules' packages) to ES modules targeted by this app
     commonjs(),
     // TypeScript compilation
     typescript({
@@ -98,7 +98,7 @@ export default [
     input: path.resolve('./src/background/index.ts'),
     output: {
       file: 'dist/code.js',
-      format: 'cjs',
+      format: 'es',
       sourcemap: false,
     },
     plugins: [
@@ -117,7 +117,7 @@ export default [
     input: path.resolve('./src/ui/index.tsx'),
     output: {
       file: 'dist/ui.js',
-      format: 'iife',
+      format: 'es',
       sourcemap: false,
     },
     plugins: [

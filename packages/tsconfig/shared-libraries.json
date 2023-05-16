@@ -3,8 +3,8 @@
   "display": "Shared Library",
   "extends": "./base.json",
   "compilerOptions": {
-    "lib": ["es2015"],
-    "target": "es5",
+    "lib": ["es6"],
+    "target": "es6",
     "module": "commonjs",
     "outDir": "./dist",
     "rootDir": "./src"

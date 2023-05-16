@@ -15,7 +15,10 @@ export default class S3 {
   private bucket: string;
 
   constructor(config: TS3Config) {
-    this.client = new S3Client(config.client);
+    logger.info('JEFFF');
+    this.client = new S3Client({
+      ...config.client,
+    });
     this.bucket = config.bucket;
   }
 

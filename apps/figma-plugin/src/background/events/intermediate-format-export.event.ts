@@ -10,7 +10,6 @@ import {
   TTextNode,
 } from '../../shared/types/intermediate-format';
 import { TBackgroundHandler } from '../background-handler';
-import { s3 } from '../core/s3';
 
 export default {
   type: 'ui.message',
@@ -203,8 +202,6 @@ async function formatMiscellaneousNodes(
 
   // Get the image hash
   const svgHash = svgString;
-
-  await s3.upload('test', svgHash);
 
   return {
     type: 'SVG',
