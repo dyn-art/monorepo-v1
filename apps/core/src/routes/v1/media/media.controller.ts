@@ -7,7 +7,7 @@ export async function getPreSignedUploadUrl(
   req: express.Request,
   res: express.Response
 ) {
-  const { contentType } = req.query;
+  const { contentType, key } = req.query;
 
   // Validate query parameters
   if (typeof contentType !== 'string') {
@@ -15,8 +15,11 @@ export async function getPreSignedUploadUrl(
   }
 
   // Create upload url
-  const key = randomUUID();
-  const uploadUrl = await s3.preSignedUploadUrl(key, contentType, 60);
+  const uploadUrl = await s3.preSignedUploadUrl(
+    typeof key === 'string' ? key : randomUUID(),
+    contentType,
+    60
+  );
 
   res.send({
     uploadUrl,

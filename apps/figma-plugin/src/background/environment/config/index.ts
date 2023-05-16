@@ -5,6 +5,6 @@ export const config = {
   app: appConfig,
   core: coreConfig,
 };
-export { appConfig };
+export { appConfig, coreConfig };
 
 export default config;

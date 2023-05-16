@@ -10,7 +10,7 @@ import {
   TTextNode,
 } from '../../shared/types/intermediate-format';
 import { TBackgroundHandler } from '../background-handler';
-import coreConfig from '../environment/config/core.config';
+import { coreConfig } from '../environment';
 
 export default {
   type: 'ui.message',
@@ -31,20 +31,6 @@ export default {
       ) {
         continue;
       }
-
-      // TODO: remove
-      const response = await fetch(
-        `${coreConfig.baseUrl}/media/pre-signed-upload-url?contentType=image/png`,
-        {
-          method: 'GET',
-          headers: {
-            'X-CORS-API-KEY': coreConfig.corsApiKey,
-          },
-        }
-      );
-      const json = await response.json();
-      const data = JSON.stringify(json);
-      logger.info('Request', { response, data });
 
       // Export Node
       const toExportNode = await formatNode(node);
@@ -174,8 +160,6 @@ async function formatTextNode(node: TextNode): Promise<TTextNode> {
 async function formatRectangleNode(
   node: RectangleNode
 ): Promise<TRectangleNode> {
-  // Upload images to bucket
-
   return {
     type: 'RECTANGLE',
     // BasNode mixin
@@ -252,7 +236,7 @@ async function handleFills(inputFills: Paint[] | unknown): Promise<TPaint[]> {
         fills.push(fill);
         continue;
       case 'IMAGE':
-        fills.push(fill);
+        fills.push(await handleImageFill(fill));
         continue;
       case 'SOLID':
         fills.push(fill);
@@ -263,4 +247,112 @@ async function handleFills(inputFills: Paint[] | unknown): Promise<TPaint[]> {
   }
 
   return fills;
+}
+
+async function handleImageFill(fill: ImagePaint) {
+  let imageHash = fill.imageHash;
+  if (imageHash == null) return fill;
+
+  // Get pre signed upload url
+  const response = await fetch(
+    `${coreConfig.baseUrl}/media/pre-signed-upload-url?contentType=image/png&key=${imageHash}`,
+    {
+      method: 'GET',
+      headers: {
+        'X-CORS-API-KEY': coreConfig.corsApiKey,
+      },
+    }
+  );
+  const { uploadUrl, key } = await response.json();
+
+  // Upload file to S3-Bucket
+  if (typeof uploadUrl === 'string' && typeof key === 'string') {
+    const imageData = await figma.getImageByHash(imageHash)?.getBytesAsync();
+    const imageType = getImageType(imageData);
+    if (imageData != null && imageType != null) {
+      await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': imageType.mimeType,
+        },
+        body: imageData,
+      });
+      imageHash = key;
+    }
+  }
+
+  return { ...fill, imageHash };
+}
+
+function getImageType(
+  imageData?: Uint8Array
+): { name: string; mimeType: string; ending: string } | null {
+  if (imageData == null || imageData.length < 4) {
+    return null;
+  }
+
+  // Try to detect image type based on first bytes
+  const firstBytes = imageData.slice(0, 4);
+  if (
+    firstBytes[0] === 0x89 &&
+    firstBytes[1] === 0x50 &&
+    firstBytes[2] === 0x4e &&
+    firstBytes[3] === 0x47
+  ) {
+    return {
+      name: 'png',
+      mimeType: 'image/png',
+      ending: '.png',
+    };
+  }
+  if (firstBytes[0] === 0xff && firstBytes[1] === 0xd8) {
+    return {
+      name: 'jpeg',
+      mimeType: 'image/jpeg',
+      ending: '.jpeg',
+    };
+  }
+  if (
+    firstBytes[0] === 0x47 &&
+    firstBytes[1] === 0x49 &&
+    firstBytes[2] === 0x46 &&
+    firstBytes[3] === 0x38
+  ) {
+    return {
+      name: 'gif',
+      mimeType: 'image/gif',
+      ending: '.gif',
+    };
+  }
+  if (firstBytes[0] === 0x42 && firstBytes[1] === 0x4d) {
+    return {
+      name: 'bmp',
+      mimeType: 'image/bmp',
+      ending: '.bmp',
+    };
+  }
+  if (
+    firstBytes[0] === 0x49 &&
+    firstBytes[1] === 0x49 &&
+    firstBytes[2] === 0x2a &&
+    firstBytes[3] === 0x00
+  ) {
+    return {
+      name: 'tiff',
+      mimeType: 'image/tiff',
+      ending: '.tiff',
+    };
+  }
+
+  // Try to detect image type based on text content
+  const firstChars = new TextDecoder().decode(imageData.slice(0, 50)).trim();
+  if (firstChars.startsWith('<svg')) {
+    return {
+      name: 'svg',
+      mimeType: 'image/svg+xml',
+      ending: '.svg',
+    };
+  }
+
+  return null;
 }
