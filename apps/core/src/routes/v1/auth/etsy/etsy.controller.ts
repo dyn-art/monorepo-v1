@@ -37,9 +37,9 @@ export async function handleOAuthRedirect(
     return;
   }
 
-  // Handle no code or state present
+  // Validate query parameters
   if (typeof code !== 'string' || typeof state !== 'string') {
-    throw new AppError(500, 'No valid code or/and state provided');
+    throw new AppError(500, 'Invalid query parameters provided!');
   }
 
   // Token exchange

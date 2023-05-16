@@ -10,6 +10,7 @@ import {
   TTextNode,
 } from '../../shared/types/intermediate-format';
 import { TBackgroundHandler } from '../background-handler';
+import coreConfig from '../environment/config/core.config';
 
 export default {
   type: 'ui.message',
@@ -30,6 +31,20 @@ export default {
       ) {
         continue;
       }
+
+      // TODO: remove
+      const response = await fetch(
+        `${coreConfig.baseUrl}/media/pre-signed-upload-url?contentType=image/png`,
+        {
+          method: 'GET',
+          headers: {
+            'X-CORS-API-KEY': coreConfig.corsApiKey,
+          },
+        }
+      );
+      const json = await response.json();
+      const data = JSON.stringify(json);
+      logger.info('Request', { response, data });
 
       // Export Node
       const toExportNode = await formatNode(node);

@@ -1,13 +1,14 @@
 import cron from 'node-cron';
-import { processReceipts } from '../services';
+import { logger } from '../../logger';
 
 export const cronTasks: cron.ScheduledTask[] = [
   // Etsy Orders/Receipts polling Cron Schedule (Runs all 5min)
   cron.schedule(
     '*/5 * * * *',
     async () => {
-      console.log('Running Etsy orders polling task...');
-      await processReceipts();
+      logger.info('Started running Etsy orders polling task...');
+      // await processReceipts();
+      logger.info('Completed Etsy orders polling task.');
     },
     { scheduled: false }
   ),

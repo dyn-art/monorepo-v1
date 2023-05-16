@@ -1,5 +1,5 @@
-import { Prisma, PrismaClient } from '@prisma/client';
-import { appConfig, STAGE } from '../../environment';
+import { PrismaClient } from '@prisma/client';
+import { STAGE, appConfig } from '../../environment';
 
 export class PrismaConnection {
   private db: PrismaClient | null = null;
@@ -8,7 +8,7 @@ export class PrismaConnection {
    * Connect to the database and initialize the PrismaClient instance
    */
   public connectDB(): PrismaClient {
-    const logs: Record<string, Prisma.LogDefinition> = {}; // <level, emit>
+    const logs: Record<string, any> = {}; // <level, emit>
     logs['error'] = { level: 'error', emit: 'stdout' };
     if (appConfig.stage === STAGE.LOCAL) {
       logs['query'] = { level: 'query', emit: 'event' };

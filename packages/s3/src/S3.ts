@@ -15,7 +15,6 @@ export default class S3 {
   private bucket: string;
 
   constructor(config: TS3Config) {
-    logger.info('JEFFF');
     this.client = new S3Client({
       ...config.client,
     });
@@ -131,6 +130,35 @@ export default class S3 {
     } catch (e) {
       logger.error(
         `Failed to create pre-signed url to download for '${this.bucket}/${key}'!`,
+        e
+      );
+    }
+    return null;
+  }
+
+  async preSignedUploadUrl(
+    key: string,
+    contentType = 'text',
+    expiresIn = 15 * 60
+  ): Promise<string | null> {
+    try {
+      const url = await getSignedUrl(
+        this.client,
+        new PutObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+          ContentType: contentType,
+        }),
+        { expiresIn }
+      );
+      logger.success(
+        `Successfully created pre-signed url to upload to '${this.bucket}/${key}'.`,
+        url
+      );
+      return url;
+    } catch (e) {
+      logger.error(
+        `Failed to create pre-signed url to upload to '${this.bucket}/${key}'!`,
         e
       );
     }
