@@ -27,6 +27,7 @@ export default {
       try {
         const toExportNode = await formatNode(node);
         logger.info('Exported Node', { exportedNode: toExportNode });
+        logger.info(JSON.stringify(toExportNode));
       } catch (e) {
         logger.error('Failed to export Node!', e);
       }

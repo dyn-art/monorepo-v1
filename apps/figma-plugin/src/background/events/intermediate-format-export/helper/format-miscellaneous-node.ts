@@ -47,6 +47,6 @@ export async function formatMiscellaneousNodes(
 }
 
 function generateHash(data: Uint8Array): string {
-  const hash = CryptoJS.SHA256(data.toString());
+  const hash = CryptoJS.SHA256(data.join('-'));
   return hash.toString(CryptoJS.enc.Hex);
 }

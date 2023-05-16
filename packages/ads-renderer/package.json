@@ -7,7 +7,7 @@
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "pnpm run bundle && shx rm -rf dist && tsc",
+    "build": "echo \"Local project to render ads.\"",
     "start:dev": "tsc -w",
     "start:remotion": "remotion preview ./ui/src/index.ts --config ./ui/remotion.config.ts",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
