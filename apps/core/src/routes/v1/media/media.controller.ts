@@ -7,18 +7,17 @@ export async function getPreSignedUploadUrl(
   req: express.Request,
   res: express.Response
 ) {
-  const { contentType, key } = req.query;
+  const { contentType, key, scope } = req.query;
 
   // Validate query parameters
-  if (typeof contentType !== 'string') {
+  if (typeof contentType !== 'string' || typeof scope !== 'string') {
     throw new AppError(500, 'Invalid query parameters provided!');
   }
 
-  // Create upload url
+  // Generate presigned upload url
   const uploadUrl = await s3.preSignedUploadUrl(
     typeof key === 'string' ? key : randomUUID(),
-    contentType,
-    60
+    { contentType, expiresIn: 5 * 60, scope }
   );
 
   res.send({

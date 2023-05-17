@@ -6,5 +6,8 @@ const router: Router = Router();
 
 router.use('/auth', authRoutes);
 router.use('/media', mediaRoutes);
+router.get('/ping', (req, res, nex) => {
+  res.send(200);
+});
 
 export default router;

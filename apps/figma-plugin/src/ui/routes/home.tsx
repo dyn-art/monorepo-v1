@@ -2,12 +2,17 @@ import { clsx } from 'clsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { TOnSelectFrameEvent } from '../../shared';
+import { copyToClipboard } from '../core';
 import { TUIHandler, uiHandler } from '../ui-handler';
 
 const Home: React.FC = () => {
   const [selectedFrames, setSelectedFrames] = React.useState<
     TOnSelectFrameEvent['args']['selected'] | null
   >(null);
+  const [
+    isLoadingIntermediateFormatExport,
+    setIsLoadingIntermediateFormatExport,
+  ] = React.useState(false);
 
   React.useEffect(() => {
     uiHandler.registerEvent({
@@ -22,6 +27,17 @@ const Home: React.FC = () => {
         }
       },
     });
+
+    uiHandler.registerEvent({
+      type: 'figma.message',
+      key: 'intermediate-format-export-result-event',
+      callback: async (instance: TUIHandler, args) => {
+        setIsLoadingIntermediateFormatExport(false);
+        if (args.type === 'success') {
+          copyToClipboard(args.content);
+        }
+      },
+    });
   }, []);
 
   return (
@@ -33,23 +49,32 @@ const Home: React.FC = () => {
         </li>
         <li
           className={clsx({
-            disabled: selectedFrames == null || selectedFrames.length === 0,
+            disabled:
+              selectedFrames == null ||
+              selectedFrames.length === 0 ||
+              isLoadingIntermediateFormatExport,
           })}
         >
-          <div
-            onClick={() => {
-              if (selectedFrames != null) {
-                uiHandler.postMessage('intermediate-format-export-event', {
-                  selectedElements: selectedFrames,
-                });
-              }
-            }}
-          >
-            Export Frame
-            {selectedFrames != null && selectedFrames.length > 0
-              ? ` [${selectedFrames[0].name}] (${selectedFrames.length})`
-              : ''}
-          </div>
+          {/* TODO: proper loading indicator */}
+          {isLoadingIntermediateFormatExport ? (
+            <div>Loading...</div>
+          ) : (
+            <div
+              onClick={() => {
+                if (selectedFrames != null) {
+                  setIsLoadingIntermediateFormatExport(true);
+                  uiHandler.postMessage('intermediate-format-export-event', {
+                    selectedElements: selectedFrames,
+                  });
+                }
+              }}
+            >
+              Export Frame
+              {selectedFrames != null && selectedFrames.length > 0
+                ? ` [${selectedFrames[0].name}] (${selectedFrames.length})`
+                : ''}
+            </div>
+          )}
         </li>
         <li className="menu-title">
           <span>Other</span>

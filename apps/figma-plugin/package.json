@@ -19,6 +19,7 @@
   "dependencies": {
     "@pda/figma-handler": "workspace:*",
     "@pda/logger": "workspace:*",
+    "@pda/utils": "workspace:*",
     "clsx": "^1.2.1",
     "crypto-js": "^4.1.1",
     "daisyui": "^2.51.6",

@@ -79,8 +79,11 @@ export default class S3 {
 
   async download<TOutputType extends TDownloadOutputType>(
     key: string,
-    outputType: TOutputType
+    config: {
+      outputType?: TOutputType;
+    } = {}
   ): Promise<TDownloadResponseType<TOutputType> | null> {
+    const { outputType = 'string' } = config;
     try {
       const response = await this.client.send(
         new GetObjectCommand({
@@ -111,8 +114,9 @@ export default class S3 {
 
   async preSignedDownloadUrl(
     key: string,
-    expiresIn = 15 * 60
+    config: { expiresIn?: number } = {}
   ): Promise<string | null> {
+    const { expiresIn = 15 * 60 } = config;
     try {
       const url = await getSignedUrl(
         this.client,
@@ -138,9 +142,9 @@ export default class S3 {
 
   async preSignedUploadUrl(
     key: string,
-    contentType = 'text',
-    expiresIn = 15 * 60
+    config: { contentType?: string; expiresIn?: number; scope?: string } = {}
   ): Promise<string | null> {
+    const { contentType = 'text', expiresIn = 15 * 60, scope } = config;
     try {
       const url = await getSignedUrl(
         this.client,
@@ -148,6 +152,7 @@ export default class S3 {
           Bucket: this.bucket,
           Key: key,
           ContentType: contentType,
+          ACL: scope,
         }),
         { expiresIn }
       );

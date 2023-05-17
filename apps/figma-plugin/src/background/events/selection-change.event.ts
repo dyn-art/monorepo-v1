@@ -5,7 +5,7 @@ import {
   logger,
 } from '../../shared';
 import { TBackgroundHandler } from '../background-handler';
-import { extractNodeProperties } from '../utils';
+import { extractNodeProperties } from '../core';
 
 export default {
   type: 'selectionchange',

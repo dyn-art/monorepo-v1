@@ -14,4 +14,21 @@ export interface TOnSelectNodeEvent extends TBaseFigmaMessageEvent {
   args: { selected: Pick<SceneNode, 'name' | 'id'>[] | null };
 }
 
-export type TUIFigmaMessageEvent = TOnSelectFrameEvent | TOnSelectNodeEvent;
+export interface TIntermediateFormatExportResultEvent
+  extends TBaseFigmaMessageEvent {
+  key: 'intermediate-format-export-result-event';
+  args:
+    | {
+        type: 'error';
+        message: string;
+      }
+    | {
+        type: 'success';
+        content: string;
+      };
+}
+
+export type TUIFigmaMessageEvent =
+  | TOnSelectFrameEvent
+  | TOnSelectNodeEvent
+  | TIntermediateFormatExportResultEvent;

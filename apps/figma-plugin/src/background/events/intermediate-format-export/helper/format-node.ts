@@ -1,9 +1,9 @@
 import { TNode } from '../../../../shared/types/intermediate-format';
 import { formatFrameNode } from './format-frame-node';
 import { formatGroupNode } from './format-group-node';
-import { formatMiscellaneousNodes } from './format-miscellaneous-node';
 import { formatRectangleNode } from './format-rectangle-node';
 import { formatTextNode } from './format-text-node';
+import { formatToSvgNode } from './format-to-svg-node';
 
 export async function formatNode(node: SceneNode): Promise<TNode | null> {
   if (node == null) {
@@ -27,7 +27,7 @@ export async function formatNode(node: SceneNode): Promise<TNode | null> {
     case 'STAR':
     case 'VECTOR':
     case 'BOOLEAN_OPERATION':
-      return formatMiscellaneousNodes(node);
+      return formatToSvgNode(node);
     default:
       // do nothing
 
