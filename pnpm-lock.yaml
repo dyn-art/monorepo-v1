@@ -135,8 +135,11 @@ importers:
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@pda/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       '@pda/utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/utils
       clsx:
         specifier: ^1.2.1
@@ -610,6 +613,9 @@ importers:
       '@pda/jest-presets':
         specifier: workspace:*
         version: link:../jest-presets
+      '@pda/shared-types':
+        specifier: workspace:^
+        version: link:../shared-types
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -737,6 +743,21 @@ importers:
       jest:
         specifier: ^29.5.0
         version: 29.5.0(@types/node@18.15.13)(ts-node@10.9.1)
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
+
+  packages/shared-types:
+    devDependencies:
+      '@pda/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      eslint:
+        specifier: ^8.38.0
+        version: 8.38.0
+      eslint-config-pda-base:
+        specifier: workspace:*
+        version: link:../eslint-config-pda-base
       typescript:
         specifier: ^4.9.5
         version: 4.9.5

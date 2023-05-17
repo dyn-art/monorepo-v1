@@ -192,7 +192,7 @@ export type TImageFilters = {
 
 export type TColorStop = {
   readonly position: number;
-  readonly color: RGBA;
+  readonly color: TRGBA;
 };
 
 export type TPaint = TSolidPaint | TGradientPaint | TImagePaint;

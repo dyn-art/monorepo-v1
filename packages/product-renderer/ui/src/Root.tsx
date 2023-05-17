@@ -7,11 +7,15 @@ import SimpleCityMapV1 from './stills/simple-city-map-v1';
 import SpotifyPlayerV1 from './stills/spotify-player-v1';
 
 // Global Styles
+import FigmaNodeTreeV1 from './stills/figma-node-tree-v1';
 import './style.css';
 
 export const RemotionRoot: React.FC = () => {
   const [{ loading: isLoadingTiles, data: tilesData }] = useAxios(
     'https://raw.githubusercontent.com/physical-art/default-props/main/tiles-long-1224183-lat37775.json'
+  );
+  const [{ loading: isLoadingFigmaNodeTree, data: figmaNodeTree }] = useAxios(
+    'https://raw.githubusercontent.com/physical-art/default-props/main/figma-node-tree-1'
   );
 
   return (
@@ -19,17 +23,32 @@ export const RemotionRoot: React.FC = () => {
       {!isLoadingTiles ? (
         <Still
           id="simple-city-map-v1"
-          component={SimpleCityMapV1 as any}
+          component={SimpleCityMapV1}
           width={800}
           height={1200}
+          defaultProps={
+            {
+              tiles: tilesData,
+              projectionProps: {
+                center: [-122.4183, 37.775],
+                scale: Math.pow(2, 21) / (2 * Math.PI),
+                translate: [600 / 2, 600 / 2],
+                precision: 0,
+              },
+            } as any
+          }
+        />
+      ) : (
+        <p>Default props not loaded yet!</p>
+      )}
+      {!isLoadingFigmaNodeTree ? (
+        <Still
+          id="figma-node-tree-v1"
+          component={FigmaNodeTreeV1}
+          width={6000}
+          height={4500}
           defaultProps={{
-            tiles: tilesData as any,
-            projectionProps: {
-              center: [-122.4183, 37.775],
-              scale: Math.pow(2, 21) / (2 * Math.PI),
-              translate: [600 / 2, 600 / 2],
-              precision: 0,
-            },
+            nodeTree: figmaNodeTree,
           }}
         />
       ) : (

@@ -12,7 +12,7 @@
     "start:dev": "tsc -w",
     "start:remotion": "remotion preview ./ui/src/index.ts --config ./ui/remotion.config.ts",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
-    "clean": "shx rm -rf bundle && shx rm -rf dist && shx rm -rf node_modules && shx -rf .turbo",
+    "clean": "shx rm -rf bundle && shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",
     "test": "jest"
   },
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@pda/jest-presets": "workspace:*",
+    "@pda/shared-types": "workspace:^",
     "@pda/tsconfig": "workspace:*",
     "@remotion/bundler": "^3.3.83",
     "@remotion/cli": "^3.3.83",

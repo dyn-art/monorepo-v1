@@ -1,4 +1,4 @@
-import { TTextNode } from '../../../../shared/types/intermediate-format';
+import { TTextNode } from '@pda/shared-types';
 
 export async function formatTextNode(node: TextNode): Promise<TTextNode> {
   return {

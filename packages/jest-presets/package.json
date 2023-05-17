@@ -4,7 +4,7 @@
   "description": "Jest Configuration",
   "private": true,
   "scripts": {
-    "clean": "shx rm -rf node_modules && shx -rf .turbo",
+    "clean": "shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install"
   },
   "keywords": [],

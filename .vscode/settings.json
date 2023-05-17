@@ -30,6 +30,7 @@
         "./packages/product-renderer/ui",
         "./packages/product-renderer/scripts",
         "./packages/s3",
+        "./packages/shared-types",
         "./packages/utils",
     ],
     "cSpell.words": [

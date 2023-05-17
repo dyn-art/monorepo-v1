@@ -1,7 +1,7 @@
 {
   "name": "@pda/tsconfig",
   "version": "0.0.0",
-  "description": "Typescript Configuration",
+  "description": "Typescript configuration",
   "private": true,
   "scripts": {},
   "keywords": [],

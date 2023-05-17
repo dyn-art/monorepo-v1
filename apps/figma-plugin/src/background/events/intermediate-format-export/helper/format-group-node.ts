@@ -1,7 +1,4 @@
-import {
-  TGroupNode,
-  TNode,
-} from '../../../../shared/types/intermediate-format';
+import { TGroupNode, TNode } from '@pda/shared-types';
 import { formatNode } from './format-node';
 
 export async function formatGroupNode(node: GroupNode): Promise<TGroupNode> {

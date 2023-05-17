@@ -1,5 +1,5 @@
+import { TPaint } from '@pda/shared-types';
 import { logger } from '../../../../shared';
-import { TPaint } from '../../../../shared/types/intermediate-format';
 import { uploadDataToBucket } from './upload-data-to-bucket';
 
 export async function handleFills(

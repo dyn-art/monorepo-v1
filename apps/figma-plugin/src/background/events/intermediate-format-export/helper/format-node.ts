@@ -1,4 +1,4 @@
-import { TNode } from '../../../../shared/types/intermediate-format';
+import { TNode } from '@pda/shared-types';
 import { formatFrameNode } from './format-frame-node';
 import { formatGroupNode } from './format-group-node';
 import { formatRectangleNode } from './format-rectangle-node';

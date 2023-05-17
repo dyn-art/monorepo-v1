@@ -29,9 +29,6 @@
             "path": "packages/logger"
         },
         {
-            "path": "packages/map"
-        },
-        {
             "path": "packages/music"
         },
         {
@@ -39,6 +36,9 @@
         },
         {
             "path": "packages/s3"
+        },
+        {
+            "path": "packages/shared-types"
         },
         {
             "path": "packages/utils"
