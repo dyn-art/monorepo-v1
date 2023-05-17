@@ -1,7 +1,17 @@
 import { TTextNode } from '@pda/shared-types';
+import WebFont from 'webfontloader';
 import { matrixToCSS } from './matrix-to-css';
 
-export function renderText(node: TTextNode) {
+export async function renderText(node: TTextNode): Promise<JSX.Element> {
+  const fontFamily = node.fontName.family || 'Roboto';
+  const fontWeight = node.fontWeight || 400;
+
+  WebFont.load({
+    google: {
+      families: [`${fontFamily}:${fontWeight}`],
+    },
+  });
+
   return (
     <div
       style={{

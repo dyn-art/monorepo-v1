@@ -14,7 +14,7 @@ async function getSVGFromHash(hash: string): Promise<string | null> {
   return null;
 }
 
-export async function renderSVG(node: TSVGNode) {
+export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
   const svgContent = getSVGFromHash(node.svgHash);
   return (
     <div

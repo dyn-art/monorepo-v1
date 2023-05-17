@@ -2,7 +2,9 @@ import { TRectangleNode } from '@pda/shared-types';
 import { getFillStyles } from './get-fill-styles';
 import { matrixToCSS } from './matrix-to-css';
 
-export function renderRectangle(node: TRectangleNode) {
+export async function renderRectangle(
+  node: TRectangleNode
+): Promise<JSX.Element> {
   return (
     <div
       style={{

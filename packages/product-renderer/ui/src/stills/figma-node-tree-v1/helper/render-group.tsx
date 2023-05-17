@@ -2,7 +2,7 @@ import { TGroupNode } from '@pda/shared-types';
 import { matrixToCSS } from './matrix-to-css';
 import { renderNode } from './render-node';
 
-export async function renderGroup(node: TGroupNode) {
+export async function renderGroup(node: TGroupNode): Promise<JSX.Element> {
   return (
     <div
       style={{

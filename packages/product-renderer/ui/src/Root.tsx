@@ -15,7 +15,7 @@ export const RemotionRoot: React.FC = () => {
     'https://raw.githubusercontent.com/physical-art/default-props/main/tiles-long-1224183-lat37775.json'
   );
   const [{ loading: isLoadingFigmaNodeTree, data: figmaNodeTree }] = useAxios(
-    'https://raw.githubusercontent.com/physical-art/default-props/main/figma-node-tree-2'
+    'https://raw.githubusercontent.com/physical-art/default-props/main/figma-node-tree-3'
   );
 
   return (

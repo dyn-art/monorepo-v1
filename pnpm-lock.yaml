@@ -135,9 +135,6 @@ importers:
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@pda/shared-types':
-        specifier: workspace:*
-        version: link:../../packages/shared-types
       '@pda/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -169,6 +166,9 @@ importers:
       '@figma/plugin-typings':
         specifier: ^1.64.0
         version: 1.64.0
+      '@pda/shared-types':
+        specifier: workspace:*
+        version: link:../../packages/shared-types
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -609,6 +609,9 @@ importers:
       remotion:
         specifier: ^3.3.83
         version: 3.3.83(react-dom@18.2.0)(react@18.2.0)
+      webfontloader:
+        specifier: ^1.6.28
+        version: 1.6.28
     devDependencies:
       '@pda/jest-presets':
         specifier: workspace:*
@@ -640,6 +643,9 @@ importers:
       '@types/web':
         specifier: ^0.0.99
         version: 0.0.99
+      '@types/webfontloader':
+        specifier: ^1.6.35
+        version: 1.6.35
       autoprefixer:
         specifier: ^10.4.14
         version: 10.4.14(postcss@8.4.23)
@@ -4432,6 +4438,10 @@ packages:
 
   /@types/web@0.0.99:
     resolution: {integrity: sha512-xMz3tOvtkZzc7RpQrDNiLe5sfMmP+fz8bOxHIZ/U8qXyvzDX4L4Ss1HCjor/O9DSelba+1iXK1VM7lruX28hiQ==}
+    dev: true
+
+  /@types/webfontloader@1.6.35:
+    resolution: {integrity: sha512-IJlrsiDWq6KghQ7tPlL5tcwSUyOxLDceT+AFUY7Ylj0Fcv3/h3QkANqQxZ0B5mEpEKxhTw76vDmvrruSMV9n9Q==}
     dev: true
 
   /@types/ws@8.5.4:
@@ -10507,6 +10517,10 @@ packages:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
     dev: true
+
+  /webfontloader@1.6.28:
+    resolution: {integrity: sha512-Egb0oFEga6f+nSgasH3E0M405Pzn6y3/9tOVanv/DLfa1YBIgcv90L18YyWnvXkRbIM17v5Kv6IT2N6g1x5tvQ==}
+    dev: false
 
   /webidl-conversions@4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}

@@ -26,6 +26,13 @@ export default {
         continue;
       }
 
+      // Reset node from relative space
+      node.x = 0;
+      node.y = 0;
+      node.rotation = 0;
+      node.relativeTransform[0][2] = 0;
+      node.relativeTransform[1][2] = 0;
+
       // Export Node
       try {
         const toExportNode = await formatNode(node);

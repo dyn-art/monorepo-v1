@@ -5,7 +5,7 @@ import { renderRectangle } from './render-rectangle';
 import { renderSVG } from './render-svg';
 import { renderText } from './render-text';
 
-export async function renderNode(node: TNode) {
+export async function renderNode(node: TNode): Promise<JSX.Element | null> {
   switch (node.type) {
     case 'FRAME':
       return renderFrame(node);

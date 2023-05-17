@@ -3,7 +3,7 @@ import { getFillStyles } from './get-fill-styles';
 import { matrixToCSS } from './matrix-to-css';
 import { renderNode } from './render-node';
 
-export async function renderFrame(node: TFrameNode) {
+export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
   return (
     <div
       style={{
