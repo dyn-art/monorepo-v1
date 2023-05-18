@@ -2,13 +2,12 @@ import { TPaint } from '@pda/shared-types';
 import { logger } from '../../../../shared';
 import { uploadDataToBucket } from './upload-data-to-bucket';
 
-export async function handleFills(
-  inputFills: Paint[] | unknown
-): Promise<TPaint[]> {
+export async function handleFills(inputFills: Paint[]): Promise<TPaint[]> {
   if (!Array.isArray(inputFills)) return [];
   const fills: TPaint[] = [];
 
   for (const fill of inputFills) {
+    if (!fill.visible) continue;
     switch (fill.type) {
       case 'GRADIENT_ANGULAR':
       case 'GRADIENT_DIAMOND':

@@ -1,4 +1,5 @@
 import { TTextNode } from '@pda/shared-types';
+import { handleFills } from './handle-fills';
 
 export async function formatTextNode(node: TextNode): Promise<TTextNode> {
   return {
@@ -26,5 +27,7 @@ export async function formatTextNode(node: TextNode): Promise<TTextNode> {
     opacity: node.opacity,
     isMask: node.isMask,
     effects: node.effects,
+    // Fills mixin
+    fills: await handleFills(node.fills as Paint[]),
   } as TTextNode;
 }

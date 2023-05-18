@@ -7,6 +7,7 @@ export async function renderRectangle(
 ): Promise<JSX.Element> {
   return (
     <div
+      key={node.id}
       style={{
         position: 'absolute',
         width: node.width,

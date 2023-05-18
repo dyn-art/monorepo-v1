@@ -6,6 +6,7 @@ import { renderNode } from './render-node';
 export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
   return (
     <div
+      key={node.id}
       style={{
         position: 'relative',
         width: node.width,

@@ -1,5 +1,6 @@
 import { TTextNode } from '@pda/shared-types';
 import WebFont from 'webfontloader';
+import { getFillStyles } from './get-fill-styles';
 import { matrixToCSS } from './matrix-to-css';
 
 export async function renderText(node: TTextNode): Promise<JSX.Element> {
@@ -14,6 +15,7 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
 
   return (
     <div
+      key={node.id}
       style={{
         position: 'absolute',
         width: node.width,
@@ -36,6 +38,7 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
               }`,
         textAlign: node.textAlignHorizontal.toLowerCase() as any,
         justifyContent: node.textAlignVertical.toLowerCase(),
+        ...getFillStyles(node.fills, true),
       }}
     >
       {node.characters}

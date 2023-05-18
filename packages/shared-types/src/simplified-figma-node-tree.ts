@@ -33,7 +33,8 @@ export type TTextNode = {
   letterSpacing: TLetterSpacing;
   lineHeight: TLineHeight;
   characters: string;
-} & TDefaultShapeMixin;
+} & TDefaultShapeMixin &
+  TFillsMixin;
 
 export type TGroupNode = {
   readonly type: 'GROUP';

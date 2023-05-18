@@ -5,6 +5,7 @@ import { renderNode } from './render-node';
 export async function renderGroup(node: TGroupNode): Promise<JSX.Element> {
   return (
     <div
+      key={node.id}
       style={{
         position: 'absolute',
         width: node.width,

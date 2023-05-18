@@ -8,7 +8,8 @@ import { CSSProperties } from 'react';
 import { getS3BucketURLFromHash } from './get-url-from-hash';
 
 export function getFillStyles(
-  fills: ReadonlyArray<TPaint>
+  fills: ReadonlyArray<TPaint>,
+  isText = false
 ): React.CSSProperties {
   if (fills.length === 0) {
     return {};
@@ -36,6 +37,14 @@ export function getFillStyles(
 
   return {
     ...fillStyle,
+    ...(isText
+      ? {
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          color: 'transparent',
+          WebkitTextFillColor: 'transparent',
+        }
+      : {}),
     mixBlendMode: getBlendMode(fill.blendMode), // Set the blend mode
     opacity: fill.opacity || 1,
   };
