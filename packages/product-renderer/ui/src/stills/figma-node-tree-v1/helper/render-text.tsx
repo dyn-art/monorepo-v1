@@ -18,6 +18,8 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
       key={node.id}
       style={{
         position: 'absolute',
+        top: 0,
+        left: 0,
         width: node.width,
         height: node.height,
         transform: `${matrixToCSS(node.transform)} rotate(${node.rotation}deg)`,

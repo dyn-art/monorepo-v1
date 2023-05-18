@@ -1,6 +1,7 @@
 import useAxios from 'axios-hooks';
 import React from 'react';
 import { Still } from 'remotion';
+import figmaNodeTree1 from './assets/figma-node-tree-1.json';
 
 // Compositions
 import SimpleCityMapV1 from './stills/simple-city-map-v1';
@@ -14,9 +15,9 @@ export const RemotionRoot: React.FC = () => {
   const [{ loading: isLoadingTiles, data: tilesData }] = useAxios(
     'https://raw.githubusercontent.com/physical-art/default-props/main/tiles-long-1224183-lat37775.json'
   );
-  const [{ loading: isLoadingFigmaNodeTree, data: figmaNodeTree }] = useAxios(
-    'https://raw.githubusercontent.com/physical-art/default-props/main/figma-node-tree-3'
-  );
+  // const [{ loading: isLoadingFigmaNodeTree, data: figmaNodeTree }] = useAxios(
+  //   'https://raw.githubusercontent.com/physical-art/default-props/main/figma-node-tree-3'
+  // );
 
   return (
     <>
@@ -41,19 +42,15 @@ export const RemotionRoot: React.FC = () => {
       ) : (
         <p>Default props not loaded yet!</p>
       )}
-      {!isLoadingFigmaNodeTree ? (
-        <Still
-          id="figma-node-tree-v1"
-          component={FigmaNodeTreeV1}
-          width={595}
-          height={842}
-          defaultProps={{
-            nodeTree: figmaNodeTree,
-          }}
-        />
-      ) : (
-        <p>Default props not loaded yet!</p>
-      )}
+      <Still
+        id="figma-node-tree-v1"
+        component={FigmaNodeTreeV1}
+        width={595}
+        height={842}
+        defaultProps={{
+          nodeTree: figmaNodeTree1 as any,
+        }}
+      />
       <Still
         id="spotify-player-v1"
         component={SpotifyPlayerV1}

@@ -10,11 +10,13 @@ export async function renderRectangle(
       key={node.id}
       style={{
         position: 'absolute',
+        top: 0,
+        left: 0,
         width: node.width,
         height: node.height,
         borderRadius: `${node.topLeftRadius}px ${node.topRightRadius}px ${node.bottomRightRadius}px ${node.bottomLeftRadius}px`,
-        transform: `${matrixToCSS(node.transform)} rotate(${node.rotation}deg)`,
-        transformOrigin: '0 0',
+        transform: `${matrixToCSS(node.transform)}`,
+        transformOrigin: '50% 50%',
         opacity: node.opacity,
         ...getFillStyles(node.fills),
       }}

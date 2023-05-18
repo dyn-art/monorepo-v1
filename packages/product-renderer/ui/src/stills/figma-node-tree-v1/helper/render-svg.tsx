@@ -35,6 +35,8 @@ export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
       src={getS3BucketURLFromHash(node.svgHash)}
       style={{
         position: 'absolute',
+        top: 0,
+        left: 0,
         // width: node.width,
         // height: node.height,
         transform: `${matrixToCSS(node.transform)} rotate(${node.rotation}deg)`,
