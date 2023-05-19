@@ -35,7 +35,9 @@ export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
       src={getS3BucketURLFromHash(node.svgHash)}
       style={{
         position: 'absolute',
-        transform: figmaTransformToCSS(node),
+        top: 0,
+        left: 0,
+        transform: figmaTransformToCSS(node, false),
         transformOrigin: 'center center',
         opacity: node.opacity,
       }}

@@ -8,6 +8,8 @@ export async function renderGroup(node: TGroupNode): Promise<JSX.Element> {
       key={node.id}
       style={{
         position: 'absolute',
+        top: 0,
+        left: 0,
         width: node.width,
         height: node.height,
         transform: figmaTransformToCSS(node),

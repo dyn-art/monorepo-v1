@@ -10,6 +10,8 @@ export async function renderRectangle(
       key={node.id}
       style={{
         position: 'absolute',
+        top: 0,
+        left: 0,
         width: node.width,
         height: node.height,
         borderRadius: `${node.topLeftRadius}px ${node.topRightRadius}px ${node.bottomRightRadius}px ${node.bottomLeftRadius}px`,

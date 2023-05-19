@@ -1,10 +1,13 @@
-export function figmaTransformToCSS(props: {
-  width: number;
-  height: number;
-  x: number;
-  y: number;
-  rotation: number;
-}) {
+export function figmaTransformToCSS(
+  props: {
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+    rotation: number;
+  },
+  rotate = true
+) {
   const { width, height, x, y, rotation } = props;
 
   // Calculate the effective position after rotation
@@ -19,5 +22,7 @@ export function figmaTransformToCSS(props: {
     (height / 2) * (1 - Math.cos(angleRad)) -
     (width / 2) * Math.sin(angleRad);
 
-  return `translate(${effectiveX}px, ${effectiveY}px) rotate(${effectiveRotation}deg)`;
+  return `translate(${effectiveX}px, ${effectiveY}px)${
+    rotate ? ` rotate(${effectiveRotation}deg)` : ''
+  }`;
 }
