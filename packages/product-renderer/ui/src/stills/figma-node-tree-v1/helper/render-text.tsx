@@ -1,7 +1,7 @@
 import { TTextNode } from '@pda/shared-types';
 import WebFont from 'webfontloader';
+import { figmaTransformToCSS } from './figma-transform-to-css';
 import { getFillStyles } from './get-fill-styles';
-import { matrixToCSS } from './matrix-to-css';
 
 export async function renderText(node: TTextNode): Promise<JSX.Element> {
   const fontFamily = node.fontName.family || 'Roboto';
@@ -18,12 +18,10 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
       key={node.id}
       style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
         width: node.width,
         height: node.height,
-        transform: `${matrixToCSS(node.transform)} rotate(${node.rotation}deg)`,
-        transformOrigin: '0 0',
+        transform: figmaTransformToCSS(node),
+        transformOrigin: 'center center',
         opacity: node.opacity,
         fontFamily: node.fontName.family,
         fontStyle: node.fontName.style,

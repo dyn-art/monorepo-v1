@@ -1,6 +1,6 @@
 import { TFrameNode } from '@pda/shared-types';
+import { figmaTransformToCSS } from './figma-transform-to-css';
 import { getFillStyles } from './get-fill-styles';
-import { matrixToCSS } from './matrix-to-css';
 import { renderNode } from './render-node';
 
 export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
@@ -12,8 +12,8 @@ export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
         width: node.width,
         height: node.height,
         overflow: node.clipsContent ? 'hidden' : 'visible',
-        transform: `${matrixToCSS(node.transform)} rotate(${node.rotation}deg)`,
-        transformOrigin: '0 0',
+        transform: figmaTransformToCSS(node),
+        transformOrigin: 'center center',
         opacity: node.opacity,
         ...getFillStyles(node.fills),
       }}

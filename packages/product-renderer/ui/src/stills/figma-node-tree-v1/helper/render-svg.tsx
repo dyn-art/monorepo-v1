@@ -1,7 +1,7 @@
 import { TSVGNode } from '@pda/shared-types';
 import axios from 'axios';
+import { figmaTransformToCSS } from './figma-transform-to-css';
 import { getS3BucketURLFromHash } from './get-url-from-hash';
-import { matrixToCSS } from './matrix-to-css';
 
 async function getSVGFromHash(hash: string): Promise<string | null> {
   const url = getS3BucketURLFromHash(hash);
@@ -35,12 +35,8 @@ export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
       src={getS3BucketURLFromHash(node.svgHash)}
       style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
-        // width: node.width,
-        // height: node.height,
-        transform: `${matrixToCSS(node.transform)} rotate(${node.rotation}deg)`,
-        transformOrigin: '0 0',
+        transform: figmaTransformToCSS(node),
+        transformOrigin: 'center center',
         opacity: node.opacity,
       }}
     />

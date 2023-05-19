@@ -1,0 +1,19 @@
+.origin-marker {
+  &:before,
+  &:after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: solid 1px red;
+    transform-origin: inherit;
+  }
+
+  &:after {
+    background: red;
+    transform: scale(0.1);
+  }
+}

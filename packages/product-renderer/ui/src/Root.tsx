@@ -4,11 +4,11 @@ import { Still } from 'remotion';
 import figmaNodeTree1 from './assets/figma-node-tree-1.json';
 
 // Compositions
+import FigmaNodeTreeV1 from './stills/figma-node-tree-v1';
 import SimpleCityMapV1 from './stills/simple-city-map-v1';
 import SpotifyPlayerV1 from './stills/spotify-player-v1';
 
 // Global Styles
-import FigmaNodeTreeV1 from './stills/figma-node-tree-v1';
 import './style.css';
 
 export const RemotionRoot: React.FC = () => {
@@ -45,8 +45,8 @@ export const RemotionRoot: React.FC = () => {
       <Still
         id="figma-node-tree-v1"
         component={FigmaNodeTreeV1}
-        width={595}
-        height={842}
+        width={500}
+        height={500}
         defaultProps={{
           nodeTree: figmaNodeTree1 as any,
         }}

@@ -1,5 +1,5 @@
 import { TGroupNode } from '@pda/shared-types';
-import { matrixToCSS } from './matrix-to-css';
+import { figmaTransformToCSS } from './figma-transform-to-css';
 import { renderNode } from './render-node';
 
 export async function renderGroup(node: TGroupNode): Promise<JSX.Element> {
@@ -8,11 +8,9 @@ export async function renderGroup(node: TGroupNode): Promise<JSX.Element> {
       key={node.id}
       style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
         width: node.width,
         height: node.height,
-        transform: `${matrixToCSS(node.transform)} rotate(${node.rotation}deg)`,
+        transform: figmaTransformToCSS(node),
         transformOrigin: '0 0',
         opacity: node.opacity,
       }}
