@@ -8,15 +8,15 @@ import { renderText } from './render-text';
 export async function renderNode(node: TNode): Promise<JSX.Element | null> {
   switch (node.type) {
     case 'FRAME':
-      return renderFrame(node);
+      return await renderFrame(node);
     case 'RECTANGLE':
-      return renderRectangle(node);
+      return await renderRectangle(node);
     case 'SVG':
-      return renderSVG(node);
+      return await renderSVG(node);
     case 'TEXT':
-      return renderText(node);
+      return await renderText(node);
     case 'GROUP':
-      return renderGroup(node);
+      return await renderGroup(node);
     default:
     // do nothing
   }

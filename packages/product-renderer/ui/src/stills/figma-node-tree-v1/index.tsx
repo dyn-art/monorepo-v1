@@ -1,5 +1,6 @@
 import { TFrameNode } from '@pda/shared-types';
 import React from 'react';
+import { continueRender, delayRender } from 'remotion';
 import { renderNode } from './helper/render-node';
 import './style.css';
 
@@ -8,10 +9,13 @@ const FigmaNodeTreeV1: React.FC<TProps> = (props) => {
   const [renderedNode, setRenderedNode] = React.useState<JSX.Element | null>(
     null
   );
+  const [handle] = React.useState(() => delayRender());
 
   React.useEffect(() => {
     const renderNodeAsJSX = async () => {
-      setRenderedNode(await renderNode(nodeTree));
+      const renderedNode = await renderNode(nodeTree);
+      setRenderedNode(renderedNode);
+      continueRender(handle);
     };
     renderNodeAsJSX();
   }, [nodeTree]);

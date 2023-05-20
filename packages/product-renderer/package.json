@@ -22,6 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "@remotion/renderer": "^3.3.83",
+    "react-svg": "^16.1.13",
     "remotion": "^3.3.83",
     "webfontloader": "^1.6.28"
   },

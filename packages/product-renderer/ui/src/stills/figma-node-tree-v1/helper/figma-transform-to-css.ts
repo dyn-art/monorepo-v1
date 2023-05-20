@@ -22,7 +22,7 @@ export function figmaTransformToCSS(
     (height / 2) * (1 - Math.cos(angleRad)) -
     (width / 2) * Math.sin(angleRad);
 
-  return `translate(${effectiveX}px, ${effectiveY}px)${
-    rotate ? ` rotate(${effectiveRotation}deg)` : ''
-  }`;
+  return `translate(${effectiveX}px, ${effectiveY}px) rotate(${
+    rotate ? effectiveRotation : 0
+  }deg)`;
 }
