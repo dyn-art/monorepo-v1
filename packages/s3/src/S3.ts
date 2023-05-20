@@ -10,6 +10,9 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { logger } from './logger';
 
+// TODO: cache credentials
+// https://stackoverflow.com/questions/53523159/429-too-many-requests-when-generating-presigned-urls-for-s3-objects-using-aws-sd
+
 export default class S3 {
   private client: S3Client;
   private bucket: string;

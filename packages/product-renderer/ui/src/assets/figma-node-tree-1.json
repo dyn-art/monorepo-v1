@@ -404,6 +404,341 @@
           }
         }
       ]
+    },
+    {
+      "type": "GROUP",
+      "id": "1750:13905",
+      "name": "Group 1",
+      "children": [
+        {
+          "type": "RECTANGLE",
+          "id": "1750:13896",
+          "name": "Rectangle 15",
+          "x": 74.30044937133789,
+          "y": 503.7939929962158,
+          "height": 25,
+          "width": 25,
+          "rotation": 166.41390267763978,
+          "transform": [
+            [-0.9720180034637451, 0.23490625619888306, 74.30044937133789],
+            [-0.23490625619888306, -0.9720180034637451, 503.7939929962158]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "SOLID",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "color": {
+                "r": 0.8509804010391235,
+                "g": 0.8509804010391235,
+                "b": 0.8509804010391235
+              }
+            }
+          ]
+        },
+        {
+          "type": "RECTANGLE",
+          "id": "1750:13897",
+          "name": "Rectangle 18",
+          "x": 149.06058502197266,
+          "y": 505.41489028930664,
+          "height": 25,
+          "width": 25,
+          "rotation": 115.92928016704977,
+          "transform": [
+            [-0.4372614324092865, 0.8993344306945801, 149.06058502197266],
+            [-0.8993344306945801, -0.4372614324092865, 505.41489028930664]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "SOLID",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "color": {
+                "r": 0.8509804010391235,
+                "g": 0.8509804010391235,
+                "b": 0.8509804010391235
+              }
+            }
+          ]
+        },
+        {
+          "type": "RECTANGLE",
+          "id": "1750:13898",
+          "name": "Rectangle 19",
+          "x": 74.96860122680664,
+          "y": 593.1150131225586,
+          "height": 25,
+          "width": 25,
+          "rotation": 168.98768345363806,
+          "transform": [
+            [-0.9815860986709595, 0.19101999700069427, 74.96860122680664],
+            [-0.19101999700069427, -0.9815860986709595, 593.1150131225586]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "SOLID",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "color": {
+                "r": 0.8509804010391235,
+                "g": 0.8509804010391235,
+                "b": 0.8509804010391235
+              }
+            }
+          ]
+        },
+        {
+          "type": "RECTANGLE",
+          "id": "1750:13899",
+          "name": "Rectangle 17",
+          "x": 92.23117446899414,
+          "y": 533.5297660827637,
+          "height": 25,
+          "width": 25,
+          "rotation": 45,
+          "transform": [
+            [0.7071067690849304, 0.7071067690849304, 92.23117446899414],
+            [-0.7071067690849304, 0.7071067690849304, 533.5297660827637]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "SOLID",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "color": {
+                "r": 0.8509804010391235,
+                "g": 0.8509804010391235,
+                "b": 0.8509804010391235
+              }
+            }
+          ]
+        },
+        {
+          "type": "RECTANGLE",
+          "id": "1750:13900",
+          "name": "Rectangle 16",
+          "x": 147.06168365478516,
+          "y": 562.5813064575195,
+          "height": 25,
+          "width": 25,
+          "rotation": -18.908061500395824,
+          "transform": [
+            [0.9460397362709045, -0.32405051589012146, 147.06168365478516],
+            [0.32405051589012146, 0.9460397362709045, 562.5813064575195]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "SOLID",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "color": {
+                "r": 0.8509804010391235,
+                "g": 0.8509804010391235,
+                "b": 0.8509804010391235
+              }
+            }
+          ]
+        },
+        {
+          "type": "RECTANGLE",
+          "id": "1750:13901",
+          "name": "Rectangle 20",
+          "x": 142.40885162353516,
+          "y": 543.7797622680664,
+          "height": 25,
+          "width": 25,
+          "rotation": 90,
+          "transform": [
+            [5.551115123125783e-17, 1, 142.40885162353516],
+            [-1, 5.551115123125783e-17, 543.7797622680664]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "SOLID",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "color": {
+                "r": 0.8509804010391235,
+                "g": 0.8509804010391235,
+                "b": 0.8509804010391235
+              }
+            }
+          ]
+        },
+        {
+          "type": "RECTANGLE",
+          "id": "1750:13902",
+          "name": "Rectangle 21",
+          "x": 52.65884780883789,
+          "y": 543.7797622680664,
+          "height": 25,
+          "width": 25,
+          "rotation": 90,
+          "transform": [
+            [5.551115123125783e-17, 1, 52.65884780883789],
+            [-1, 5.551115123125783e-17, 543.7797622680664]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "SOLID",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "color": {
+                "r": 0.8509804010391235,
+                "g": 0.8509804010391235,
+                "b": 0.8509804010391235
+              }
+            }
+          ]
+        },
+        {
+          "type": "RECTANGLE",
+          "id": "1750:13903",
+          "name": "Rectangle 22",
+          "x": 122.40885162353516,
+          "y": 501.27976417541504,
+          "height": 25,
+          "width": 25,
+          "rotation": 180,
+          "transform": [
+            [-1, 1.1674349386051622e-16, 122.40885162353516],
+            [-1.1674349386051622e-16, -1, 501.27976417541504]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "SOLID",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "color": {
+                "r": 0.8509804010391235,
+                "g": 0.8509804010391235,
+                "b": 0.8509804010391235
+              }
+            }
+          ]
+        },
+        {
+          "type": "RECTANGLE",
+          "id": "1750:13904",
+          "name": "Rectangle 23",
+          "x": 122.40885162353516,
+          "y": 566.0297622680664,
+          "height": 25,
+          "width": 25,
+          "rotation": -89.99999999999999,
+          "transform": [
+            [2.220446049250313e-16, -1, 122.40885162353516],
+            [1, 2.220446049250313e-16, 566.0297622680664]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "SOLID",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "color": {
+                "r": 0.8509804010391235,
+                "g": 0.8509804010391235,
+                "b": 0.8509804010391235
+              }
+            }
+          ]
+        }
+      ],
+      "x": 50,
+      "y": 472,
+      "height": 122.33357238769531,
+      "width": 121.5439453125,
+      "rotation": 0,
+      "transform": [
+        [1, 0, 50],
+        [0, 1, 472]
+      ],
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": []
     }
   ],
   "x": 0,

@@ -6,12 +6,19 @@ import { getFillStyles } from './get-fill-styles';
 export async function renderText(node: TTextNode): Promise<JSX.Element> {
   const fontFamily = node.fontName.family || 'Roboto';
   const fontWeight = node.fontWeight || 400;
+  const fontSize = node.fontSize || 12;
+  const letterSpacing =
+    node.letterSpacing.unit === 'PERCENT'
+      ? fontSize * (node.letterSpacing.value / 100)
+      : node.letterSpacing.value;
 
   WebFont.load({
     google: {
       families: [`${fontFamily}:${fontWeight}`],
     },
   });
+
+  console.log(node.characters, { node });
 
   return (
     <div
@@ -29,9 +36,7 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
         fontStyle: node.fontName.style,
         fontSize: node.fontSize,
         fontWeight: node.fontWeight,
-        letterSpacing: `${node.letterSpacing.value}${
-          node.letterSpacing.unit === 'PIXELS' ? 'px' : '%'
-        }`,
+        letterSpacing: `${letterSpacing}px`,
         lineHeight:
           node.lineHeight.unit === 'AUTO'
             ? 'normal'
