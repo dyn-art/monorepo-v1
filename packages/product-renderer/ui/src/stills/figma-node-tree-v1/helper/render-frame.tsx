@@ -8,7 +8,7 @@ export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
     <div
       key={node.id}
       style={{
-        position: 'relative',
+        position: 'absolute',
         width: node.width,
         height: node.height,
         overflow: node.clipsContent ? 'hidden' : 'visible',
