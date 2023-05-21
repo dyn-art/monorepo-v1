@@ -1,12 +1,13 @@
 import { TFrameNode } from '@pda/shared-types';
 import { figmaTransformToCSS } from './figma-transform-to-css';
 import { getFillStyles } from './get-fill-styles';
+import { getIdentifier } from './get-identifier';
 import { renderNode } from './render-node';
 
 export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
   return (
     <div
-      key={node.id}
+      {...getIdentifier(node)}
       style={{
         position: 'absolute',
         width: node.width,

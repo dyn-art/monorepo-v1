@@ -606,6 +606,9 @@ importers:
 
   packages/product-renderer:
     dependencies:
+      '@figma-plugin/helpers':
+        specifier: ^0.15.2
+        version: 0.15.2
       '@remotion/renderer':
         specifier: ^3.3.83
         version: 3.3.83(react-dom@18.2.0)(react@18.2.0)
@@ -3559,6 +3562,13 @@ packages:
   /@eslint/js@8.38.0:
     resolution: {integrity: sha512-IoD2MfUnOV58ghIHCiil01PcohxjbYR/qCxsoC+xNgUwh1EY8jOOrYmu3d3a71+tJJ23uscEV4X2HJWMsPJu4g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+
+  /@figma-plugin/helpers@0.15.2:
+    resolution: {integrity: sha512-ggFxoefZKc0D/HJXFHqliLWCLQG3QTbByHqgiSpTK0D76qTDv2fpcF9bytjSMVnc4flD7Rq17tLNP/WmaJt3dA==}
+    dependencies:
+      lodash: 4.17.21
+      matrix-inverse: 1.0.1
+    dev: false
 
   /@figma/plugin-typings@1.64.0:
     resolution: {integrity: sha512-oQUqYh790cXBP3x9Ejq0Wyp/AJZzYfjlB3Od8xuljL/lJFUsP+z4BSshB6nipYmQb6iih1+9d1PhgE9qxzuQQg==}
@@ -8054,6 +8064,10 @@ packages:
     dependencies:
       tmpl: 1.0.5
     dev: true
+
+  /matrix-inverse@1.0.1:
+    resolution: {integrity: sha512-ubaJ6vEJfpsRpOLYLJN3bCW3VbO2t0OtZIfausKiizsPNCvCXsWsLMR8jm4zmi8bSnodp3ht25iqdpSe0wIbxg==}
+    dev: false
 
   /mdn-data@2.0.14:
     resolution: {integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow==}

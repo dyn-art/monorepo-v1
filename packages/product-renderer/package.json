@@ -21,6 +21,7 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
+    "@figma-plugin/helpers": "^0.15.2",
     "@remotion/renderer": "^3.3.83",
     "remotion": "^3.3.83",
     "webfontloader": "^1.6.28"

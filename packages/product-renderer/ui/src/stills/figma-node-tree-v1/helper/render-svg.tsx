@@ -1,6 +1,7 @@
 import { TSVGNode } from '@pda/shared-types';
 import axios from 'axios';
 import { figmaTransformToCSS } from './figma-transform-to-css';
+import { getIdentifier } from './get-identifier';
 import { getS3BucketURLFromHash } from './get-url-from-hash';
 
 export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
@@ -28,7 +29,7 @@ export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
 
   return (
     <div
-      key={node.id}
+      {...getIdentifier(node)}
       dangerouslySetInnerHTML={{ __html: updatedSvgContent }}
     />
   );

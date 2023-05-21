@@ -1,13 +1,14 @@
 import { TRectangleNode } from '@pda/shared-types';
 import { figmaTransformToCSS } from './figma-transform-to-css';
 import { getFillStyles } from './get-fill-styles';
+import { getIdentifier } from './get-identifier';
 
 export async function renderRectangle(
   node: TRectangleNode
 ): Promise<JSX.Element> {
   return (
     <div
-      key={node.id}
+      {...getIdentifier(node)}
       style={{
         position: 'absolute',
         top: 0,
