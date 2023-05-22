@@ -1,6 +1,7 @@
 import { TRectangleNode } from '@pda/shared-types';
+import { figmaEffectToCSS } from './figma-effect-to-css';
+import { figmaFillToCSS } from './figma-fill-to-css';
 import { figmaTransformToCSS } from './figma-transform-to-css';
-import { getFillStyles } from './get-fill-styles';
 import { getIdentifier } from './get-identifier';
 
 export async function renderRectangle(
@@ -19,7 +20,8 @@ export async function renderRectangle(
         transform: figmaTransformToCSS(node),
         transformOrigin: 'center center',
         opacity: node.opacity,
-        ...getFillStyles(node.fills, node),
+        ...figmaFillToCSS(node.fills, node),
+        ...figmaEffectToCSS(node.effects),
       }}
     />
   );

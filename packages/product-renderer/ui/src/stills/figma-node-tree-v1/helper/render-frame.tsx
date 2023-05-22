@@ -1,6 +1,7 @@
 import { TFrameNode } from '@pda/shared-types';
+import { figmaEffectToCSS } from './figma-effect-to-css';
+import { figmaFillToCSS } from './figma-fill-to-css';
 import { figmaTransformToCSS } from './figma-transform-to-css';
-import { getFillStyles } from './get-fill-styles';
 import { getIdentifier } from './get-identifier';
 import { renderNode } from './render-node';
 
@@ -16,7 +17,8 @@ export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
         transform: figmaTransformToCSS(node),
         transformOrigin: 'center center',
         opacity: node.opacity,
-        ...getFillStyles(node.fills, node),
+        ...figmaFillToCSS(node.fills, node),
+        ...figmaEffectToCSS(node.effects),
       }}
     >
       {await Promise.all(

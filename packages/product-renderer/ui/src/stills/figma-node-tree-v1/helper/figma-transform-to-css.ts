@@ -1,10 +1,10 @@
 /**
  * Helper function to convert a Figma transform object into the CSS transform space
- * and return it as CSS string.
+ * and return it as equivalent CSS string.
  *
  * @param props - The transformation properties from Figma node.
  * @param rotate - Optional flag to apply rotation. Default is true.
- * @returns A CSS transform string.
+ * @returns An object representing the CSS properties equivalent to the Figma transform.
  */
 export function figmaTransformToCSS(
   props: {

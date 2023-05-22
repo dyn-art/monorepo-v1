@@ -5,12 +5,21 @@ import {
   TPaint,
   TSolidPaint,
 } from '@pda/shared-types';
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import { createLinearGradient } from './create-linear-gradient';
+import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
 import { figmaRGBToCss } from './figma-rgb-to-css';
 import { getS3BucketURLFromHash } from './get-url-from-hash';
 
-export function getFillStyles(
+/**
+ * Helper function to convert Figma fill properties to equivalent CSS properties.
+ *
+ * @param fills - The Figma fill properties to be translated.
+ * @param node - The Figma node to which the fill is applied.
+ * @param isText - A flag indicating whether the fill is applied to a text element.
+ * @returns An object representing the CSS properties equivalent to the Figma fill.
+ */
+export function figmaFillToCSS(
   fills: ReadonlyArray<TPaint>,
   node: TNode,
   isText = false
@@ -53,8 +62,8 @@ export function getFillStyles(
           WebkitTextFillColor: 'transparent',
         }
       : {}),
-    mixBlendMode: getBlendMode(fill.blendMode), // Set the blend mode
-    opacity: fill.opacity || 1,
+    ...figmaBlendModeToCSS(fill.blendMode),
+    opacity: fill.opacity ?? 1,
   };
 }
 
@@ -82,39 +91,4 @@ function handleImage(fill: TImagePaint): React.CSSProperties {
     backgroundRepeat: 'no-repeat',
     WebkitBackgroundSize: 'contain',
   };
-}
-
-// Helper function to map Figma blend mode to CSS blend mode
-function getBlendMode(blendMode?: string): CSSProperties['mixBlendMode'] {
-  const cssBlendModes: CSSProperties['mixBlendMode'][] = [
-    'normal',
-    'multiply',
-    'screen',
-    'overlay',
-    'darken',
-    'lighten',
-    'color-dodge',
-    'color-burn',
-    'hard-light',
-    'soft-light',
-    'difference',
-    'exclusion',
-    'hue',
-    'saturation',
-    'color',
-    'luminosity',
-  ];
-
-  // Format blend mode
-  const formattedBlendMode = blendMode?.toLowerCase().replace('_', '-');
-
-  // Check whether its valid CSS blend mode
-  if (
-    formattedBlendMode &&
-    cssBlendModes.includes(formattedBlendMode as CSSProperties['mixBlendMode'])
-  ) {
-    return formattedBlendMode as CSSProperties['mixBlendMode'];
-  }
-
-  return 'normal';
 }

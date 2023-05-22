@@ -1,7 +1,8 @@
 import { TTextNode } from '@pda/shared-types';
 import WebFont from 'webfontloader';
+import { figmaEffectToCSS } from './figma-effect-to-css';
+import { figmaFillToCSS } from './figma-fill-to-css';
 import { figmaTransformToCSS } from './figma-transform-to-css';
-import { getFillStyles } from './get-fill-styles';
 import { getIdentifier } from './get-identifier';
 
 export async function renderText(node: TTextNode): Promise<JSX.Element> {
@@ -46,7 +47,8 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
               }`,
         textAlign: node.textAlignHorizontal.toLowerCase() as any,
         justifyContent: node.textAlignVertical.toLowerCase(),
-        ...getFillStyles(node.fills, node, true),
+        ...figmaFillToCSS(node.fills, node, true),
+        ...figmaEffectToCSS(node.effects),
       }}
     >
       {node.characters}
