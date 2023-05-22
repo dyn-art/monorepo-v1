@@ -1,3 +1,7 @@
+/**
+ * Helper function to convert a Figma transform object to the CSS transform space
+ * and return it as CSS string.
+ */
 export function figmaTransformToCSS(
   props: {
     width: number;
@@ -33,7 +37,6 @@ export function figmaTransformToCSS(
   const effectiveY = y - displacementY - rotateY;
 
   // The returned CSS transform property applies the calculated translation and rotation.
-  // If 'rotate' is set to false, no rotation is applied.
   return `translate(${effectiveX}px, ${effectiveY}px) rotate(${
     rotate
       ? // We negate the rotation to correct for Figma's clockwise rotation

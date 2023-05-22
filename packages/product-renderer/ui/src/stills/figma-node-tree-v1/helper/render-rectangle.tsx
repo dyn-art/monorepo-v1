@@ -19,7 +19,7 @@ export async function renderRectangle(
         transform: figmaTransformToCSS(node),
         transformOrigin: 'center center',
         opacity: node.opacity,
-        ...getFillStyles(node.fills),
+        ...getFillStyles(node.fills, node),
       }}
     />
   );

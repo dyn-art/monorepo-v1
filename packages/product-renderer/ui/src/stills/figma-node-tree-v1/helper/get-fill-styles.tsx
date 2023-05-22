@@ -1,15 +1,18 @@
-import { extractLinearGradientParamsFromTransform } from '@figma-plugin/helpers';
 import {
   TGradientPaint,
   TImagePaint,
+  TNode,
   TPaint,
   TSolidPaint,
 } from '@pda/shared-types';
 import React, { CSSProperties } from 'react';
+import { createLinearGradient } from './create-linear-gradient';
+import { figmaRGBToCss } from './figma-rgb-to-css';
 import { getS3BucketURLFromHash } from './get-url-from-hash';
 
 export function getFillStyles(
   fills: ReadonlyArray<TPaint>,
+  node: TNode,
   isText = false
 ): React.CSSProperties {
   if (fills.length === 0) {
@@ -24,10 +27,12 @@ export function getFillStyles(
       fillStyle = handleSolid(fill);
       break;
     case 'GRADIENT_LINEAR':
+      fillStyle = handleLinearGradient(fill, node);
+      break;
     case 'GRADIENT_RADIAL':
     case 'GRADIENT_ANGULAR':
     case 'GRADIENT_DIAMOND':
-      fillStyle = handleGradient(fill);
+      // TODO: support later if required
       break;
     case 'IMAGE':
       fillStyle = handleImage(fill);
@@ -35,6 +40,8 @@ export function getFillStyles(
     default:
     // do nothing
   }
+
+  console.log({ fillStyle });
 
   return {
     ...fillStyle,
@@ -54,49 +61,16 @@ export function getFillStyles(
 // Handle solid fill type
 function handleSolid(fill: TSolidPaint): React.CSSProperties {
   return {
-    backgroundColor: convertRGB(fill.color),
+    backgroundColor: figmaRGBToCss(fill.color),
   };
 }
 
 // Handle gradient fill types
-// TODO: https://forum.figma.com/t/how-to-convert-figma-gradient-to-css-gradient/20814
-function handleGradient(fill: TGradientPaint): React.CSSProperties {
-  // Retrieve gradient start and end from gradient transformation
-  const params = extractLinearGradientParamsFromTransform(
-    100,
-    100,
-    fill.gradientTransform
-  );
-
-  // Calculate the angle of the gradient
-  let angle =
-    Math.atan2(
-      params.end[1] - params.start[1],
-      params.end[0] - params.start[0]
-    ) *
-    (180 / Math.PI);
-
-  // Adjust the angle range from [-180, 180] to [0, 360]
-  if (angle < 0) angle += 360;
-
-  // Calculate the length of the gradient line
-  const length = Math.sqrt(
-    Math.pow(params.end[0] - params.start[0], 2) +
-      Math.pow(params.end[1] - params.start[1], 2)
-  );
-
-  // Create gradient stops in CSS format
-  const stops = fill.gradientStops.map((stop) => {
-    // Calculate the position of the stop along the gradient line
-    const position = ((stop.position * length) / Math.max(100, 100)) * 100;
-
-    return `${convertRGB(stop.color)} ${position.toFixed(2)}%`;
-  });
-
-  // Create CSS gradient
-  return {
-    background: `linear-gradient(${angle.toFixed(2)}deg, ${stops.join(', ')})`,
-  };
+function handleLinearGradient(
+  fill: TGradientPaint,
+  node: TNode
+): React.CSSProperties {
+  return { background: createLinearGradient(fill, node) };
 }
 
 // Handle image fill type
@@ -142,17 +116,4 @@ function getBlendMode(blendMode?: string): CSSProperties['mixBlendMode'] {
   }
 
   return 'normal';
-}
-
-// Helper function to convert a RGB color object from 0 to 1 scale to 0 to 255 scale
-function convertRGB(color: {
-  r: number;
-  g: number;
-  b: number;
-  a?: number;
-}): string {
-  const r = Math.round(color.r * 255);
-  const g = Math.round(color.g * 255);
-  const b = Math.round(color.b * 255);
-  return `rgba(${r}, ${g}, ${b}, ${color.a ?? 1})`;
 }

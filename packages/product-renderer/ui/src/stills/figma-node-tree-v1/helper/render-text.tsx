@@ -46,7 +46,7 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
               }`,
         textAlign: node.textAlignHorizontal.toLowerCase() as any,
         justifyContent: node.textAlignVertical.toLowerCase(),
-        ...getFillStyles(node.fills, true),
+        ...getFillStyles(node.fills, node, true),
       }}
     >
       {node.characters}

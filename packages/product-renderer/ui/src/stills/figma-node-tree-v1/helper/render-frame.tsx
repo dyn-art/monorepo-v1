@@ -16,7 +16,7 @@ export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
         transform: figmaTransformToCSS(node),
         transformOrigin: 'center center',
         opacity: node.opacity,
-        ...getFillStyles(node.fills),
+        ...getFillStyles(node.fills, node),
       }}
     >
       {await Promise.all(
