@@ -187,7 +187,7 @@ function createPerpendicularLines(
     rotateEllipse(
       { x: centers.top.x, y: centers.top.y },
       centers.top.x - topLine[0].x,
-      (centers.top.y - topLine[0].x) * (node.height / node.width),
+      (centers.top.x - topLine[0].x) * (node.height / node.width),
       gradientAngle,
       nodeRotate
     ),
@@ -240,16 +240,6 @@ function createColorStopString(
   absoluteStartingPoint: TPoint,
   gradientLineDistance: number
 ): string {
-  console.log({
-    fill,
-    color,
-    gradientHandlePositions,
-    gradientLine,
-    lineChangePoint,
-    absoluteStartingPoint,
-    gradientLineDistance,
-  }); // TODO: REMOVE
-
   let gradientStartPoint = { x: 0, y: 0 };
   if (gradientHandlePositions[0].y < gradientHandlePositions[1].y) {
     gradientStartPoint =

@@ -13,16 +13,28 @@ export function calculateAngle(point1: TPoint, point2: TPoint): number {
   const dy = point2.y - point1.y;
 
   // Calculate the angle in radians
-  const angleInRadians = Math.atan2(dy, dx);
+  const angleInRadians = Math.atan(dy / dx);
 
   // Convert the angle to degrees
-  let angleInDegrees = angleInRadians * (180 / Math.PI);
+  const angleInDegrees = angleInRadians * (180 / Math.PI);
 
-  // If the angle is negative, convert it to its equivalent positive angle
-  if (angleInDegrees < 0) {
-    angleInDegrees = 360 + angleInDegrees;
+  // Calculate angle
+  let angle = angleInDegrees;
+
+  if (point1.x < point2.x) {
+    angle = angle + 180; // In quad 2 & 3
+  } else if (point1.x > point2.x) {
+    if (point1.y < point2.y) {
+      angle = 360 - Math.abs(angle); // In quad 4
+    }
+  } else if (point1.x == point2.x) {
+    // horizontal line
+    if (point1.y < point2.y) {
+      angle = 360 - Math.abs(angle); // On negative y-axis
+    } else {
+      angle = Math.abs(angle); // On positive y-axis
+    }
   }
 
-  // Round the result to two decimal places
-  return angleInDegrees;
+  return angle;
 }

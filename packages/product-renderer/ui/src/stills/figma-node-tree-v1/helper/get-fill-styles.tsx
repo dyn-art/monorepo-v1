@@ -41,8 +41,6 @@ export function getFillStyles(
     // do nothing
   }
 
-  console.log({ fillStyle });
-
   return {
     ...fillStyle,
     ...(isText
