@@ -1,21 +1,70 @@
 {
   "type": "FRAME",
   "clipsContent": true,
-  "id": "1759:14333",
-  "name": "figma-export-2",
+  "id": "1790:14023",
+  "name": "Scene #001",
   "children": [
     {
-      "type": "RECTANGLE",
-      "id": "1759:14353",
-      "name": "Rectangle 19",
-      "x": 248,
-      "y": 371,
-      "height": 100,
-      "width": 100,
-      "rotation": 7.9513871775984e-15,
+      "type": "FRAME",
+      "clipsContent": false,
+      "id": "1790:14024",
+      "name": "Backgrounds / BG #10",
+      "children": [
+        {
+          "type": "RECTANGLE",
+          "id": "I1790:14024;0:960",
+          "name": "Wall",
+          "x": 0,
+          "y": 0,
+          "height": 1125,
+          "width": 1500,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 0],
+            [0, 1, 0]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "IMAGE",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "scaleMode": "CROP",
+              "imageTransform": [
+                [1, 0, 0],
+                [0, 1, 0]
+              ],
+              "scalingFactor": 0.5,
+              "filters": {
+                "exposure": 0,
+                "contrast": 0,
+                "saturation": 0,
+                "temperature": 0,
+                "tint": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "imageHash": "25a07dc6604a152c834014d4ebe73bdd980ba34b"
+            }
+          ]
+        }
+      ],
+      "x": 0,
+      "y": 0.125,
+      "height": 1125,
+      "width": 1500,
+      "rotation": 0,
       "transform": [
-        [0.9999999403953552, 1.3877787807814457e-16, 248],
-        [-1.3877787807814457e-16, 0.9999999403953552, 371]
+        [1, 0, 0],
+        [0, 1, 0.125]
       ],
       "blendMode": "PASS_THROUGH",
       "opacity": 1,
@@ -25,50 +74,568 @@
       "bottomRightRadius": 0,
       "topLeftRadius": 0,
       "topRightRadius": 0,
+      "fills": []
+    },
+    {
+      "type": "FRAME",
+      "clipsContent": false,
+      "id": "1790:14025",
+      "name": "#02 Wall Frames",
+      "children": [
+        {
+          "type": "RECTANGLE",
+          "id": "I1790:14025;150:508",
+          "name": "Drop Shadow",
+          "x": -68.01577758789062,
+          "y": -1.4404884576797485,
+          "height": 432.5787048339844,
+          "width": 362.2642822265625,
+          "rotation": 0,
+          "transform": [
+            [1, 0, -68.01577758789062],
+            [0, 1, -1.4404884576797485]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "IMAGE",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "scaleMode": "CROP",
+              "imageTransform": [
+                [1, 0, 0],
+                [0, 1, 0]
+              ],
+              "scalingFactor": 0.5,
+              "filters": {
+                "exposure": 0,
+                "contrast": 0,
+                "saturation": 0,
+                "temperature": 0,
+                "tint": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "imageHash": "1a7209fedb9101199b59f6aba99c2ef53f1ae928"
+            }
+          ]
+        },
+        {
+          "type": "SVG",
+          "svgHash": "13b4e5cdf48266459af82039b7ee45aacb6f02d1b51ad90486ba00eed3391898",
+          "id": "I1790:14025;150:509",
+          "name": "Change Image",
+          "x": 0,
+          "y": 0,
+          "height": 418.75,
+          "width": 296,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 0],
+            [0, 1, 0]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": []
+        },
+        {
+          "type": "RECTANGLE",
+          "id": "I1790:14025;150:510",
+          "name": "Shadow",
+          "x": 0,
+          "y": 0,
+          "height": 418.75,
+          "width": 296,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 0],
+            [0, 1, 0]
+          ],
+          "blendMode": "MULTIPLY",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "IMAGE",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "scaleMode": "CROP",
+              "imageTransform": [
+                [1, 0, 0],
+                [0, 1, 0]
+              ],
+              "scalingFactor": 0.5,
+              "filters": {
+                "exposure": 0,
+                "contrast": 0,
+                "saturation": 0,
+                "temperature": 0,
+                "tint": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "imageHash": "9218f47d068782963a2d24a15d54c87ffef8791a"
+            }
+          ]
+        }
+      ],
+      "x": 602,
+      "y": 160.25,
+      "height": 418.75,
+      "width": 296,
+      "rotation": 0,
+      "transform": [
+        [1, 0, 602],
+        [0, 1, 160.25]
+      ],
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": [],
+      "bottomLeftRadius": 0,
+      "bottomRightRadius": 0,
+      "topLeftRadius": 0,
+      "topRightRadius": 0,
+      "fills": []
+    },
+    {
+      "type": "FRAME",
+      "clipsContent": false,
+      "id": "1790:14026",
+      "name": "Interior / Armchair",
+      "children": [
+        {
+          "type": "RECTANGLE",
+          "id": "I1790:14026;0:920",
+          "name": "Armchair",
+          "x": 0,
+          "y": 0,
+          "height": 550.75,
+          "width": 846,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 0],
+            [0, 1, 0]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "IMAGE",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "scaleMode": "CROP",
+              "imageTransform": [
+                [1, 0, 0],
+                [0, 1, 0]
+              ],
+              "scalingFactor": 0.5,
+              "filters": {
+                "exposure": 0,
+                "contrast": 0,
+                "saturation": 0,
+                "temperature": 0,
+                "tint": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "imageHash": "8bf3ef6ae2d15e4d257fac4f86efcd547c1f690e"
+            }
+          ]
+        }
+      ],
+      "x": 0,
+      "y": 575.25,
+      "height": 550.75,
+      "width": 846,
+      "rotation": 0,
+      "transform": [
+        [1, 0, 0],
+        [0, 1, 575.25]
+      ],
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": [],
+      "bottomLeftRadius": 0,
+      "bottomRightRadius": 0,
+      "topLeftRadius": 0,
+      "topRightRadius": 0,
+      "fills": []
+    },
+    {
+      "type": "SVG",
+      "svgHash": "099daaa4126b434ff877d94485cd93996bd34fa2f917a5e19126aefdac5d9b56",
+      "id": "1790:14027",
+      "name": "Vector 1",
+      "x": 189.375,
+      "y": 164.5,
+      "height": 258.5,
+      "width": 317.875,
+      "rotation": 0,
+      "transform": [
+        [1, 0, 189.375],
+        [0, 1, 164.5]
+      ],
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": []
+    },
+    {
+      "type": "FRAME",
+      "clipsContent": false,
+      "id": "1790:14028",
+      "name": "Interior / Round Table 2",
+      "children": [
+        {
+          "type": "RECTANGLE",
+          "id": "I1790:14028;0:899",
+          "name": "Round_Table_2",
+          "x": 0,
+          "y": 0,
+          "height": 507,
+          "width": 484.5,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 0],
+            [0, 1, 0]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": [],
+          "bottomLeftRadius": 0,
+          "bottomRightRadius": 0,
+          "topLeftRadius": 0,
+          "topRightRadius": 0,
+          "fills": [
+            {
+              "type": "IMAGE",
+              "visible": true,
+              "opacity": 1,
+              "blendMode": "NORMAL",
+              "scaleMode": "CROP",
+              "imageTransform": [
+                [1, 0, 0],
+                [0, 1, 0]
+              ],
+              "scalingFactor": 0.5,
+              "filters": {
+                "exposure": 0,
+                "contrast": 0,
+                "saturation": 0,
+                "temperature": 0,
+                "tint": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "imageHash": "c3aaaf29b1136c5fa7ad4bbe557be02ebba4d134"
+            }
+          ]
+        }
+      ],
+      "x": 914,
+      "y": 653.75,
+      "height": 507,
+      "width": 484.5,
+      "rotation": 0,
+      "transform": [
+        [1, 0, 914],
+        [0, 1, 653.75]
+      ],
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": [],
+      "bottomLeftRadius": 0,
+      "bottomRightRadius": 0,
+      "topLeftRadius": 0,
+      "topRightRadius": 0,
+      "fills": []
+    },
+    {
+      "type": "SVG",
+      "svgHash": "ed04dea18095c9a0114c4ac17c76998b32d491424809c1c0e69d29e0624e0c16",
+      "id": "1790:14029",
+      "name": "Ellipse 1",
+      "x": 1067.25,
+      "y": 105,
+      "height": 202,
+      "width": 288.25,
+      "rotation": 0,
+      "transform": [
+        [1, 0, 1067.25],
+        [0, 1, 105]
+      ],
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": []
+    },
+    {
+      "type": "TEXT",
+      "textAlignHorizontal": "CENTER",
+      "textAlignVertical": "TOP",
+      "fontSize": 32,
+      "fontName": { "family": "Inter", "style": "Bold" },
+      "fontWeight": 700,
+      "letterSpacing": { "unit": "PERCENT", "value": 20 },
+      "lineHeight": { "unit": "AUTO" },
+      "characters": "Hello World",
+      "id": "1790:14030",
+      "name": "Hello World",
+      "x": 602,
+      "y": 591.5,
+      "height": 39,
+      "width": 279,
+      "rotation": 0,
+      "transform": [
+        [1, 0, 602],
+        [0, 1, 591.5]
+      ],
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": [],
       "fills": [
         {
-          "type": "GRADIENT_LINEAR",
+          "type": "SOLID",
           "visible": true,
           "opacity": 1,
           "blendMode": "NORMAL",
-          "gradientStops": [
-            { "color": { "r": 1, "g": 0, "b": 0, "a": 1 }, "position": 0 },
-            {
-              "color": {
-                "r": 0.04874999821186066,
-                "g": 0.609375,
-                "b": 0,
-                "a": 1
-              },
-              "position": 0.2916666567325592
-            },
-            {
-              "color": { "r": 0, "g": 0.940000057220459, "b": 1, "a": 1 },
-              "position": 0.578125
-            },
-            {
-              "color": {
-                "r": 0.7061764597892761,
-                "g": 0,
-                "b": 0.720588207244873,
-                "a": 1
-              },
-              "position": 0.8541666865348816
-            },
-            { "color": { "r": 0, "g": 0, "b": 0, "a": 1 }, "position": 1 }
-          ],
-          "gradientTransform": [
-            [-1.7493664026260376, 0.4577781558036804, 1.0947437286376953],
-            [-0.4577781558036804, -1.7493664026260376, 1.4593721628189087]
-          ]
+          "color": { "r": 0, "g": 0, "b": 0 }
         }
       ]
+    },
+    {
+      "type": "TEXT",
+      "textAlignHorizontal": "CENTER",
+      "textAlignVertical": "TOP",
+      "fontSize": 32,
+      "fontName": { "family": "Inter", "style": "Bold" },
+      "fontWeight": 700,
+      "letterSpacing": { "unit": "PERCENT", "value": 0 },
+      "lineHeight": { "unit": "AUTO" },
+      "characters": "Hey there its mee",
+      "id": "1790:14031",
+      "name": "Hey there its mee",
+      "x": 584.75,
+      "y": 683.5,
+      "height": 39,
+      "width": 279,
+      "rotation": 0,
+      "transform": [
+        [1, 0, 584.75],
+        [0, 1, 683.5]
+      ],
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": [],
+      "fills": [
+        {
+          "type": "SOLID",
+          "visible": true,
+          "opacity": 1,
+          "blendMode": "NORMAL",
+          "color": { "r": 0, "g": 0.46000003814697266, "b": 1 }
+        }
+      ]
+    },
+    {
+      "type": "FRAME",
+      "clipsContent": true,
+      "id": "1790:14032",
+      "name": "alert-circle",
+      "children": [
+        {
+          "type": "SVG",
+          "svgHash": "65f15609bec77e4b012d7e78fda84088c813a9eb122e9ce8cc765667d8dfce40",
+          "id": "1790:14033",
+          "name": "Vector",
+          "x": 12.5,
+          "y": 12.5,
+          "height": 125,
+          "width": 125,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 12.5],
+            [0, 1, 12.5]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": []
+        },
+        {
+          "type": "SVG",
+          "svgHash": "da39bba8144cc0a0d04745521d66df1f6a8a1171b2b28e98415732f5f650bbfa",
+          "id": "1790:14034",
+          "name": "Vector",
+          "x": 75,
+          "y": 50,
+          "height": 25,
+          "width": 0,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 75],
+            [0, 1, 50]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": []
+        },
+        {
+          "type": "SVG",
+          "svgHash": "e455c6163ca401b97bba5467c784e956bf2dd57cd7296cf776983e66dbea358d",
+          "id": "1790:14035",
+          "name": "Vector",
+          "x": 75,
+          "y": 100,
+          "height": 0,
+          "width": 0.06250143051147461,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 75],
+            [0, 1, 100]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": []
+        }
+      ],
+      "x": 955.5,
+      "y": 330,
+      "height": 150,
+      "width": 150,
+      "rotation": 0,
+      "transform": [
+        [1, 0, 955.5],
+        [0, 1, 330]
+      ],
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": [],
+      "bottomLeftRadius": 0,
+      "bottomRightRadius": 0,
+      "topLeftRadius": 0,
+      "topRightRadius": 0,
+      "fills": []
+    },
+    {
+      "type": "FRAME",
+      "clipsContent": true,
+      "id": "1790:14036",
+      "name": "anchor",
+      "children": [
+        {
+          "type": "SVG",
+          "svgHash": "a3d6dce63d131d999e468d1a3ca3f02df00dc5bf7d7dd63775827c475b52c836",
+          "id": "1790:14037",
+          "name": "Vector",
+          "x": 56.25,
+          "y": 12.5,
+          "height": 37.5,
+          "width": 37.5,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 56.25],
+            [0, 1, 12.5]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": []
+        },
+        {
+          "type": "SVG",
+          "svgHash": "948fbdf22619afc54cd198b2328ed5a29d876c25a77197a1c9d23f56fb291487",
+          "id": "1790:14038",
+          "name": "Vector",
+          "x": 75,
+          "y": 50,
+          "height": 87.5,
+          "width": 0,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 75],
+            [0, 1, 50]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": []
+        },
+        {
+          "type": "SVG",
+          "svgHash": "d92847b76935e9ca6c82c1d9dfbf86bd4aa8496dbba3ae512a100b13725fc285",
+          "id": "1790:14039",
+          "name": "Vector",
+          "x": 12.5,
+          "y": 75,
+          "height": 62.5,
+          "width": 125,
+          "rotation": 0,
+          "transform": [
+            [1, 0, 12.5],
+            [0, 1, 75]
+          ],
+          "blendMode": "PASS_THROUGH",
+          "opacity": 1,
+          "isMask": false,
+          "effects": []
+        }
+      ],
+      "x": 1195.25,
+      "y": 430,
+      "height": 150,
+      "width": 150,
+      "rotation": 0,
+      "transform": [
+        [1, 0, 1195.25],
+        [0, 1, 430]
+      ],
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": [],
+      "bottomLeftRadius": 0,
+      "bottomRightRadius": 0,
+      "topLeftRadius": 0,
+      "topRightRadius": 0,
+      "fills": []
     }
   ],
   "x": 0,
   "y": 0,
-  "height": 842,
-  "width": 595,
+  "height": 1126,
+  "width": 1500,
   "rotation": 0,
   "transform": [
     [1, 0, 0],
@@ -88,7 +655,7 @@
       "visible": true,
       "opacity": 1,
       "blendMode": "NORMAL",
-      "color": { "r": 1, "g": 0.6550521850585938, "b": 0.6550521850585938 }
+      "color": { "r": 1, "g": 1, "b": 1 }
     }
   ]
 }

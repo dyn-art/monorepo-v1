@@ -80,6 +80,7 @@ function handleImage(fill: TImagePaint): React.CSSProperties {
     backgroundImage: `url(${imageUrl})`,
     backgroundSize: fill.scaleMode,
     backgroundRepeat: 'no-repeat',
+    WebkitBackgroundSize: 'contain',
   };
 }
 

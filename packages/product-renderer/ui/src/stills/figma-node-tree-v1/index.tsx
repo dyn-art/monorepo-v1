@@ -15,6 +15,8 @@ const FigmaNodeTreeV1: React.FC<TProps> = (props) => {
     const renderNodeAsJSX = async () => {
       const renderedNode = await renderNode(nodeTree);
       setRenderedNode(renderedNode);
+      // TODO: figure out a more dynamic way to wait until image has loaded
+      await new Promise((resolve) => setTimeout(resolve, 15000));
       continueRender(handle);
     };
     renderNodeAsJSX();
