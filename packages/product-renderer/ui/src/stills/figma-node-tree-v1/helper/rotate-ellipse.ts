@@ -7,12 +7,12 @@ import { TPoint } from './types';
  * Good explanation about ellipse parametric equations: https://www.mathopenref.com/coordparamellipse.html
  * Good explanation of rotated parametric ellipse equations: https://math.stackexchange.com/questions/941490/whats-the-parametric-equation-for-the-general-form-of-an-ellipse-rotated-by-any?noredirect=1&lq=1&newreg=fd8890e3dad245b0b6a0f182ba22f7f3
  *
- * @param {TPoint} center - The center point for the rotation.
- * @param {number} xRadius - The x radius of the ellipse.
- * @param {number} yRadius - The y radius of the ellipse.
- * @param {number} angle - The angle in degrees to rotate the point by.
- * @param {number} rotationFactor - The rotation factor for the ellipse.
- * @returns {TPoint} The new coordinates of the ellipse after rotation.
+ * @param center - The center point for the rotation.
+ * @param xRadius - The x radius of the ellipse.
+ * @param yRadius - The y radius of the ellipse.
+ * @param angle - The angle in degrees to rotate the point by.
+ * @param rotationFactor - The rotation factor for the ellipse.
+ * @returns The new coordinates of the ellipse after rotation.
  */
 export function rotateEllipse(
   center: TPoint,

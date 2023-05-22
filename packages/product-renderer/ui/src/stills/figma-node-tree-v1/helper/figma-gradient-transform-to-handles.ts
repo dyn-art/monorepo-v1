@@ -8,7 +8,18 @@ const identityMatrixHandlePositions = [
 ];
 
 /**
- * Helper function to convert the gradient Figma transform array to Figma gradient handles.
+ * Helper function to convert Figma's gradient transform matrix into gradient handle positions.
+ *
+ * The function requires a 2x3 or 3x3 matrix input. If a 2x3 matrix is provided,
+ * it is converted into a 3x3 matrix by adding an extra row [0, 0, 1].
+ *
+ * The function returns null if the input matrix has less than 2 rows. Otherwise,
+ * it returns an array of objects representing handle positions.
+ *
+ * Based on: https://gist.github.com/yagudaev/0c2b89674c6aee8b38cd379752ef58d0#file-setpropertyfill-ts
+ *
+ * @param transform - The gradient transform matrix from Figma.
+ * @returns An array of gradient handle positions, or null.
  */
 export function figmaGradientTransformToHandles(
   transform: number[][]

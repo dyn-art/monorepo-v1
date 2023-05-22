@@ -6,13 +6,13 @@ import { TPoint } from './types';
  * Helper function to get the coordinates of all four corners of a given node.
  * This function accounts for the rotation of the component.
  *
- * @param {TNode} node - The component to get the node of. This component must have a 'relativeTransform' attribute for position and a 'size' attribute for dimensions.
- * @param {number} elemRotation - The rotation of the component in degrees.
- * @returns {Object} An object with the coordinates of each corner: 'topLeft', 'topRight', 'bottomLeft', and 'bottomRight'.
+ * @param node - The component to get the node of. This component must have a 'relativeTransform' attribute for position and a 'size' attribute for dimensions.
+ * @param nodeRotation - The rotation of the component in degrees.
+ * @returns An object with the coordinates of each corner: 'topLeft', 'topRight', 'bottomLeft', and 'bottomRight'.
  */
 export function getCornersOfNode(
   node: TNode,
-  elemRotation: number
+  nodeRotation: number
 ): { [key: string]: TPoint } {
   // Retrieve the top-left corner directly from the component's relative transform
   const topLeft: TPoint = { x: node.transform[0][2], y: node.transform[1][2] };
@@ -21,21 +21,21 @@ export function getCornersOfNode(
   const topRight = rotate(
     topLeft,
     { x: topLeft.x + node.width, y: topLeft.y },
-    -elemRotation
+    -nodeRotation
   );
 
   // To get the bottom-right corner, rotate the component's height around the top-right corner
   const bottomRight = rotate(
     topRight,
     { x: topRight.x, y: topRight.y + node.height },
-    -elemRotation
+    -nodeRotation
   );
 
   // To get the bottom-left corner, rotate the negative component's width around the bottom-right corner
   const bottomLeft = rotate(
     bottomRight,
     { x: bottomRight.x - node.width, y: bottomRight.y },
-    -elemRotation
+    -nodeRotation
   );
 
   return {

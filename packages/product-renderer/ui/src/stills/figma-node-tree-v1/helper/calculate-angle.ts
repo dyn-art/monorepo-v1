@@ -21,13 +21,16 @@ export function calculateAngle(point1: TPoint, point2: TPoint): number {
   // Calculate angle
   let angle = angleInDegrees;
 
+  // Adjusts the angle based on the quadrant of the line.
   if (point1.x < point2.x) {
     angle = angle + 180; // In quad 2 & 3
   } else if (point1.x > point2.x) {
     if (point1.y < point2.y) {
       angle = 360 - Math.abs(angle); // In quad 4
     }
-  } else if (point1.x == point2.x) {
+  }
+  // If the line is vertical, adjust based on whether it's pointing up or down.
+  else if (point1.x == point2.x) {
     // horizontal line
     if (point1.y < point2.y) {
       angle = 360 - Math.abs(angle); // On negative y-axis

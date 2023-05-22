@@ -3,10 +3,10 @@ import { TPoint } from './types';
 /**
  * Helper function to rotate a point around a center point by a specific angle.
  *
- * @param {TPoint} center - The center point for the rotation.
- * @param {TPoint} point - The point to rotate.
- * @param {number} angle - The angle in degrees to rotate the point by.
- * @returns {TPoint} The new coordinates of the point after rotation.
+ * @param center - The center point for the rotation.
+ * @param point - The point to rotate.
+ * @param angle - The angle in degrees to rotate the point by.
+ * @returns The new coordinates of the point after rotation.
  */
 export function rotate(center: TPoint, point: TPoint, angle: number): TPoint {
   // Convert angle from degrees to radians for trigonometric operations

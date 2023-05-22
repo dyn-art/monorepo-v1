@@ -6,12 +6,12 @@ import { TPoint } from './types';
  *
  * https://dirask.com/posts/JavaScript-how-to-calculate-intersection-point-of-two-lines-for-given-4-points-VjvnAj
  *
- * @param {TPoint} p1 - First point of the first line.
- * @param {TPoint} p2 - Second point of the first line.
- * @param {TPoint} p3 - First point of the second line.
- * @param {TPoint} p4 - Second point of the second line.
- * @throws {Error} If the lines are parallel (do not intersect).
- * @returns {TPoint} The intersection point of the two lines.
+ * @param  p1 - First point of the first line.
+ * @param  p2 - Second point of the first line.
+ * @param  p3 - First point of the second line.
+ * @param  p4 - Second point of the second line.
+ * @throws If the lines are parallel (do not intersect).
+ * @returns The intersection point of the two lines.
  */
 export function findIntersectionPoint(
   p1: TPoint,

@@ -1,6 +1,3 @@
-// Based on:
-// https://github.com/Nushaine/calculateLinearGradient-FigmaAPI/blob/main/linearGradient.ts
-
 import { TColorStop, TGradientPaint, TNode } from '@pda/shared-types';
 import { calculateAngle } from './calculate-angle';
 import { figmaGradientTransformToHandles } from './figma-gradient-transform-to-handles';
@@ -14,6 +11,9 @@ import { TPoint } from './types';
 
 /**
  * Create a CSS linear gradient based on fill data and component's attributes.
+ *
+ * Based on: https://github.com/Nushaine/calculateLinearGradient-FigmaAPI/blob/main/linearGradient.ts
+ *
  * @param {TFill} fill - The fill data containing gradient information.
  * @param {TNode} node - The component data containing size, rotation and other relevant data.
  * @returns {string} The resulting CSS linear gradient.

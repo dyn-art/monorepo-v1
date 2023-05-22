@@ -33,6 +33,8 @@ export function getFillStyles(
     case 'GRADIENT_ANGULAR':
     case 'GRADIENT_DIAMOND':
       // TODO: support later if required
+      console.error(`'${fill.type}' is currently not supported!`);
+      fillStyle = { background: 'black' };
       break;
     case 'IMAGE':
       fillStyle = handleImage(fill);

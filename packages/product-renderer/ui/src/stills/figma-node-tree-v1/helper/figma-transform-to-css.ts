@@ -1,6 +1,10 @@
 /**
- * Helper function to convert a Figma transform object to the CSS transform space
+ * Helper function to convert a Figma transform object into the CSS transform space
  * and return it as CSS string.
+ *
+ * @param props - The transformation properties from Figma node.
+ * @param rotate - Optional flag to apply rotation. Default is true.
+ * @returns A CSS transform string.
  */
 export function figmaTransformToCSS(
   props: {
@@ -17,20 +21,21 @@ export function figmaTransformToCSS(
   // Define the effective rotation as the input rotation
   const effectiveRotation = rotation;
 
-  // Convert the rotation from degrees to radians because JavaScript's Math functions operate in radians.
-  const angleRad = effectiveRotation * (Math.PI / 180);
+  // Convert the rotation from degrees to radians
+  // because JavaScript's Math functions operate in radians.
+  const angle = effectiveRotation * (Math.PI / 180);
 
   // Define the object's center
   const centerX = width / 2;
   const centerY = height / 2;
 
   // Calculate the displacement due to rotation in relation to the center point of the object
-  const displacementX = centerX * (1 - Math.cos(angleRad));
-  const displacementY = centerY * (1 - Math.cos(angleRad));
+  const displacementX = centerX * (1 - Math.cos(angle));
+  const displacementY = centerY * (1 - Math.cos(angle));
 
   // Calculate the position displacement due to rotation itself
-  const rotateX = centerY * Math.sin(angleRad);
-  const rotateY = centerX * Math.sin(angleRad);
+  const rotateX = centerY * Math.sin(angle);
+  const rotateY = centerX * Math.sin(angle);
 
   // The effective position of the object after rotation.
   const effectiveX = x - displacementX + rotateX;
