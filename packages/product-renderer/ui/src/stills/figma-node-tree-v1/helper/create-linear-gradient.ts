@@ -148,7 +148,6 @@ export function createLinearGradient(
   // Assemble color stops
   const colors = fill.gradientStops.map((color) =>
     createColorStopString(
-      fill,
       color,
       gradientHandlePositions,
       gradientLine,
@@ -232,7 +231,6 @@ function createPerpendicularLines(
 }
 
 function createColorStopString(
-  fill: TGradientPaint,
   color: TColorStop,
   gradientHandlePositions: TPoint[],
   gradientLine: { topCoords: TPoint; bottomCoords: TPoint },
@@ -261,7 +259,7 @@ function createColorStopString(
   );
   const actualPercentage = colorDistance / gradientLineDistance;
 
-  return `${figmaRGBToCss({ ...color.color, a: fill.opacity })} ${
+  return `${figmaRGBToCss({ ...color.color })} ${
     Math.round(actualPercentage * 10000) / 100
   }%`;
 }
