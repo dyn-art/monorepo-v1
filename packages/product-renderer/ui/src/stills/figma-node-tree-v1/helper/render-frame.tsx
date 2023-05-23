@@ -1,4 +1,5 @@
 import { TFrameNode } from '@pda/shared-types';
+import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
 import { figmaEffectToCSS } from './figma-effect-to-css';
 import { figmaFillToCSS } from './figma-fill-to-css';
 import { figmaTransformToCSS } from './figma-transform-to-css';
@@ -19,6 +20,7 @@ export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
         opacity: node.opacity,
         ...figmaFillToCSS(node.fills, node),
         ...figmaEffectToCSS(node.effects),
+        ...figmaBlendModeToCSS(node.blendMode),
       }}
     >
       {await Promise.all(

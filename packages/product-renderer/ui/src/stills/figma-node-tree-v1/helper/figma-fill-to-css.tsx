@@ -7,7 +7,6 @@ import {
 } from '@pda/shared-types';
 import React from 'react';
 import { createLinearGradient } from './create-linear-gradient';
-import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
 import { figmaRGBToCss } from './figma-rgb-to-css';
 import { getS3BucketURLFromHash } from './get-url-from-hash';
 
@@ -62,19 +61,19 @@ export function figmaFillToCSS(
           WebkitTextFillColor: 'transparent',
         }
       : {}),
-    ...figmaBlendModeToCSS(fill.blendMode),
-    opacity: fill.opacity ?? 1,
+    // ...figmaBlendModeToCSS(fill.blendMode), // Not supported as long as no support for multiple fill layers
+    // opacity: fill.opacity ?? 1, // Not supported as long as no support for multiple fill layers
   };
 }
 
-// Handle solid fill type
+// Handle solid fill
 function handleSolid(fill: TSolidPaint): React.CSSProperties {
   return {
     backgroundColor: figmaRGBToCss(fill.color),
   };
 }
 
-// Handle gradient fill types
+// Handle gradient fill
 function handleLinearGradient(
   fill: TGradientPaint,
   node: TNode
@@ -82,7 +81,7 @@ function handleLinearGradient(
   return { background: createLinearGradient(fill, node) };
 }
 
-// Handle image fill type
+// Handle image fill
 function handleImage(fill: TImagePaint): React.CSSProperties {
   const imageUrl = getS3BucketURLFromHash(fill.imageHash || '');
   return {

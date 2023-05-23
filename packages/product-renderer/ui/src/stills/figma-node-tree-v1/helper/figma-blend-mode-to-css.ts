@@ -1,3 +1,5 @@
+import { TBlendMode } from '@pda/shared-types';
+
 const cssBlendModes: React.CSSProperties['mixBlendMode'][] = [
   'normal',
   'multiply',
@@ -23,7 +25,7 @@ const cssBlendModes: React.CSSProperties['mixBlendMode'][] = [
  * @param value - The blend mode value from Figma.
  * @returns An object representing the CSS properties equivalent to the Figma blend mode.
  */
-export function figmaBlendModeToCSS(value?: string): React.CSSProperties {
+export function figmaBlendModeToCSS(value?: TBlendMode): React.CSSProperties {
   let blendMode: React.CSSProperties['mixBlendMode'] = 'normal';
 
   // Format blend mode

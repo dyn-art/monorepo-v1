@@ -1,5 +1,6 @@
 import { TTextNode } from '@pda/shared-types';
 import WebFont from 'webfontloader';
+import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
 import { figmaEffectToCSS } from './figma-effect-to-css';
 import { figmaFillToCSS } from './figma-fill-to-css';
 import { figmaTransformToCSS } from './figma-transform-to-css';
@@ -49,6 +50,7 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
         justifyContent: node.textAlignVertical.toLowerCase(),
         ...figmaFillToCSS(node.fills, node, true),
         ...figmaEffectToCSS(node.effects),
+        ...figmaBlendModeToCSS(node.blendMode),
       }}
     >
       {node.characters}

@@ -5,7 +5,7 @@ import {
   TInnerShadowEffect,
 } from '@pda/shared-types';
 import React from 'react';
-import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
+import { figmaRGBToCss } from './figma-rgb-to-css';
 
 /**
  * Helper function to translates a Figma effect into equivalent CSS string.
@@ -19,7 +19,7 @@ export function figmaEffectToCSS(
   if (effects.length === 0) {
     return {};
   }
-  const effect = effects[0]; // TODO: support multiple fill layer
+  const effect = effects[0]; // TODO: support multiple effect layer
   let effectStyle: React.CSSProperties = {};
 
   // Handle different effect types
@@ -41,37 +41,34 @@ export function figmaEffectToCSS(
   return effectStyle;
 }
 
-// Function to handle drop shadow effect
+// Handle drop shadow effect
 function dropShadowEffectToCSS(effect: TDropShadowEffect): React.CSSProperties {
-  const { color, offset, radius, spread, visible, blendMode } = effect;
   return {
-    boxShadow: `${offset.x}px ${offset.y}px ${radius}px ${spread ?? 0}px rgba(${
-      color.r * 255
-    }, ${color.g * 255}, ${color.b * 255}, ${color.a})`,
-    visibility: visible ? 'visible' : 'hidden',
-    ...figmaBlendModeToCSS(blendMode),
+    boxShadow: `${effect.offset.x}px ${effect.offset.y}px ${effect.radius}px ${
+      effect.spread ?? 0
+    }px ${figmaRGBToCss(effect.color)})`,
+    visibility: effect.visible ? 'visible' : 'hidden',
+    // ...figmaBlendModeToCSS(blendMode), // Not supported as long as no support for multiple shadow layers
   };
 }
 
-// Function to handle inner shadow effect
+// Handle inner shadow effect
 function innerShadowEffectToCSS(
   effect: TInnerShadowEffect
 ): React.CSSProperties {
-  const { color, offset, radius, spread, visible, blendMode } = effect;
   return {
-    boxShadow: `inset ${offset.x}px ${offset.y}px ${radius}px ${
-      spread ?? 0
-    }px rgba(${color.r * 255}, ${color.g * 255}, ${color.b * 255}, ${color.a})`,
-    visibility: visible ? 'visible' : 'hidden',
-    ...figmaBlendModeToCSS(blendMode),
+    boxShadow: `inset ${effect.offset.x}px ${effect.offset.y}px ${
+      effect.radius
+    }px ${effect.spread ?? 0}px ${figmaRGBToCss(effect.color)})`,
+    visibility: effect.visible ? 'visible' : 'hidden',
+    // ...figmaBlendModeToCSS(effect.blendMode), // Not supported as long as no support for multiple shadow layers
   };
 }
 
-// Function to handle blur effect
+// Handle blur effect
 function blurEffectToCSS(effect: TBlurEffect): React.CSSProperties {
-  const { radius, visible } = effect;
   return {
-    filter: `blur(${radius}px)`,
-    visibility: visible ? 'visible' : 'hidden',
+    filter: `blur(${effect.radius}px)`,
+    visibility: effect.visible ? 'visible' : 'hidden',
   };
 }
