@@ -66,7 +66,7 @@ const Home: React.FC = () => {
                   uiHandler.postMessage('intermediate-format-export-event', {
                     selectedElements: selectedFrames,
                     config: {
-                      svgExportIdentifier: /_svg$/,
+                      svgExportIdentifierRegex: '_svg$',
                       frameToSVG: false,
                     },
                   });

@@ -9,7 +9,7 @@ export interface TIntermediateFormatExportEvent extends TBaseFigmaMessageEvent {
     >[];
     config: {
       frameToSVG: boolean;
-      svgExportIdentifier: RegExp;
+      svgExportIdentifierRegex: string; // Note RegExp can't be passed to the Javascript Sandbox
     };
   };
 }

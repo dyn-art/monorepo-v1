@@ -9,19 +9,27 @@ import { formatToSvgNode } from './format-to-svg-node';
 export async function formatNode(
   node: SceneNode,
   config: TIntermediateFormatExportEvent['args']['config'],
-  parent = false
+  isParent = false
 ): Promise<TNode | null> {
   if (node == null) {
     return null;
   }
 
   // Handle special svg formatting
+  const svgExportIdentifier = new RegExp(config.svgExportIdentifierRegex);
   if (
-    (node.name.match(config.svgExportIdentifier) ||
-      config.frameToSVG ||
-      parent) &&
+    (svgExportIdentifier.test(node.name) ||
+      (config.frameToSVG &&
+        !isParent &&
+        ['FRAME', 'COMPONENT', 'INSTANCE'].includes(node.type))) &&
     Object.values(ESupportedFigmaNodeTypes).includes(node.type as any)
   ) {
+    logger.info(`Special Node '${node.name}' export as SVG.'`, {
+      isParent,
+      frameToSVG: config.frameToSVG,
+      svgExportIdentifierRegex: config.svgExportIdentifierRegex,
+      match: svgExportIdentifier.test(node.name),
+    });
     return formatToSvgNode(node as any);
   }
 
@@ -48,7 +56,7 @@ export async function formatNode(
       // do nothing
 
       logger.warn(
-        `Node '${node.name}' of type '${node.type}' is not supported.`
+        `Node '${node.name}' of type '${node.type}' is not supported yet!`
       );
       return null;
   }
