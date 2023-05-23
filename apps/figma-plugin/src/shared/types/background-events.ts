@@ -7,6 +7,10 @@ export interface TIntermediateFormatExportEvent extends TBaseFigmaMessageEvent {
       FrameNode | ComponentNode | InstanceNode,
       'name' | 'id'
     >[];
+    config: {
+      frameToSVG: boolean;
+      svgExportIdentifier: RegExp;
+    };
   };
 }
 

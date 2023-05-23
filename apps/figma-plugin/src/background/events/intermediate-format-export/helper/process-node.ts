@@ -1,5 +1,5 @@
 import { TTransform } from '@pda/shared-types';
-import { logger } from '../../../../shared';
+import { TIntermediateFormatExportEvent, logger } from '../../../../shared';
 import { TBackgroundHandler } from '../../../background-handler';
 import { formatNode } from './format-node';
 import { stringToUint8Array } from './json-to-uint8array';
@@ -8,11 +8,12 @@ import { uploadDataToBucket } from './upload-data-to-bucket';
 
 export async function processNode(
   instance: TBackgroundHandler,
-  node: SceneNode
+  node: SceneNode,
+  config: TIntermediateFormatExportEvent['args']['config']
 ) {
   try {
     // Format the node for export
-    let toExportNode = await formatNode(node);
+    let toExportNode = await formatNode(node, config, true);
     if (toExportNode == null) {
       throw Error(`Failed to format node '${node.name}'!`);
     }
@@ -52,7 +53,9 @@ export async function processNode(
       type: 'error',
       message,
     });
-    figma.notify(`Error exporting node: ${message}`, { error: true });
-    logger.error('Failed to export Node!', e);
+    figma.notify(`Error exporting Node '${node.name}': ${message}`, {
+      error: true,
+    });
+    logger.error(`Failed to export Node '${node.name}'!`, e);
   }
 }

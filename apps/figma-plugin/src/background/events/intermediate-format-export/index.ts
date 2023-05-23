@@ -21,7 +21,7 @@ export default {
     // Process each supported node
     for (const node of supportedNodes) {
       if (node != null) {
-        await processNode(instance, node);
+        await processNode(instance, node, args.config);
       }
     }
   },

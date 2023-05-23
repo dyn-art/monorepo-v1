@@ -1,9 +1,11 @@
 import { TFrameNode } from '@pda/shared-types';
+import { TIntermediateFormatExportEvent } from '../../../../shared';
 import { formatNode } from './format-node';
 import { handleFills } from './handle-fills';
 
 export async function formatFrameNode(
-  node: FrameNode | ComponentNode | InstanceNode
+  node: FrameNode | ComponentNode | InstanceNode,
+  config: TIntermediateFormatExportEvent['args']['config']
 ): Promise<TFrameNode> {
   return {
     type: 'FRAME',
@@ -12,7 +14,9 @@ export async function formatFrameNode(
     id: node.id,
     name: node.name,
     // Children mixin
-    children: await Promise.all(node.children.map(formatNode)),
+    children: await Promise.all(
+      node.children.map((node) => formatNode(node, config, false))
+    ),
     // Layout mixin
     x: node.x,
     y: node.y,

@@ -45,8 +45,8 @@ export const RemotionRoot: React.FC = () => {
       <Still
         id="figma-node-tree-v1"
         component={FigmaNodeTreeV1}
-        width={1500}
-        height={1126}
+        width={599}
+        height={847}
         defaultProps={{
           nodeTree: figmaNodeTree1 as any,
         }}

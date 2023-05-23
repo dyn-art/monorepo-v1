@@ -36,9 +36,9 @@ async function handleImageFill(fill: ImagePaint) {
   imageHash = await uploadDataToBucket(imageHash, imageData);
   if (imageHash == null) {
     throw new Error(
-      `Failed to upload image with the hash ${imageHash} to bucket!`
+      `Failed to upload image with the hash ${imageHash} to S3 bucket!`
     );
   }
-  logger.info(`Uploaded image to bucket under the key '${imageHash}'.`);
+  logger.info(`Uploaded image to S3 bucket under the key '${imageHash}'.`);
   return { ...fill, imageHash };
 }

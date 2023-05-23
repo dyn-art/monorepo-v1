@@ -14,6 +14,8 @@ export async function formatToSvgNode(
     | GroupNode
     | FrameNode
     | RectangleNode
+    | InstanceNode
+    | ComponentNode
 ): Promise<TSVGNode> {
   // Convert the node type to SVG
   const svgData = await node.exportAsync({ format: 'SVG' });
@@ -21,12 +23,12 @@ export async function formatToSvgNode(
   svgHash = await uploadDataToBucket(svgHash, svgData);
   if (svgHash == null) {
     throw Error(
-      `Failed to upload svg data from node '${node.name}' to bucket!`
+      `Failed to upload svg data from node '${node.name}' to S3 bucket!`
     );
   }
 
   logger.info(
-    `Formatted '${node.type}' ('${node.name}') to svg and uploaded content to bucket under the key '${svgHash}'`
+    `Formatted '${node.type}' ('${node.name}') to svg and uploaded content to S3 bucket under the key '${svgHash}'`
   );
 
   return {

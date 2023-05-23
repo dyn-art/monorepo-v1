@@ -65,6 +65,10 @@ const Home: React.FC = () => {
                   setIsLoadingIntermediateFormatExport(true);
                   uiHandler.postMessage('intermediate-format-export-event', {
                     selectedElements: selectedFrames,
+                    config: {
+                      svgExportIdentifier: /_svg$/,
+                      frameToSVG: false,
+                    },
                   });
                 }
               }}

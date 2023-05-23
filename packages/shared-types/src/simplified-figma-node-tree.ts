@@ -1,3 +1,18 @@
+export enum ESupportedFigmaNodeTypes {
+  FRAME = 'FRAME',
+  COMPONENT = 'COMPONENT',
+  INSTANCE = 'INSTANCE',
+  GROUP = 'GROUP',
+  TEXT = 'TEXT',
+  RECTANGLE = 'RECTANGLE',
+  LINE = 'LINE',
+  ELLIPSE = 'ELLIPSE',
+  POLYGON = 'POLYGON',
+  STAR = 'STAR',
+  VECTOR = 'VECTOR',
+  'BOOLEAN_OPERATOR' = 'BOOLEAN_OPERATOR',
+}
+
 // ============================================================================
 // Nodes
 // ============================================================================
