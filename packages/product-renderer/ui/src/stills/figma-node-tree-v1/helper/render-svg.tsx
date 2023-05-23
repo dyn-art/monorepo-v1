@@ -12,9 +12,8 @@ export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
     position: 'absolute',
     top: 0,
     left: 0,
-    transform: figmaTransformToCSS(node, false),
-    transformOrigin: 'center center',
     opacity: node.opacity,
+    ...figmaTransformToCSS(node, false),
   };
 
   // Convert style object to string

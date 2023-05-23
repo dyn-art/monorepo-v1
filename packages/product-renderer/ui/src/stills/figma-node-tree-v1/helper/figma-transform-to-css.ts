@@ -1,3 +1,5 @@
+import React from 'react';
+
 /**
  * Helper function to convert a Figma transform object into the CSS transform space
  * and return it as equivalent CSS string.
@@ -15,7 +17,7 @@ export function figmaTransformToCSS(
     rotation: number;
   },
   rotate = true
-) {
+): React.CSSProperties {
   const { width, height, x, y, rotation } = props;
 
   // Define the effective rotation as the input rotation
@@ -42,10 +44,13 @@ export function figmaTransformToCSS(
   const effectiveY = y - displacementY - rotateY;
 
   // The returned CSS transform property applies the calculated translation and rotation.
-  return `translate(${effectiveX}px, ${effectiveY}px) rotate(${
-    rotate
-      ? // We negate the rotation to correct for Figma's clockwise rotation
-        -effectiveRotation
-      : 0
-  }deg)`;
+  return {
+    transform: `translate(${effectiveX}px, ${effectiveY}px) rotate(${
+      rotate
+        ? // We negate the rotation to correct for Figma's clockwise rotation
+          -effectiveRotation
+        : 0
+    }deg)`,
+    transformOrigin: 'center center',
+  };
 }

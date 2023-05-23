@@ -15,10 +15,9 @@ export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
         width: node.width,
         height: node.height,
         overflow: node.clipsContent ? 'hidden' : 'visible',
-        transform: figmaTransformToCSS(node),
-        transformOrigin: 'center center',
         opacity: node.opacity,
-        ...figmaFillToCSS(node.fills, node),
+        ...figmaTransformToCSS(node),
+        ...figmaFillToCSS(node),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
       }}

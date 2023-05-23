@@ -18,10 +18,9 @@ export async function renderRectangle(
         width: node.width,
         height: node.height,
         borderRadius: `${node.topLeftRadius}px ${node.topRightRadius}px ${node.bottomRightRadius}px ${node.bottomLeftRadius}px`,
-        transform: figmaTransformToCSS(node),
-        transformOrigin: 'center center',
         opacity: node.opacity,
-        ...figmaFillToCSS(node.fills, node),
+        ...figmaTransformToCSS(node),
+        ...figmaFillToCSS(node),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
       }}

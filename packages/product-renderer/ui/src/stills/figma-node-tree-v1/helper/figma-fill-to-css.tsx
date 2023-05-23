@@ -1,9 +1,12 @@
+import { extractImageCropParams } from '@figma-plugin/helpers';
 import {
+  TFrameNode,
   TGradientPaint,
   TImagePaint,
   TNode,
-  TPaint,
+  TRectangleNode,
   TSolidPaint,
+  TTextNode,
 } from '@pda/shared-types';
 import React from 'react';
 import { createLinearGradient } from './create-linear-gradient';
@@ -19,10 +22,10 @@ import { getS3BucketURLFromHash } from './get-url-from-hash';
  * @returns An object representing the CSS properties equivalent to the Figma fill.
  */
 export function figmaFillToCSS(
-  fills: ReadonlyArray<TPaint>,
-  node: TNode,
+  node: TRectangleNode | TFrameNode | TTextNode,
   isText = false
 ): React.CSSProperties {
+  const { fills } = node;
   if (fills.length === 0) {
     return {};
   }
@@ -45,7 +48,7 @@ export function figmaFillToCSS(
       fillStyle = { background: 'black' };
       break;
     case 'IMAGE':
-      fillStyle = handleImage(fill);
+      fillStyle = handleImage(fill, node);
       break;
     default:
     // do nothing
@@ -82,12 +85,26 @@ function handleLinearGradient(
 }
 
 // Handle image fill
-function handleImage(fill: TImagePaint): React.CSSProperties {
+function handleImage(fill: TImagePaint, node: TNode): React.CSSProperties {
   const imageUrl = getS3BucketURLFromHash(fill.imageHash || '');
+
+  // Apply crop transform
+  let transform: string | undefined = undefined;
+  if (fill.imageTransform != null) {
+    const params = extractImageCropParams(
+      node.width,
+      node.height,
+      fill.imageTransform
+    );
+    transform = `rotate(${params.rotation}deg) scale(${params.scale[0]}, ${params.scale[1]}) translate(${params.position[0]}px, ${params.position[1]}px)`;
+    console.log('Background transform', { transform });
+  }
+
   return {
     backgroundImage: `url(${imageUrl})`,
     backgroundSize: fill.scaleMode,
     backgroundRepeat: 'no-repeat',
     WebkitBackgroundSize: 'contain',
+    // transform, // TODO: can't put here
   };
 }

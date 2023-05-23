@@ -21,8 +21,6 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
     },
   });
 
-  console.log(node.characters, { node });
-
   return (
     <div
       {...getIdentifier(node)}
@@ -32,8 +30,6 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
         left: 0,
         width: node.width,
         height: node.height,
-        transform: figmaTransformToCSS(node),
-        transformOrigin: 'center center',
         opacity: node.opacity,
         fontFamily: node.fontName.family,
         fontStyle: node.fontName.style,
@@ -48,7 +44,8 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
               }`,
         textAlign: node.textAlignHorizontal.toLowerCase() as any,
         justifyContent: node.textAlignVertical.toLowerCase(),
-        ...figmaFillToCSS(node.fills, node, true),
+        ...figmaTransformToCSS(node),
+        ...figmaFillToCSS(node, true),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
       }}
