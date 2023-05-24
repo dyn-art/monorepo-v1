@@ -14,11 +14,13 @@ export function figmaTransformToCSS(
     height: number;
     x: number;
     y: number;
-    rotation: number;
+    scaleX?: number;
+    scaleY?: number;
+    rotation?: number;
   },
   rotate = true
 ): React.CSSProperties {
-  const { width, height, x, y, rotation } = props;
+  const { width, height, x, y, rotation = 0, scaleX = 1, scaleY = 1 } = props;
 
   // Define the effective rotation as the input rotation
   const effectiveRotation = rotation;
@@ -50,7 +52,7 @@ export function figmaTransformToCSS(
         ? // We negate the rotation to correct for Figma's clockwise rotation
           -effectiveRotation
         : 0
-    }deg)`,
+    }deg) scale(${scaleX}, ${scaleY})`,
     transformOrigin: 'center center',
   };
 }

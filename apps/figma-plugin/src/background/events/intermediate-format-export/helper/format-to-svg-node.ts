@@ -18,7 +18,16 @@ export async function formatToSvgNode(
     | ComponentNode
 ): Promise<TSVGNode> {
   // Convert the node type to SVG
-  const svgData = await node.exportAsync({ format: 'SVG' });
+  let svgData: Uint8Array | null = null;
+  try {
+    svgData = await node.exportAsync({ format: 'SVG' });
+  } catch (e: any) {
+    throw Error(
+      `Failed to export node '${node.name}' as svg! ${
+        typeof e['message'] === 'string' ? e['message'] : JSON.stringify(e)
+      }`
+    );
+  }
   let svgHash: string | null = sha256(svgData);
   svgHash = await uploadDataToBucket(svgHash, svgData);
   if (svgHash == null) {
@@ -27,8 +36,8 @@ export async function formatToSvgNode(
     );
   }
 
-  logger.info(
-    `Formatted '${node.type}' ('${node.name}') to svg and uploaded content to S3 bucket under the key '${svgHash}'`
+  logger.success(
+    `Formatted '${node.type}' node ('${node.name}') to svg and uploaded content to S3 bucket under the key '${svgHash}'`
   );
 
   return {

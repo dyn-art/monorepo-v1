@@ -31,6 +31,7 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
         width: node.width,
         height: node.height,
         opacity: node.opacity,
+        overflow: 'hidden', // Fill is always clipped (clipsContent)
         fontFamily: node.fontName.family,
         fontStyle: node.fontName.style,
         fontSize: node.fontSize,
@@ -45,12 +46,30 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
         textAlign: node.textAlignHorizontal.toLowerCase() as any,
         justifyContent: node.textAlignVertical.toLowerCase(),
         ...figmaTransformToCSS(node),
-        ...figmaFillToCSS(node, true),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
       }}
     >
-      {node.characters}
+      {/* Fill */}
+      {node.fills.map((fill, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            color: 'transparent',
+            WebkitTextFillColor: 'transparent',
+            ...figmaFillToCSS(fill, node),
+          }}
+        >
+          {node.characters}
+        </div>
+      ))}
     </div>
   );
 }

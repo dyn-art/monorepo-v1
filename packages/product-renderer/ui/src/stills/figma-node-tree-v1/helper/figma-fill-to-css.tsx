@@ -4,13 +4,16 @@ import {
   TGradientPaint,
   TImagePaint,
   TNode,
+  TPaint,
   TRectangleNode,
   TSolidPaint,
   TTextNode,
 } from '@pda/shared-types';
 import React from 'react';
 import { createLinearGradient } from './create-linear-gradient';
+import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
 import { figmaRGBToCss } from './figma-rgb-to-css';
+import { figmaTransformToCSS } from './figma-transform-to-css';
 import { getS3BucketURLFromHash } from './get-url-from-hash';
 
 /**
@@ -22,14 +25,9 @@ import { getS3BucketURLFromHash } from './get-url-from-hash';
  * @returns An object representing the CSS properties equivalent to the Figma fill.
  */
 export function figmaFillToCSS(
-  node: TRectangleNode | TFrameNode | TTextNode,
-  isText = false
+  fill: TPaint,
+  node: TRectangleNode | TFrameNode | TTextNode
 ): React.CSSProperties {
-  const { fills } = node;
-  if (fills.length === 0) {
-    return {};
-  }
-  const fill = fills[0]; // TODO: support multiple fill layer
   let fillStyle: React.CSSProperties = {};
 
   // Handle different fill types
@@ -56,16 +54,8 @@ export function figmaFillToCSS(
 
   return {
     ...fillStyle,
-    ...(isText
-      ? {
-          backgroundClip: 'text',
-          WebkitBackgroundClip: 'text',
-          color: 'transparent',
-          WebkitTextFillColor: 'transparent',
-        }
-      : {}),
-    // ...figmaBlendModeToCSS(fill.blendMode), // Not supported as long as no support for multiple fill layers
-    // opacity: fill.opacity ?? 1, // Not supported as long as no support for multiple fill layers
+    ...figmaBlendModeToCSS(fill.blendMode),
+    opacity: fill.opacity ?? 1,
   };
 }
 
@@ -89,15 +79,25 @@ function handleImage(fill: TImagePaint, node: TNode): React.CSSProperties {
   const imageUrl = getS3BucketURLFromHash(fill.imageHash || '');
 
   // Apply crop transform
-  let transform: string | undefined = undefined;
+  // TODO: doesn't work yet
+  let transform: React.CSSProperties = {};
   if (fill.imageTransform != null) {
     const params = extractImageCropParams(
       node.width,
       node.height,
       fill.imageTransform
     );
-    transform = `rotate(${params.rotation}deg) scale(${params.scale[0]}, ${params.scale[1]}) translate(${params.position[0]}px, ${params.position[1]}px)`;
-    console.log('Background transform', { transform });
+    transform = {
+      ...figmaTransformToCSS({
+        width: node.width,
+        height: node.height,
+        rotation: params.rotation,
+        x: params.position[0],
+        y: params.position[1],
+        scaleX: params.scale[0],
+        scaleY: params.scale[1],
+      }),
+    };
   }
 
   return {
@@ -105,6 +105,6 @@ function handleImage(fill: TImagePaint, node: TNode): React.CSSProperties {
     backgroundSize: fill.scaleMode,
     backgroundRepeat: 'no-repeat',
     WebkitBackgroundSize: 'contain',
-    // transform, // TODO: can't put here
+    ...transform,
   };
 }

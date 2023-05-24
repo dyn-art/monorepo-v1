@@ -17,11 +17,36 @@ export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
         overflow: node.clipsContent ? 'hidden' : 'visible',
         opacity: node.opacity,
         ...figmaTransformToCSS(node),
-        ...figmaFillToCSS(node),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
       }}
     >
+      {/* Fill */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          overflow: 'hidden', // Fill is always clipped (clipsContent)
+        }}
+      >
+        {node.fills.map((fill, i) => (
+          <div
+            key={i}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              ...figmaFillToCSS(fill, node),
+            }}
+          />
+        ))}
+      </div>
+      {/* Children */}
       {await Promise.all(
         node.children.map(async (child) => await renderNode(child))
       )}

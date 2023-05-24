@@ -19,11 +19,25 @@ export async function renderRectangle(
         height: node.height,
         borderRadius: `${node.topLeftRadius}px ${node.topRightRadius}px ${node.bottomRightRadius}px ${node.bottomLeftRadius}px`,
         opacity: node.opacity,
+        overflow: 'hidden', // Fill is always clipped (clipsContent)
         ...figmaTransformToCSS(node),
-        ...figmaFillToCSS(node),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
       }}
-    />
+    >
+      {node.fills.map((fill, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            ...figmaFillToCSS(fill, node),
+          }}
+        />
+      ))}
+    </div>
   );
 }
