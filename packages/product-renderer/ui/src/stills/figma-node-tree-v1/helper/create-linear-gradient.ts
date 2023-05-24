@@ -13,6 +13,12 @@ import { TPoint } from './types';
  * Create a CSS linear gradient based on fill data and component's attributes.
  *
  * Based on: https://github.com/Nushaine/calculateLinearGradient-FigmaAPI/blob/main/linearGradient.ts
+ * This code is strongly based on the above linked open source repo.
+ * I mainly copied & pasted the code but did a small refactoring
+ * however I didn't take the time to fully understand the code
+ * and fix issues like related to rotation and stuff
+ * as I've decided that the priority lies somewhere else for now.
+ * TODO: Understand code 100% and fix edge cases and bugs like in complex rotation
  *
  * @param {TFill} fill - The fill data containing gradient information.
  * @param {TNode} node - The component data containing size, rotation and other relevant data.
@@ -129,6 +135,16 @@ export function createLinearGradient(
     topCoords: topLineIntersection,
     bottomCoords: bottomLineIntersection,
   };
+
+  // const startEndPosition = extractLinearGradientParamsFromTransform(
+  //   node.width,
+  //   node.height,
+  //   fill.gradientTransform
+  // );
+  // const gradientLine = {
+  //   topCoords: { x: startEndPosition.start[0], y: startEndPosition.start[1] },
+  //   bottomCoords: { x: startEndPosition.end[0], y: startEndPosition.end[1] },
+  // };
 
   // Calculate gradient line distance
   const gradientLineDistance = Math.sqrt(
