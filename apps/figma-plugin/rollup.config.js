@@ -133,7 +133,7 @@ export default [
         template(options) {
           return `
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="lofi">
   <head>
     <meta charset="utf-8">
     <title>Your Name</title>
