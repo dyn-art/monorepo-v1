@@ -1,11 +1,13 @@
+import { TNode } from '@pda/shared-types';
 import clsx from 'clsx';
 import React from 'react';
-import ReactJson from 'react-json-view';
+import { JSONTree } from 'react-json-tree';
 import { Link } from 'react-router-dom';
 import { TOnSelectFrameEvent } from '../../../shared';
 import { copyToClipboard } from '../../core';
 import { TUIHandler, uiHandler } from '../../ui-handler';
 import './styles.css';
+import threezerotwofourTheme from './threezerotwofour.theme';
 
 const FigmaIntermediateFormat: React.FC = () => {
   const [selectedFrames, setSelectedFrames] = React.useState<
@@ -18,6 +20,7 @@ const FigmaIntermediateFormat: React.FC = () => {
   const [showContent, setShowContent] = React.useState<
     'fif' | 'figma' | 'preview'
   >('preview');
+  const [content, setContent] = React.useState<TNode | null>(null);
 
   React.useEffect(() => {
     uiHandler.registerEvent({
@@ -39,14 +42,15 @@ const FigmaIntermediateFormat: React.FC = () => {
       callback: async (instance: TUIHandler, args) => {
         setIsLoadingIntermediateFormatExport(false);
         if (args.type === 'success') {
-          copyToClipboard(args.content);
+          setContent(args.content);
+          copyToClipboard(JSON.stringify(args.content));
         }
       },
     });
   }, []);
 
   return (
-    <div className="m-4">
+    <div className="mx-4 mb-4">
       <div className="breadcrumbs text-sm">
         <ul>
           <li>
@@ -62,7 +66,8 @@ const FigmaIntermediateFormat: React.FC = () => {
         {isLoadingIntermediateFormatExport ? (
           <div>Loading...</div>
         ) : (
-          <div
+          <button
+            className="btn"
             onClick={() => {
               if (selectedFrames != null) {
                 setIsLoadingIntermediateFormatExport(true);
@@ -80,9 +85,10 @@ const FigmaIntermediateFormat: React.FC = () => {
             {selectedFrames != null && selectedFrames.length > 0
               ? ` [${selectedFrames[0].name}] (${selectedFrames.length})`
               : ''}
-          </div>
+          </button>
         )}
 
+        {/* Export Preview */}
         <div>
           <div className="pb-2  text-sm font-bold">
             <a className="opacity-20 hover:opacity-60">#</a>
@@ -128,7 +134,10 @@ const FigmaIntermediateFormat: React.FC = () => {
             {showContent === 'preview' && (
               <div className="rounded-b-box rounded-tr-box relative overflow-x-auto bg-base-300">
                 <div className="preview rounded-b-box rounded-tr-box flex min-h-[8rem] w-full items-center justify-center overflow-x-hidden border border-base-300 p-4">
-                  Jeff
+                  <div className="flex h-[100px] w-[100px] items-center justify-center bg-red-100">
+                    {' '}
+                    Jeff
+                  </div>
                 </div>
               </div>
             )}
@@ -136,14 +145,21 @@ const FigmaIntermediateFormat: React.FC = () => {
             {/* Show FIF */}
             {showContent === 'fif' && (
               <div className="rounded-box flex min-h-[8rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))] p-4">
-                <ReactJson src={{ test: 1 }} theme={'threezerotwofour'} />
+                {content != null ? (
+                  <JSONTree data={content} theme={threezerotwofourTheme} />
+                ) : (
+                  <div>Jeff</div>
+                )}
               </div>
             )}
 
             {/* Show Figma */}
             {showContent === 'figma' && (
               <div className="rounded-box flex min-h-[8rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))] p-4">
-                <ReactJson src={{ test: 2 }} theme={'threezerotwofour'} />
+                <JSONTree
+                  data={{ test: 'jeff' }}
+                  theme={threezerotwofourTheme}
+                />
               </div>
             )}
           </div>

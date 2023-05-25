@@ -39,7 +39,7 @@ export async function processNode(
     // Post success message and notify the user
     instance.postMessage('intermediate-format-export-result-event', {
       type: 'success',
-      content: json,
+      content: toExportNode,
     });
     figma.notify(`Node '${node.name}' was exported successfully.`);
     logger.success(`Node '${node.name}' was exported successfully.`, {
