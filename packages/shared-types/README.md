@@ -1,2 +1,0 @@
-# `@pda/shared-types`
-

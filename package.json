@@ -21,9 +21,20 @@
   "author": "@bennodev19",
   "license": "ISC",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.0",
+    "@rollup/plugin-json": "^6.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.2",
+    "@types/yargs": "^17.0.24",
+    "chalk": "^5.2.0",
+    "execa": "^7.1.1",
     "prettier": "^2.8.7",
+    "rollup": "^3.21.7",
+    "rollup-plugin-bundle-size": "^1.0.3",
+    "rollup-plugin-esbuild": "^5.0.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "shx": "^0.3.4",
-    "turbo": "^1.9.3"
+    "turbo": "^1.9.3",
+    "yargs": "^17.7.2"
   },
   "engines": {
     "node": ">=14.0.0"

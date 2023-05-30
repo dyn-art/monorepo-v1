@@ -3,7 +3,7 @@
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "extends": "@pda/tsconfig/shared-libraries.json",
+  "extends": "@pda/tsconfig/node.json",
   "include": ["src"],
   "exclude": [
     "**/__tests__/*",

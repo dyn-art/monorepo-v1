@@ -3,10 +3,10 @@
   "display": "React Base",
   "extends": "./base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
     "lib": ["es6", "dom", "dom.iterable"],
     "module": "esnext",
-    "target": "es6"
+    "target": "es6",
+    "jsx": "react-jsx"
   },
   "include": ["src"]
 }

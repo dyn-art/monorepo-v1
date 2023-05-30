@@ -8,7 +8,7 @@
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "extends": "@pda/tsconfig/shared-libraries.json",
+  "extends": "@pda/tsconfig/shared-library.json",
   "include": ["src"],
   "exclude": [
     "**/__tests__/*",

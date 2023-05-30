@@ -1,7 +1,7 @@
 {
-  "name": "@pda/discord-handler",
+  "name": "@pda/figma-to-dtif",
   "version": "0.0.0",
-  "description": "Discord Handler",
+  "description": "Provides utilities to convert Figma design node tree into the Design Tree Interchange Format (DTIF).",
   "private": true,
   "source": "./src/index.ts",
   "main": "./dist/index.js",
@@ -18,19 +18,11 @@
   "keywords": [],
   "author": "@bennodev19",
   "license": "MIT",
-  "dependencies": {
-    "@pda/logger": "workspace:*",
-    "@pda/utils": "workspace:*"
-  },
-  "peerDependencies": {
-    "discord.js": "^14.9.0"
-  },
   "devDependencies": {
     "@pda/jest-presets": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@types/jest": "^29.5.1",
     "@types/node": "^18.15.13",
-    "discord.js": "^14.9.0",
     "eslint": "^8.38.0",
     "eslint-config-pda-base": "workspace:*",
     "jest": "^29.5.0",
