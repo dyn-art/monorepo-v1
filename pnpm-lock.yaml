@@ -34,6 +34,9 @@ importers:
       rollup-plugin-esbuild:
         specifier: ^5.0.0
         version: 5.0.0(esbuild@0.16.12)(rollup@3.21.7)
+      rollup-plugin-node-externals:
+        specifier: ^6.0.1
+        version: 6.0.1(rollup@3.21.7)
       rollup-plugin-visualizer:
         specifier: ^5.9.0
         version: 5.9.0(rollup@3.21.7)
@@ -741,7 +744,7 @@ importers:
         version: 1.6.28
     devDependencies:
       '@pda/dtif-types':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../dtif-types
       '@pda/jest-presets':
         specifier: workspace:*
@@ -9963,6 +9966,15 @@ packages:
       rollup: ^2.x.x || ^3.x.x
     dependencies:
       '@rollup/pluginutils': 5.0.2(rollup@3.21.7)
+      rollup: 3.21.7
+    dev: true
+
+  /rollup-plugin-node-externals@6.0.1(rollup@3.21.7):
+    resolution: {integrity: sha512-PIZKc0j44MAzEz9XqWfZ8vbjavWbs9fehh3LHsSB1WF5bdTjz5B8qVuaWiAzdd0tKOjjR/lh8f9Qv6bpLUTllg==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      rollup: ^3.0.0
+    dependencies:
       rollup: 3.21.7
     dev: true
 

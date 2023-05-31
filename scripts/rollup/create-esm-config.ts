@@ -6,6 +6,7 @@ import path from 'path';
 import { InputPluginOption, RollupOptions, defineConfig } from 'rollup';
 import bundleSize from 'rollup-plugin-bundle-size';
 import esbuild from 'rollup-plugin-esbuild';
+import nodeExternals from 'rollup-plugin-node-externals';
 import visualizer from 'rollup-plugin-visualizer';
 import { Logger } from '../utils';
 
@@ -74,6 +75,10 @@ export function createESMConfig(
       sourcemap,
     },
     plugins: [
+      // Automatically declares NodeJS built-in modules like (node:path, node:fs) as external.
+      // This prevents Rollup from trying to bundle these built-in modules,
+      // which can cause unresolved dependencies warnings.
+      nodeExternals(),
       // Resolve and bundle dependencies from node_modules
       nodeResolve({
         extensions: ['.ts', '.tsx', '.js', '.jsx'],
