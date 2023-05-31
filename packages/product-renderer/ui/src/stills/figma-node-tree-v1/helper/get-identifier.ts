@@ -1,4 +1,4 @@
-import { TNode } from '@pda/shared-types';
+import { TNode } from '@pda/dtif-types';
 
 /**
  * Helper function to get a unique React component id and key based on a node.

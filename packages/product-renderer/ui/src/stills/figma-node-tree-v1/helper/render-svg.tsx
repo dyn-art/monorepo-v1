@@ -1,4 +1,4 @@
-import { TSVGNode } from '@pda/shared-types';
+import { TSVGNode } from '@pda/dtif-types';
 import axios from 'axios';
 import { figmaTransformToCSS } from './figma-transform-to-css';
 import { getIdentifier } from './get-identifier';

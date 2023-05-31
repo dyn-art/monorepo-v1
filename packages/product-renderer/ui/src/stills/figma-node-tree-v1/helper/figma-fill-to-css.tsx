@@ -8,7 +8,7 @@ import {
   TRectangleNode,
   TSolidPaint,
   TTextNode,
-} from '@pda/shared-types';
+} from '@pda/dtif-types';
 import React from 'react';
 import { createLinearGradient } from './create-linear-gradient';
 import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';

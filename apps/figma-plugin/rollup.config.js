@@ -65,8 +65,10 @@ const sharedPlugins = {
         ],
       ],
     }),
-    // Convert CommonJS modules (e.g. from 'node_modules' packages) to ES modules targeted by this app
-    commonjs(),
+    // Convert CommonJS modules from node modules into ES modules targeted by this app
+    commonjs({
+      // include: ['node_modules/**'],
+    }),
     // TypeScript compilation
     typescript({
       tsconfig: path.resolve('./tsconfig.json'),

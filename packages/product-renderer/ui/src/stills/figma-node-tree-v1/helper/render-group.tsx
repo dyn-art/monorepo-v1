@@ -1,4 +1,4 @@
-import { TGroupNode } from '@pda/shared-types';
+import { TGroupNode } from '@pda/dtif-types';
 import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
 import { figmaEffectToCSS } from './figma-effect-to-css';
 import { getIdentifier } from './get-identifier';

@@ -1,4 +1,4 @@
-import { TColorStop, TGradientPaint, TNode } from '@pda/shared-types';
+import { TColorStop, TGradientPaint, TNode } from '@pda/dtif-types';
 import { calculateAngle } from './calculate-angle';
 import { figmaGradientTransformToHandles } from './figma-gradient-transform-to-handles';
 import { figmaRGBToCss } from './figma-rgb-to-css';

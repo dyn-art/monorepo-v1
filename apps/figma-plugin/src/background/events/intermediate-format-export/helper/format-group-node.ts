@@ -1,4 +1,4 @@
-import { TGroupNode, TNode } from '@pda/shared-types';
+import { TGroupNode, TNode } from '@pda/dtif-types';
 import { TIntermediateFormatExportEvent } from '../../../../shared';
 import { formatNode } from './format-node';
 

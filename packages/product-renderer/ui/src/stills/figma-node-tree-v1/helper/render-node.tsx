@@ -1,4 +1,4 @@
-import { TNode } from '@pda/shared-types';
+import { TNode } from '@pda/dtif-types';
 import { renderFrame } from './render-frame';
 import { renderGroup } from './render-group';
 import { renderRectangle } from './render-rectangle';

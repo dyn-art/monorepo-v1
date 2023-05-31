@@ -1,4 +1,4 @@
-import { TSVGNode } from '@pda/shared-types';
+import { TSVGNode } from '@pda/dtif-types';
 import { logger } from '../../../../shared';
 import { sha256 } from './sha256';
 import { uploadDataToBucket } from './upload-data-to-bucket';

@@ -1,4 +1,4 @@
-import { TFrameNode } from '@pda/shared-types';
+import { TFrameNode } from '@pda/dtif-types';
 import React from 'react';
 import { continueRender, delayRender } from 'remotion';
 import { renderNode } from './helper/render-node';

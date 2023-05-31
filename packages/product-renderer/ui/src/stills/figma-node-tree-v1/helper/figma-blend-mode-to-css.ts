@@ -1,4 +1,4 @@
-import { TBlendMode } from '@pda/shared-types';
+import { TBlendMode } from '@pda/dtif-types';
 
 const cssBlendModes: React.CSSProperties['mixBlendMode'][] = [
   'normal',

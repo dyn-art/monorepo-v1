@@ -1,4 +1,4 @@
-import { TPaint } from '@pda/shared-types';
+import { TPaint } from '@pda/dtif-types';
 import { logger } from '../../../../shared';
 import { uploadDataToBucket } from './upload-data-to-bucket';
 

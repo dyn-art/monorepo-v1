@@ -1,4 +1,4 @@
-import { TRectangleNode } from '@pda/shared-types';
+import { TRectangleNode } from '@pda/dtif-types';
 import { handleFills } from './handle-fills';
 
 export async function formatRectangleNode(

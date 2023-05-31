@@ -1,4 +1,4 @@
-import { TNode } from '@pda/shared-types';
+import { TNode } from '@pda/dtif-types';
 import { rotate } from './rotate';
 import { TPoint } from './types';
 

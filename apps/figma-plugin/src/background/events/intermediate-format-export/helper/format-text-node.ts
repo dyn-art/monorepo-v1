@@ -1,4 +1,4 @@
-import { TTextNode } from '@pda/shared-types';
+import { TTextNode } from '@pda/dtif-types';
 import { handleFills } from './handle-fills';
 
 export async function formatTextNode(node: TextNode): Promise<TTextNode> {

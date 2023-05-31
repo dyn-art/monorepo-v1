@@ -1,4 +1,4 @@
-import { ESupportedFigmaNodeTypes, TNode } from '@pda/shared-types';
+import { ESupportedFigmaNodeTypes, TNode } from '@pda/dtif-types';
 import { TIntermediateFormatExportEvent, logger } from '../../../../shared';
 import { formatFrameNode } from './format-frame-node';
 import { formatGroupNode } from './format-group-node';

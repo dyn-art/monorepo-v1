@@ -1,4 +1,4 @@
-import { TFrameNode } from '@pda/shared-types';
+import { TFrameNode } from '@pda/dtif-types';
 import { TIntermediateFormatExportEvent } from '../../../../shared';
 import { formatNode } from './format-node';
 import { handleFills } from './handle-fills';

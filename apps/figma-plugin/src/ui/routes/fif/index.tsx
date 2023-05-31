@@ -1,4 +1,4 @@
-import { TNode } from '@pda/shared-types';
+import { TNode } from '@pda/dtif-types';
 import clsx from 'clsx';
 import React from 'react';
 import { JSONTree } from 'react-json-tree';

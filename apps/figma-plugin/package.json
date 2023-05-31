@@ -7,7 +7,6 @@
   "scripts": {
     "build": "shx rm -rf dist && rollup --config rollup.config.js --bundleConfigAsCjs --prod",
     "build:dev": "shx rm -rf dist && rollup --config rollup.config.js --bundleConfigAsCjs",
-    "start:dev": "webpack --watch --progress --config webpack.dev.js",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",
@@ -32,7 +31,7 @@
     "@babel/core": "^7.21.8",
     "@babel/preset-env": "^7.21.5",
     "@figma/plugin-typings": "^1.64.0",
-    "@pda/shared-types": "workspace:*",
+    "@pda/dtif-types": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^25.0.0",

@@ -1,4 +1,4 @@
-import { TRectangleNode } from '@pda/shared-types';
+import { TRectangleNode } from '@pda/dtif-types';
 import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
 import { figmaEffectToCSS } from './figma-effect-to-css';
 import { figmaFillToCSS } from './figma-fill-to-css';

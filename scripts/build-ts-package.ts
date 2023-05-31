@@ -22,11 +22,20 @@ const argv = yargs(hideBin(process.argv))
       default: false,
       description: 'Compile with Typescript Compiler',
     },
+    analyze: {
+      type: 'boolean',
+      default: false,
+      description: 'Generate bundle analytics.',
+    },
+    sourcemap: {
+      type: 'boolean',
+      default: true,
+      description: 'Generate sourcemap.',
+    },
   })
   .parseSync();
 
-const isProduction = argv.prod;
-const useTsc = argv.tsc;
+const { tsc: useTsc, prod: isProduction, analyze, sourcemap } = argv;
 
 async function build() {
   logger.info(`Start building package.`);
@@ -36,8 +45,22 @@ async function build() {
     if (useTsc) {
       await tsc.compile();
     } else {
-      await rollup.compile(rollup.createCommonJSConfig({ isProduction }));
-      await rollup.compile(rollup.createESMConfig({ isProduction }));
+      await rollup.compile(
+        rollup.createCommonJSConfig({
+          isProduction,
+          preserveModules: true,
+          analyze,
+          sourcemap,
+        })
+      );
+      await rollup.compile(
+        rollup.createESMConfig({
+          isProduction,
+          preserveModules: true,
+          analyze,
+          sourcemap,
+        })
+      );
       await tsc.generateDts();
     }
 

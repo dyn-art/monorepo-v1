@@ -34,9 +34,9 @@ importers:
       rollup-plugin-esbuild:
         specifier: ^5.0.0
         version: 5.0.0(esbuild@0.16.12)(rollup@3.21.7)
-      rollup-plugin-peer-deps-external:
-        specifier: ^2.2.4
-        version: 2.2.4(rollup@3.21.7)
+      rollup-plugin-visualizer:
+        specifier: ^5.9.0
+        version: 5.9.0(rollup@3.21.7)
       shx:
         specifier: ^0.3.4
         version: 0.3.4
@@ -205,6 +205,9 @@ importers:
       '@figma/plugin-typings':
         specifier: ^1.64.0
         version: 1.64.0
+      '@pda/dtif-types':
+        specifier: workspace:*
+        version: link:../../packages/dtif-types
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -737,6 +740,9 @@ importers:
         specifier: ^1.6.28
         version: 1.6.28
     devDependencies:
+      '@pda/dtif-types':
+        specifier: workspace:^
+        version: link:../dtif-types
       '@pda/jest-presets':
         specifier: workspace:*
         version: link:../jest-presets
@@ -9960,14 +9966,6 @@ packages:
       rollup: 3.21.7
     dev: true
 
-  /rollup-plugin-peer-deps-external@2.2.4(rollup@3.21.7):
-    resolution: {integrity: sha512-AWdukIM1+k5JDdAqV/Cxd+nejvno2FVLVeZ74NKggm3Q5s9cbbcOgUPGdbxPi4BXu7xGaZ8HG12F+thImYu/0g==}
-    peerDependencies:
-      rollup: '*'
-    dependencies:
-      rollup: 3.21.7
-    dev: true
-
   /rollup-plugin-postcss@4.0.2(postcss@8.4.23)(ts-node@10.9.1):
     resolution: {integrity: sha512-05EaY6zvZdmvPUDi3uCcAQoESDcYnv8ogJJQRp6V5kZ6J6P7uAVJlrTZcaaA20wTH527YTnKfkAoPxWI/jPp4w==}
     engines: {node: '>=10'}
@@ -9990,6 +9988,23 @@ packages:
       style-inject: 0.3.0
     transitivePeerDependencies:
       - ts-node
+    dev: true
+
+  /rollup-plugin-visualizer@5.9.0(rollup@3.21.7):
+    resolution: {integrity: sha512-bbDOv47+Bw4C/cgs0czZqfm8L82xOZssk4ayZjG40y9zbXclNk7YikrZTDao6p7+HDiGxrN0b65SgZiVm9k1Cg==}
+    engines: {node: '>=14'}
+    hasBin: true
+    peerDependencies:
+      rollup: 2.x || 3.x
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+    dependencies:
+      open: 8.4.2
+      picomatch: 2.3.1
+      rollup: 3.21.7
+      source-map: 0.7.4
+      yargs: 17.7.2
     dev: true
 
   /rollup-pluginutils@2.8.2:
@@ -10228,6 +10243,11 @@ packages:
   /source-map@0.6.1:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
+    dev: true
+
+  /source-map@0.7.4:
+    resolution: {integrity: sha512-l3BikUxvPOcn5E74dZiq5BGsTb5yEwhaTSzccU6t4sDOH8NWJCstKO5QT2CvtFoK6F0saL7p9xHAqHOlCPJygA==}
+    engines: {node: '>= 8'}
     dev: true
 
   /source-map@0.8.0-beta.0:

@@ -6,7 +6,7 @@ import path from 'path';
 import { InputPluginOption, RollupOptions, defineConfig } from 'rollup';
 import bundleSize from 'rollup-plugin-bundle-size';
 import esbuild from 'rollup-plugin-esbuild';
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import visualizer from 'rollup-plugin-visualizer';
 import { Logger } from '../utils';
 
 const logger = new Logger('create-esm-config');
@@ -23,18 +23,24 @@ export function createESMConfig(
     input?: string;
     output?: string;
     tsconfig?: string;
-    multiFileOutput?: boolean;
     isProduction?: boolean;
+    preserveModules?: boolean;
+    sourcemap?: boolean;
+    analyze?: boolean;
     additionalOptions?: RollupOptions;
     additionalPlugins?: InputPluginOption[];
   } = {}
 ) {
+  const packageJsonPath = path.resolve('./package.json');
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
   const {
-    input = './src/index.ts',
-    output = getDefaultOutputPath(options.multiFileOutput),
+    input = path.resolve('./src/index.ts'),
+    output = getDefaultOutputPath(packageJson, options.preserveModules),
     tsconfig = path.resolve('./tsconfig.json'),
     isProduction,
-    multiFileOutput = true,
+    preserveModules = true,
+    sourcemap = true,
+    analyze = false,
     additionalOptions = {},
     additionalPlugins = [],
   } = options;
@@ -46,33 +52,36 @@ export function createESMConfig(
         output,
         tsconfig,
         isProduction,
-        multiFileOutput,
+        preserveModules,
         additionalOptions,
         additionalPlugins,
       },
     ],
   });
 
+  const visualizeFilePath = path.resolve('.compile/stats-esm.html');
+  if (analyze) {
+    logger.info(`Visualized at: ${visualizeFilePath}`);
+  }
+
   return defineConfig({
     input,
     output: {
-      [multiFileOutput ? 'dir' : 'file']: output,
+      name: packageJson.name,
+      [preserveModules ? 'dir' : 'file']: path.resolve(output),
       format: 'esm',
-      preserveModules: multiFileOutput, // https://stackoverflow.com/questions/55339256/tree-shaking-with-rollup
+      preserveModules,
+      sourcemap,
     },
     plugins: [
-      // Exclude peer dependencies from bundle
-      peerDepsExternal(),
       // Resolve and bundle dependencies from node_modules
       nodeResolve({
-        preferBuiltins: false,
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
       }),
       // Resolve and bundle .json files
       json(),
-      // Convert CommonJS modules from node_modules into ES modules targeted by this app
-      commonjs({
-        include: ['node_modules/**'],
-      }),
+      // Convert CommonJS modules (from node_modules) into ES modules targeted by this app
+      commonjs(),
       // Transpile TypeScript code to JavaScript (ES6), and minify in production
       esbuild({
         tsconfig,
@@ -82,23 +91,42 @@ export function createESMConfig(
         loaders: {
           '.json': 'json',
         },
+        sourceMap: false,
       }),
       // typescript(/* */), // Obsolete as esbuild takes care of configuring typescript
       // babel(/* */), // Obsolete as esbuild takes care of converting ES2015+ modules into compatible JavaScript files
       // terser(/* */), // Obsolete as esbuild takes care of minifying
-      !multiFileOutput && bundleSize(),
+      !preserveModules && bundleSize(),
+      analyze &&
+        visualizer({
+          title: packageJson.name,
+          filename: visualizeFilePath,
+          sourcemap: true,
+          gzipSize: true,
+        }),
       ...additionalPlugins,
+    ],
+    // Exclude peer dependencies and dependencies from bundle for these reasons:
+    // 1. To prevent duplication: If every package included a copy of all its dependencies,
+    //    there would be a lot of duplication in node_modules.
+    // 2. To enable better versioning: This way, npm can handle installing the latest compatible version.
+    // 3. For improved security: If a security vulnerability is found in a dependency,
+    //    npm can update it without needing to update this package.
+    // 4. Auto Installation: Package managers automatically install these dependencies, so no need to bundle them.
+    external: [
+      ...Object.keys({
+        ...(packageJson.dependencies || {}),
+        ...(packageJson.peerDependencies || {}),
+      }),
     ],
     ...additionalOptions,
   });
 }
 
-function getDefaultOutputPath(dir = true) {
-  const packageJsonPath = path.resolve('./package.json');
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+function getDefaultOutputPath(packageJson: any, dir = true) {
   const rawModule = packageJson.module ?? './dist/esm/index.js';
   const module = dir
-    ? rawModule.replace(/\/[^\/]*$/, '') // remove '/index.js' if bundling to dir
+    ? rawModule.replace(/\/[^\/]*\.js$/, '') // remove '/index.js' if bundling to dir
     : rawModule;
   return module;
 }

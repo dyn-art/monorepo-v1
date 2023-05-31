@@ -1,4 +1,4 @@
-import { TTextNode } from '@pda/shared-types';
+import { TTextNode } from '@pda/dtif-types';
 import WebFont from 'webfontloader';
 import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
 import { figmaEffectToCSS } from './figma-effect-to-css';
