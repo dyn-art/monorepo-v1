@@ -46,7 +46,8 @@ async function build() {
       await tsc.compile();
     } else {
       await rollup.compile(
-        rollup.createCommonJSConfig({
+        rollup.createPackageConfig({
+          format: 'esm',
           isProduction,
           preserveModules: true,
           analyze,
@@ -54,7 +55,8 @@ async function build() {
         })
       );
       await rollup.compile(
-        rollup.createESMConfig({
+        rollup.createPackageConfig({
+          format: 'cjs',
           isProduction,
           preserveModules: true,
           analyze,
