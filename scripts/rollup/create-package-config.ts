@@ -3,7 +3,13 @@ import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import fs from 'fs';
 import path from 'path';
-import { OutputOptions, RollupOptions, defineConfig } from 'rollup';
+import {
+  InputPluginOption,
+  OutputOptions,
+  Plugin,
+  RollupOptions,
+  defineConfig,
+} from 'rollup';
 import bundleSize from 'rollup-plugin-bundle-size';
 import esbuild from 'rollup-plugin-esbuild';
 import nodeExternals from 'rollup-plugin-node-externals';
@@ -14,13 +20,13 @@ const logger = new Logger('create-package-config');
 
 export function createPackageConfig(options: TCreatePackageOptions = {}) {
   // Resolve package.json
-  const packageJsonPath = path.resolve('./package.json');
+  const packageJsonPath = path.resolve(process.cwd(), './package.json');
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
   const {
     format = 'esm',
-    inputPath = path.resolve('./src/index.ts'),
-    tsconfig = path.resolve('./tsconfig.json'),
+    inputPath = path.resolve(process.cwd(), './src/index.ts'),
+    tsconfig = path.resolve(process.cwd(), './tsconfig.json'),
     rollupOptions = {},
     isProduction,
     preserveModules = true,
@@ -59,53 +65,55 @@ export function createPackageConfig(options: TCreatePackageOptions = {}) {
   return defineConfig({
     input: inputPath,
     output: { ...output, ...rollupOptionsOutput },
-    plugins: [
-      // Automatically declares NodeJS built-in modules like (node:path, node:fs) as external.
-      // This prevents Rollup from trying to bundle these built-in modules,
-      // which can cause unresolved dependencies warnings.
-      nodeExternals(),
-      // Resolve and bundle dependencies from node_modules
-      nodeResolve({
-        extensions: ['.ts', '.tsx', '.js', '.jsx'],
-      }),
-      // Resolve and bundle .json files
-      json(),
-      // Convert CommonJS modules (from node_modules) into ES modules targeted by this app
-      commonjs(),
-      // Transpile TypeScript code to JavaScript (ES6), and minify in production
-      esbuild({
-        tsconfig,
-        minify: isProduction,
-        target: 'es6',
-        exclude: [/node_modules/],
-        loaders: {
-          '.json': 'json',
-        },
-        sourceMap: false, // Configured in rollup 'output' object
-      }),
-      // typescript(/* */), // Obsolete as esbuild takes care of configuring typescript
-      // babel(/* */), // Obsolete as esbuild takes care of converting ES2015+ modules into compatible JavaScript files
-      // terser(/* */), // Obsolete as esbuild takes care of minifying
-      ...(Array.isArray(rollupOptionsPlugins) ? rollupOptionsPlugins : []),
-      !preserveModules && bundleSize(),
-      ...(analyze && visualizeFilePath != null
-        ? [
-            visualizer({
-              title: packageJson.name,
-              filename: visualizeFilePath,
-              sourcemap: true,
-              gzipSize: true,
-            }),
-            visualizer({
-              title: packageJson.name,
-              filename: visualizeFilePath,
-              sourcemap: true,
-              gzipSize: true,
-              template: 'raw-data',
-            }),
-          ]
-        : []),
-    ],
+    plugins: arrangePlugins(
+      [
+        // Automatically declares NodeJS built-in modules like (node:path, node:fs) as external.
+        // This prevents Rollup from trying to bundle these built-in modules,
+        // which can cause unresolved dependencies warnings.
+        nodeExternals(),
+        // Resolve and bundle dependencies from node_modules
+        nodeResolve({
+          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        }),
+        // Resolve and bundle .json files
+        json(),
+        // Convert CommonJS modules (from node_modules) into ES modules targeted by this app
+        commonjs(),
+        // Transpile TypeScript code to JavaScript (ES6), and minify in production
+        esbuild({
+          tsconfig,
+          minify: isProduction,
+          target: 'es6',
+          exclude: [/node_modules/],
+          loaders: {
+            '.json': 'json',
+          },
+          sourceMap: false, // Configured in rollup 'output' object
+        }),
+        // typescript(/* */), // Obsolete as esbuild takes care of configuring typescript
+        // babel(/* */), // Obsolete as esbuild takes care of converting ES2015+ modules into compatible JavaScript files
+        // terser(/* */), // Obsolete as esbuild takes care of minifying
+        !preserveModules && bundleSize(),
+        ...(analyze && visualizeFilePath != null
+          ? [
+              visualizer({
+                title: packageJson.name,
+                filename: visualizeFilePath,
+                sourcemap: true,
+                gzipSize: true,
+              }),
+              visualizer({
+                title: packageJson.name,
+                filename: visualizeFilePath,
+                sourcemap: true,
+                gzipSize: true,
+                template: 'raw-data',
+              }),
+            ]
+          : []),
+      ],
+      rollupOptionsPlugins
+    ),
     // Exclude peer dependencies and dependencies from bundle for these reasons:
     // 1. To prevent duplication: If every package included a copy of all its dependencies,
     //    there would be a lot of duplication in node_modules.
@@ -142,11 +150,14 @@ function configureESM(props: TConfigureModuleProps): TConfigureModuleResponse {
     output: {
       ...props.output,
       ...{
-        [props.preserveModules ? 'dir' : 'file']: path.resolve(outputPath),
+        [props.preserveModules ? 'dir' : 'file']: path.resolve(
+          process.cwd(),
+          outputPath
+        ),
         format: 'esm',
       },
     },
-    visualizeFilePath: path.resolve('.compile/stats-esm.html'),
+    visualizeFilePath: path.resolve(process.cwd(), './.compile/stats-esm.html'),
   };
 }
 
@@ -171,13 +182,70 @@ function configureCJS(props: TConfigureModuleProps): TConfigureModuleResponse {
     output: {
       ...props.output,
       ...{
-        [props.preserveModules ? 'dir' : 'file']: path.resolve(outputPath),
+        [props.preserveModules ? 'dir' : 'file']: path.resolve(
+          process.cwd(),
+          outputPath
+        ),
         format: 'cjs',
         exports: 'named',
       },
     },
-    visualizeFilePath: path.resolve('.compile/stats-cjs.html'),
+    visualizeFilePath: path.resolve(process.cwd(), './.compile/stats-cjs.html'),
   };
+}
+
+function arrangePlugins(
+  basePlugins: InputPluginOption[],
+  customPlugins: (TCustomPlugin | RollupOptions['plugins'])[]
+): Plugin[] {
+  const arrangedPlugins: { key: string; plugin: Plugin }[] = basePlugins
+    .map((plugin) => (isPlugin(plugin) ? { plugin, key: plugin.name } : null))
+    .filter(notEmpty);
+
+  for (let customPlugin of customPlugins) {
+    // Check whether its a custom plugin with 'before' & 'after' syntax.
+    // If not add it to the end.
+    if (!isCustomPlugin(customPlugin)) {
+      if (isPlugin(customPlugin)) {
+        arrangedPlugins.push({ plugin: customPlugin, key: customPlugin.name });
+      }
+      continue;
+    }
+
+    // Check whether the custom plugin should be inserted before a base plugin
+    if (customPlugin.before) {
+      const beforeIndex = arrangedPlugins.findIndex(
+        (plugin) => plugin.key === (customPlugin as TCustomPlugin).before
+      );
+      if (beforeIndex !== -1) {
+        arrangedPlugins.splice(beforeIndex, 0, {
+          key: customPlugin.before,
+          plugin: customPlugin.plugin,
+        });
+      }
+    }
+    // Check whether the custom plugin should be inserted after a base plugin
+    else if (customPlugin.after) {
+      const afterIndex = arrangedPlugins.findIndex(
+        (plugin) => plugin.key === (customPlugin as TCustomPlugin).after
+      );
+      if (afterIndex !== -1) {
+        arrangedPlugins.splice(afterIndex + 1, 0, {
+          key: customPlugin.after,
+          plugin: customPlugin.plugin,
+        });
+      }
+    }
+    // If the custom plugin does not specify a position, add it to the end
+    else {
+      arrangedPlugins.push({
+        key: customPlugin.plugin.name,
+        plugin: customPlugin.plugin,
+      });
+    }
+  }
+
+  return arrangedPlugins.map((plugin) => plugin.plugin);
 }
 
 function getDefaultOutputPath(
@@ -192,7 +260,25 @@ function getDefaultOutputPath(
   return module;
 }
 
-type TCreatePackageOptions = {
+function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
+  return value !== null && value !== undefined;
+}
+
+function isPlugin(value: any): value is Plugin {
+  return typeof value.name === 'string';
+}
+
+function isCustomPlugin(value: any): value is TCustomPlugin {
+  return typeof value.plugin === 'object' && isPlugin(value.plugin);
+}
+
+type TCustomPlugin = {
+  plugin: Plugin;
+  before?: string;
+  after?: string;
+};
+
+export type TCreatePackageOptions = {
   format?: 'esm' | 'cjs';
   inputPath?: string;
   outputPath?: string;
@@ -201,7 +287,9 @@ type TCreatePackageOptions = {
   preserveModules?: boolean;
   sourcemap?: boolean;
   analyze?: boolean;
-  rollupOptions?: RollupOptions;
+  rollupOptions?: Omit<RollupOptions, 'plugins'> & {
+    plugins?: (TCustomPlugin | RollupOptions['plugins'])[];
+  };
 };
 
 type TGetDefaultOutputPathOptions = {

@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
 import chalk from 'chalk';
+import path from 'path';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import * as rollup from './rollup';
 import * as tsc from './tsc';
-import { Logger } from './utils';
+import { Logger, readFile } from './utils';
 
 const logger = new Logger('ts-library');
 
@@ -38,9 +39,18 @@ const argv = yargs(hideBin(process.argv))
 const { tsc: useTsc, prod: isProduction, analyze, sourcemap } = argv;
 
 async function build() {
+  const startTime = Date.now();
   logger.info(`Start building package.`);
+
   try {
-    const startTime = Date.now();
+    // Read in additional rollup options
+    const rollupConfigPath = path.resolve(process.cwd(), './rollup.config.js');
+    const rollupOptions = await readFile<
+      rollup.TCreatePackageOptions['rollupOptions']
+    >(rollupConfigPath);
+    if (rollupOptions != null) {
+      logger.info(`Detected rollup.config at ${chalk.green(rollupConfigPath)}`);
+    }
 
     if (useTsc) {
       await tsc.compile();
@@ -52,6 +62,7 @@ async function build() {
           preserveModules: true,
           analyze,
           sourcemap,
+          rollupOptions: rollupOptions ?? undefined,
         })
       );
       await rollup.compile(
@@ -61,6 +72,7 @@ async function build() {
           preserveModules: true,
           analyze,
           sourcemap,
+          rollupOptions: rollupOptions ?? undefined,
         })
       );
       await tsc.generateDts();
