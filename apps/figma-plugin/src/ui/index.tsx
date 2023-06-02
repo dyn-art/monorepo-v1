@@ -1,3 +1,4 @@
+import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import Routes from './routes';
@@ -5,6 +6,8 @@ import Routes from './routes';
 // Styles
 import './styles/global.css';
 import './styles/tailwind.css';
+
+const _ = React; // Ensure React is seen as "used" by auto-import plugin
 
 function init() {
   const appContainer = document.getElementById('root');

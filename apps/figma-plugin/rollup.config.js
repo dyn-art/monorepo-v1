@@ -2,8 +2,6 @@ import commonjs from '@rollup/plugin-commonjs';
 import html from '@rollup/plugin-html';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import terser from '@rollup/plugin-terser';
-import typescript from '@rollup/plugin-typescript';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
@@ -12,122 +10,116 @@ import postcss from 'rollup-plugin-postcss';
 import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
 import json from '@rollup/plugin-json';
-import babel from '@rollup/plugin-babel';
+import bundleSize from 'rollup-plugin-bundle-size';
+
+// https://github.com/egoist/rollup-plugin-esbuild/issues/361
+import _esbuild from 'rollup-plugin-esbuild';
+const esbuild = _esbuild.default ?? _esbuild;
+
+// ============================================================================
+// Arguments
+// ============================================================================
 
 // Parse command line arguments using yargs
-const argv = yargs(hideBin(process.argv)).options({
-  prod: {
-    type: 'boolean',
-    default: false,
-    description: 'Build in production mode',
-  },
-}).argv;
+const argv = yargs(hideBin(process.argv))
+  .options({
+    prod: {
+      type: 'boolean',
+      default: false,
+      description: 'Build in production mode',
+    },
+  })
+  .parseSync();
 
-const isProduction = argv.prod;
+const { prod: isProduction } = argv;
 
-// Reads and parses the dotenv file using the 'dotenv' package
-function parseDotenv(filePath) {
-  const data = fs.readFileSync(filePath);
-  const parsed = dotenv.parse(data);
-
-  // Wrap values with quotes to handle strings containing special characters (required for replace plugin)
-  const env = {};
-  for (const key in parsed) {
-    env[`process.env.${key}`] = JSON.stringify(parsed[key]);
-  }
-
-  return env;
-}
+// ============================================================================
+// Shared
+// ============================================================================
 
 const sharedPlugins = {
-  start: [
-    // Resolve and bundle dependencies from node_modules
-    nodeResolve({
-      preferBuiltins: true,
-      browser: true,
-    }),
-    // Transpile the code to an earlier ECMAScript version (ES6)
-    // to ensure compatibility with environments that do not support
-    // some modern JavaScript syntax (e.g. Array.includes(), Object.values()).
-    babel({
-      babelHelpers: 'bundled',
-      exclude: /node_modules/,
-      presets: [
-        [
-          '@babel/preset-env',
-          {
-            targets: {
-              // Target browsers that support ES Modules which is targeted by this app
-              // Reference: https://babeljs.io/docs/en/babel-preset-env
-              esmodules: true,
-            },
-          },
-        ],
-      ],
-    }),
-    // Convert CommonJS modules from node modules into ES modules targeted by this app
-    commonjs({
-      // include: ['node_modules/**'],
-    }),
-    // TypeScript compilation
-    typescript({
-      tsconfig: path.resolve('./tsconfig.json'),
-      exclude: /node_modules/,
-    }),
-    // Resolve JSON
-    json(),
-    // Replace process.env.NODE_ENV with 'production' or 'development'
-    replace({
-      preventAssignment: true,
-      'process.env.npm_package_version': JSON.stringify(
-        require('./package.json').version
-      ),
-      'process.env.NODE_ENV': JSON.stringify(
-        isProduction ? 'production' : 'development'
-      ),
-    }),
-  ],
-  end: [
-    // Minify JavaScript in production
-    isProduction && terser(),
-  ],
+  // Resolve and bundle dependencies from node_modules
+  nodeResolve: nodeResolve({
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    browser: true,
+  }),
+  // Resolve and bundle .json files
+  json: json(),
+  // Convert CommonJS modules (from node_modules) into ES modules targeted by this app
+  commonjs: commonjs(),
+  // Transpile TypeScript code to JavaScript (ES6), and minify in production
+  esbuild: esbuild({
+    tsconfig: './tsconfig.json',
+    minify: isProduction,
+    target: 'es6',
+    exclude: [/node_modules/],
+    loaders: {
+      '.json': 'json',
+    },
+    jsxFactory: 'React.createElement',
+    jsxFragment: 'React.Fragment',
+    sourceMap: false, // Configured in rollup 'output' object
+  }),
+  // Replace process.env.NODE_ENV with 'production' or 'development'
+  replace: replace({
+    preventAssignment: true,
+    'process.env.npm_package_version': JSON.stringify(
+      require('./package.json').version
+    ),
+    'process.env.NODE_ENV': JSON.stringify(
+      isProduction ? 'production' : 'development'
+    ),
+  }),
+  bundleSize: bundleSize(),
 };
 
-/** @type {import('rollup').RollupOptions} */
+// ============================================================================
+// Config
+// ============================================================================
+
+/** @type {import('rollup').RollupOptions[]} */
 export default [
   // Configuration for background code
   {
-    input: path.resolve('./src/background/index.ts'),
+    input: './src/background/index.ts',
     output: {
-      file: 'dist/code.js',
+      file: './dist/code.js',
       format: 'es',
-      sourcemap: false,
+      sourcemap: !isProduction,
     },
     plugins: [
-      ...sharedPlugins.start,
+      sharedPlugins.nodeResolve,
+      sharedPlugins.json,
+      sharedPlugins.commonjs,
+      sharedPlugins.esbuild,
+      sharedPlugins.replace,
       // Parse environment variables
       replace({
         preventAssignment: true,
-        ...parseDotenv(path.resolve('./.env.background')),
+        ...parseDotenv('./.env.background'),
       }),
-      ...sharedPlugins.end,
+      sharedPlugins.bundleSize,
     ],
     external: ['react', 'react-dom'],
   },
   // Configuration for UI code
   {
-    input: path.resolve('./src/ui/index.tsx'),
+    input: './src/ui/index.tsx',
     output: {
-      file: 'dist/ui.js',
+      file: './dist/ui.js',
       format: 'es',
-      sourcemap: false,
+      sourcemap: !isProduction,
     },
     plugins: [
-      ...sharedPlugins.start,
+      sharedPlugins.nodeResolve,
+      sharedPlugins.json,
+      sharedPlugins.commonjs,
+      sharedPlugins.esbuild,
+      sharedPlugins.replace,
       // Parse environment variables
       replace({
         preventAssignment: true,
-        ...parseDotenv(path.resolve('./.env.ui')),
+        ...parseDotenv('./.env.ui'),
       }),
       // Generate HTML file with injected bundle
       html({
@@ -151,7 +143,7 @@ export default [
       // Process and bundle CSS files
       postcss({
         config: {
-          path: path.resolve('./postcss.config.js'),
+          path: './postcss.config.js',
           ctx: {},
         },
         minimize: isProduction,
@@ -166,7 +158,25 @@ export default [
           },
         ],
       }),
-      ...sharedPlugins.end,
+      sharedPlugins.bundleSize,
     ],
   },
 ];
+
+// ============================================================================
+// Helper
+// ============================================================================
+
+// Reads and parses the dotenv file using the 'dotenv' package
+function parseDotenv(relativeFilePath) {
+  const data = fs.readFileSync(path.resolve(process.cwd(), relativeFilePath));
+  const parsed = dotenv.parse(data);
+
+  // Wrap values with quotes to handle strings containing special characters (required for replace plugin)
+  const env = {};
+  for (const key in parsed) {
+    env[`process.env.${key}`] = JSON.stringify(parsed[key]);
+  }
+
+  return env;
+}

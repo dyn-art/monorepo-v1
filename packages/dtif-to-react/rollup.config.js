@@ -1,6 +1,7 @@
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
 
+/** @type {import('rollup').RollupOptions} */
 export default {
   input: './src/index.tsx',
   plugins: [
