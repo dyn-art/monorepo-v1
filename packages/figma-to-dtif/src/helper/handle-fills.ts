@@ -1,8 +1,12 @@
 import { TPaint } from '@pda/dtif-types';
-import { logger } from '../../../../shared';
+import { TBucketConfig, TFormatNodeOptions } from '../formatting';
+import { logger } from '../logger';
 import { uploadDataToBucket } from './upload-data-to-bucket';
 
-export async function handleFills(inputFills: Paint[]): Promise<TPaint[]> {
+export async function handleFills(
+  inputFills: Paint[],
+  options: TFormatNodeOptions
+): Promise<TPaint[]> {
   if (!Array.isArray(inputFills)) return [];
   const fills: TPaint[] = [];
 
@@ -16,7 +20,7 @@ export async function handleFills(inputFills: Paint[]): Promise<TPaint[]> {
         fills.push(fill);
         continue;
       case 'IMAGE':
-        fills.push(await handleImageFill(fill));
+        fills.push(await handleImageFill(fill, options.bucket.getPresignedUrl));
         continue;
       case 'SOLID':
         fills.push(fill);
@@ -29,11 +33,19 @@ export async function handleFills(inputFills: Paint[]): Promise<TPaint[]> {
   return fills;
 }
 
-async function handleImageFill(fill: ImagePaint) {
+async function handleImageFill(
+  fill: ImagePaint,
+  getPreSignedUploadUrl: TBucketConfig['getPresignedUrl']
+) {
   let imageHash = fill.imageHash;
   if (imageHash == null) return fill;
   const imageData = await figma.getImageByHash(imageHash)?.getBytesAsync();
-  imageHash = await uploadDataToBucket(imageHash, imageData);
+  if (imageData == null) return fill;
+  imageHash = await uploadDataToBucket({
+    key: imageHash,
+    data: imageData,
+    getPreSignedUploadUrl,
+  });
   if (imageHash == null) {
     throw new Error(
       `Failed to upload image with the hash ${imageHash} to S3 bucket!`

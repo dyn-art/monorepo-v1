@@ -1,10 +1,9 @@
 import { TGroupNode, TNode } from '@pda/dtif-types';
-import { TIntermediateFormatExportEvent } from '../../../../shared';
-import { formatNode } from './format-node';
+import { TFormatNodeOptions, formatNode } from './format-node';
 
 export async function formatGroupNode(
   node: GroupNode,
-  config: TIntermediateFormatExportEvent['args']['config']
+  options: TFormatNodeOptions
 ): Promise<TGroupNode> {
   return {
     type: 'GROUP',
@@ -14,7 +13,7 @@ export async function formatGroupNode(
     // Children mixin
     children: (
       await Promise.all(
-        node.children.map((node) => formatNode(node, config, false))
+        node.children.map((node) => formatNode(node, options, false))
       )
     ).filter((node) => node != null) as TNode[],
     // Layout mixin

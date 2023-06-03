@@ -8,5 +8,5 @@
     "rootDir": "./src",
   },
   "extends": "@pda/tsconfig/react-base.json",
-  "include": ["src"]
+  "include": ["src", "../../packages/figma-to-dtif/src/format-frame-node.ts"]
 }

@@ -612,7 +612,17 @@ importers:
         version: 4.9.5
 
   packages/figma-to-dtif:
+    dependencies:
+      '@pda/logger':
+        specifier: workspace:^
+        version: link:../logger
     devDependencies:
+      '@figma/plugin-typings':
+        specifier: ^1.64.0
+        version: 1.64.0
+      '@pda/dtif-types':
+        specifier: workspace:*
+        version: link:../dtif-types
       '@pda/jest-presets':
         specifier: workspace:*
         version: link:../jest-presets

@@ -18,7 +18,12 @@
   "keywords": [],
   "author": "@bennodev19",
   "license": "MIT",
+  "dependencies": {
+    "@pda/logger": "workspace:^"
+  },
   "devDependencies": {
+    "@figma/plugin-typings": "^1.64.0",
+    "@pda/dtif-types": "workspace:*",
     "@pda/jest-presets": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@types/jest": "^29.5.1",

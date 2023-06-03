@@ -1,11 +1,10 @@
 import { TFrameNode } from '@pda/dtif-types';
-import { TIntermediateFormatExportEvent } from '../../../../shared';
-import { formatNode } from './format-node';
-import { handleFills } from './handle-fills';
+import { handleFills } from '../helper/handle-fills';
+import { TFormatNodeOptions, formatNode } from './format-node';
 
 export async function formatFrameNode(
   node: FrameNode | ComponentNode | InstanceNode,
-  config: TIntermediateFormatExportEvent['args']['config']
+  options: TFormatNodeOptions
 ): Promise<TFrameNode> {
   return {
     type: 'FRAME',
@@ -15,7 +14,7 @@ export async function formatFrameNode(
     name: node.name,
     // Children mixin
     children: await Promise.all(
-      node.children.map((node) => formatNode(node, config, false))
+      node.children.map((node) => formatNode(node, options, false))
     ),
     // Layout mixin
     x: node.x,
@@ -35,6 +34,6 @@ export async function formatFrameNode(
     topLeftRadius: node.topLeftRadius,
     topRightRadius: node.topRightRadius,
     // Fills mixin
-    fills: await handleFills(node.fills as Paint[]),
+    fills: await handleFills(node.fills as Paint[], options),
   } as TFrameNode;
 }
