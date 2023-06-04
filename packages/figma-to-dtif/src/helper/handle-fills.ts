@@ -53,7 +53,8 @@ async function handleImageFill(
   );
   if (key == null) {
     throw new UploadStaticDataException(
-      `Failed to upload image with the hash ${key} to S3 bucket!`
+      `Failed to upload image with the hash ${key} to S3 bucket!`,
+      node
     );
   }
 
@@ -61,14 +62,9 @@ async function handleImageFill(
 }
 
 async function exportImage(node: SceneNode, imageHash: string) {
+  let data: Uint8Array | null;
   try {
-    const data = await figma.getImageByHash(imageHash)?.getBytesAsync();
-    if (data == null) {
-      throw new ExportImageException(
-        `Failed to export node '${node.name}' as image!`
-      );
-    }
-    return data;
+    data = (await figma.getImageByHash(imageHash)?.getBytesAsync()) ?? null;
   } catch (error) {
     let errorMessage: string;
     if (error instanceof Error) {
@@ -77,7 +73,15 @@ async function exportImage(node: SceneNode, imageHash: string) {
       errorMessage = JSON.stringify(error);
     }
     throw new ExportImageException(
-      `Failed to export node '${node.name}' as image: ${errorMessage}`
+      `Failed to export node '${node.name}' as image: ${errorMessage}`,
+      node
     );
   }
+  if (data == null) {
+    throw new ExportImageException(
+      `Failed to export node '${node.name}' as image!`,
+      node
+    );
+  }
+  return data;
 }

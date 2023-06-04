@@ -1,5 +1,5 @@
 import { TSVGNode } from '@pda/dtif-types';
-import { NodeToSvgConversionException } from '../exceptions';
+import { NodeToSVGConversionException } from '../exceptions';
 import { UploadStaticDataException } from '../exceptions/UploadStaticDataException';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { logger } from '../logger';
@@ -20,7 +20,7 @@ export async function formatToSvgNode(
     ending: '.svg',
   });
   if (key === null) {
-    throw new UploadStaticDataException(`Failed to upload SVG data!`);
+    throw new UploadStaticDataException(`Failed to upload SVG data!`, node);
   }
 
   logger.success(
@@ -58,8 +58,9 @@ async function convertNodeToSvg(node: TSVGCompatibleNode): Promise<Uint8Array> {
     } else {
       errorMessage = JSON.stringify(error);
     }
-    throw new NodeToSvgConversionException(
-      `Failed to export node '${node.name}' as SVG: ${errorMessage}`
+    throw new NodeToSVGConversionException(
+      `Failed to export node '${node.name}' as SVG: ${errorMessage}`,
+      node
     );
   }
 }

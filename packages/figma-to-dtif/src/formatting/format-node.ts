@@ -1,6 +1,6 @@
 import { ESupportedFigmaNodeTypes, TNode, TSVGNode } from '@pda/dtif-types';
 import { UnsupportedFigmaNodeException } from '../exceptions';
-import { IncompatibleNodeException } from '../exceptions/IncompatibleNodeException';
+import { IncompatibleSVGNodeException } from '../exceptions/IncompatibleSVGNodeException';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { isSVGCompatibleNode, isSVGNode } from '../helper';
 import { logger } from '../logger';
@@ -24,7 +24,8 @@ export async function formatNode(
     )
   ) {
     throw new UnsupportedFigmaNodeException(
-      `The Figma node '${node.type}' is not yet supported!`
+      `The Figma node '${node.type}' is not yet supported!`,
+      node
     );
   }
 
@@ -65,7 +66,8 @@ async function handleSupportedNodeFormatting(
       return formatToSvgNode(node, config);
     default:
       throw new UnsupportedFigmaNodeException(
-        `The Figma node '${node.type}' is not yet supported!`
+        `The Figma node '${node.type}' is not yet supported!`,
+        node
       );
   }
 }
@@ -78,13 +80,6 @@ async function handleSpecialSVGFormat(args: {
   config: TFormatNodeConfig;
 }): Promise<TSVGNode | null> {
   const { node, svgExportIdentifierRegex, isParent, frameToSVG, config } = args;
-
-  // Check if the node is SVG compatible
-  if (!isSVGCompatibleNode(node)) {
-    throw new IncompatibleNodeException(
-      `Node '${node.name}' can not be formatted to SVG!`
-    );
-  }
 
   // Check if the node name matches SVG export identifier regex
   let matchesSvgExportIdentifier = false;
@@ -100,11 +95,20 @@ async function handleSpecialSVGFormat(args: {
     (matchesSvgExportIdentifier || (!isParent && isFrame && frameToSVG)) &&
     !isSVGNode(node)
   ) {
+    // Check if the node is SVG compatible
+    if (!isSVGCompatibleNode(node)) {
+      throw new IncompatibleSVGNodeException(
+        `Node '${node.name}' can not be formatted to SVG!`,
+        node
+      );
+    }
+
     logger.info(`Export node '${node.name}' as SVG.'`, {
       isParent,
       frameToSVG: frameToSVG,
       svgExportIdentifierRegex: svgExportIdentifierRegex,
     });
+
     return formatToSvgNode(node, config);
   }
 

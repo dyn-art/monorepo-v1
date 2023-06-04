@@ -75,6 +75,7 @@ export function isSVGCompatibleNode(node: any): node is TSVGCompatibleNode {
     isFrameNode(node) ||
     isRectangleNode(node) ||
     isInstanceNode(node) ||
-    isComponentNode(node)
+    isComponentNode(node) ||
+    isTextNode(node)
   );
 }

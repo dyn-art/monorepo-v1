@@ -9,7 +9,7 @@ import { TUIHandler, uiHandler } from '../../ui-handler';
 import './styles.css';
 import threezerotwofourTheme from './threezerotwofour.theme';
 
-const FigmaIntermediateFormat: React.FC = () => {
+const DTIFExport: React.FC = () => {
   const [selectedFrames, setSelectedFrames] = React.useState<
     TOnSelectFrameEvent['args']['selected'] | null
   >(null);
@@ -169,4 +169,4 @@ const FigmaIntermediateFormat: React.FC = () => {
   );
 };
 
-export default FigmaIntermediateFormat;
+export default DTIFExport;

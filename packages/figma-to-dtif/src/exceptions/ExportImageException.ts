@@ -1,1 +1,3 @@
-export class ExportImageException extends Error {}
+import { NodeException } from './NodeException';
+
+export class ExportImageException extends NodeException {}

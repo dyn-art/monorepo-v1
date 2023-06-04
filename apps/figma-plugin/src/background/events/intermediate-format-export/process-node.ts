@@ -1,11 +1,12 @@
 import formatNodeToDTIF, {
+  NodeException,
   UploadStaticDataException,
   sha256,
 } from '@pda/figma-to-dtif';
 import { TIntermediateFormatExportEvent, logger } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
-import { stringToUint8Array } from './json-to-uint8array';
-import { uploadDataToBucket } from './upload-data-to-bucket';
+import { uploadDataToBucket } from '../../core/bucket';
+import { stringToUint8Array } from '../../core/utils/json-to-uint8array';
 
 export async function processNode(
   instance: TBackgroundHandler,
@@ -19,7 +20,8 @@ export async function processNode(
       uploadStaticData: async (key, data, contentType) => {
         if (contentType == null) {
           throw new UploadStaticDataException(
-            `Can't upload data for '${key}' as no content type could be resolved!`
+            `Can't upload data for '${key}' as no content type could be resolved!`,
+            node
           );
         }
         return uploadDataToBucket(key, data, contentType?.mimeType);
@@ -54,5 +56,8 @@ export async function processNode(
       error: true,
     });
     logger.error(errorMessage, { error });
+    if (error instanceof NodeException) {
+      figma.currentPage.selection = [error.node];
+    }
   }
 }

@@ -1,5 +1,5 @@
-import { UploadStaticDataException } from '@pda/figma-to-dtif';
 import { coreConfig } from '../../environment';
+import { UploadToBucketException } from './exceptions';
 
 async function getPreSignedUploadUrl(
   key: string,
@@ -23,7 +23,7 @@ async function getPreSignedUploadUrl(
 
   // Handle error
   if (!response.ok) {
-    throw new UploadStaticDataException(
+    throw new UploadToBucketException(
       `Failed to get pre-signed URL: ${response.status} - ${response.statusText}`
     );
   }
@@ -56,7 +56,7 @@ export async function uploadDataToBucket(
 
   // Handle error
   if (!uploadResponse.ok) {
-    throw new UploadStaticDataException(
+    throw new UploadToBucketException(
       `Failed to upload file to S3 bucket: ${uploadResponse.status} - ${uploadResponse.statusText}`
     );
   }

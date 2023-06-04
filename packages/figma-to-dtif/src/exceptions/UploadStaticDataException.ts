@@ -1,1 +1,3 @@
-export class UploadStaticDataException extends Error {}
+import { NodeException } from './NodeException';
+
+export class UploadStaticDataException extends NodeException {}

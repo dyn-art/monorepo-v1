@@ -1,1 +1,3 @@
-export class NodeToSvgConversionException extends Error {}
+import { NodeException } from './NodeException';
+
+export class NodeToSVGConversionException extends NodeException {}

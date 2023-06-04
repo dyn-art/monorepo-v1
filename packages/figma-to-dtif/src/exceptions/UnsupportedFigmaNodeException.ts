@@ -1,1 +1,3 @@
-export class UnsupportedFigmaNodeException extends Error {}
+import { NodeException } from './NodeException';
+
+export class UnsupportedFigmaNodeException extends NodeException {}
