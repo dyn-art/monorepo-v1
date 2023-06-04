@@ -26,7 +26,7 @@ export function figmaTransformToCSS(
   const effectiveRotation = rotation;
 
   // Convert the rotation from degrees to radians
-  // because JavaScript's Math functions operate in radians.
+  // because JavaScript's Math functions operate in radians
   const angle = effectiveRotation * (Math.PI / 180);
 
   // Define the object's center
@@ -41,11 +41,11 @@ export function figmaTransformToCSS(
   const rotateX = centerY * Math.sin(angle);
   const rotateY = centerX * Math.sin(angle);
 
-  // The effective position of the object after rotation.
+  // The effective position of the object after rotation
   const effectiveX = x - displacementX + rotateX;
   const effectiveY = y - displacementY - rotateY;
 
-  // The returned CSS transform property applies the calculated translation and rotation.
+  // The returned CSS transform property applies the calculated translation and rotation
   return {
     transform: `translate(${effectiveX}px, ${effectiveY}px) rotate(${
       rotate

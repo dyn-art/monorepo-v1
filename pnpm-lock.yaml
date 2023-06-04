@@ -469,6 +469,12 @@ importers:
 
   packages/dtif-to-react:
     dependencies:
+      '@figma-plugin/helpers':
+        specifier: ^0.15.2
+        version: 0.15.2
+      '@pda/dtif-types':
+        specifier: workspace:^
+        version: link:../dtif-types
       mathjs:
         specifier: ^11.8.0
         version: 11.8.0
@@ -731,6 +737,9 @@ importers:
       '@figma-plugin/helpers':
         specifier: ^0.15.2
         version: 0.15.2
+      '@pda/dtif-to-react':
+        specifier: workspace:^
+        version: link:../dtif-to-react
       '@remotion/renderer':
         specifier: ^3.3.83
         version: 3.3.83(react-dom@18.2.0)(react@18.2.0)

@@ -1,7 +1,7 @@
+import { renderNode } from '@pda/dtif-to-react';
 import { TFrameNode } from '@pda/dtif-types';
 import React from 'react';
 import { continueRender, delayRender } from 'remotion';
-import { renderNode } from './helper/render-node';
 import './style.css';
 
 const FigmaNodeTreeV1: React.FC<TProps> = (props) => {

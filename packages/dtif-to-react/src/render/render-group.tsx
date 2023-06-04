@@ -1,7 +1,6 @@
 import { TGroupNode } from '@pda/dtif-types';
-import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
-import { figmaEffectToCSS } from './figma-effect-to-css';
-import { getIdentifier } from './get-identifier';
+import { getIdentifier } from '../helper';
+import { figmaBlendModeToCSS, figmaEffectToCSS } from '../to-css';
 import { renderNode } from './render-node';
 
 export async function renderGroup(node: TGroupNode): Promise<JSX.Element> {

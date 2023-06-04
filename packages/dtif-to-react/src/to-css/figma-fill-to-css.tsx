@@ -10,11 +10,10 @@ import {
   TTextNode,
 } from '@pda/dtif-types';
 import React from 'react';
-import { createLinearGradient } from './create-linear-gradient';
+import { createLinearGradient, getS3BucketURLFromHash } from '../helper';
 import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
 import { figmaRGBToCss } from './figma-rgb-to-css';
 import { figmaTransformToCSS } from './figma-transform-to-css';
-import { getS3BucketURLFromHash } from './get-url-from-hash';
 
 /**
  * Helper function to convert Figma fill properties to equivalent CSS properties.

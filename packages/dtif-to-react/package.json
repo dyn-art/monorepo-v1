@@ -18,6 +18,8 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
+    "@figma-plugin/helpers": "^0.15.2",
+    "@pda/dtif-types": "workspace:^",
     "mathjs": "^11.8.0",
     "webfontloader": "^1.6.28"
   },

@@ -1,10 +1,12 @@
 import { TTextNode } from '@pda/dtif-types';
 import WebFont from 'webfontloader';
-import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
-import { figmaEffectToCSS } from './figma-effect-to-css';
-import { figmaFillToCSS } from './figma-fill-to-css';
-import { figmaTransformToCSS } from './figma-transform-to-css';
-import { getIdentifier } from './get-identifier';
+import { getIdentifier } from '../helper';
+import {
+  figmaBlendModeToCSS,
+  figmaEffectToCSS,
+  figmaFillToCSS,
+  figmaTransformToCSS,
+} from '../to-css';
 
 export async function renderText(node: TTextNode): Promise<JSX.Element> {
   const fontFamily = node.fontName.family || 'Roboto';

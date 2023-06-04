@@ -1,13 +1,13 @@
 import { TColorStop, TGradientPaint, TNode } from '@pda/dtif-types';
+import { figmaRGBToCss } from '../to-css';
+import { TPoint } from '../types';
 import { calculateAngle } from './calculate-angle';
 import { figmaGradientTransformToHandles } from './figma-gradient-transform-to-handles';
-import { figmaRGBToCss } from './figma-rgb-to-css';
 import { findIntersectionPoint } from './find-intersection-point';
 import { getCornersOfNode } from './get-corners-of-node';
-import { getGradientPoints } from './get-radient-points';
+import { getGradientPoints } from './get-radiant-points';
 import { rotate } from './rotate';
 import { rotateEllipse } from './rotate-ellipse';
-import { TPoint } from './types';
 
 /**
  * Create a CSS linear gradient based on fill data and component's attributes.

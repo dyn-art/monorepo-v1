@@ -1,5 +1,5 @@
 import * as math from 'mathjs';
-import { TPoint } from './types';
+import { TPoint } from '../types';
 
 const identityMatrixHandlePositions = [
   [0, 1, 0],

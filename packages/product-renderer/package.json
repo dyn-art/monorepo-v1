@@ -23,6 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "@figma-plugin/helpers": "^0.15.2",
+    "@pda/dtif-to-react": "workspace:^",
     "@remotion/renderer": "^3.3.83",
     "mathjs": "^11.8.0",
     "remotion": "^3.3.83",

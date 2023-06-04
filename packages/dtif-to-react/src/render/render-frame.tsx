@@ -1,9 +1,8 @@
 import { TFrameNode } from '@pda/dtif-types';
-import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
-import { figmaEffectToCSS } from './figma-effect-to-css';
-import { figmaFillToCSS } from './figma-fill-to-css';
-import { figmaTransformToCSS } from './figma-transform-to-css';
-import { getIdentifier } from './get-identifier';
+import { getIdentifier } from '../helper';
+import { figmaEffectToCSS, figmaFillToCSS } from '../to-css';
+import { figmaBlendModeToCSS } from '../to-css/figma-blend-mode-to-css';
+import { figmaTransformToCSS } from '../to-css/figma-transform-to-css';
 import { renderNode } from './render-node';
 
 export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {

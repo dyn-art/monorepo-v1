@@ -1,4 +1,4 @@
-import { TPoint } from './types';
+import { TPoint } from '../types';
 
 /**
  * Helper function to rotate an ellipse around a center point by a specific angle.

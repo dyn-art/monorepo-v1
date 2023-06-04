@@ -1,8 +1,6 @@
 import { TSVGNode } from '@pda/dtif-types';
-import axios from 'axios';
-import { figmaTransformToCSS } from './figma-transform-to-css';
-import { getIdentifier } from './get-identifier';
-import { getS3BucketURLFromHash } from './get-url-from-hash';
+import { getIdentifier, getS3BucketURLFromHash } from '../helper';
+import { figmaTransformToCSS } from '../to-css';
 
 export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
   const svgContent = await getSVGFromHash(node.svgHash);
@@ -37,8 +35,8 @@ export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
 async function getSVGFromHash(hash: string): Promise<string | null> {
   const url = getS3BucketURLFromHash(hash);
   try {
-    const response = await axios.get(url);
-    return response.data;
+    const response = await fetch(url);
+    return await response.json();
   } catch (e) {
     console.error('Failed to fetch SVG!', e);
   }

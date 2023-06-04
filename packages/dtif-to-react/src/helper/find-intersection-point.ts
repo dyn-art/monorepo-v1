@@ -1,4 +1,4 @@
-import { TPoint } from './types';
+import { TPoint } from '../types';
 
 /**
  * Helper function to calculates the intersection point of two lines.

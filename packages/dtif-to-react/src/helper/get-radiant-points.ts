@@ -1,5 +1,5 @@
+import { TPoint } from '../types';
 import { rotate } from './rotate';
-import { TPoint } from './types';
 
 /**
  * Calculates the absolute coordinates of a point relative to the top left corner of a shape after rotation.

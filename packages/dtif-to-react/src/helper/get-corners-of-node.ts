@@ -1,6 +1,6 @@
 import { TNode } from '@pda/dtif-types';
+import { TPoint } from '../types';
 import { rotate } from './rotate';
-import { TPoint } from './types';
 
 /**
  * Helper function to get the coordinates of all four corners of a given node.

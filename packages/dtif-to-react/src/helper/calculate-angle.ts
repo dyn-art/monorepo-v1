@@ -1,4 +1,4 @@
-import { TPoint } from './types';
+import { TPoint } from '../types';
 
 /**
  * Helper function to calculate the angle between two points.

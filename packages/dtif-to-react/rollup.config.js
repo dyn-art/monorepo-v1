@@ -3,7 +3,7 @@ import autoprefixer from 'autoprefixer';
 
 /** @type {import('rollup').RollupOptions} */
 export default {
-  input: './src/index.tsx',
+  input: './src/index.ts',
   plugins: [
     {
       plugin: postcss({
