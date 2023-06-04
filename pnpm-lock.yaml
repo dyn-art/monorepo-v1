@@ -171,9 +171,18 @@ importers:
 
   apps/figma-plugin:
     dependencies:
+      '@pda/dtif-to-react':
+        specifier: workspace:*
+        version: link:../../packages/dtif-to-react
+      '@pda/dtif-types':
+        specifier: workspace:*
+        version: link:../../packages/dtif-types
       '@pda/figma-handler':
         specifier: workspace:*
         version: link:../../packages/figma-handler
+      '@pda/figma-to-dtif':
+        specifier: workspace:^
+        version: link:../../packages/figma-to-dtif
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -205,9 +214,6 @@ importers:
       '@figma/plugin-typings':
         specifier: ^1.64.0
         version: 1.64.0
-      '@pda/dtif-types':
-        specifier: workspace:*
-        version: link:../../packages/dtif-types
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
@@ -613,16 +619,19 @@ importers:
 
   packages/figma-to-dtif:
     dependencies:
+      '@pda/dtif-types':
+        specifier: workspace:*
+        version: link:../dtif-types
       '@pda/logger':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../logger
+      crypto-js:
+        specifier: ^4.1.1
+        version: 4.1.1
     devDependencies:
       '@figma/plugin-typings':
         specifier: ^1.64.0
         version: 1.64.0
-      '@pda/dtif-types':
-        specifier: workspace:*
-        version: link:../dtif-types
       '@pda/jest-presets':
         specifier: workspace:*
         version: link:../jest-presets

@@ -1,11 +1,13 @@
 import { TPaint } from '@pda/dtif-types';
-import { TBucketConfig, TFormatNodeOptions } from '../formatting';
-import { logger } from '../logger';
-import { uploadDataToBucket } from './upload-data-to-bucket';
+import { UploadStaticDataException } from '../exceptions';
+import { ExportImageException } from '../exceptions/ExportImageException';
+import { TFormatNodeConfig } from '../format-node-to-dtif';
+import { getImageType } from '../utils';
 
 export async function handleFills(
+  node: SceneNode,
   inputFills: Paint[],
-  options: TFormatNodeOptions
+  config: TFormatNodeConfig
 ): Promise<TPaint[]> {
   if (!Array.isArray(inputFills)) return [];
   const fills: TPaint[] = [];
@@ -20,7 +22,7 @@ export async function handleFills(
         fills.push(fill);
         continue;
       case 'IMAGE':
-        fills.push(await handleImageFill(fill, options.bucket.getPresignedUrl));
+        fills.push(await handleImageFill(node, fill, config.uploadStaticData));
         continue;
       case 'SOLID':
         fills.push(fill);
@@ -34,23 +36,48 @@ export async function handleFills(
 }
 
 async function handleImageFill(
+  node: SceneNode,
   fill: ImagePaint,
-  getPreSignedUploadUrl: TBucketConfig['getPresignedUrl']
+  uploadStaticData: TFormatNodeConfig['uploadStaticData']
 ) {
-  let imageHash = fill.imageHash;
+  // Export image
+  const imageHash = fill.imageHash;
   if (imageHash == null) return fill;
-  const imageData = await figma.getImageByHash(imageHash)?.getBytesAsync();
-  if (imageData == null) return fill;
-  imageHash = await uploadDataToBucket({
-    key: imageHash,
-    data: imageData,
-    getPreSignedUploadUrl,
-  });
-  if (imageHash == null) {
-    throw new Error(
-      `Failed to upload image with the hash ${imageHash} to S3 bucket!`
+  const imageData = await exportImage(node, imageHash);
+
+  // Upload image data
+  const key = await uploadStaticData(
+    imageHash,
+    imageData,
+    getImageType(imageData) ?? undefined
+  );
+  if (key == null) {
+    throw new UploadStaticDataException(
+      `Failed to upload image with the hash ${key} to S3 bucket!`
     );
   }
-  logger.info(`Uploaded image to S3 bucket under the key '${imageHash}'.`);
-  return { ...fill, imageHash };
+
+  return { ...fill, imageHash: key };
+}
+
+async function exportImage(node: SceneNode, imageHash: string) {
+  try {
+    const data = await figma.getImageByHash(imageHash)?.getBytesAsync();
+    if (data == null) {
+      throw new ExportImageException(
+        `Failed to export node '${node.name}' as image!`
+      );
+    }
+    return data;
+  } catch (error) {
+    let errorMessage: string;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else {
+      errorMessage = JSON.stringify(error);
+    }
+    throw new ExportImageException(
+      `Failed to export node '${node.name}' as image: ${errorMessage}`
+    );
+  }
 }

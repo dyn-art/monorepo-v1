@@ -1,10 +1,10 @@
 import { TRectangleNode } from '@pda/dtif-types';
+import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { handleFills } from '../helper';
-import { TFormatNodeOptions } from './format-node';
 
 export async function formatRectangleNode(
   node: RectangleNode,
-  options: TFormatNodeOptions
+  config: TFormatNodeConfig
 ): Promise<TRectangleNode> {
   return {
     type: 'RECTANGLE',
@@ -29,6 +29,6 @@ export async function formatRectangleNode(
     topLeftRadius: node.topLeftRadius,
     topRightRadius: node.topRightRadius,
     // Fills mixin
-    fills: await handleFills(node.fills as Paint[], options),
+    fills: await handleFills(node, node.fills as Paint[], config),
   };
 }

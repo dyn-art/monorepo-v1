@@ -1,9 +1,10 @@
 import { TGroupNode, TNode } from '@pda/dtif-types';
-import { TFormatNodeOptions, formatNode } from './format-node';
+import { TFormatNodeConfig } from '../format-node-to-dtif';
+import { formatNode } from './format-node';
 
 export async function formatGroupNode(
   node: GroupNode,
-  options: TFormatNodeOptions
+  options: TFormatNodeConfig
 ): Promise<TGroupNode> {
   return {
     type: 'GROUP',

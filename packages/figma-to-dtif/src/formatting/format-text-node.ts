@@ -1,10 +1,10 @@
 import { TTextNode } from '@pda/dtif-types';
+import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { handleFills } from '../helper';
-import { TFormatNodeOptions } from './format-node';
 
 export async function formatTextNode(
   node: TextNode,
-  options: TFormatNodeOptions
+  config: TFormatNodeConfig
 ): Promise<TTextNode> {
   return {
     type: 'TEXT',
@@ -32,6 +32,6 @@ export async function formatTextNode(
     isMask: node.isMask,
     effects: node.effects,
     // Fills mixin
-    fills: await handleFills(node.fills as Paint[], options),
+    fills: await handleFills(node, node.fills as Paint[], config),
   } as TTextNode;
 }

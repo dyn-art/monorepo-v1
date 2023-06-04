@@ -1,7 +1,7 @@
 import { TBackgroundEventMeta } from '@pda/figma-handler';
 import { TBackgroundFigmaMessageEvent, logger } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
-import { processNode } from './helper/process-node';
+import { processNode } from './process-node';
 
 export default {
   type: 'ui.message',
@@ -18,7 +18,7 @@ export default {
         (node) => node && ['FRAME', 'COMPONENT', 'INSTANCE'].includes(node.type)
       );
 
-    // Process each supported node
+    // Process supported nodes
     for (const node of supportedNodes) {
       if (node != null) {
         await processNode(instance, node, args.config);

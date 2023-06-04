@@ -1,31 +1,35 @@
 import { TSVGNode } from '@pda/dtif-types';
 import { NodeToSvgConversionException } from '../exceptions';
-import { UploadToBucketException } from '../exceptions/UploadToBucketException';
-import { uploadDataToBucket } from '../helper';
+import { UploadStaticDataException } from '../exceptions/UploadStaticDataException';
+import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { logger } from '../logger';
 import { sha256 } from '../utils';
-import { TBucketConfig, TFormatNodeOptions } from './format-node';
 
 export async function formatToSvgNode(
   node: TSVGCompatibleNode,
-  options: TFormatNodeOptions
+  config: TFormatNodeConfig
 ): Promise<TSVGNode> {
   // Convert the node type to SVG
   const svgData = await convertNodeToSvg(node);
 
-  // Upload the SVG data to S3 bucket
-  const svgHash = await uploadSvgDataToS3Bucket(
-    svgData,
-    options.bucket.getPresignedUrl
-  );
+  // Upload SVG data
+  const svgHash = sha256(svgData);
+  const key = await config.uploadStaticData(svgHash, svgData, {
+    name: 'svg',
+    mimeType: 'image/svg+xml',
+    ending: '.svg',
+  });
+  if (key === null) {
+    throw new UploadStaticDataException(`Failed to upload SVG data!`);
+  }
 
   logger.success(
-    `Formatted '${node.type}' node '${node.name}' to SVG and uploaded content to S3 bucket under the key '${svgHash}'`
+    `Formatted '${node.type}' node '${node.name}' to SVG and uploaded content to S3 bucket under the key '${key}'`
   );
 
   return {
     type: 'SVG',
-    svgHash: svgHash,
+    svgHash: key,
     // BaseNode mixin
     id: node.id,
     name: node.name,
@@ -58,24 +62,6 @@ async function convertNodeToSvg(node: TSVGCompatibleNode): Promise<Uint8Array> {
       `Failed to export node '${node.name}' as SVG: ${errorMessage}`
     );
   }
-}
-
-async function uploadSvgDataToS3Bucket(
-  svgData: Uint8Array,
-  getPreSignedUploadUrl: TBucketConfig['getPresignedUrl']
-): Promise<string> {
-  const svgHash = sha256(svgData);
-  const result = await uploadDataToBucket({
-    key: svgHash,
-    data: svgData,
-    getPreSignedUploadUrl,
-  });
-  if (result === null) {
-    throw new UploadToBucketException(
-      `Failed to upload SVG data to S3 bucket!`
-    );
-  }
-  return result;
 }
 
 export type TSVGCompatibleNode =

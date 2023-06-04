@@ -1,6 +1,7 @@
 import { ESupportedFigmaNodeTypes, TNode, TSVGNode } from '@pda/dtif-types';
 import { UnsupportedFigmaNodeException } from '../exceptions';
 import { IncompatibleNodeException } from '../exceptions/IncompatibleNodeException';
+import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { isSVGCompatibleNode, isSVGNode } from '../helper';
 import { logger } from '../logger';
 import { formatFrameNode } from './format-frame-node';
@@ -11,10 +12,10 @@ import { formatToSvgNode } from './format-to-svg-node';
 
 export async function formatNode(
   node: SceneNode,
-  options: TFormatNodeOptions,
+  config: TFormatNodeConfig,
   isParent = true
 ): Promise<TNode> {
-  const { frameToSVG = true, svgExportIdentifierRegex = null } = options;
+  const { frameToSVG = true, svgExportIdentifierRegex = null } = config;
 
   // Check whether Figma node is supported by DTIF
   if (
@@ -33,35 +34,35 @@ export async function formatNode(
     svgExportIdentifierRegex,
     isParent,
     frameToSVG,
-    options,
+    config: config,
   });
   if (svgNode != null) return svgNode;
 
-  return handleSupportedNodeFormatting(node, options);
+  return handleSupportedNodeFormatting(node, config);
 }
 
 async function handleSupportedNodeFormatting(
   node: SceneNode,
-  options: TFormatNodeOptions
+  config: TFormatNodeConfig
 ): Promise<TNode> {
   switch (node.type) {
     case 'FRAME':
     case 'COMPONENT':
     case 'INSTANCE':
-      return formatFrameNode(node, options);
+      return formatFrameNode(node, config);
     case 'GROUP':
-      return formatGroupNode(node, options);
+      return formatGroupNode(node, config);
     case 'TEXT':
-      return formatTextNode(node, options);
+      return formatTextNode(node, config);
     case 'RECTANGLE':
-      return formatRectangleNode(node, options);
+      return formatRectangleNode(node, config);
     case 'LINE':
     case 'ELLIPSE':
     case 'POLYGON':
     case 'STAR':
     case 'VECTOR':
     case 'BOOLEAN_OPERATION':
-      return formatToSvgNode(node, options);
+      return formatToSvgNode(node, config);
     default:
       throw new UnsupportedFigmaNodeException(
         `The Figma node '${node.type}' is not yet supported!`
@@ -74,10 +75,9 @@ async function handleSpecialSVGFormat(args: {
   svgExportIdentifierRegex: string | null;
   isParent: boolean;
   frameToSVG: boolean;
-  options: TFormatNodeOptions;
+  config: TFormatNodeConfig;
 }): Promise<TSVGNode | null> {
-  const { node, svgExportIdentifierRegex, isParent, frameToSVG, options } =
-    args;
+  const { node, svgExportIdentifierRegex, isParent, frameToSVG, config } = args;
 
   // Check if the node is SVG compatible
   if (!isSVGCompatibleNode(node)) {
@@ -105,22 +105,8 @@ async function handleSpecialSVGFormat(args: {
       frameToSVG: frameToSVG,
       svgExportIdentifierRegex: svgExportIdentifierRegex,
     });
-    return formatToSvgNode(node, options);
+    return formatToSvgNode(node, config);
   }
 
   return null;
 }
-
-export type TFormatNodeOptions = {
-  frameToSVG?: boolean;
-  svgExportIdentifierRegex?: string | null; // Note RegExp can't be passed to the Javascript Sandbox
-  bucket: TBucketConfig;
-};
-
-export type TBucketConfig = {
-  getPresignedUrl: (
-    key: string,
-    scope: string,
-    contentType: string
-  ) => Promise<{ key: string; uploadUrl: string }>;
-};

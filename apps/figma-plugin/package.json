@@ -16,7 +16,10 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
+    "@pda/dtif-to-react": "workspace:*",
+    "@pda/dtif-types": "workspace:*",
     "@pda/figma-handler": "workspace:*",
+    "@pda/figma-to-dtif": "workspace:^",
     "@pda/logger": "workspace:*",
     "@pda/utils": "workspace:*",
     "clsx": "^1.2.1",
@@ -29,7 +32,6 @@
   },
   "devDependencies": {
     "@figma/plugin-typings": "^1.64.0",
-    "@pda/dtif-types": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@rollup/plugin-html": "^1.0.2",
     "@rollup/plugin-replace": "^5.0.2",

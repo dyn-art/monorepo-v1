@@ -1,10 +1,11 @@
 import { TFrameNode } from '@pda/dtif-types';
+import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { handleFills } from '../helper/handle-fills';
-import { TFormatNodeOptions, formatNode } from './format-node';
+import { formatNode } from './format-node';
 
 export async function formatFrameNode(
   node: FrameNode | ComponentNode | InstanceNode,
-  options: TFormatNodeOptions
+  options: TFormatNodeConfig
 ): Promise<TFrameNode> {
   return {
     type: 'FRAME',
@@ -34,6 +35,6 @@ export async function formatFrameNode(
     topLeftRadius: node.topLeftRadius,
     topRightRadius: node.topRightRadius,
     // Fills mixin
-    fills: await handleFills(node.fills as Paint[], options),
+    fills: await handleFills(node, node.fills as Paint[], options),
   } as TFrameNode;
 }

@@ -1,6 +1,6 @@
-export function getImageType(
-  imageData?: Uint8Array
-): { name: string; mimeType: string; ending: string } | null {
+import { TContentType } from '../format-node-to-dtif';
+
+export function getImageType(imageData?: Uint8Array): TContentType | null {
   if (imageData == null || imageData.length < 4) {
     return null;
   }
