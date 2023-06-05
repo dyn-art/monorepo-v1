@@ -1,4 +1,3 @@
-import { extractImageCropParams } from '@figma-plugin/helpers';
 import {
   TFrameNode,
   TGradientPaint,
@@ -81,20 +80,11 @@ function handleImage(fill: TImagePaint, node: TNode): React.CSSProperties {
   // TODO: doesn't work yet
   let transform: React.CSSProperties = {};
   if (fill.imageTransform != null) {
-    const params = extractImageCropParams(
-      node.width,
-      node.height,
-      fill.imageTransform
-    );
     transform = {
       ...figmaTransformToCSS({
         width: node.width,
         height: node.height,
-        rotation: params.rotation,
-        x: params.position[0],
-        y: params.position[1],
-        scaleX: params.scale[0],
-        scaleY: params.scale[1],
+        transform: fill.imageTransform,
       }),
     };
   }

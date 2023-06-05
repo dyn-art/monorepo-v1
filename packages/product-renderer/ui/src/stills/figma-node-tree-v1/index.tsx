@@ -1,4 +1,4 @@
-import { applyScale, renderNode } from '@pda/dtif-to-react';
+import { applyScaleToMatrix, renderNode } from '@pda/dtif-to-react';
 import { TFrameNode } from '@pda/dtif-types';
 import React from 'react';
 import { continueRender, delayRender } from 'remotion';
@@ -15,7 +15,7 @@ const FigmaNodeTreeV1: React.FC<TProps> = (props) => {
     const renderNodeAsJSX = async () => {
       const nodeTreeWithScale = {
         ...nodeTree,
-        transform: applyScale(nodeTree.transform, 1.5),
+        transform: applyScaleToMatrix(nodeTree.transform, 0.5).toArray(),
       };
       const renderedNode = await renderNode(nodeTreeWithScale as any);
       setRenderedNode(renderedNode);

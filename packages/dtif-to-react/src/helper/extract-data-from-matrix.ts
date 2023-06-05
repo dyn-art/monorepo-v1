@@ -1,36 +1,34 @@
-import * as math from 'mathjs';
+import { TTransform } from '@pda/dtif-types';
 
-export function extractDataFromMatrix(matrix: math.Matrix): {
+export function extractDataFromMatrix(matrix: TTransform): {
   tx: number;
   ty: number;
   scaleX: number;
   scaleY: number;
   rotation: number;
 } {
-  // Get matrix values
-  const matrixValues = matrix.toArray();
-
   // Extract translation values (tx and ty)
-  // (tx, ty) are the third elements in each row of the 2D transformation matrix
-  const tx = matrixValues[0][2];
-  const ty = matrixValues[1][2];
+  // Extract translation values (tx and ty)
+  const tx = matrix[0][2];
+  const ty = matrix[1][2];
 
-  // Extract scale and rotation values
-  const a = matrixValues[0][0];
-  const b = matrixValues[1][0];
-  const d = matrixValues[1][1];
+  // Extract rotation
+  const a = matrix[0][0];
+  const b = matrix[0][1];
+  const rotation = Math.atan2(b, a); // atan2(b, a) gives the rotation in radians
 
-  // Calculate scaleX
-  // We calculate scaleX as sqrt(a*a + b*b), the Euclidean distance (L2 norm), assuming 'a' and 'b' form a 2D vector.
-  const scaleX = Math.sqrt(a * a + b * b);
+  // Extract scale values (scaleX and scaleY)
+  // Use the Euclidean norm (length) of each basis vector
+  const scaleX = Math.sqrt(matrix[0][0] ** 2 + matrix[1][0] ** 2);
+  const scaleY = Math.sqrt(matrix[0][1] ** 2 + matrix[1][1] ** 2);
 
-  // Calculate scaleY
-  // scaleY is calculated as d / cos(Math.atan2(b, a)). Here we first calculate the rotation angle as Math.atan2(b, a), then divide 'd' by the cosine of this angle to get scaleY.
-  const scaleY = d / Math.cos(Math.atan2(b, a));
-
-  // Calculate rotation
-  // The rotation angle is calculated as Math.atan2(b, a), which is the angle between the positive x-axis and the point given by the coordinates (a, b).
-  const rotation = Math.atan2(b, a) * (180 / Math.PI); // Convert the rotation from radians to degrees
+  return {
+    tx: tx,
+    ty: ty,
+    scaleX: scaleX,
+    scaleY: scaleY,
+    rotation: rotation * (180 / Math.PI), // convert rotation from radians to degrees
+  };
 
   return { tx, ty, scaleX, scaleY, rotation };
 }
