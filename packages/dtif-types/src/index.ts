@@ -232,7 +232,11 @@ export type TRGB = {
   readonly b: number;
 };
 
-export type TTransform = [[number, number, number], [number, number, number]];
+export type TTransform = [
+  [number, number, number],
+  [number, number, number],
+  [number, number, number]
+];
 
 export type TFontName = {
   readonly family: string;

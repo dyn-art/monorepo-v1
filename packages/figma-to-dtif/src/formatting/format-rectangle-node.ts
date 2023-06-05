@@ -1,6 +1,6 @@
 import { TRectangleNode } from '@pda/dtif-types';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
-import { handleFills } from '../helper';
+import { convert2DMatrixTo3DMatrix, handleFills } from '../helper';
 
 export async function formatRectangleNode(
   node: RectangleNode,
@@ -17,7 +17,7 @@ export async function formatRectangleNode(
     height: node.height,
     width: node.width,
     rotation: node.rotation,
-    transform: node.relativeTransform,
+    transform: convert2DMatrixTo3DMatrix(node.relativeTransform),
     // Blend mixin
     blendMode: node.blendMode,
     opacity: node.opacity,

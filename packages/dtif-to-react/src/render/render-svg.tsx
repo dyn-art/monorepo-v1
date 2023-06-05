@@ -1,5 +1,6 @@
 import { TSVGNode } from '@pda/dtif-types';
 import { getIdentifier, getS3BucketURLFromHash } from '../helper';
+import { logger } from '../logger';
 import { figmaTransformToCSS } from '../to-css';
 
 export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
@@ -14,11 +15,10 @@ export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
     ...figmaTransformToCSS(node, false),
   };
 
-  // Convert style object to string
+  // Apply style to svg html tag
   const styleString = Object.entries(svgStyles)
     .map(([key, value]) => `${key}:${value}`)
     .join('; ');
-
   const updatedSvgContent = svgContent.replace(
     '<svg',
     `<svg style="${styleString}"`
@@ -35,10 +35,10 @@ export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
 async function getSVGFromHash(hash: string): Promise<string | null> {
   const url = getS3BucketURLFromHash(hash);
   try {
-    const response = await fetch(url);
-    return await response.json();
-  } catch (e) {
-    console.error('Failed to fetch SVG!', e);
+    const response = await fetch(url, { method: 'GET' });
+    return await response.text();
+  } catch (error) {
+    logger.error(`Failed to fetch SVG from ${url}!`, error);
   }
   return null;
 }

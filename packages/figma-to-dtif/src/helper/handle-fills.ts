@@ -1,8 +1,9 @@
-import { TPaint } from '@pda/dtif-types';
+import { TImagePaint, TPaint } from '@pda/dtif-types';
 import { UploadStaticDataException } from '../exceptions';
 import { ExportImageException } from '../exceptions/ExportImageException';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { getImageType } from '../utils';
+import { convert2DMatrixTo3DMatrix } from './convert-2d-matrix-to-3d-matrix';
 
 export async function handleFills(
   node: SceneNode,
@@ -19,7 +20,10 @@ export async function handleFills(
       case 'GRADIENT_DIAMOND':
       case 'GRADIENT_LINEAR':
       case 'GRADIENT_RADIAL':
-        fills.push(fill);
+        fills.push({
+          ...fill,
+          gradientTransform: convert2DMatrixTo3DMatrix(fill.gradientTransform),
+        });
         continue;
       case 'IMAGE':
         fills.push(await handleImageFill(node, fill, config.uploadStaticData));
@@ -39,10 +43,19 @@ async function handleImageFill(
   node: SceneNode,
   fill: ImagePaint,
   uploadStaticData: TFormatNodeConfig['uploadStaticData']
-) {
+): Promise<TImagePaint> {
+  const imageTransform =
+    fill.imageTransform != null
+      ? convert2DMatrixTo3DMatrix(fill.imageTransform)
+      : undefined;
+
   // Export image
   const imageHash = fill.imageHash;
-  if (imageHash == null) return fill;
+  if (imageHash == null)
+    return {
+      ...fill,
+      imageTransform,
+    };
   const imageData = await exportImage(node, imageHash);
 
   // Upload image data
@@ -58,7 +71,11 @@ async function handleImageFill(
     );
   }
 
-  return { ...fill, imageHash: key };
+  return {
+    ...fill,
+    imageHash: key,
+    imageTransform,
+  };
 }
 
 async function exportImage(node: SceneNode, imageHash: string) {

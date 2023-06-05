@@ -1,3 +1,4 @@
+export * from './apply-scale-to-matrix';
 export * from './calculate-angle';
 export * from './create-linear-gradient';
 export * from './figma-gradient-transform-to-handles';

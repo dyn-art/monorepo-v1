@@ -20,6 +20,7 @@
   "dependencies": {
     "@figma-plugin/helpers": "^0.15.2",
     "@pda/dtif-types": "workspace:^",
+    "@pda/logger": "workspace:^",
     "mathjs": "^11.8.0",
     "webfontloader": "^1.6.28"
   },

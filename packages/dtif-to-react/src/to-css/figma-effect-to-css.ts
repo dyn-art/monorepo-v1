@@ -8,7 +8,7 @@ import React from 'react';
 import { figmaRGBToCss } from './figma-rgb-to-css';
 
 /**
- * Helper function to translates a Figma effect into equivalent CSS string.
+ * Helper function to translate a Figma effect into equivalent CSS string.
  *
  * @param effect - The Figma effect to be translated.
  * @returns An object representing the CSS properties equivalent to the Figma effect.

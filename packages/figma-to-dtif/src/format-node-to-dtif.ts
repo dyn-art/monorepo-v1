@@ -1,4 +1,4 @@
-import { TNode, TTransform } from '@pda/dtif-types';
+import { TNode } from '@pda/dtif-types';
 import { formatNode } from './formatting';
 
 export async function formatNodeToDTIF(
@@ -14,11 +14,11 @@ export async function formatNodeToDTIF(
     x: 0,
     y: 0,
     rotation: 0,
-    transform: toExportNode.transform.map((row) => [
-      row[0],
-      row[1],
-      0,
-    ]) as TTransform,
+    transform: [
+      [1, 0, 0],
+      [0, 1, 0],
+      [0, 0, 1],
+    ],
   };
 }
 
