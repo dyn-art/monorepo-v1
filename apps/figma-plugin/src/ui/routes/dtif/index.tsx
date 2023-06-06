@@ -1,4 +1,6 @@
+import { renderNode, renderRelativeParent } from '@pda/dtif-to-react';
 import { TNode } from '@pda/dtif-types';
+import { isFrameNode } from '@pda/figma-to-dtif';
 import clsx from 'clsx';
 import React from 'react';
 import { JSONTree } from 'react-json-tree';
@@ -13,15 +15,21 @@ const DTIFExport: React.FC = () => {
   const [selectedFrames, setSelectedFrames] = React.useState<
     TOnSelectFrameEvent['args']['selected'] | null
   >(null);
+
   const [
     isLoadingIntermediateFormatExport,
     setIsLoadingIntermediateFormatExport,
   ] = React.useState(false);
-  const [showContent, setShowContent] = React.useState<
-    'fif' | 'figma' | 'preview'
-  >('preview');
-  const [content, setContent] = React.useState<TNode | null>(null);
 
+  const [showContent, setShowContent] = React.useState<
+    'dtif' | 'figma' | 'preview'
+  >('preview');
+
+  const [node, setNode] = React.useState<TNode | null>(null);
+  const [renderedNode, setRenderedNode] =
+    React.useState<React.ReactNode | null>(null);
+
+  // Register events
   React.useEffect(() => {
     uiHandler.registerEvent({
       type: 'figma.message',
@@ -42,12 +50,24 @@ const DTIFExport: React.FC = () => {
       callback: async (instance: TUIHandler, args) => {
         setIsLoadingIntermediateFormatExport(false);
         if (args.type === 'success') {
-          setContent(args.content);
+          setNode(args.content);
           copyToClipboard(JSON.stringify(args.content));
         }
       },
     });
   }, []);
+
+  React.useEffect(() => {
+    const renderNodeAsJSX = async () => {
+      if (node != null) {
+        const renderedNode = await (isFrameNode(node)
+          ? renderRelativeParent(node, 0.2)
+          : renderNode(node));
+        setRenderedNode(renderedNode);
+      }
+    };
+    renderNodeAsJSX();
+  }, [node]);
 
   return (
     <div className="mx-4 mb-4">
@@ -108,14 +128,14 @@ const DTIFExport: React.FC = () => {
                 Preview
               </button>
               <button
-                onClick={() => setShowContent('fif')}
+                onClick={() => setShowContent('dtif')}
                 className={clsx('tab-lifted tab', {
                   'tab-active [--tab-bg:hsl(var(--n))] [--tab-color:hsl(var(--nc))] [--tab-border-color:hsl(var(--n))]':
-                    showContent == 'fif',
-                  '[--tab-border-color:transparent]': showContent !== 'fif',
+                    showContent === 'dtif',
+                  '[--tab-border-color:transparent]': showContent !== 'dtif',
                 })}
               >
-                FIF (JSON)
+                DTIF (JSON)
               </button>
               <button
                 onClick={() => setShowContent('figma')}
@@ -134,19 +154,16 @@ const DTIFExport: React.FC = () => {
             {showContent === 'preview' && (
               <div className="rounded-b-box rounded-tr-box relative overflow-x-auto bg-base-300">
                 <div className="preview rounded-b-box rounded-tr-box flex min-h-[8rem] w-full items-center justify-center overflow-x-hidden border border-base-300 p-4">
-                  <div className="flex h-[100px] w-[100px] items-center justify-center bg-red-100">
-                    {' '}
-                    Jeff
-                  </div>
+                  {renderedNode}
                 </div>
               </div>
             )}
 
-            {/* Show FIF */}
-            {showContent === 'fif' && (
+            {/* Show DTIF */}
+            {showContent === 'dtif' && (
               <div className="rounded-box flex min-h-[8rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))] p-4">
-                {content != null ? (
-                  <JSONTree data={content} theme={threezerotwofourTheme} />
+                {node != null ? (
+                  <JSONTree data={node} theme={threezerotwofourTheme} />
                 ) : (
                   <div>Jeff</div>
                 )}

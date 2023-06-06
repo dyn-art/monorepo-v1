@@ -1,4 +1,5 @@
 import { TRectangleNode } from '@pda/dtif-types';
+import React from 'react';
 import { getIdentifier } from '../helper';
 import {
   figmaBlendModeToCSS,
@@ -8,8 +9,9 @@ import {
 } from '../to-css';
 
 export async function renderRectangle(
-  node: TRectangleNode
-): Promise<JSX.Element> {
+  node: TRectangleNode,
+  style: React.CSSProperties = {}
+): Promise<React.ReactNode> {
   return (
     <div
       {...getIdentifier(node)}
@@ -25,6 +27,7 @@ export async function renderRectangle(
         ...figmaTransformToCSS(node),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
+        ...style,
       }}
     >
       {node.fills.map((fill, i) => (

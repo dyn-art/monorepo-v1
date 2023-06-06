@@ -1,11 +1,15 @@
 import { TFrameNode } from '@pda/dtif-types';
+import React from 'react';
 import { getIdentifier } from '../helper';
 import { figmaEffectToCSS, figmaFillToCSS } from '../to-css';
 import { figmaBlendModeToCSS } from '../to-css/figma-blend-mode-to-css';
 import { figmaTransformToCSS } from '../to-css/figma-transform-to-css';
 import { renderNode } from './render-node';
 
-export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
+export async function renderFrame(
+  node: TFrameNode,
+  style: React.CSSProperties = {}
+): Promise<React.ReactNode> {
   return (
     <div
       {...getIdentifier(node)}
@@ -18,6 +22,7 @@ export async function renderFrame(node: TFrameNode): Promise<JSX.Element> {
         ...figmaTransformToCSS(node),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
+        ...style,
       }}
     >
       {/* Fill */}

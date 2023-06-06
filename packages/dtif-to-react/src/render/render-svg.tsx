@@ -1,9 +1,13 @@
 import { TSVGNode } from '@pda/dtif-types';
+import React from 'react';
 import { getIdentifier, getS3BucketURLFromHash } from '../helper';
 import { logger } from '../logger';
 import { figmaTransformToCSS } from '../to-css';
 
-export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
+export async function renderSVG(
+  node: TSVGNode,
+  style: React.CSSProperties = {}
+): Promise<React.ReactNode> {
   const svgContent = await getSVGFromHash(node.svgHash);
   if (svgContent == null) return <div>Failed to load SVG</div>;
 
@@ -13,6 +17,7 @@ export async function renderSVG(node: TSVGNode): Promise<JSX.Element> {
     left: 0,
     opacity: node.opacity,
     ...figmaTransformToCSS(node, false),
+    ...style,
   };
 
   // Apply style to svg html tag

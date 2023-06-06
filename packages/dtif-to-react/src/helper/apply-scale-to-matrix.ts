@@ -4,7 +4,7 @@ import * as math from 'mathjs';
 export function applyScaleToMatrix(
   matrix: TTransform,
   scale: number
-): math.Matrix {
+): TTransform {
   // Create the scale matrix
   const scaleMatrix = math.matrix([
     [scale, 0, 0],
@@ -13,5 +13,7 @@ export function applyScaleToMatrix(
   ]);
 
   // Multiply the matrices
-  return math.multiply(math.matrix(matrix), scaleMatrix);
+  return math
+    .multiply(math.matrix(matrix), scaleMatrix)
+    .toArray() as TTransform;
 }

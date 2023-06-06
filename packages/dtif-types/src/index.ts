@@ -10,7 +10,7 @@ export enum ESupportedFigmaNodeTypes {
   POLYGON = 'POLYGON',
   STAR = 'STAR',
   VECTOR = 'VECTOR',
-  'BOOLEAN_OPERATOR' = 'BOOLEAN_OPERATOR',
+  'BOOLEAN_OPERATION' = 'BOOLEAN_OPERATION',
 }
 
 // ============================================================================

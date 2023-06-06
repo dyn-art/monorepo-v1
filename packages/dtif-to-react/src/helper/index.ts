@@ -1,5 +1,6 @@
 export * from './apply-scale-to-matrix';
 export * from './calculate-angle';
+export * from './calculate-scale-to-fit';
 export * from './create-linear-gradient';
 export * from './figma-gradient-transform-to-handles';
 export * from './find-intersection-point';

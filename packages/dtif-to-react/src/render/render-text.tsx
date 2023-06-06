@@ -1,4 +1,5 @@
 import { TTextNode } from '@pda/dtif-types';
+import React from 'react';
 import WebFont from 'webfontloader';
 import { getIdentifier } from '../helper';
 import {
@@ -8,7 +9,10 @@ import {
   figmaTransformToCSS,
 } from '../to-css';
 
-export async function renderText(node: TTextNode): Promise<JSX.Element> {
+export async function renderText(
+  node: TTextNode,
+  style: React.CSSProperties = {}
+): Promise<React.ReactNode> {
   const fontFamily = node.fontName.family || 'Roboto';
   const fontWeight = node.fontWeight || 400;
   const fontSize = node.fontSize || 12;
@@ -50,6 +54,7 @@ export async function renderText(node: TTextNode): Promise<JSX.Element> {
         ...figmaTransformToCSS(node),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
+        ...style,
       }}
     >
       {/* Fill */}

@@ -6,16 +6,15 @@ import './style.css';
 
 const FigmaNodeTreeV1: React.FC<TProps> = (props) => {
   const { nodeTree } = props;
-  const [renderedNode, setRenderedNode] = React.useState<JSX.Element | null>(
-    null
-  );
+  const [renderedNode, setRenderedNode] =
+    React.useState<React.ReactNode | null>(null);
   const [handle] = React.useState(() => delayRender());
 
   React.useEffect(() => {
     const renderNodeAsJSX = async () => {
       const nodeTreeWithScale = {
         ...nodeTree,
-        transform: applyScaleToMatrix(nodeTree.transform, 0.5).toArray(),
+        transform: applyScaleToMatrix(nodeTree.transform, 1).toArray(),
       };
       const renderedNode = await renderNode(nodeTreeWithScale as any);
       setRenderedNode(renderedNode);
