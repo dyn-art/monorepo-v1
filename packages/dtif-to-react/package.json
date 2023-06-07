@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "description": "Provides utilities to convert the Design Tree Interchange Format (DTIF) into static ReactJs components.",
   "private": true,
-  "main": "dist/index.js",
-  "source": "src/index.ts",
-  "types": "dist/index.d.ts",
+  "source": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --analyze",
     "start:dev": "tsc -w",
