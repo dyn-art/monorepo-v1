@@ -1,5 +1,12 @@
 import React from 'react';
 
+import { LOG_LEVEL, Logger } from '@pda/logger';
+
+export const logger = new Logger({
+  prefix: 'usePreview',
+  level: LOG_LEVEL.INFO,
+});
+
 export function usePreview(inFigma: boolean) {
   const [isConnected, setIsConnected] = React.useState<boolean>(false);
   const ws = React.useRef<WebSocket | null>(null);
@@ -8,13 +15,18 @@ export function usePreview(inFigma: boolean) {
   React.useEffect(() => {
     // Helper method to handle window messages
     const onWindowMsg = (event: MessageEvent) => {
+      const eventData = event.data;
       // Handle figma plugin message
-      if (event.data.pluginMessage != null) {
-        const message = JSON.stringify(event.data.pluginMessage);
+      if (eventData?.pluginMessage != null && eventData?.inFigma !== inFigma) {
+        logger.info('On window message event', {
+          pluginMessage: eventData.pluginMessage,
+          eventData,
+          inFigma,
+        });
 
         // Check if the websocket is open before sending a message
         if (ws.current?.readyState === 1) {
-          ws.current.send(message);
+          ws.current.send(JSON.stringify(eventData.pluginMessage));
         }
         // If the websocket is not open, try again after 1 second
         else {
@@ -26,7 +38,11 @@ export function usePreview(inFigma: boolean) {
     };
 
     // Register message event listener
-    window.addEventListener('message', onWindowMsg);
+    if (inFigma) {
+      window.addEventListener('message', onWindowMsg);
+    } else {
+      window.parent.addEventListener('message', onWindowMsg);
+    }
 
     // Return a cleanup function to stop listening for messages
     return () => {
@@ -48,11 +64,24 @@ export function usePreview(inFigma: boolean) {
           const rawData = message?.data;
           if (message?.type !== 'server.broadcast' || rawData == null) return;
           try {
-            const data = JSON.parse(String.fromCharCode(...rawData.data));
+            const pluginMessage = JSON.parse(
+              String.fromCharCode(...rawData.data)
+            );
+            logger.info('On socket message event', {
+              pluginMessage,
+              eventData: rawData,
+              inFigma,
+            });
             if (inFigma) {
-              parent.postMessage({ pluginMessage: data }, '*');
+              window.parent.postMessage(
+                { pluginMessage: pluginMessage, inFigma },
+                '*'
+              );
             } else {
-              window.postMessage({ pluginMessage: data }, '*');
+              window.postMessage(
+                { pluginMessage: pluginMessage, inFigma },
+                '*'
+              );
             }
           } catch (error) {
             console.error('Error while processing message from server!', error);
