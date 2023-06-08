@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App';
+import PreviewApp from './PreviewApp';
 
 const _ = React; // Ensure React is seen as "used" by auto-import plugin
 
@@ -11,7 +11,7 @@ function init() {
   }
   const root = createRoot(appContainer);
   // https://forum.figma.com/t/how-to-work-with-react-router-dom-in-figma-plugin/2450/9
-  root.render(<App />);
+  root.render(<PreviewApp />);
 }
 
 // The 'DOMContentLoaded' event listener ensures that the 'init' function is called

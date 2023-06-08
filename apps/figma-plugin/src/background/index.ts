@@ -4,7 +4,11 @@ import { appConfig } from './environment';
 
 // Init UI
 figma.showUI(__html__);
-figma.ui.resize(400, 600);
+if (process.env.PREVIEW_MODE) {
+  figma.ui.resize(50, 50);
+} else {
+  figma.ui.resize(400, 600);
+}
 
 logger.success(
   `Successfully initialized UI with the package version '${appConfig.packageVersion}'.`

@@ -28,10 +28,15 @@ const argv = yargs(hideBin(process.argv))
       default: false,
       description: 'Build in production mode',
     },
+    preview: {
+      type: 'boolean',
+      default: false,
+      description: 'Run in preview mode',
+    },
   })
   .parseSync();
 
-const { prod: isProduction } = argv;
+const { prod: isProduction, preview: isPreview } = argv;
 
 // ============================================================================
 // Shared
@@ -69,6 +74,7 @@ const sharedPlugins = {
     'process.env.NODE_ENV': JSON.stringify(
       isProduction ? 'production' : 'development'
     ),
+    'process.env.PREVIEW_MODE': isPreview,
   }),
   bundleSize: bundleSize(),
 };
@@ -104,7 +110,7 @@ export default [
   },
   // Configuration for UI code
   {
-    input: './src/ui/index.tsx',
+    input: isPreview ? './src/preview-ui/index.tsx' : './src/ui/index.tsx',
     output: {
       file: './dist/ui.js',
       format: 'es',
