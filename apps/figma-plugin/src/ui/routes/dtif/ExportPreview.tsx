@@ -2,13 +2,19 @@ import { renderNode, renderRelativeParent } from '@pda/dtif-to-react';
 import { TNode } from '@pda/dtif-types';
 import { isFrameNode } from '@pda/figma-to-dtif';
 import clsx from 'clsx';
+import Prism from 'prismjs';
 import React from 'react';
+import toJSXString from 'react-element-to-jsx-string';
 import { JSONTree } from 'react-json-tree';
+import { ClipboardButton } from '../../components/native';
+
+// Themes
+import '../../styles/code/prism.css';
 import threezerotwofourTheme from '../../styles/json-tree/threezerotwofour.theme';
 
 enum EPreviewTabs {
   DTIF = 'dtif',
-  FIGMA = 'figma',
+  JSX = 'jsx',
   PREVIEW = 'preview',
 }
 
@@ -20,19 +26,40 @@ const ExportPreview: React.FC<TProps> = (props) => {
   const [nodeAsJSX, setNodeAsJSX] = React.useState<React.ReactNode | null>(
     null
   );
+  const [nodeAsJSXString, setNodeAsJSXString] = React.useState('not-set');
+  const [isLoadingHighlight, setIsLoadingHighlight] = React.useState(false);
+
+  // ============================================================================
+  // Lifecycle
+  // ============================================================================
 
   // Render node as JSXs
   React.useEffect(() => {
     const renderNodeAsJSX = async () => {
       if (node != null) {
-        const renderedNode = await (isFrameNode(node)
+        const jsxNode = await (isFrameNode(node)
           ? renderRelativeParent(node, 0.2)
           : renderNode(node));
-        setNodeAsJSX(renderedNode);
+        setNodeAsJSX(jsxNode);
+        setNodeAsJSXString(toJSXString(jsxNode as React.ReactElement));
       }
     };
     renderNodeAsJSX();
   }, [node]);
+
+  // Find an highlight all code snippets in the page
+  React.useEffect(() => {
+    // setIsLoadingHighlight(true); // Directly set in callback to avoid waiting for next render cycle
+    // Wrapped in timeout to avoid UI lag and instead highlight after switch
+    setTimeout(() => {
+      Prism.highlightAll();
+      setIsLoadingHighlight(false);
+    });
+  }, [nodeAsJSXString, activeTab === EPreviewTabs.JSX]);
+
+  // ============================================================================
+  // UI
+  // ============================================================================
 
   return (
     <div className="grid">
@@ -60,17 +87,18 @@ const ExportPreview: React.FC<TProps> = (props) => {
           DTIF (JSON)
         </button>
         <button
-          onClick={() => setActiveTab(EPreviewTabs.FIGMA)}
+          onClick={() => {
+            setIsLoadingHighlight(true);
+            setActiveTab(EPreviewTabs.JSX);
+          }}
           className={clsx('tab-lifted tab', {
             'tab-active [--tab-bg:hsl(var(--n))] [--tab-color:hsl(var(--nc))] [--tab-border-color:hsl(var(--n))]':
-              activeTab === EPreviewTabs.FIGMA,
-            '[--tab-border-color:transparent]':
-              activeTab !== EPreviewTabs.FIGMA,
+              activeTab === EPreviewTabs.JSX,
+            '[--tab-border-color:transparent]': activeTab !== EPreviewTabs.JSX,
           })}
         >
-          Figma (JSON)
+          React (JSX)
         </button>
-        <div className="tab-lifted tab mr-6 flex-1 cursor-default [--tab-border-color:transparent]" />
       </div>
 
       {/* Show Preview */}
@@ -84,15 +112,34 @@ const ExportPreview: React.FC<TProps> = (props) => {
 
       {/* Show DTIF */}
       {activeTab === EPreviewTabs.DTIF && (
-        <div className="rounded-box flex min-h-[8rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))] p-4">
-          <JSONTree data={node} theme={threezerotwofourTheme} />
+        <div className="rounded-box flex min-h-[4rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))]">
+          <div className="w-full overflow-x-auto p-4">
+            <JSONTree data={node} theme={threezerotwofourTheme} />
+          </div>
+          <div className="col-start-1 row-start-1 flex items-start justify-end p-2">
+            <ClipboardButton text={JSON.stringify(node)} />
+          </div>
         </div>
       )}
 
-      {/* Show Figma */}
-      {activeTab === EPreviewTabs.FIGMA && (
-        <div className="rounded-box flex min-h-[8rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))] p-4">
-          <JSONTree data={{ test: 'jeff' }} theme={threezerotwofourTheme} />
+      {/* Show JSX */}
+      {activeTab === EPreviewTabs.JSX && (
+        <div className="rounded-box flex min-h-[4rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))]">
+          <div className="w-full overflow-x-auto p-0">
+            {nodeAsJSX != null ? (
+              <pre style={{ opacity: isLoadingHighlight ? 0 : 1 }}>
+                {isLoadingHighlight && (
+                  <span className="loading-spinner loading text-primary-content" />
+                )}
+                <code className="language-javascript">{nodeAsJSXString}</code>
+              </pre>
+            ) : (
+              <span className="loading-spinner loading text-primary-content" />
+            )}
+          </div>
+          <div className="col-start-1 row-start-1 flex items-start justify-end p-2">
+            <ClipboardButton text={nodeAsJSXString} />
+          </div>
         </div>
       )}
     </div>

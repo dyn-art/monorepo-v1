@@ -13,9 +13,9 @@ const DTIFExport: React.FC = () => {
   const [selectedFrames, setSelectedFrames] = React.useState<
     TOnSelectFrameEvent['args']['selected']
   >([]);
-  const [selectedFrameName, setSelectedFrameName] = React.useState<
-    string | null
-  >(null);
+  const [selectedFrameId, setSelectedFrameId] = React.useState<string | null>(
+    null
+  );
   const [isExporting, setIsExporting] = React.useState(false);
   const [exportedNode, setExportedNode] = React.useState<TNode | null>(null);
 
@@ -33,10 +33,10 @@ const DTIFExport: React.FC = () => {
         console.log('onselect', { args });
         if (args.selected != null && args.selected.length > 0) {
           setSelectedFrames(args.selected);
-          setSelectedFrameName(args.selected[args.selected.length - 1].name);
+          setSelectedFrameId(args.selected[args.selected.length - 1].name);
         } else {
           setSelectedFrames([]);
-          setSelectedFrameName(DEFAULT_SELECT);
+          setSelectedFrameId(DEFAULT_SELECT);
         }
       },
     });
@@ -63,21 +63,32 @@ const DTIFExport: React.FC = () => {
   const onExport = useCallback(() => {
     if (selectedFrames != null) {
       setIsExporting(true);
-      uiHandler.postMessage('intermediate-format-export-event', {
-        selectedElements: selectedFrames,
-        config: {
-          svgExportIdentifierRegex: '_svg$',
-          frameToSVG: false,
-        },
-      });
+
+      // Find selected frame
+      const selectedFrame = selectedFrames.find(
+        (frame) => frame.name === selectedFrameId
+      );
+
+      // Send export event to sandbox
+      if (selectedFrame != null) {
+        uiHandler.postMessage('intermediate-format-export-event', {
+          selectedElements: [selectedFrame],
+          config: {
+            svgExportIdentifierRegex: '_svg$',
+            frameToSVG: false,
+          },
+        });
+      } else {
+        // TODO: error handling
+      }
     }
-  }, [selectedFrames]);
+  }, [selectedFrames, selectedFrameId]);
 
   const onFrameSelect = useCallback(
     (event: React.ChangeEventHandler<HTMLSelectElement> | undefined) => {
       const frameName = (event as any)?.target?.value;
       if (typeof frameName === 'string') {
-        setSelectedFrameName(frameName);
+        setSelectedFrameId(frameName);
       }
     },
     []
@@ -103,61 +114,67 @@ const DTIFExport: React.FC = () => {
         <h1 className="text-2xl font-bold">Export Frame as DTIF</h1>
 
         {/* Select */}
-        <div className="flex w-full flex-col bg-base-content px-6 py-4">
-          <p className="mb-2 text-base-300">SELECT FRAME</p>
-          <div className="form-control w-full max-w-xs">
-            <select
-              className="select-bordered select"
-              disabled={isExporting}
-              value={selectedFrameName ?? 'default'}
-              onChange={onFrameSelect as any}
-            >
-              {selectedFrames.length > 0 ? (
-                selectedFrames.map((frame) => (
-                  <option
-                    value={frame.name}
-                    selected={selectedFrameName === frame.name}
-                  >
-                    {frame.name}
-                  </option>
-                ))
-              ) : (
-                <>
-                  <option value={DEFAULT_SELECT} disabled>
-                    Pick a frame in Figma editor
-                  </option>
-                  <option value={`${DEFAULT_SELECT}-info-1`} disabled>
-                    Press <kbd className="kbd kbd-sm">CTRL</kbd> +{' '}
-                    <kbd className="kbd kbd-sm">A</kbd> in the Figma editor to
-                    select all.
-                  </option>
-                </>
-              )}
-            </select>
-            <label className="label">
-              <span className="label-text-alt text-primary-content">
-                Select to export frame in Figma editor
-              </span>
-            </label>
-          </div>
+        <details open className="collapse flex flex-col bg-base-content">
+          <summary className="collapse-title">
+            <p className="text-base-300">SELECT FRAME</p>
+          </summary>
+          <div className="collapse-content z-10 -mt-3">
+            {/* Select Form */}
+            <div className="form-control">
+              <select
+                className="select-bordered select"
+                disabled={isExporting}
+                value={selectedFrameId ?? 'default'}
+                onChange={onFrameSelect as any}
+              >
+                {selectedFrames.length > 0 ? (
+                  selectedFrames.map((frame) => (
+                    <option
+                      value={frame.id}
+                      selected={selectedFrameId === frame.id}
+                    >
+                      {frame.name}
+                    </option>
+                  ))
+                ) : (
+                  <>
+                    <option value={DEFAULT_SELECT} disabled>
+                      Pick a frame
+                    </option>
+                    <option value={`${DEFAULT_SELECT}-info-1`} disabled>
+                      Press <kbd className="kbd kbd-sm">CTRL</kbd> +{' '}
+                      <kbd className="kbd kbd-sm">A</kbd> to select all in Figma
+                      editor.
+                    </option>
+                  </>
+                )}
+              </select>
+              <label className="label">
+                <span className="label-text-alt text-primary-content">
+                  Select to export frame in Figma editor
+                </span>
+              </label>
+            </div>
 
-          <button
-            className="btn-success btn-sm btn mt-1 w-20"
-            onClick={onExport}
-          >
-            {isExporting ? (
-              <span className="loading-spinner loading text-primary"></span>
-            ) : (
-              'EXPORT'
-            )}
-          </button>
-        </div>
+            {/* Export button */}
+            <button
+              className="btn-success btn-sm btn mt-1 w-20"
+              onClick={onExport}
+            >
+              {isExporting ? (
+                <span className="loading-spinner loading text-primary"></span>
+              ) : (
+                'EXPORT'
+              )}
+            </button>
+          </div>
+        </details>
 
         {/* Preview */}
         {exportedNode != null && (
           <>
             <div className="divider pb-4 pt-4">EXPORTED TO</div>
-            <div className="pb-2  text-sm font-bold">
+            <div className="text-sm font-bold">
               <a
                 className="opacity-20 hover:opacity-60"
                 onClick={() => {

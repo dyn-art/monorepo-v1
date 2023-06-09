@@ -5,6 +5,7 @@ import { Route, Routes as RouterRoutes } from 'react-router-dom';
 import About from './routes/about';
 import DTIFExport from './routes/dtif';
 import Home from './routes/home';
+import NodeInspector from './routes/node-inspector';
 
 const Routes: React.FC = () => {
   return (
@@ -12,7 +13,8 @@ const Routes: React.FC = () => {
       <RouterRoutes>
         <Route path="/" element={<Home />} />
         <Route path="about" element={<About />} />
-        <Route path="fif" element={<DTIFExport />} />
+        <Route path="dtif" element={<DTIFExport />} />
+        <Route path="node-inspector" element={<NodeInspector />} />
       </RouterRoutes>
     </div>
   );
