@@ -26,7 +26,7 @@ export default {
         ),
       });
     } else {
-      instance.postMessage('on-select-frame-event', { selected: null });
+      instance.postMessage('on-select-frame-event', { selected: [] });
     }
     instance.postMessage('on-select-node-event', {
       selected: selection.map((selection) =>

@@ -1,36 +1,31 @@
-import { renderNode, renderRelativeParent } from '@pda/dtif-to-react';
 import { TNode } from '@pda/dtif-types';
-import { isFrameNode } from '@pda/figma-to-dtif';
-import clsx from 'clsx';
-import React from 'react';
-import { JSONTree } from 'react-json-tree';
+import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { TOnSelectFrameEvent } from '../../../shared';
+import { TOnSelectFrameEvent, logger } from '../../../shared';
 import { copyToClipboard } from '../../core';
 import { TUIHandler, uiHandler } from '../../ui-handler';
+import ExportPreview from './ExportPreview';
 import './styles.css';
-import threezerotwofourTheme from './threezerotwofour.theme';
+
+const DEFAULT_SELECT = 'default';
 
 const DTIFExport: React.FC = () => {
   const [selectedFrames, setSelectedFrames] = React.useState<
-    TOnSelectFrameEvent['args']['selected'] | null
+    TOnSelectFrameEvent['args']['selected']
+  >([]);
+  const [selectedFrameName, setSelectedFrameName] = React.useState<
+    string | null
   >(null);
+  const [isExporting, setIsExporting] = React.useState(false);
+  const [exportedNode, setExportedNode] = React.useState<TNode | null>(null);
 
-  const [
-    isLoadingIntermediateFormatExport,
-    setIsLoadingIntermediateFormatExport,
-  ] = React.useState(false);
-
-  const [showContent, setShowContent] = React.useState<
-    'dtif' | 'figma' | 'preview'
-  >('preview');
-
-  const [node, setNode] = React.useState<TNode | null>(null);
-  const [renderedNode, setRenderedNode] =
-    React.useState<React.ReactNode | null>(null);
+  // ============================================================================
+  // Lifecycle
+  // ============================================================================
 
   // Register events
   React.useEffect(() => {
+    // On select frame event
     uiHandler.registerEvent({
       type: 'figma.message',
       key: 'on-select-frame-event',
@@ -38,152 +33,150 @@ const DTIFExport: React.FC = () => {
         console.log('onselect', { args });
         if (args.selected != null && args.selected.length > 0) {
           setSelectedFrames(args.selected);
+          setSelectedFrameName(args.selected[args.selected.length - 1].name);
         } else {
-          setSelectedFrames(null);
+          setSelectedFrames([]);
+          setSelectedFrameName(DEFAULT_SELECT);
         }
       },
     });
 
+    // Intermediate format export result event
     uiHandler.registerEvent({
       type: 'figma.message',
       key: 'intermediate-format-export-result-event',
       callback: async (instance: TUIHandler, args) => {
-        setIsLoadingIntermediateFormatExport(false);
+        setIsExporting(false);
         if (args.type === 'success') {
-          setNode(args.content);
+          setExportedNode(args.content);
+          logger.info('Export result', { args });
           copyToClipboard(JSON.stringify(args.content));
         }
       },
     });
   }, []);
 
-  React.useEffect(() => {
-    const renderNodeAsJSX = async () => {
-      if (node != null) {
-        const renderedNode = await (isFrameNode(node)
-          ? renderRelativeParent(node, 0.2)
-          : renderNode(node));
-        setRenderedNode(renderedNode);
+  // ============================================================================
+  // Callbacks
+  // ============================================================================
+
+  const onExport = useCallback(() => {
+    if (selectedFrames != null) {
+      setIsExporting(true);
+      uiHandler.postMessage('intermediate-format-export-event', {
+        selectedElements: selectedFrames,
+        config: {
+          svgExportIdentifierRegex: '_svg$',
+          frameToSVG: false,
+        },
+      });
+    }
+  }, [selectedFrames]);
+
+  const onFrameSelect = useCallback(
+    (event: React.ChangeEventHandler<HTMLSelectElement> | undefined) => {
+      const frameName = (event as any)?.target?.value;
+      if (typeof frameName === 'string') {
+        setSelectedFrameName(frameName);
       }
-    };
-    renderNodeAsJSX();
-  }, [node]);
+    },
+    []
+  );
+
+  // ============================================================================
+  // UI
+  // ============================================================================
 
   return (
     <div className="mx-4 mb-4">
+      {/* Breadcrumbs */}
       <div className="breadcrumbs text-sm">
         <ul>
           <li>
             <Link to="/">Home</Link>
           </li>
-          <li>FIF</li>
+          <li>DTIF</li>
         </ul>
       </div>
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Intermediate Export</h1>
+        {/* Title */}
+        <h1 className="text-2xl font-bold">Export Frame as DTIF</h1>
 
-        {/* TODO: proper loading indicator */}
-        {isLoadingIntermediateFormatExport ? (
-          <div>Loading...</div>
-        ) : (
+        {/* Select */}
+        <div className="flex w-full flex-col bg-base-content px-6 py-4">
+          <p className="mb-2 text-base-300">SELECT FRAME</p>
+          <div className="form-control w-full max-w-xs">
+            <select
+              className="select-bordered select"
+              disabled={isExporting}
+              value={selectedFrameName ?? 'default'}
+              onChange={onFrameSelect as any}
+            >
+              {selectedFrames.length > 0 ? (
+                selectedFrames.map((frame) => (
+                  <option
+                    value={frame.name}
+                    selected={selectedFrameName === frame.name}
+                  >
+                    {frame.name}
+                  </option>
+                ))
+              ) : (
+                <>
+                  <option value={DEFAULT_SELECT} disabled>
+                    Pick a frame in Figma editor
+                  </option>
+                  <option value={`${DEFAULT_SELECT}-info-1`} disabled>
+                    Press <kbd className="kbd kbd-sm">CTRL</kbd> +{' '}
+                    <kbd className="kbd kbd-sm">A</kbd> in the Figma editor to
+                    select all.
+                  </option>
+                </>
+              )}
+            </select>
+            <label className="label">
+              <span className="label-text-alt text-primary-content">
+                Select to export frame in Figma editor
+              </span>
+            </label>
+          </div>
+
           <button
-            className="btn"
-            onClick={() => {
-              if (selectedFrames != null) {
-                setIsLoadingIntermediateFormatExport(true);
-                uiHandler.postMessage('intermediate-format-export-event', {
-                  selectedElements: selectedFrames,
-                  config: {
-                    svgExportIdentifierRegex: '_svg$',
-                    frameToSVG: false,
-                  },
-                });
-              }
-            }}
+            className="btn-success btn-sm btn mt-1 w-20"
+            onClick={onExport}
           >
-            Export Frame
-            {selectedFrames != null && selectedFrames.length > 0
-              ? ` [${selectedFrames[0].name}] (${selectedFrames.length})`
-              : ''}
+            {isExporting ? (
+              <span className="loading-spinner loading text-primary"></span>
+            ) : (
+              'EXPORT'
+            )}
           </button>
-        )}
-
-        {/* Export Preview */}
-        <div>
-          <div className="pb-2  text-sm font-bold">
-            <a className="opacity-20 hover:opacity-60">#</a>
-            <span className="ml-1">{'Jeff'}</span>
-          </div>
-          <div className="grid">
-            {/* Pagination */}
-            <div className="tabs z-10 -mb-px">
-              <button
-                onClick={() => setShowContent('preview')}
-                className={clsx('tab-lifted tab', {
-                  'tab-active [--tab-bg:hsl(var(--b2))]':
-                    showContent === 'preview',
-                  '[--tab-border-color:transparent]': showContent !== 'preview',
-                })}
-              >
-                Preview
-              </button>
-              <button
-                onClick={() => setShowContent('dtif')}
-                className={clsx('tab-lifted tab', {
-                  'tab-active [--tab-bg:hsl(var(--n))] [--tab-color:hsl(var(--nc))] [--tab-border-color:hsl(var(--n))]':
-                    showContent === 'dtif',
-                  '[--tab-border-color:transparent]': showContent !== 'dtif',
-                })}
-              >
-                DTIF (JSON)
-              </button>
-              <button
-                onClick={() => setShowContent('figma')}
-                className={clsx('tab-lifted tab', {
-                  'tab-active [--tab-bg:hsl(var(--n))] [--tab-color:hsl(var(--nc))] [--tab-border-color:hsl(var(--n))]':
-                    showContent == 'figma',
-                  '[--tab-border-color:transparent]': showContent !== 'figma',
-                })}
-              >
-                Figma (JSON)
-              </button>
-              <div className="tab-lifted tab mr-6 flex-1 cursor-default [--tab-border-color:transparent]" />
-            </div>
-
-            {/* Show Preview */}
-            {showContent === 'preview' && (
-              <div className="rounded-b-box rounded-tr-box relative overflow-x-auto bg-base-300">
-                <div className="preview rounded-b-box rounded-tr-box flex min-h-[8rem] w-full items-center justify-center overflow-x-hidden border border-base-300 p-4">
-                  {renderedNode}
-                </div>
-              </div>
-            )}
-
-            {/* Show DTIF */}
-            {showContent === 'dtif' && (
-              <div className="rounded-box flex min-h-[8rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))] p-4">
-                {node != null ? (
-                  <JSONTree data={node} theme={threezerotwofourTheme} />
-                ) : (
-                  <div>Jeff</div>
-                )}
-              </div>
-            )}
-
-            {/* Show Figma */}
-            {showContent === 'figma' && (
-              <div className="rounded-box flex min-h-[8rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))] p-4">
-                <JSONTree
-                  data={{ test: 'jeff' }}
-                  theme={threezerotwofourTheme}
-                />
-              </div>
-            )}
-          </div>
         </div>
+
+        {/* Preview */}
+        {exportedNode != null && (
+          <>
+            <div className="divider pb-4 pt-4">EXPORTED TO</div>
+            <div className="pb-2  text-sm font-bold">
+              <a
+                className="opacity-20 hover:opacity-60"
+                onClick={() => {
+                  // TODO: focus node
+                }}
+              >
+                #
+              </a>
+              <span className="ml-1">{exportedNode.name}</span>
+            </div>
+            <ExportPreview node={exportedNode} />
+          </>
+        )}
       </div>
     </div>
   );
 };
 
 export default DTIFExport;
+
+type ArrayElement<ArrayType extends readonly unknown[]> =
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;

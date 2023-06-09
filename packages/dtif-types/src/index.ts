@@ -13,12 +13,20 @@ export enum ESupportedFigmaNodeTypes {
   'BOOLEAN_OPERATION' = 'BOOLEAN_OPERATION',
 }
 
+export enum ENodeTypes {
+  FRAME = ESupportedFigmaNodeTypes.FRAME,
+  GROUP = ESupportedFigmaNodeTypes.GROUP,
+  TEXT = ESupportedFigmaNodeTypes.TEXT,
+  RECTANGLE = ESupportedFigmaNodeTypes.RECTANGLE,
+  SVG = 'SVG',
+}
+
 // ============================================================================
 // Nodes
 // ============================================================================
 
 export type TFrameNode = {
-  readonly type: 'FRAME';
+  readonly type: ENodeTypes.FRAME;
   readonly clipsContent: boolean;
 } & TBaseNodeMixin &
   TChildrenMixin &
@@ -28,18 +36,18 @@ export type TFrameNode = {
   TFillsMixin;
 
 export type TRectangleNode = {
-  readonly type: 'RECTANGLE';
+  readonly type: ENodeTypes.RECTANGLE;
 } & TDefaultShapeMixin &
   TRectangleCornerMixin &
   TFillsMixin;
 
 export type TSVGNode = {
-  readonly type: 'SVG';
+  readonly type: ENodeTypes.SVG;
   readonly svgHash: string;
 } & TDefaultShapeMixin;
 
 export type TTextNode = {
-  readonly type: 'TEXT';
+  readonly type: ENodeTypes.TEXT;
   readonly textAlignHorizontal: 'LEFT' | 'CENTER' | 'RIGHT' | 'JUSTIFIED';
   readonly textAlignVertical: 'TOP' | 'CENTER' | 'BOTTOM';
   readonly fontSize: number;
@@ -52,7 +60,7 @@ export type TTextNode = {
   TFillsMixin;
 
 export type TGroupNode = {
-  readonly type: 'GROUP';
+  readonly type: ENodeTypes.GROUP;
 } & TBaseNodeMixin &
   TChildrenMixin &
   TBlendMixin &

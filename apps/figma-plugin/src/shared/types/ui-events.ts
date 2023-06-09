@@ -1,18 +1,16 @@
-import { TBaseFigmaMessageEvent } from '@pda/figma-handler';
 import { TNode } from '@pda/dtif-types';
+import { TBaseFigmaMessageEvent } from '@pda/figma-handler';
 
 export interface TOnSelectFrameEvent extends TBaseFigmaMessageEvent {
   key: 'on-select-frame-event';
   args: {
-    selected:
-      | Pick<FrameNode | ComponentNode | InstanceNode, 'name' | 'id'>[]
-      | null;
+    selected: Pick<FrameNode | ComponentNode | InstanceNode, 'name' | 'id'>[];
   };
 }
 
 export interface TOnSelectNodeEvent extends TBaseFigmaMessageEvent {
   key: 'on-select-node-event';
-  args: { selected: Pick<SceneNode, 'name' | 'id'>[] | null };
+  args: { selected: Pick<SceneNode, 'name' | 'id'>[] };
 }
 
 export interface TIntermediateFormatExportResultEvent
