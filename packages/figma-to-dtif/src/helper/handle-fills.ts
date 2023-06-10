@@ -10,7 +10,7 @@ import {
   sha256,
 } from '../utils';
 import { convert2DMatrixTo3DMatrix } from './convert-2d-matrix-to-3d-matrix';
-import { isNodeWithFills, isSVGCompatibleNode } from './is-node';
+import { isNodeWithFills, isSVGCompatibleNode, isTextNode } from './is-node';
 
 export async function handleFills(
   node: SceneNode,
@@ -114,8 +114,6 @@ async function handleGradientFill(
 ): Promise<TGradientPaint> {
   let svgHash: string | null = null;
 
-  // TODO: check whether that works with text, if not create a rectangle the size of the text and apply the fill to that
-
   // Format fill to SVG
   if (
     config.gradientToSVG &&
@@ -124,7 +122,7 @@ async function handleGradientFill(
     node.fills !== figma.mixed
   ) {
     // Clone node with the relevant fill
-    const clone = cloneWithSingleFill(node, fill);
+    const clone = cloneToFillNode(node, [fill]);
 
     // Convert the node type to SVG
     const svgData = await convertNodeToSvg(clone as TSVGCompatibleNode);
@@ -152,11 +150,13 @@ async function handleGradientFill(
   };
 }
 
-function cloneWithSingleFill(node: TNodeWithFills, fill: Paint): SceneNode {
-  const clone = node.clone();
+function cloneToFillNode(node: TNodeWithFills, fills: Paint[]): SceneNode {
+  const clone = isTextNode(node)
+    ? createRectangleNodeFromTextNode(node)
+    : node.clone();
 
   // Apply only relevant fill
-  clone.fills = Array((clone.fills as Paint[]).length).fill(fill);
+  clone.fills = fills;
 
   // Reset transform
   clone.x = 0;
@@ -168,6 +168,16 @@ function cloneWithSingleFill(node: TNodeWithFills, fill: Paint): SceneNode {
   ];
 
   return clone;
+}
+
+function createRectangleNodeFromTextNode(node: TextNode): RectangleNode {
+  const rect = figma.createRectangle();
+  rect.x = node.x;
+  rect.y = node.y;
+  rect.resize(node.width, node.height);
+  rect.rotation = node.rotation;
+  rect.relativeTransform = node.relativeTransform;
+  return rect;
 }
 
 export type TNodeWithFills =
