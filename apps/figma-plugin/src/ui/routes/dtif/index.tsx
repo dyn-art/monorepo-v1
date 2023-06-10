@@ -1,7 +1,7 @@
 import { TNode } from '@pda/dtif-types';
 import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { TOnSelectFrameEvent, logger } from '../../../shared';
+import { EUIPageRoute, TOnSelectFrameEvent, logger } from '../../../shared';
 import { copyToClipboard } from '../../core';
 import { TUIHandler, uiHandler } from '../../ui-handler';
 import ExportPreview from './ExportPreview';
@@ -28,7 +28,7 @@ const DTIFExport: React.FC = () => {
     // On select frame event
     uiHandler.registerEvent({
       type: 'figma.message',
-      key: 'on-select-frame-event',
+      key: 'on-select-frame',
       callback: async (instance: TUIHandler, args) => {
         console.log('onselect', { args });
         if (args.selected != null && args.selected.length > 0) {
@@ -44,7 +44,7 @@ const DTIFExport: React.FC = () => {
     // Intermediate format export result event
     uiHandler.registerEvent({
       type: 'figma.message',
-      key: 'intermediate-format-export-result-event',
+      key: 'intermediate-format-export-result',
       callback: async (instance: TUIHandler, args) => {
         setIsExporting(false);
         if (args.type === 'success') {
@@ -71,7 +71,7 @@ const DTIFExport: React.FC = () => {
 
       // Send export event to sandbox
       if (selectedFrame != null) {
-        uiHandler.postMessage('intermediate-format-export-event', {
+        uiHandler.postMessage('intermediate-format-export', {
           selectedElements: [selectedFrame],
           config: {
             svgExportIdentifierRegex: '_svg$',
@@ -105,15 +105,12 @@ const DTIFExport: React.FC = () => {
       <div className="breadcrumbs text-sm">
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to={EUIPageRoute.HOME}>Home</Link>
           </li>
-          <li>DTIF</li>
+          <li>Export Frame</li>
         </ul>
       </div>
       <div className="space-y-4">
-        {/* Title */}
-        <h1 className="text-2xl font-bold">Export Frame as DTIF</h1>
-
         {/* Select */}
         <details open className="collapse flex flex-col bg-base-content">
           <summary className="collapse-title">
@@ -130,22 +127,25 @@ const DTIFExport: React.FC = () => {
               >
                 {selectedFrames.length > 0 ? (
                   selectedFrames.map((frame) => (
-                    <option
-                      value={frame.id}
-                      selected={selectedFrameId === frame.id}
-                    >
+                    <option key={frame.id} value={frame.id}>
                       {frame.name}
                     </option>
                   ))
                 ) : (
                   <>
-                    <option value={DEFAULT_SELECT} disabled>
+                    <option
+                      key={DEFAULT_SELECT}
+                      value={DEFAULT_SELECT}
+                      disabled
+                    >
                       Pick a frame
                     </option>
-                    <option value={`${DEFAULT_SELECT}-info-1`} disabled>
-                      Press <kbd className="kbd kbd-sm">CTRL</kbd> +{' '}
-                      <kbd className="kbd kbd-sm">A</kbd> to select all in Figma
-                      editor.
+                    <option
+                      key={`${DEFAULT_SELECT}-info-1`}
+                      value={`${DEFAULT_SELECT}-info-1`}
+                      disabled
+                    >
+                      PressCTRL + A to select all in Figma editor.
                     </option>
                   </>
                 )}

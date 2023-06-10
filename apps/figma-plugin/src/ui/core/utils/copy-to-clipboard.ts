@@ -7,6 +7,20 @@ import { logger } from '../../../shared';
 function unsecuredCopyToClipboard(text: string) {
   // Create a textarea element
   const textArea = document.createElement('textarea');
+
+  // Add styles to make the textarea invisible and avoid scrolling
+  textArea.style.position = 'fixed';
+  textArea.style.top = '0';
+  textArea.style.left = '0';
+  textArea.style.width = '2em';
+  textArea.style.height = '2em';
+  textArea.style.padding = '0';
+  textArea.style.border = 'none';
+  textArea.style.outline = 'none';
+  textArea.style.boxShadow = 'none';
+  textArea.style.background = 'transparent';
+
+  // Apply text to text area and add it to the DOM
   textArea.value = text;
   document.body.appendChild(textArea);
 

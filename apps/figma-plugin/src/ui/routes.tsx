@@ -1,5 +1,7 @@
 import React from 'react';
 import { Route, Routes as RouterRoutes } from 'react-router-dom';
+import { EUIPageRoute } from '../shared';
+import { RouteChangeListener } from './components/navigation';
 
 // Routes
 import About from './routes/about';
@@ -10,11 +12,12 @@ import NodeInspector from './routes/node-inspector';
 const Routes: React.FC = () => {
   return (
     <div>
+      <RouteChangeListener />
       <RouterRoutes>
-        <Route path="/" element={<Home />} />
-        <Route path="about" element={<About />} />
-        <Route path="dtif" element={<DTIFExport />} />
-        <Route path="node-inspector" element={<NodeInspector />} />
+        <Route path={EUIPageRoute.HOME} element={<Home />} />
+        <Route path={EUIPageRoute.ABOUT} element={<About />} />
+        <Route path={EUIPageRoute.DTIF} element={<DTIFExport />} />
+        <Route path={EUIPageRoute.NODE_INSPECTOR} element={<NodeInspector />} />
       </RouterRoutes>
     </div>
   );

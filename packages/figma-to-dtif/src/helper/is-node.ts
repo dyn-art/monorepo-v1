@@ -56,12 +56,20 @@ export function isComponentNode(node: any): node is ComponentNode {
   return node?.type === 'COMPONENT';
 }
 
-export function isSVGNode(value: any): value is TSVGNode {
-  return value.type === 'SVG';
+export function isRemovedNode(node: any): node is RemovedNode {
+  return typeof node?.removed === 'boolean' && node.removed;
 }
 
 // ============================================================================
-// General
+// DTIF
+// ============================================================================
+
+export function isSVGNode(node: any): node is TSVGNode {
+  return node?.type === 'SVG';
+}
+
+// ============================================================================
+// Other
 // ============================================================================
 
 export function isSVGCompatibleNode(node: unknown): node is TSVGCompatibleNode {

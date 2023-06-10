@@ -115,6 +115,7 @@ async function handleGradientFill(
   let svgHash: string | null = null;
 
   // Format fill to SVG
+  // TODO: Diamond and Angular Gradient doesn't work as SVG -> need to be exported as image
   if (
     config.gradientToSVG &&
     isNodeWithFills(node) &&
@@ -126,6 +127,9 @@ async function handleGradientFill(
 
     // Convert the node type to SVG
     const svgData = await convertNodeToSvg(clone as TSVGCompatibleNode);
+
+    // Remove clone as its shown in editor
+    clone.remove();
 
     // Upload SVG data
     svgHash = sha256(svgData);

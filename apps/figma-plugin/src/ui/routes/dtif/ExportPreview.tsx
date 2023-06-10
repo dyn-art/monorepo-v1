@@ -113,11 +113,12 @@ const ExportPreview: React.FC<TProps> = (props) => {
       {/* Show DTIF */}
       {activeTab === EPreviewTabs.DTIF && (
         <div className="rounded-box flex min-h-[4rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))]">
-          <div className="w-full overflow-x-auto p-4">
+          <div className="relative w-full overflow-x-auto p-4">
+            <ClipboardButton
+              text={JSON.stringify(node)}
+              className="absolute right-0 top-0 z-50 m-2"
+            />
             <JSONTree data={node} theme={threezerotwofourTheme} />
-          </div>
-          <div className="col-start-1 row-start-1 flex items-start justify-end p-2">
-            <ClipboardButton text={JSON.stringify(node)} />
           </div>
         </div>
       )}
@@ -125,20 +126,21 @@ const ExportPreview: React.FC<TProps> = (props) => {
       {/* Show JSX */}
       {activeTab === EPreviewTabs.JSX && (
         <div className="rounded-box flex min-h-[4rem] w-full overflow-x-hidden border border-base-300 bg-[hsl(var(--n))]">
-          <div className="w-full overflow-x-auto p-0">
+          <div className="relative w-full overflow-x-auto p-0">
+            <ClipboardButton
+              text={nodeAsJSXString}
+              className="absolute right-0 top-0 z-50 m-2"
+            />
             {nodeAsJSX != null ? (
               <pre style={{ opacity: isLoadingHighlight ? 0 : 1 }}>
                 {isLoadingHighlight && (
-                  <span className="loading-spinner loading text-primary-content" />
+                  <span className="loading loading-spinner text-primary-content" />
                 )}
                 <code className="language-javascript">{nodeAsJSXString}</code>
               </pre>
             ) : (
-              <span className="loading-spinner loading text-primary-content" />
+              <span className="loading loading-spinner text-primary-content" />
             )}
-          </div>
-          <div className="col-start-1 row-start-1 flex items-start justify-end p-2">
-            <ClipboardButton text={nodeAsJSXString} />
           </div>
         </div>
       )}

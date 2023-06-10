@@ -1,14 +1,12 @@
 import { TBackgroundEventMeta } from '@pda/figma-handler';
-import { TBackgroundFigmaMessageEvent, logger } from '../../../shared';
+import { TBackgroundFigmaMessageEvent } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
 import { processNode } from './process-node';
 
 export default {
   type: 'ui.message',
-  key: 'intermediate-format-export-event',
+  key: 'intermediate-format-export',
   callback: async (instance: TBackgroundHandler, args) => {
-    logger.info(`Called Event: 'intermediate-format-export-event'`, { args });
-
     // Filter out unsupported nodes
     const supportedNodes = args.selectedElements
       .map((element) =>

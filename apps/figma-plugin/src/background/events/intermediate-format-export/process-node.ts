@@ -34,7 +34,7 @@ export async function processNode(
     await uploadDataToBucket(key, stringToUint8Array(json), 'application/json');
 
     // Post success message and notify the user
-    instance.postMessage('intermediate-format-export-result-event', {
+    instance.postMessage('intermediate-format-export-result', {
       type: 'success',
       content: toExportNode,
     });
@@ -47,7 +47,7 @@ export async function processNode(
   } catch (error) {
     let errorMessage =
       error instanceof Error ? error.message : JSON.stringify(error);
-    instance.postMessage('intermediate-format-export-result-event', {
+    instance.postMessage('intermediate-format-export-result', {
       type: 'error',
       message: errorMessage,
     });

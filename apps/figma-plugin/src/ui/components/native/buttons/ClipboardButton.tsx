@@ -1,8 +1,9 @@
+import clsx from 'clsx';
 import React from 'react';
 import { copyToClipboard } from '../../../core';
 
 const ClipboardButton: React.FC<TProps> = (props) => {
-  const { text } = props;
+  const { text, className } = props;
   const [isClipboardButtonPressed, setIsClipBoardButtonPressed] =
     React.useState(false);
 
@@ -25,11 +26,15 @@ const ClipboardButton: React.FC<TProps> = (props) => {
   return (
     <div
       data-tip={isClipboardButtonPressed ? 'copied' : 'copy'}
-      className="tooltip tooltip-left tooltip-accent"
+      className={clsx('tooltip-accent tooltip tooltip-left', className)}
     >
       <button
         className="btn-neutral btn-square btn-sm btn"
-        onClick={() => copyText(text)}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          copyText(text);
+        }}
       >
         {isClipboardButtonPressed ? (
           <svg
@@ -57,4 +62,5 @@ export default ClipboardButton;
 
 type TProps = {
   text: string;
+  className?: string;
 };
