@@ -34,14 +34,19 @@ export function figmaFillToCSS(
       fillStyle = handleSolid(fill);
       break;
     case 'GRADIENT_LINEAR':
-      fillStyle = handleLinearGradient(fill, node);
+      console.warn(`'${fill.type}' is currently only partly supported!`);
+      if (fill.svgHash != null) {
+        fillStyle = handleSVGGradient(fill);
+      } else {
+        fillStyle = handleLinearGradient(fill, node);
+      }
       break;
     case 'GRADIENT_RADIAL':
     case 'GRADIENT_ANGULAR':
     case 'GRADIENT_DIAMOND':
       // TODO: support later if required
       console.error(`'${fill.type}' is currently not supported!`);
-      fillStyle = { background: 'black' };
+      fillStyle = handleSVGGradient(fill);
       break;
     case 'IMAGE':
       fillStyle = handleImage(fill, node);
@@ -70,6 +75,15 @@ function handleLinearGradient(
   node: TNode
 ): React.CSSProperties {
   return { background: createLinearGradient(fill, node) };
+}
+
+function handleSVGGradient(fill: TGradientPaint): React.CSSProperties {
+  const imageUrl = getS3BucketURLFromHash(fill.svgHash || '');
+  return {
+    backgroundImage: `url(${imageUrl})`,
+    backgroundRepeat: 'no-repeat',
+    WebkitBackgroundSize: 'contain',
+  };
 }
 
 // Handle image fill

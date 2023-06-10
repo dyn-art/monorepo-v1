@@ -1,4 +1,4 @@
-import { TFrameNode } from '@pda/dtif-types';
+import { ENodeTypes, TFrameNode } from '@pda/dtif-types';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { convert2DMatrixTo3DMatrix } from '../helper';
 import { handleFills } from '../helper/handle-fills';
@@ -9,7 +9,7 @@ export async function formatFrameNode(
   options: TFormatNodeConfig
 ): Promise<TFrameNode> {
   return {
-    type: 'FRAME',
+    type: ENodeTypes.FRAME,
     clipsContent: node.clipsContent,
     // BaseNode mixin
     id: node.id,

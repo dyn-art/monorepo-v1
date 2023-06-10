@@ -25,6 +25,7 @@ export async function formatNodeToDTIF(
 export type TFormatNodeConfig = {
   frameToSVG?: boolean;
   svgExportIdentifierRegex?: string | null; // Note RegExp can't be passed to the Javascript Sandbox
+  gradientToSVG?: boolean;
   uploadStaticData: (
     key: string,
     data: Uint8Array,

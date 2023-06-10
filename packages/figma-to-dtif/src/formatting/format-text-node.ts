@@ -1,4 +1,4 @@
-import { TTextNode } from '@pda/dtif-types';
+import { ENodeTypes, TTextNode } from '@pda/dtif-types';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { convert2DMatrixTo3DMatrix, handleFills } from '../helper';
 
@@ -7,7 +7,7 @@ export async function formatTextNode(
   config: TFormatNodeConfig
 ): Promise<TTextNode> {
   return {
-    type: 'TEXT',
+    type: ENodeTypes.TEXT,
     textAlignHorizontal: node.textAlignHorizontal,
     textAlignVertical: node.textAlignVertical,
     fontSize: node.fontSize,

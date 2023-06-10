@@ -76,6 +76,7 @@ const DTIFExport: React.FC = () => {
           config: {
             svgExportIdentifierRegex: '_svg$',
             frameToSVG: false,
+            gradientToSVG: true,
           },
         });
       } else {
@@ -162,7 +163,7 @@ const DTIFExport: React.FC = () => {
               onClick={onExport}
             >
               {isExporting ? (
-                <span className="loading-spinner loading text-primary"></span>
+                <span className="loading loading-spinner text-primary"></span>
               ) : (
                 'EXPORT'
               )}

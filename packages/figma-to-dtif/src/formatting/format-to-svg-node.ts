@@ -1,10 +1,9 @@
-import { TSVGNode } from '@pda/dtif-types';
-import { NodeToSVGConversionException } from '../exceptions';
+import { ENodeTypes, TSVGNode } from '@pda/dtif-types';
 import { UploadStaticDataException } from '../exceptions/UploadStaticDataException';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { convert2DMatrixTo3DMatrix } from '../helper';
 import { logger } from '../logger';
-import { sha256 } from '../utils';
+import { TSVGCompatibleNode, convertNodeToSvg, sha256 } from '../utils';
 
 export async function formatToSvgNode(
   node: TSVGCompatibleNode,
@@ -29,7 +28,7 @@ export async function formatToSvgNode(
   );
 
   return {
-    type: 'SVG',
+    type: ENodeTypes.SVG,
     svgHash: key,
     // BaseNode mixin
     id: node.id,
@@ -48,33 +47,3 @@ export async function formatToSvgNode(
     effects: node.effects,
   };
 }
-
-async function convertNodeToSvg(node: TSVGCompatibleNode): Promise<Uint8Array> {
-  try {
-    return await node.exportAsync({ format: 'SVG' });
-  } catch (error) {
-    let errorMessage: string;
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    } else {
-      errorMessage = JSON.stringify(error);
-    }
-    throw new NodeToSVGConversionException(
-      `Failed to export node '${node.name}' as SVG: ${errorMessage}`,
-      node
-    );
-  }
-}
-
-export type TSVGCompatibleNode =
-  | LineNode
-  | EllipseNode
-  | PolygonNode
-  | StarNode
-  | VectorNode
-  | BooleanOperationNode
-  | GroupNode
-  | FrameNode
-  | RectangleNode
-  | InstanceNode
-  | ComponentNode;

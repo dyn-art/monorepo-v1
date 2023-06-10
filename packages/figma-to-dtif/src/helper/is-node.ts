@@ -1,5 +1,6 @@
 import { TSVGNode } from '@pda/dtif-types';
-import { TSVGCompatibleNode } from '../formatting/format-to-svg-node';
+import { TSVGCompatibleNode } from '../utils';
+import { TNodeWithFills } from './handle-fills';
 
 // ============================================================================
 // Figma
@@ -63,7 +64,7 @@ export function isSVGNode(value: any): value is TSVGNode {
 // General
 // ============================================================================
 
-export function isSVGCompatibleNode(node: any): node is TSVGCompatibleNode {
+export function isSVGCompatibleNode(node: unknown): node is TSVGCompatibleNode {
   return (
     isLineNode(node) ||
     isEllipseNode(node) ||
@@ -76,6 +77,16 @@ export function isSVGCompatibleNode(node: any): node is TSVGCompatibleNode {
     isRectangleNode(node) ||
     isInstanceNode(node) ||
     isComponentNode(node) ||
+    isTextNode(node)
+  );
+}
+
+export function isNodeWithFills(node: unknown): node is TNodeWithFills {
+  return (
+    isRectangleNode(node) ||
+    isFrameNode(node) ||
+    isComponentNode(node) ||
+    isInstanceNode(node) ||
     isTextNode(node)
   );
 }

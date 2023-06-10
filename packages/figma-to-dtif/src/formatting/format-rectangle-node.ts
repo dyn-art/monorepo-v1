@@ -1,4 +1,4 @@
-import { TRectangleNode } from '@pda/dtif-types';
+import { ENodeTypes, TRectangleNode } from '@pda/dtif-types';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { convert2DMatrixTo3DMatrix, handleFills } from '../helper';
 
@@ -7,7 +7,7 @@ export async function formatRectangleNode(
   config: TFormatNodeConfig
 ): Promise<TRectangleNode> {
   return {
-    type: 'RECTANGLE',
+    type: ENodeTypes.RECTANGLE,
     // BasNode mixin
     id: node.id,
     name: node.name,

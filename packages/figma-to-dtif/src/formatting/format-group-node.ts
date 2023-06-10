@@ -1,4 +1,4 @@
-import { TGroupNode, TNode } from '@pda/dtif-types';
+import { ENodeTypes, TGroupNode, TNode } from '@pda/dtif-types';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { convert2DMatrixTo3DMatrix } from '../helper';
 import { formatNode } from './format-node';
@@ -8,7 +8,7 @@ export async function formatGroupNode(
   options: TFormatNodeConfig
 ): Promise<TGroupNode> {
   return {
-    type: 'GROUP',
+    type: ENodeTypes.GROUP,
     // BaseNode mixin
     id: node.id,
     name: node.name,

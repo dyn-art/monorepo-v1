@@ -14,10 +14,10 @@ export enum ESupportedFigmaNodeTypes {
 }
 
 export enum ENodeTypes {
-  FRAME = ESupportedFigmaNodeTypes.FRAME,
-  GROUP = ESupportedFigmaNodeTypes.GROUP,
-  TEXT = ESupportedFigmaNodeTypes.TEXT,
-  RECTANGLE = ESupportedFigmaNodeTypes.RECTANGLE,
+  FRAME = 'FRAME',
+  GROUP = 'GROUP',
+  TEXT = 'TEXT',
+  RECTANGLE = 'RECTANGLE',
   SVG = 'SVG',
 }
 
@@ -189,6 +189,7 @@ export type TGradientPaint = {
   readonly visible?: boolean;
   readonly opacity?: number;
   readonly blendMode?: TBlendMode;
+  readonly svgHash?: string;
 };
 
 export type TImagePaint = {
