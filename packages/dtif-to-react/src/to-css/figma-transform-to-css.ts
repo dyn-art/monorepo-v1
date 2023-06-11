@@ -1,6 +1,9 @@
 import { TTransform } from '@pda/dtif-types';
 import React from 'react';
-import { extractDataFromMatrix } from '../helper/extract-data-from-matrix';
+import {
+  T2DMatrixData,
+  extractDataFromMatrix,
+} from '../helper/extract-data-from-matrix';
 
 /**
  * Helper function to convert a Figma transform object into the CSS transform space
@@ -14,13 +17,18 @@ export function figmaTransformToCSS(
   props: {
     width: number;
     height: number;
-    transform: TTransform;
+    transform: TTransform | T2DMatrixData;
   },
   rotate = true
 ): React.CSSProperties {
   const { width, height, transform } = props;
-  const matrixProps = extractDataFromMatrix(transform);
-  const { rotation, scaleX, scaleY, tx: x, ty: y } = matrixProps;
+  const {
+    rotation,
+    scaleX,
+    scaleY,
+    tx: x,
+    ty: y,
+  } = Array.isArray(transform) ? extractDataFromMatrix(transform) : transform;
 
   // Define the effective rotation as the input rotation
   const effectiveRotation = rotation;

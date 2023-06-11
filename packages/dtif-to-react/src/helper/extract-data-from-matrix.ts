@@ -1,12 +1,6 @@
 import { TTransform } from '@pda/dtif-types';
 
-export function extractDataFromMatrix(matrix: TTransform): {
-  tx: number;
-  ty: number;
-  scaleX: number;
-  scaleY: number;
-  rotation: number;
-} {
+export function extractDataFromMatrix(matrix: TTransform): T2DMatrixData {
   // Extract translation values (tx and ty)
   // Extract translation values (tx and ty)
   const tx = matrix[0][2];
@@ -29,6 +23,12 @@ export function extractDataFromMatrix(matrix: TTransform): {
     scaleY: scaleY,
     rotation: rotation * (180 / Math.PI), // convert rotation from radians to degrees
   };
-
-  return { tx, ty, scaleX, scaleY, rotation };
 }
+
+export type T2DMatrixData = {
+  tx: number;
+  ty: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
+};

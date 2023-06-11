@@ -5,9 +5,9 @@ import { getIdentifier } from '../helper';
 import {
   figmaBlendModeToCSS,
   figmaEffectToCSS,
-  figmaFillToCSS,
   figmaTransformToCSS,
 } from '../to-css';
+import { renderFill } from './render-fill';
 
 export async function renderText(
   node: TTextNode,
@@ -57,26 +57,16 @@ export async function renderText(
         ...style,
       }}
     >
-      {/* Fill */}
-      {node.fills.map((fill, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundClip: 'text',
-            WebkitBackgroundClip: 'text',
-            color: 'transparent',
-            WebkitTextFillColor: 'transparent',
-            ...figmaFillToCSS(fill, node),
-          }}
-        >
-          {node.characters}
-        </div>
-      ))}
+      {renderFill(
+        node,
+        {
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          color: 'transparent',
+          WebkitTextFillColor: 'transparent',
+        },
+        node.characters
+      )}
     </div>
   );
 }

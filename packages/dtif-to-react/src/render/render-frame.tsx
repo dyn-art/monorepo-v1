@@ -1,9 +1,10 @@
 import { TFrameNode } from '@pda/dtif-types';
 import React from 'react';
 import { getIdentifier } from '../helper';
-import { figmaEffectToCSS, figmaFillToCSS } from '../to-css';
+import { figmaEffectToCSS } from '../to-css';
 import { figmaBlendModeToCSS } from '../to-css/figma-blend-mode-to-css';
 import { figmaTransformToCSS } from '../to-css/figma-transform-to-css';
+import { renderFill } from './render-fill';
 import { renderNode } from './render-node';
 
 export async function renderFrame(
@@ -36,19 +37,7 @@ export async function renderFrame(
           overflow: 'hidden', // Fill is always clipped (clipsContent)
         }}
       >
-        {node.fills.map((fill, i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              ...figmaFillToCSS(fill, node),
-            }}
-          />
-        ))}
+        {renderFill(node)}
       </div>
       {/* Children */}
       {await Promise.all(

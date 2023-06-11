@@ -4,9 +4,9 @@ import { getIdentifier } from '../helper';
 import {
   figmaBlendModeToCSS,
   figmaEffectToCSS,
-  figmaFillToCSS,
   figmaTransformToCSS,
 } from '../to-css';
+import { renderFill } from './render-fill';
 
 export async function renderRectangle(
   node: TRectangleNode,
@@ -30,19 +30,7 @@ export async function renderRectangle(
         ...style,
       }}
     >
-      {node.fills.map((fill, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            ...figmaFillToCSS(fill, node),
-          }}
-        />
-      ))}
+      {renderFill(node)}
     </div>
   );
 }
