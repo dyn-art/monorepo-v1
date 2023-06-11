@@ -26,8 +26,8 @@ export enum ENodeTypes {
 // ============================================================================
 
 export type TFrameNode = {
-  readonly type: ENodeTypes.FRAME;
-  readonly clipsContent: boolean;
+  type: ENodeTypes.FRAME;
+  clipsContent: boolean;
 } & TBaseNodeMixin &
   TChildrenMixin &
   TLayoutMixin &
@@ -36,23 +36,24 @@ export type TFrameNode = {
   TFillsMixin;
 
 export type TRectangleNode = {
-  readonly type: ENodeTypes.RECTANGLE;
+  type: ENodeTypes.RECTANGLE;
 } & TDefaultShapeMixin &
   TRectangleCornerMixin &
   TFillsMixin;
 
 export type TSVGNode = {
-  readonly type: ENodeTypes.SVG;
-  readonly svgHash: string;
+  type: ENodeTypes.SVG;
+  hash?: string;
+  inline?: Uint8Array;
 } & TDefaultShapeMixin;
 
 export type TTextNode = {
-  readonly type: ENodeTypes.TEXT;
-  readonly textAlignHorizontal: 'LEFT' | 'CENTER' | 'RIGHT' | 'JUSTIFIED';
-  readonly textAlignVertical: 'TOP' | 'CENTER' | 'BOTTOM';
-  readonly fontSize: number;
-  readonly fontName: TFontName;
-  readonly fontWeight: number;
+  type: ENodeTypes.TEXT;
+  textAlignHorizontal: 'LEFT' | 'CENTER' | 'RIGHT' | 'JUSTIFIED';
+  textAlignVertical: 'TOP' | 'CENTER' | 'BOTTOM';
+  fontSize: number;
+  fontName: TFontName;
+  fontWeight: number;
   letterSpacing: TLetterSpacing;
   lineHeight: TLineHeight;
   characters: string;
@@ -60,7 +61,7 @@ export type TTextNode = {
   TFillsMixin;
 
 export type TGroupNode = {
-  readonly type: ENodeTypes.GROUP;
+  type: ENodeTypes.GROUP;
 } & TBaseNodeMixin &
   TChildrenMixin &
   TBlendMixin &
@@ -80,30 +81,30 @@ export type TNode =
 export type TDefaultShapeMixin = TBaseNodeMixin & TLayoutMixin & TBlendMixin;
 
 export type TRectangleCornerMixin = {
-  readonly topLeftRadius: number;
-  readonly topRightRadius: number;
-  readonly bottomLeftRadius: number;
-  readonly bottomRightRadius: number;
+  topLeftRadius: number;
+  topRightRadius: number;
+  bottomLeftRadius: number;
+  bottomRightRadius: number;
 };
 
 export type TBaseNodeMixin = {
-  readonly id: string;
-  readonly name: string;
+  id: string;
+  name: string;
 };
 
 export type TChildrenMixin = {
-  readonly children: ReadonlyArray<TNode>;
+  children: Array<TNode>;
 };
 
 export type TLayoutMixin = {
-  readonly width: number;
-  readonly height: number;
-  readonly rotation: number;
-  readonly transform: TTransform;
+  width: number;
+  height: number;
+  rotation: number;
+  transform: TTransform;
 } & TVector;
 
 export type TFillsMixin = {
-  readonly fills: ReadonlyArray<TPaint>;
+  fills: Array<TPaint>;
 };
 
 // ============================================================================
@@ -111,37 +112,37 @@ export type TFillsMixin = {
 // ============================================================================
 
 export type TBlendMixin = {
-  readonly blendMode: TBlendMode;
-  readonly opacity: number;
-  readonly isMask: boolean;
-  readonly effects: ReadonlyArray<TEffect>;
+  blendMode: TBlendMode;
+  opacity: number;
+  isMask: boolean;
+  effects: Array<TEffect>;
 };
 
 export type TDropShadowEffect = {
-  readonly type: 'DROP_SHADOW';
-  readonly color: TRGBA;
-  readonly offset: TVector;
-  readonly radius: number;
-  readonly spread?: number;
-  readonly visible: boolean;
-  readonly blendMode: TBlendMode;
-  readonly showShadowBehindNode?: boolean;
+  type: 'DROP_SHADOW';
+  color: TRGBA;
+  offset: TVector;
+  radius: number;
+  spread?: number;
+  visible: boolean;
+  blendMode: TBlendMode;
+  showShadowBehindNode?: boolean;
 };
 
 export type TInnerShadowEffect = {
-  readonly type: 'INNER_SHADOW';
-  readonly color: TRGBA;
-  readonly offset: TVector;
-  readonly radius: number;
-  readonly spread?: number;
-  readonly visible: boolean;
-  readonly blendMode: TBlendMode;
+  type: 'INNER_SHADOW';
+  color: TRGBA;
+  offset: TVector;
+  radius: number;
+  spread?: number;
+  visible: boolean;
+  blendMode: TBlendMode;
 };
 
 export type TBlurEffect = {
-  readonly type: 'LAYER_BLUR' | 'BACKGROUND_BLUR';
-  readonly radius: number;
-  readonly visible: boolean;
+  type: 'LAYER_BLUR' | 'BACKGROUND_BLUR';
+  radius: number;
+  visible: boolean;
 };
 
 export type TBlendMode =
@@ -172,52 +173,57 @@ export type TEffect = TDropShadowEffect | TInnerShadowEffect | TBlurEffect;
 // ============================================================================
 
 export type TSolidPaint = {
-  readonly type: 'SOLID';
-  readonly color: TRGB;
-  readonly opacity?: number;
-  readonly blendMode?: TBlendMode;
+  type: 'SOLID';
+  color: TRGB;
+  opacity?: number;
+  blendMode?: TBlendMode;
 };
 
 export type TGradientPaint = {
-  readonly type:
+  type:
     | 'GRADIENT_LINEAR'
     | 'GRADIENT_RADIAL'
     | 'GRADIENT_ANGULAR'
     | 'GRADIENT_DIAMOND';
-  readonly gradientTransform: TTransform;
-  readonly gradientStops: ReadonlyArray<TColorStop>;
-  readonly visible?: boolean;
-  readonly opacity?: number;
-  readonly blendMode?: TBlendMode;
-  readonly svgHash?: string;
+  transform: TTransform;
+  gradientStops: Array<TColorStop>;
+  visible?: boolean;
+  opacity?: number;
+  blendMode?: TBlendMode;
+  exported?: {
+    type: 'JPG' | 'SVG';
+    hash?: string;
+    inline?: Uint8Array;
+  };
 };
 
 export type TImagePaint = {
-  readonly type: 'IMAGE';
-  readonly scaleMode: 'FILL' | 'FIT' | 'CROP' | 'TILE';
-  readonly imageHash: string | null;
-  readonly imageTransform?: TTransform;
-  readonly scalingFactor?: number;
-  readonly rotation?: number;
-  readonly filters?: TImageFilters;
-  readonly visible?: boolean;
-  readonly opacity?: number;
-  readonly blendMode?: TBlendMode;
+  type: 'IMAGE';
+  scaleMode: 'FILL' | 'FIT' | 'CROP' | 'TILE';
+  hash?: string;
+  inline?: Uint8Array;
+  transform?: TTransform;
+  scalingFactor?: number;
+  rotation?: number;
+  filters?: TImageFilters;
+  visible?: boolean;
+  opacity?: number;
+  blendMode?: TBlendMode;
 };
 
 export type TImageFilters = {
-  readonly exposure?: number;
-  readonly contrast?: number;
-  readonly saturation?: number;
-  readonly temperature?: number;
-  readonly tint?: number;
-  readonly highlights?: number;
-  readonly shadows?: number;
+  exposure?: number;
+  contrast?: number;
+  saturation?: number;
+  temperature?: number;
+  tint?: number;
+  highlights?: number;
+  shadows?: number;
 };
 
 export type TColorStop = {
-  readonly position: number;
-  readonly color: TRGBA;
+  position: number;
+  color: TRGBA;
 };
 
 export type TPaint = TSolidPaint | TGradientPaint | TImagePaint;
@@ -227,18 +233,18 @@ export type TPaint = TSolidPaint | TGradientPaint | TImagePaint;
 // ============================================================================
 
 export type TVector = {
-  readonly x: number;
-  readonly y: number;
+  x: number;
+  y: number;
 };
 
 export type TRGBA = {
-  readonly a: number;
+  a: number;
 } & TRGB;
 
 export type TRGB = {
-  readonly r: number;
-  readonly g: number;
-  readonly b: number;
+  r: number;
+  g: number;
+  b: number;
 };
 
 export type TTransform = [
@@ -248,20 +254,20 @@ export type TTransform = [
 ];
 
 export type TFontName = {
-  readonly family: string;
-  readonly style: string;
+  family: string;
+  style: string;
 };
 
 export type TLetterSpacing = {
-  readonly value: number;
-  readonly unit: 'PIXELS' | 'PERCENT';
+  value: number;
+  unit: 'PIXELS' | 'PERCENT';
 };
 
 export type TLineHeight =
   | {
-      readonly value: number;
-      readonly unit: 'PIXELS' | 'PERCENT';
+      value: number;
+      unit: 'PIXELS' | 'PERCENT';
     }
   | {
-      readonly unit: 'AUTO';
+      unit: 'AUTO';
     };

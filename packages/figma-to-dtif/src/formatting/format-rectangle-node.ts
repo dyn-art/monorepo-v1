@@ -1,4 +1,4 @@
-import { ENodeTypes, TRectangleNode } from '@pda/dtif-types';
+import { ENodeTypes, TEffect, TRectangleNode } from '@pda/dtif-types';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { convert2DMatrixTo3DMatrix, handleFills } from '../helper';
 
@@ -22,7 +22,7 @@ export async function formatRectangleNode(
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
-    effects: node.effects,
+    effects: node.effects as TEffect[],
     // RectangleCorner mixin
     bottomLeftRadius: node.bottomLeftRadius,
     bottomRightRadius: node.bottomRightRadius,

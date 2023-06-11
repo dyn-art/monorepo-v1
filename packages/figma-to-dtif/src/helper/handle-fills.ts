@@ -1,46 +1,35 @@
 import { TGradientPaint, TImagePaint, TPaint } from '@pda/dtif-types';
 import { UploadStaticDataException } from '../exceptions';
-import { ExportImageException } from '../exceptions/ExportImageException';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
-import { logger } from '../logger';
-import {
-  TSVGCompatibleNode,
-  convertNodeToSvg,
-  getImageType,
-  sha256,
-} from '../utils';
+import { exportImageFill, getImageType } from '../utils';
+import { exportAndUploadNode } from '../utils/export-and-upload-node';
 import { convert2DMatrixTo3DMatrix } from './convert-2d-matrix-to-3d-matrix';
-import { isNodeWithFills, isSVGCompatibleNode, isTextNode } from './is-node';
+import { isNodeWithFills, isTextNode } from './is-node';
 
 export async function handleFills(
   node: SceneNode,
   inputFills: Paint[],
   config: TFormatNodeConfig
 ): Promise<TPaint[]> {
-  if (!Array.isArray(inputFills)) return [];
-  const fills: TPaint[] = [];
-
-  for (const fill of inputFills) {
-    if (!fill.visible) continue;
+  const fillPromises = inputFills.map((fill) => {
+    if (!fill.visible) return Promise.resolve(null);
     switch (fill.type) {
       case 'GRADIENT_ANGULAR':
       case 'GRADIENT_DIAMOND':
+        return handleGradientFill(node, fill, { ...config, format: 'JPG' });
       case 'GRADIENT_LINEAR':
       case 'GRADIENT_RADIAL':
-        fills.push(await handleGradientFill(node, fill, config));
-        continue;
+        return handleGradientFill(node, fill, { ...config, format: 'SVG' });
       case 'IMAGE':
-        fills.push(await handleImageFill(node, fill, config));
-        continue;
+        return handleImageFill(node, fill, config);
       case 'SOLID':
-        fills.push(fill);
-        continue;
+        return Promise.resolve(fill);
       default:
-      // do nothing
+        return Promise.resolve(null);
     }
-  }
-
-  return fills;
+  });
+  const fills = await Promise.all(fillPromises);
+  return fills.filter((fill) => fill != null) as TPaint[];
 }
 
 async function handleImageFill(
@@ -48,109 +37,84 @@ async function handleImageFill(
   fill: ImagePaint,
   config: TFormatNodeConfig
 ): Promise<TImagePaint> {
+  let uploaded = false;
   const imageTransform =
     fill.imageTransform != null
       ? convert2DMatrixTo3DMatrix(fill.imageTransform)
       : undefined;
 
-  // Export image
-  const imageHash = fill.imageHash;
-  if (imageHash == null)
+  // Check whether image fill has actual image
+  let imageHash: string | null = fill.imageHash;
+  if (imageHash == null) {
     return {
       ...fill,
-      imageTransform,
+      transform: imageTransform,
     };
-  const imageData = await exportImage(node, imageHash);
+  }
+
+  // Export image
+  const imageData = await exportImageFill(node, imageHash);
 
   // Upload image data
-  const key = await config.uploadStaticData(
-    imageHash,
-    imageData,
-    getImageType(imageData) ?? undefined
-  );
-  if (key == null) {
-    throw new UploadStaticDataException(
-      `Failed to upload image with the hash ${key} to S3 bucket!`,
-      node
+  if (config.uploadStaticData != null) {
+    imageHash = await config.uploadStaticData(
+      imageHash,
+      imageData,
+      getImageType(imageData) ?? undefined
     );
+    if (imageHash == null) {
+      throw new UploadStaticDataException(
+        `Failed to upload image with the hash ${imageHash} to S3 bucket!`,
+        node
+      );
+    }
+    uploaded = true;
   }
 
   return {
     ...fill,
-    imageHash: key,
-    imageTransform,
+    hash: imageHash,
+    inline: uploaded ? undefined : imageData,
+    transform: imageTransform,
   };
-}
-
-async function exportImage(node: SceneNode, imageHash: string) {
-  let data: Uint8Array | null;
-  try {
-    data = (await figma.getImageByHash(imageHash)?.getBytesAsync()) ?? null;
-  } catch (error) {
-    let errorMessage: string;
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    } else {
-      errorMessage = JSON.stringify(error);
-    }
-    throw new ExportImageException(
-      `Failed to export node '${node.name}' as image: ${errorMessage}`,
-      node
-    );
-  }
-  if (data == null) {
-    throw new ExportImageException(
-      `Failed to export node '${node.name}' as image!`,
-      node
-    );
-  }
-  return data;
 }
 
 async function handleGradientFill(
   node: SceneNode,
   fill: GradientPaint,
-  config: TFormatNodeConfig
+  config: TFormatNodeConfig & { format: 'SVG' | 'JPG' }
 ): Promise<TGradientPaint> {
-  let svgHash: string | null = null;
+  let exported: TGradientPaint['exported'] | null = null;
 
-  // Format fill to SVG
-  // TODO: Diamond and Angular Gradient doesn't work as SVG -> need to be exported as image
   if (
     config.gradientToSVG &&
     isNodeWithFills(node) &&
-    isSVGCompatibleNode(node) &&
     node.fills !== figma.mixed
   ) {
     // Clone node with the relevant fill
     const clone = cloneToFillNode(node, [fill]);
 
-    // Convert the node type to SVG
-    const svgData = await convertNodeToSvg(clone as TSVGCompatibleNode);
-
-    // Remove clone as its shown in editor
-    clone.remove();
-
-    // Upload SVG data
-    svgHash = sha256(svgData);
-    const key = await config.uploadStaticData(svgHash, svgData, {
-      name: 'svg',
-      mimeType: 'image/svg+xml',
-      ending: '.svg',
+    // Export gradient fill node to specified format
+    const { hash, data, uploaded } = await exportAndUploadNode(clone, {
+      uploadStaticData: config.uploadStaticData,
+      export: { format: config.format },
     });
-    if (key === null) {
-      throw new UploadStaticDataException(`Failed to upload SVG data!`, node);
-    }
 
-    logger.success(
-      `Formatted '${node.type}' fill of node '${node.name}' to SVG and uploaded content to S3 bucket under the key '${key}'`
-    );
+    exported = {
+      type: config.format,
+      hash: hash,
+      inline: uploaded ? undefined : data,
+    };
   }
 
   return {
-    ...fill,
-    gradientTransform: convert2DMatrixTo3DMatrix(fill.gradientTransform),
-    svgHash: svgHash ?? undefined,
+    type: fill.type,
+    gradientStops: fill.gradientStops as ColorStop[],
+    blendMode: fill.blendMode,
+    opacity: fill.opacity,
+    visible: fill.visible,
+    transform: convert2DMatrixTo3DMatrix(fill.gradientTransform),
+    exported: exported ?? undefined,
   };
 }
 

@@ -1,4 +1,4 @@
-import { ENodeTypes, TGroupNode, TNode } from '@pda/dtif-types';
+import { ENodeTypes, TGroupNode } from '@pda/dtif-types';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { convert2DMatrixTo3DMatrix } from '../helper';
 import { formatNode } from './format-node';
@@ -13,11 +13,9 @@ export async function formatGroupNode(
     id: node.id,
     name: node.name,
     // Children mixin
-    children: (
-      await Promise.all(
-        node.children.map((node) => formatNode(node, options, false))
-      )
-    ).filter((node) => node != null) as TNode[],
+    children: await Promise.all(
+      node.children.map((node) => formatNode(node, options, false))
+    ),
     // Layout mixin
     x: node.x,
     y: node.y,
@@ -29,6 +27,6 @@ export async function formatGroupNode(
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
-    effects: node.effects,
+    effects: node.effects as Effect[],
   };
 }

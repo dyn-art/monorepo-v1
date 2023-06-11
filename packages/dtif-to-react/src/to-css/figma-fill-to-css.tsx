@@ -35,8 +35,8 @@ export function figmaFillToCSS(
       break;
     case 'GRADIENT_LINEAR':
       console.warn(`'${fill.type}' is currently only partly supported!`);
-      if (fill.svgHash != null) {
-        fillStyle = handleSVGGradient(fill);
+      if (fill.exported != null) {
+        fillStyle = handleExportedGradient(fill);
       } else {
         fillStyle = handleLinearGradient(fill, node);
       }
@@ -46,7 +46,7 @@ export function figmaFillToCSS(
     case 'GRADIENT_DIAMOND':
       // TODO: support later if required
       console.error(`'${fill.type}' is currently not supported!`);
-      fillStyle = handleSVGGradient(fill);
+      fillStyle = handleExportedGradient(fill);
       break;
     case 'IMAGE':
       fillStyle = handleImage(fill, node);
@@ -77,8 +77,8 @@ function handleLinearGradient(
   return { background: createLinearGradient(fill, node) };
 }
 
-function handleSVGGradient(fill: TGradientPaint): React.CSSProperties {
-  const imageUrl = getS3BucketURLFromHash(fill.svgHash || '');
+function handleExportedGradient(fill: TGradientPaint): React.CSSProperties {
+  const imageUrl = getS3BucketURLFromHash(fill.exported?.hash || '');
   return {
     backgroundImage: `url(${imageUrl})`,
     backgroundRepeat: 'no-repeat',
@@ -88,17 +88,17 @@ function handleSVGGradient(fill: TGradientPaint): React.CSSProperties {
 
 // Handle image fill
 function handleImage(fill: TImagePaint, node: TNode): React.CSSProperties {
-  const imageUrl = getS3BucketURLFromHash(fill.imageHash || '');
+  const imageUrl = getS3BucketURLFromHash(fill.hash || '');
 
   // Apply crop transform
   // TODO: doesn't work yet
   let transform: React.CSSProperties = {};
-  if (fill.imageTransform != null) {
+  if (fill.transform != null) {
     transform = {
       ...figmaTransformToCSS({
         width: node.width,
         height: node.height,
-        transform: fill.imageTransform,
+        transform: fill.transform,
       }),
     };
   }

@@ -29,7 +29,7 @@ export function createLinearGradient(
   node: TNode
 ): string {
   const gradientHandlePositions = figmaGradientTransformToHandles(
-    fill.gradientTransform
+    fill.transform
   );
   if (gradientHandlePositions == null) {
     throw new Error(

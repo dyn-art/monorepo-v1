@@ -8,7 +8,7 @@ export async function renderSVG(
   node: TSVGNode,
   style: React.CSSProperties = {}
 ): Promise<React.ReactNode> {
-  const svgContent = await getSVGFromHash(node.svgHash);
+  const svgContent = await getSVGFromHash(node?.hash || '');
   if (svgContent == null) return <div>Failed to load SVG</div>;
 
   const svgStyles: React.CSSProperties = {

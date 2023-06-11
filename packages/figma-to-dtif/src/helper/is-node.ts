@@ -1,5 +1,5 @@
 import { TSVGNode } from '@pda/dtif-types';
-import { TSVGCompatibleNode } from '../utils';
+import { TSVGCompatibleNode } from '../types';
 import { TNodeWithFills } from './handle-fills';
 
 // ============================================================================
