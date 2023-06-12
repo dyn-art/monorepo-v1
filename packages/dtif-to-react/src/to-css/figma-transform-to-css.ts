@@ -2,7 +2,7 @@ import { TTransform } from '@pda/dtif-types';
 import React from 'react';
 import {
   T2DMatrixData,
-  extractDataFromMatrix,
+  extractMatrixData,
 } from '../helper/extract-data-from-matrix';
 
 /**
@@ -28,7 +28,7 @@ export function figmaTransformToCSS(
     scaleY,
     tx: x,
     ty: y,
-  } = Array.isArray(transform) ? extractDataFromMatrix(transform) : transform;
+  } = Array.isArray(transform) ? extractMatrixData(transform) : transform;
 
   // Define the effective rotation as the input rotation
   const effectiveRotation = rotation;

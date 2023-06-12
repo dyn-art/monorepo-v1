@@ -20,6 +20,16 @@ export async function renderText(
     node.letterSpacing.unit === 'PERCENT'
       ? fontSize * (node.letterSpacing.value / 100)
       : node.letterSpacing.value;
+  const fill = await renderFill(
+    node,
+    {
+      backgroundClip: 'text',
+      WebkitBackgroundClip: 'text',
+      color: 'transparent',
+      WebkitTextFillColor: 'transparent',
+    },
+    node.characters
+  );
 
   WebFont.load({
     google: {
@@ -57,16 +67,7 @@ export async function renderText(
         ...style,
       }}
     >
-      {renderFill(
-        node,
-        {
-          backgroundClip: 'text',
-          WebkitBackgroundClip: 'text',
-          color: 'transparent',
-          WebkitTextFillColor: 'transparent',
-        },
-        node.characters
-      )}
+      {fill}
     </div>
   );
 }

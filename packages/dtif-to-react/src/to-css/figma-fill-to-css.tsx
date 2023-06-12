@@ -12,7 +12,7 @@ import React from 'react';
 import { createLinearGradient, getS3BucketURLFromHash } from '../helper';
 import {
   T2DMatrixData,
-  extractDataFromMatrix,
+  extractMatrixData,
 } from '../helper/extract-data-from-matrix';
 import { logger } from '../logger';
 import { figmaBlendModeToCSS } from './figma-blend-mode-to-css';
@@ -54,7 +54,7 @@ export async function figmaFillToCSS(
       fillStyle = handleExportedGradient(fill);
       break;
     case 'IMAGE':
-      fillStyle = await handleImage(fill);
+      fillStyle = await handleImage(fill, node);
       break;
     default:
     // do nothing
@@ -93,31 +93,47 @@ function handleExportedGradient(fill: TGradientPaint): React.CSSProperties {
 }
 
 // Handle image fill
-async function handleImage(fill: TImagePaint): Promise<React.CSSProperties> {
+async function handleImage(
+  fill: TImagePaint,
+  node: TNode
+): Promise<React.CSSProperties> {
   const imageUrl = getS3BucketURLFromHash(fill.hash || '');
-  const { width, height } = await getImageDimensions(imageUrl);
+  const { width: imageWidth, height: imageHeight } = await getImageDimensions(
+    imageUrl
+  );
 
   // Apply crop transform
   let transform: React.CSSProperties = {};
-  if (fill.transform != null) {
-    // TODO: WIP
-    const transformData = extractDataFromMatrix(fill.transform);
-    const transformDataWithAppliedDimensions =
-      applyDimensionsToImageTransformData(transformData, width, height);
-    logger.info({
-      imageUrl,
-      width,
-      height,
+  if (fill.scaleMode === 'CROP' && fill.transform != null) {
+    const { width, height } = calculateCropImageSize(
+      { width: node.width, height: node.height },
+      {
+        width: imageWidth,
+        height: imageHeight,
+      }
+    );
+    const transformData = extractMatrixData(fill.transform);
+    const transformDataWithDimensions = applyDimensionsToImageTransformData(
       transformData,
-      transformDataWithDimensions: transformDataWithAppliedDimensions,
+      width,
+      height
+    );
+    logger.info(`Crop Image for '${node.name}'`, {
+      transformData,
+      transformDataWithDimensions,
+      cropImageSize: { width, height },
+      imageSize: { width: imageWidth, height: imageHeight },
+      nodeSize: { width: node.width, height: node.height },
     }); // TODO: REMOVE
     transform = {
       ...figmaTransformToCSS({
         width,
         height,
-        transform: transformDataWithAppliedDimensions,
+        transform: transformDataWithDimensions,
       }),
       transformOrigin: 'top left',
+      width,
+      height,
     };
   }
 
@@ -161,4 +177,31 @@ function applyDimensionsToImageTransformData(
     tx,
     ty,
   };
+}
+
+function calculateCropImageSize(
+  container: {
+    width: number;
+    height: number;
+  },
+  image: {
+    width: number;
+    height: number;
+  }
+): { width: number; height: number } {
+  let newWidth: number;
+  let newHeight: number;
+
+  const containerRatio = container.width / container.height;
+  const imageRatio = image.width / image.height;
+
+  if (imageRatio > containerRatio) {
+    newHeight = container.height;
+    newWidth = newHeight * imageRatio;
+  } else {
+    newWidth = container.width;
+    newHeight = newWidth / imageRatio;
+  }
+
+  return { width: newWidth, height: newHeight };
 }

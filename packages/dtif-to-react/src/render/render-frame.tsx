@@ -11,6 +11,7 @@ export async function renderFrame(
   node: TFrameNode,
   style: React.CSSProperties = {}
 ): Promise<React.ReactNode> {
+  const fill = await renderFill(node);
   return (
     <div
       {...getIdentifier(node)}
@@ -37,7 +38,7 @@ export async function renderFrame(
           overflow: 'hidden', // Fill is always clipped (clipsContent)
         }}
       >
-        {renderFill(node)}
+        {fill}
       </div>
       {/* Children */}
       {await Promise.all(

@@ -1,7 +1,6 @@
 import { TTransform } from '@pda/dtif-types';
 
-export function extractDataFromMatrix(matrix: TTransform): T2DMatrixData {
-  // Extract translation values (tx and ty)
+export function extractMatrixData(matrix: TTransform): T2DMatrixData {
   // Extract translation values (tx and ty)
   const tx = matrix[0][2];
   const ty = matrix[1][2];
@@ -9,7 +8,7 @@ export function extractDataFromMatrix(matrix: TTransform): T2DMatrixData {
   // Extract rotation
   const a = matrix[0][0];
   const b = matrix[0][1];
-  const rotation = Math.atan2(b, a); // atan2(b, a) gives the rotation in radians
+  const rotation = Math.atan2(b, a);
 
   // Extract scale values (scaleX and scaleY)
   // Use the Euclidean norm (length) of each basis vector
@@ -21,7 +20,7 @@ export function extractDataFromMatrix(matrix: TTransform): T2DMatrixData {
     ty: ty,
     scaleX: scaleX,
     scaleY: scaleY,
-    rotation: rotation * (180 / Math.PI), // convert rotation from radians to degrees
+    rotation: rotation * (180 / Math.PI), // Convert rotation from radians to degrees
   };
 }
 

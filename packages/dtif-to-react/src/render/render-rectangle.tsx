@@ -12,6 +12,7 @@ export async function renderRectangle(
   node: TRectangleNode,
   style: React.CSSProperties = {}
 ): Promise<React.ReactNode> {
+  const fill = await renderFill(node);
   return (
     <div
       {...getIdentifier(node)}
@@ -30,7 +31,7 @@ export async function renderRectangle(
         ...style,
       }}
     >
-      {renderFill(node)}
+      {fill}
     </div>
   );
 }
