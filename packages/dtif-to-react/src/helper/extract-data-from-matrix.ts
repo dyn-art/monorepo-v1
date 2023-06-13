@@ -16,10 +16,10 @@ export function extractMatrixData(matrix: TTransform): T2DMatrixData {
   const scaleY = Math.sqrt(matrix[0][1] ** 2 + matrix[1][1] ** 2);
 
   return {
-    tx: tx,
-    ty: ty,
-    scaleX: scaleX,
-    scaleY: scaleY,
+    tx,
+    ty,
+    scaleX,
+    scaleY,
     rotation: rotation * (180 / Math.PI), // Convert rotation from radians to degrees
   };
 }
