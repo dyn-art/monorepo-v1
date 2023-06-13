@@ -100,6 +100,9 @@ async function handleGradientFill(
       export: { format: config.format },
     });
 
+    // Remove clone as its shown in editor
+    clone.remove();
+
     exported = {
       type: config.format,
       hash: hash,

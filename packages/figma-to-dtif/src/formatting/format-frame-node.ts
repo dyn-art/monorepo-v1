@@ -1,4 +1,5 @@
 import { ENodeTypes, TFrameNode } from '@pda/dtif-types';
+import { notEmpty } from '@pda/utils';
 import { TFormatNodeConfig } from '../format-node-to-dtif';
 import { convert2DMatrixTo3DMatrix } from '../helper';
 import { handleFills } from '../helper/handle-fills';
@@ -15,9 +16,11 @@ export async function formatFrameNode(
     id: node.id,
     name: node.name,
     // Children mixin
-    children: await Promise.all(
-      node.children.map((node) => formatNode(node, options, false))
-    ),
+    children: (
+      await Promise.all(
+        node.children.map((node) => formatNode(node, options, false))
+      )
+    ).filter(notEmpty),
     // Layout mixin
     x: node.x,
     y: node.y,

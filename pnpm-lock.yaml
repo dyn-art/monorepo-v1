@@ -694,6 +694,9 @@ importers:
       '@pda/logger':
         specifier: workspace:*
         version: link:../logger
+      '@pda/utils':
+        specifier: workspace:^
+        version: link:../utils
       crypto-js:
         specifier: ^4.1.1
         version: 4.1.1

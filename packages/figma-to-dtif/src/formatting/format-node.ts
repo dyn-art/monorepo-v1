@@ -14,8 +14,23 @@ export async function formatNode(
   node: SceneNode,
   config: TFormatNodeConfig,
   isParent = true
-): Promise<TNode> {
-  const { frameToSVG = true, svgExportIdentifierRegex = null } = config;
+): Promise<TNode | null> {
+  const {
+    frameToSVG = true,
+    svgExportIdentifierRegex = null,
+    ignoreInvisible = true,
+  } = config;
+  let formattedNode: TNode | null = null;
+
+  // Check whether node is visible
+  const isVisible = node.visible;
+  if (!isVisible && ignoreInvisible) {
+    return null;
+  }
+  // If invisible node to be exported, make it visible during export to avoid unwanted errors
+  else if (!isVisible) {
+    node.visible = true;
+  }
 
   // Check whether Figma node is supported by DTIF
   if (
@@ -30,16 +45,27 @@ export async function formatNode(
   }
 
   // Handle special SVG formatting if applicable
-  const svgNode = await handleSpecialSVGFormat({
-    node,
-    svgExportIdentifierRegex,
-    isParent,
-    frameToSVG,
-    config: config,
-  });
-  if (svgNode != null) return svgNode;
+  if (formattedNode == null) {
+    formattedNode = await handleSpecialSVGFormatting({
+      node,
+      svgExportIdentifierRegex,
+      isParent,
+      frameToSVG,
+      config: config,
+    });
+  }
 
-  return handleSupportedNodeFormatting(node, config);
+  // Handle supported node formatting
+  if (formattedNode == null) {
+    formattedNode = await handleSupportedNodeFormatting(node, config);
+  }
+
+  if (!isVisible) {
+    node.visible = isVisible;
+    formattedNode.opacity = 0;
+  }
+
+  return formattedNode;
 }
 
 async function handleSupportedNodeFormatting(
@@ -72,7 +98,7 @@ async function handleSupportedNodeFormatting(
   }
 }
 
-async function handleSpecialSVGFormat(args: {
+async function handleSpecialSVGFormatting(args: {
   node: SceneNode;
   svgExportIdentifierRegex: string | null;
   isParent: boolean;
@@ -80,6 +106,7 @@ async function handleSpecialSVGFormat(args: {
   config: TFormatNodeConfig;
 }): Promise<TSVGNode | null> {
   const { node, svgExportIdentifierRegex, isParent, frameToSVG, config } = args;
+  const isFrame = ['FRAME', 'COMPONENT', 'INSTANCE'].includes(node.type);
 
   // Check if the node name matches SVG export identifier regex
   let matchesSvgExportIdentifier = false;
@@ -87,8 +114,6 @@ async function handleSpecialSVGFormat(args: {
     const svgExportIdentifier = new RegExp(svgExportIdentifierRegex);
     matchesSvgExportIdentifier = svgExportIdentifier.test(node.name);
   }
-
-  const isFrame = ['FRAME', 'COMPONENT', 'INSTANCE'].includes(node.type);
 
   // Format node to svg node
   if (

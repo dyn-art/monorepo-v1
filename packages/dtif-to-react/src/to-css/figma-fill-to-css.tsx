@@ -8,7 +8,7 @@ import {
   TSolidPaint,
   TTextNode,
 } from '@pda/dtif-types';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { createLinearGradient, getS3BucketURLFromHash } from '../helper';
 import {
   T2DMatrixData,
@@ -97,44 +97,62 @@ async function handleImage(
   node: TNode
 ): Promise<React.CSSProperties> {
   const imageUrl = getS3BucketURLFromHash(fill.hash || '');
-  const { width: imageWidth, height: imageHeight } = await getImageDimensions(
-    imageUrl
-  );
+  let styles: React.CSSProperties | null = null;
 
-  // Apply crop transform
-  let transform: React.CSSProperties = {};
-  if (fill.scaleMode === 'CROP' && fill.transform != null) {
-    const { width, height } = calculateCropImageSize(
-      { width: node.width, height: node.height },
-      {
-        width: imageWidth,
-        height: imageHeight,
-      }
-    );
-    const transformData = extractMatrixData(fill.transform);
-    const transformDataWithDimensions = applyDimensionsToImageTransformData(
-      transformData,
-      { width, height },
-      { width: node.width, height: node.height }
-    );
-    transform = {
-      ...figmaTransformToCSS({
-        width,
-        height,
-        transform: transformDataWithDimensions,
-      }),
-      transformOrigin: 'top left',
-      width,
-      height,
+  // Handle crop
+  if (fill.scaleMode === 'CROP') {
+    styles = await handleImageCrop(imageUrl, fill, node);
+  }
+
+  // Handle fill
+  if (fill.scaleMode === 'FILL') {
+    styles = {
+      backgroundPosition: 'center center',
+      backgroundSize: 'cover',
+      backgroundImage: `url(${imageUrl})`,
+      backgroundRepeat: 'no-repeat',
     };
   }
 
+  return styles ?? {};
+}
+
+async function handleImageCrop(
+  imageUrl: string,
+  fill: TImagePaint,
+  node: TNode
+): Promise<CSSProperties | null> {
+  if (fill.scaleMode !== 'CROP' || fill.transform == null) return null;
+
+  const { width: imageWidth, height: imageHeight } = await getImageDimensions(
+    imageUrl
+  );
+  const { width, height } = calculateCropImageSize(
+    { width: node.width, height: node.height },
+    {
+      width: imageWidth,
+      height: imageHeight,
+    }
+  );
+  const transformData = extractMatrixData(fill.transform);
+  const transformDataWithDimensions = applyDimensionsToImageTransformData(
+    transformData,
+    { width, height },
+    { width: node.width, height: node.height }
+  );
+
   return {
     backgroundImage: `url(${imageUrl})`,
-    backgroundSize: fill.scaleMode,
     backgroundRepeat: 'no-repeat',
     WebkitBackgroundSize: 'contain',
-    ...transform,
+    ...figmaTransformToCSS({
+      width,
+      height,
+      transform: transformDataWithDimensions,
+    }),
+    transformOrigin: 'top left',
+    width,
+    height,
   };
 }
 

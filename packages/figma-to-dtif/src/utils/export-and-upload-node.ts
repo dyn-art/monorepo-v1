@@ -16,9 +16,6 @@ export async function exportAndUploadNode(
   // Convert node to SVG data
   const data = await exportNode(node, config.export);
 
-  // Remove clone as its shown in editor
-  node.remove();
-
   // Upload SVG data
   let hash = sha256(data);
   if (config.uploadStaticData != null) {
