@@ -10,3 +10,10 @@ export type TSVGCompatibleNode =
   | RectangleNode
   | InstanceNode
   | ComponentNode;
+
+export type TNodeWithFills =
+  | RectangleNode
+  | FrameNode
+  | ComponentNode
+  | InstanceNode
+  | TextNode;

@@ -1,6 +1,5 @@
 import { TSVGNode } from '@pda/dtif-types';
-import { TSVGCompatibleNode } from '../types';
-import { TNodeWithFills } from './handle-fills';
+import { TNodeWithFills, TSVGCompatibleNode } from '../types';
 
 // ============================================================================
 // Figma

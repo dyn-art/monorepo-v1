@@ -43,7 +43,7 @@ export type TRectangleNode = {
 
 export type TSVGNode = {
   type: ENodeTypes.SVG;
-  hash?: string;
+  hash: string;
   inline?: Uint8Array;
 } & TDefaultShapeMixin;
 
@@ -175,8 +175,8 @@ export type TEffect = TDropShadowEffect | TInnerShadowEffect | TBlurEffect;
 export type TSolidPaint = {
   type: 'SOLID';
   color: TRGB;
-  opacity?: number;
-  blendMode?: TBlendMode;
+  opacity: number;
+  blendMode: TBlendMode;
 };
 
 export type TGradientPaint = {
@@ -187,28 +187,54 @@ export type TGradientPaint = {
     | 'GRADIENT_DIAMOND';
   transform: TTransform;
   gradientStops: Array<TColorStop>;
-  visible?: boolean;
-  opacity?: number;
-  blendMode?: TBlendMode;
+  visible: boolean;
+  opacity: number;
+  blendMode: TBlendMode;
   exported?: {
     type: 'JPG' | 'SVG';
-    hash?: string;
+    hash: string;
     inline?: Uint8Array;
   };
 };
 
-export type TImagePaint = {
+export type TImagePaint =
+  | TImagePaintFill
+  | TImagePaintFit
+  | TImagePaintCrop
+  | TImagePaintTile;
+
+export type TImagePaintFill = {
   type: 'IMAGE';
-  scaleMode: 'FILL' | 'FIT' | 'CROP' | 'TILE';
-  hash?: string;
+  scaleMode: 'FILL';
+  rotation: number;
+} & TImagePaintMixin;
+
+export type TImagePaintFit = {
+  type: 'IMAGE';
+  scaleMode: 'FIT';
+  rotation: number;
+} & TImagePaintMixin;
+
+export type TImagePaintCrop = {
+  type: 'IMAGE';
+  scaleMode: 'CROP';
+  transform: TTransform;
+} & TImagePaintMixin;
+
+export type TImagePaintTile = {
+  type: 'IMAGE';
+  scaleMode: 'TILE';
+  rotation: number;
+  scalingFactor: number;
+} & TImagePaintMixin;
+
+export type TImagePaintMixin = {
+  hash: string;
   inline?: Uint8Array;
-  transform?: TTransform;
-  scalingFactor?: number;
-  rotation?: number;
   filters?: TImageFilters;
-  visible?: boolean;
-  opacity?: number;
-  blendMode?: TBlendMode;
+  opacity: number;
+  blendMode: TBlendMode;
+  visible: boolean;
 };
 
 export type TImageFilters = {

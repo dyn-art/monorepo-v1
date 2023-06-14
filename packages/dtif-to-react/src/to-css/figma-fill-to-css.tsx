@@ -97,24 +97,44 @@ async function handleImage(
   node: TNode
 ): Promise<React.CSSProperties> {
   const imageUrl = getS3BucketURLFromHash(fill.hash || '');
-  let styles: React.CSSProperties | null = null;
+  let fillStyle: React.CSSProperties | null = null;
 
-  // Handle crop
-  if (fill.scaleMode === 'CROP') {
-    styles = await handleImageCrop(imageUrl, fill, node);
+  switch (fill.scaleMode) {
+    case 'CROP':
+      fillStyle = await handleImageCrop(imageUrl, fill, node);
+      break;
+    case 'FILL':
+      fillStyle = {
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
+        backgroundImage: `url(${imageUrl})`,
+        backgroundRepeat: 'no-repeat',
+        transform: `rotate(${fill.rotation}deg)`,
+      };
+      break;
+    case 'FIT':
+      fillStyle = {
+        backgroundPosition: 'center center',
+        backgroundSize: 'contain',
+        backgroundImage: `url(${imageUrl})`,
+        backgroundRepeat: 'no-repeat',
+        transform: `rotate(${fill.rotation}deg)`,
+      };
+      break;
+    case 'TILE':
+      fillStyle = {
+        backgroundPosition: 'top left',
+        backgroundSize: `${fill.scalingFactor * 100}%`,
+        backgroundImage: `url(${imageUrl})`,
+        backgroundRepeat: 'repeat',
+        transform: `rotate(${fill.rotation}deg)`,
+      };
+      break;
+    default:
+    // do nothing
   }
 
-  // Handle fill
-  if (fill.scaleMode === 'FILL') {
-    styles = {
-      backgroundPosition: 'center center',
-      backgroundSize: 'cover',
-      backgroundImage: `url(${imageUrl})`,
-      backgroundRepeat: 'no-repeat',
-    };
-  }
-
-  return styles ?? {};
+  return fillStyle ?? {};
 }
 
 async function handleImageCrop(
@@ -144,7 +164,7 @@ async function handleImageCrop(
   return {
     backgroundImage: `url(${imageUrl})`,
     backgroundRepeat: 'no-repeat',
-    WebkitBackgroundSize: 'contain',
+    backgroundSize: 'contain',
     ...figmaTransformToCSS({
       width,
       height,
