@@ -1,9 +1,8 @@
 import { ENodeTypes, TFrameNode } from '@pda/dtif-types';
 import { notEmpty } from '@pda/utils';
-import { TFormatNodeConfig } from '../format-node-to-dtif';
-import { convert2DMatrixTo3DMatrix } from '../helper';
-import { handleFills } from '../helper/handle-fills';
+import { convert2DMatrixTo3DMatrix, handleFills } from '../utils';
 import { formatNode } from './format-node';
+import { TFormatNodeConfig } from './format-node-to-dtif';
 
 export async function formatFrameNode(
   node: FrameNode | ComponentNode | InstanceNode,

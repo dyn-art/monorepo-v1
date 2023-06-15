@@ -1,5 +1,5 @@
 import { TNode } from '@pda/dtif-types';
-import { formatNode } from './formatting';
+import { formatNode } from '.';
 
 export async function formatNodeToDTIF(
   node: SceneNode,

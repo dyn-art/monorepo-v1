@@ -1,4 +1,4 @@
-import { TContentType } from '../format-node-to-dtif';
+import { TContentType } from '../formatting/format-node-to-dtif';
 
 export function getImageType(imageData?: Uint8Array): TContentType | null {
   if (imageData == null || imageData.length < 4) {

@@ -1,6 +1,6 @@
 import { ENodeTypes, TTextNode } from '@pda/dtif-types';
-import { TFormatNodeConfig } from '../format-node-to-dtif';
-import { convert2DMatrixTo3DMatrix, handleFills } from '../helper';
+import { convert2DMatrixTo3DMatrix, handleFills } from '../utils';
+import { TFormatNodeConfig } from './format-node-to-dtif';
 
 export async function formatTextNode(
   node: TextNode,

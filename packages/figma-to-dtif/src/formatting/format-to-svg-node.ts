@@ -1,9 +1,8 @@
 import { ENodeTypes, TEffect, TSVGNode } from '@pda/dtif-types';
-import { TFormatNodeConfig } from '../format-node-to-dtif';
-import { convert2DMatrixTo3DMatrix } from '../helper';
 import { logger } from '../logger';
 import { TSVGCompatibleNode } from '../types';
-import { exportAndUploadNode } from '../utils/export-and-upload-node';
+import { convert2DMatrixTo3DMatrix, exportAndUploadNode } from '../utils';
+import { TFormatNodeConfig } from './format-node-to-dtif';
 
 export async function formatToSvgNode(
   node: TSVGCompatibleNode,
@@ -12,7 +11,7 @@ export async function formatToSvgNode(
   // Convert node to SVG data and try to upload SVG data
   const { hash, data, uploaded } = await exportAndUploadNode(node, {
     uploadStaticData: config.uploadStaticData,
-    export: { format: 'SVG' },
+    exportSettings: { format: 'SVG' },
   });
 
   logger.success(`Formatted '${node.type}' node '${node.name}' to SVG.`);

@@ -1,11 +1,11 @@
 import { TRectangleNode } from '@pda/dtif-types';
 import React from 'react';
-import { getIdentifier } from '../helper';
 import {
   figmaBlendModeToCSS,
   figmaEffectToCSS,
   figmaTransformToCSS,
 } from '../to-css';
+import { getIdentifier } from '../utils';
 import { renderFill } from './render-fill';
 
 export async function renderRectangle(

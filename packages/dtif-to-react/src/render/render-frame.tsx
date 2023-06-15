@@ -1,9 +1,9 @@
 import { TFrameNode } from '@pda/dtif-types';
 import React from 'react';
-import { getIdentifier } from '../helper';
 import { figmaEffectToCSS } from '../to-css';
 import { figmaBlendModeToCSS } from '../to-css/figma-blend-mode-to-css';
 import { figmaTransformToCSS } from '../to-css/figma-transform-to-css';
+import { getIdentifier } from '../utils';
 import { renderFill } from './render-fill';
 import { renderNode } from './render-node';
 

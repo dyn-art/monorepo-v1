@@ -1,6 +1,6 @@
 import { TFrameNode } from '@pda/dtif-types';
 import React from 'react';
-import { applyScaleToMatrix } from '../helper';
+import { applyScaleToMatrix } from '../utils';
 import { renderFrame } from './render-frame';
 
 export async function renderRelativeParent(

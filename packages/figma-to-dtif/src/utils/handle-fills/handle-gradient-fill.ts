@@ -1,9 +1,10 @@
 import { TGradientPaint } from '@pda/dtif-types';
-import { TFormatNodeConfig } from '../format-node-to-dtif';
-import { TNodeWithFills } from '../types';
-import { exportAndUploadNode } from '../utils/export-and-upload-node';
-import { convert2DMatrixTo3DMatrix } from './convert-2d-matrix-to-3d-matrix';
-import { isNodeWithFills, isTextNode } from './is-node';
+import { TFormatNodeConfig } from '../../formatting/format-node-to-dtif';
+import { TNodeWithFills } from '../../types';
+import { convert2DMatrixTo3DMatrix } from '../convert-2d-matrix-to-3d-matrix';
+import { exportAndUploadNode } from '../export-and-upload-node';
+import { isNodeWithFills, isTextNode } from '../is-node';
+import { resetNodeTransform } from '../reset-node-transform';
 
 export async function handleGradientFill(
   node: SceneNode,
@@ -21,20 +22,26 @@ export async function handleGradientFill(
     // Clone node with the relevant fill
     const clone = cloneToFillNode(node, [fill]);
 
-    // Export gradient fill node to specified format
-    const { hash, data, uploaded } = await exportAndUploadNode(clone, {
-      uploadStaticData: config.uploadStaticData,
-      export: { format: config.format },
-    });
+    try {
+      // Export gradient fill node to specified format
+      const { hash, data, uploaded } = await exportAndUploadNode(clone, {
+        uploadStaticData: config.uploadStaticData,
+        exportSettings: { format: config.format },
+        clone: false, // Not cloning node again as its already cloned
+      });
 
-    // Remove clone as its shown in editor
-    clone.remove();
+      // Remove clone as its shown in the editor
+      clone.remove();
 
-    exported = {
-      type: config.format,
-      hash: hash,
-      inline: uploaded ? undefined : data,
-    };
+      exported = {
+        type: config.format,
+        hash: hash,
+        inline: uploaded ? undefined : data,
+      };
+    } catch (e) {
+      clone.remove();
+      throw e;
+    }
   }
 
   return {
@@ -52,19 +59,8 @@ function cloneToFillNode(node: TNodeWithFills, fills: Paint[]): SceneNode {
   const clone = isTextNode(node)
     ? createRectangleNodeFromTextNode(node)
     : node.clone();
-
-  // Apply only relevant fill
   clone.fills = fills;
-
-  // Reset transform
-  clone.x = 0;
-  clone.y = 0;
-  clone.rotation = 0;
-  clone.relativeTransform = [
-    [1, 0, 0],
-    [0, 1, 0],
-  ];
-
+  resetNodeTransform(clone);
   return clone;
 }
 

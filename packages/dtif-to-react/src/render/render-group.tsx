@@ -1,7 +1,7 @@
 import { TGroupNode } from '@pda/dtif-types';
 import React from 'react';
-import { getIdentifier } from '../helper';
 import { figmaBlendModeToCSS, figmaEffectToCSS } from '../to-css';
+import { getIdentifier } from '../utils';
 import { renderNode } from './render-node';
 
 export async function renderGroup(

@@ -1,8 +1,12 @@
 import { TImagePaint } from '@pda/dtif-types';
-import { ExportImageException, UploadStaticDataException } from '../exceptions';
-import { TFormatNodeConfig } from '../format-node-to-dtif';
-import { exportImageFill, getImageType } from '../utils';
-import { convert2DMatrixTo3DMatrix } from './convert-2d-matrix-to-3d-matrix';
+import {
+  ExportImageException,
+  UploadStaticDataException,
+} from '../../exceptions';
+import { TFormatNodeConfig } from '../../formatting';
+import { convert2DMatrixTo3DMatrix } from '../convert-2d-matrix-to-3d-matrix';
+import { exportImageFill } from '../export-image-fill';
+import { getImageType } from '../get-image-type';
 
 export async function handleImageFill(
   node: SceneNode,
@@ -73,7 +77,6 @@ async function uploadImage(
       node
     );
   }
-
   let imageHash = fill.imageHash;
 
   // Export image

@@ -1,11 +1,13 @@
 import { ESupportedFigmaNodeTypes, TNode, TSVGNode } from '@pda/dtif-types';
-import { UnsupportedFigmaNodeException } from '../exceptions';
-import { IncompatibleSVGNodeException } from '../exceptions/IncompatibleSVGNodeException';
-import { TFormatNodeConfig } from '../format-node-to-dtif';
-import { isSVGCompatibleNode, isSVGNode } from '../helper';
+import {
+  IncompatibleSVGNodeException,
+  UnsupportedFigmaNodeException,
+} from '../exceptions';
 import { logger } from '../logger';
+import { isSVGCompatibleNode, isSVGNode } from '../utils';
 import { formatFrameNode } from './format-frame-node';
 import { formatGroupNode } from './format-group-node';
+import { TFormatNodeConfig } from './format-node-to-dtif';
 import { formatRectangleNode } from './format-rectangle-node';
 import { formatTextNode } from './format-text-node';
 import { formatToSvgNode } from './format-to-svg-node';

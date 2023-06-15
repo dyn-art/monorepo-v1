@@ -1,8 +1,8 @@
 import { TSVGNode } from '@pda/dtif-types';
 import React from 'react';
-import { getIdentifier, getS3BucketURLFromHash } from '../helper';
 import { logger } from '../logger';
 import { figmaTransformToCSS } from '../to-css';
+import { getIdentifier, getS3BucketURLFromHash } from '../utils';
 
 export async function renderSVG(
   node: TSVGNode,
@@ -16,7 +16,7 @@ export async function renderSVG(
     top: 0,
     left: 0,
     opacity: node.opacity,
-    ...figmaTransformToCSS(node, false),
+    ...figmaTransformToCSS(node),
     ...style,
   };
 

@@ -1,5 +1,5 @@
 /**
- * Helper function to convert a Figma RGB color object from 0 to 1 scale to 0 to 255 scale
+ * Helper function to convert a RGB color object from 0 to 1 scale to 0 to 255 scale
  * and return it as CSS string.
  */
 export function figmaRGBToCss(color: {

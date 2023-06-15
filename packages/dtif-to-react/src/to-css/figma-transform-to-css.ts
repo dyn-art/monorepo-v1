@@ -3,7 +3,7 @@ import React from 'react';
 import {
   T2DMatrixData,
   extractMatrixData,
-} from '../helper/extract-data-from-matrix';
+} from '../utils/extract-data-from-matrix';
 
 /**
  * Helper function to convert a Figma transform object into the CSS transform space
@@ -13,14 +13,11 @@ import {
  * @param rotate - Optional flag to apply rotation. Default is true.
  * @returns An object representing the CSS properties equivalent to the Figma transform.
  */
-export function figmaTransformToCSS(
-  props: {
-    width: number;
-    height: number;
-    transform: TTransform | T2DMatrixData;
-  },
-  rotate = true
-): React.CSSProperties {
+export function figmaTransformToCSS(props: {
+  width: number;
+  height: number;
+  transform: TTransform | T2DMatrixData;
+}): React.CSSProperties {
   const { width, height, transform } = props;
   const {
     rotation,
@@ -56,10 +53,8 @@ export function figmaTransformToCSS(
   // The returned CSS transform property applies the calculated translation and rotation
   return {
     transform: `translate(${effectiveX}px, ${effectiveY}px) rotate(${
-      rotate
-        ? // We negate the rotation to correct for Figma's clockwise rotation
-          -effectiveRotation
-        : 0
+      // We negate the rotation to correct for Figma's clockwise rotation
+      -effectiveRotation
     }deg) scale(${scaleX}, ${scaleY})`,
     transformOrigin: 'center center',
   };
