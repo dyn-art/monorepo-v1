@@ -20,12 +20,9 @@ export async function formatGroupNode(
       )
     ).filter(notEmpty),
     // Layout mixin
-    x: node.x,
-    y: node.y,
     height: node.height,
     width: node.width,
-    rotation: node.rotation,
-    transform: convert2DMatrixTo3DMatrix(node.relativeTransform),
+    relativeTransform: convert2DMatrixTo3DMatrix(node.relativeTransform),
     // Blend mixin
     blendMode: node.blendMode,
     opacity: node.opacity,

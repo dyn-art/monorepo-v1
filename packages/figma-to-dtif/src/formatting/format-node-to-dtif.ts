@@ -12,10 +12,7 @@ export async function formatNodeToDTIF(
   return toExportNode != null
     ? {
         ...toExportNode,
-        x: 0,
-        y: 0,
-        rotation: 0,
-        transform: [
+        relativeTransform: [
           [1, 0, 0],
           [0, 1, 0],
           [0, 0, 1],

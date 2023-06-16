@@ -7,13 +7,10 @@ export async function renderRelativeParent(
   node: TFrameNode,
   scale = 1
 ): Promise<React.ReactNode> {
-  const renderedFrame = await renderFrame(
-    {
-      ...node,
-      transform: applyScaleToMatrix(node.transform, scale),
-    },
-    { transformOrigin: 'top left' }
-  );
+  const renderedFrame = await renderFrame({
+    ...node,
+    relativeTransform: applyScaleToMatrix(node.relativeTransform, scale),
+  });
   return (
     <div
       style={{

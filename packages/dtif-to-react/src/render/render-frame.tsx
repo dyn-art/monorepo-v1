@@ -21,7 +21,7 @@ export async function renderFrame(
         height: node.height,
         overflow: node.clipsContent ? 'hidden' : 'visible',
         opacity: node.opacity,
-        ...figmaTransformToCSS(node),
+        ...figmaTransformToCSS(node.relativeTransform),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
         ...style,

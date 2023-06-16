@@ -22,6 +22,8 @@ export async function handleImageFill(
     blendMode: fill.blendMode ?? 'PASS_THROUGH',
     visible: fill.visible ?? true,
     filters: fill.filters,
+    width: 100, // TODO: get width
+    height: 100, // TODO: get height
   };
   switch (fill.scaleMode) {
     case 'CROP':

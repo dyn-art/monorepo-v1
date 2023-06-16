@@ -35,11 +35,7 @@ export async function handleImageCropMode(
     backgroundImage: `url(${imageUrl})`,
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'contain',
-    ...figmaTransformToCSS({
-      width,
-      height,
-      transform: transformDataWithDimensions,
-    }),
+    ...figmaTransformToCSS(transformDataWithDimensions),
     transformOrigin: 'top left',
     width,
     height,

@@ -6,6 +6,7 @@ import {
   figmaEffectToCSS,
   figmaTransformToCSS,
 } from '../to-css';
+import { figmaTextAlignToCSS } from '../to-css/figma-text-align-to-css';
 import { getIdentifier } from '../utils';
 import { renderFill } from './render-fill';
 
@@ -42,8 +43,6 @@ export async function renderText(
       {...getIdentifier(node)}
       style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
         width: node.width,
         height: node.height,
         opacity: node.opacity,
@@ -59,9 +58,11 @@ export async function renderText(
             : `${node.lineHeight.value}${
                 node.lineHeight.unit === 'PIXELS' ? 'px' : '%'
               }`,
-        textAlign: node.textAlignHorizontal.toLowerCase() as any,
-        justifyContent: node.textAlignVertical.toLowerCase(),
-        ...figmaTransformToCSS(node),
+        ...figmaTextAlignToCSS(
+          node.textAlignHorizontal,
+          node.textAlignVertical
+        ),
+        ...figmaTransformToCSS(node.relativeTransform),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
         ...style,

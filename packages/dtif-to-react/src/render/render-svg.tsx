@@ -3,6 +3,7 @@ import React from 'react';
 import { logger } from '../logger';
 import { figmaTransformToCSS } from '../to-css';
 import { getIdentifier, getS3BucketURLFromHash } from '../utils';
+import { convertReactCSSPropertiesToCSS } from '../utils/convert-react-css-properties-to-css';
 
 export async function renderSVG(
   node: TSVGNode,
@@ -16,17 +17,14 @@ export async function renderSVG(
     top: 0,
     left: 0,
     opacity: node.opacity,
-    ...figmaTransformToCSS(node),
+    ...figmaTransformToCSS(node.relativeTransform),
     ...style,
   };
 
   // Apply style to svg html tag
-  const styleString = Object.entries(svgStyles)
-    .map(([key, value]) => `${key}:${value}`)
-    .join('; ');
   const updatedSvgContent = svgContent.replace(
     '<svg',
-    `<svg style="${styleString}"`
+    `<svg style="${convertReactCSSPropertiesToCSS(svgStyles)}"`
   );
 
   return (

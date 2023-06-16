@@ -25,7 +25,7 @@ export async function renderRectangle(
         borderRadius: `${node.topLeftRadius}px ${node.topRightRadius}px ${node.bottomRightRadius}px ${node.bottomLeftRadius}px`,
         opacity: node.opacity,
         overflow: 'hidden', // Fill is always clipped (clipsContent)
-        ...figmaTransformToCSS(node),
+        ...figmaTransformToCSS(node.relativeTransform),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
         ...style,

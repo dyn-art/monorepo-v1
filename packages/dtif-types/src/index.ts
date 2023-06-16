@@ -99,9 +99,8 @@ export type TChildrenMixin = {
 export type TLayoutMixin = {
   width: number;
   height: number;
-  rotation: number;
-  transform: TTransform;
-} & TVector;
+  relativeTransform: TTransform;
+};
 
 export type TFillsMixin = {
   fills: Array<TPaint>;
@@ -235,6 +234,8 @@ export type TImagePaintMixin = {
   opacity: number;
   blendMode: TBlendMode;
   visible: boolean;
+  width: number;
+  height: number;
 };
 
 export type TImageFilters = {
