@@ -2,21 +2,25 @@ import { TSVGNode } from '@pda/dtif-types';
 import React from 'react';
 import { logger } from '../logger';
 import { figmaTransformToCSS } from '../to-css';
+import { TInherit } from '../types';
 import { getIdentifier, getS3BucketURLFromHash } from '../utils';
 import { convertReactCSSPropertiesToCSS } from '../utils/convert-react-css-properties-to-css';
 
 export async function renderSVG(
   node: TSVGNode,
+  inherit: TInherit,
   style: React.CSSProperties = {}
 ): Promise<React.ReactNode> {
+  const isVisible = node.isVisible || inherit.isVisible;
+  const isLocked = node.isLocked || inherit.isLocked;
   const svgContent = await getSVGFromHash(node?.hash || '');
   if (svgContent == null) return <div>Failed to load SVG</div>;
 
   const svgStyles: React.CSSProperties = {
     position: 'absolute',
-    top: 0,
-    left: 0,
+    display: isVisible ? 'block' : 'none',
     opacity: node.opacity,
+    pointerEvents: isLocked ? 'none' : 'auto',
     ...figmaTransformToCSS(node.relativeTransform),
     ...style,
   };

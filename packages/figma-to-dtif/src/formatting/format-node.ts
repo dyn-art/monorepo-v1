@@ -34,40 +34,48 @@ export async function formatNode(
     node.visible = true;
   }
 
-  // Check whether Figma node is supported by DTIF
-  if (
-    !Object.values(ESupportedFigmaNodeTypes).includes(
-      node.type as ESupportedFigmaNodeTypes
-    )
-  ) {
-    throw new UnsupportedFigmaNodeException(
-      `The Figma node '${node.type}' is not yet supported!`,
-      node
-    );
-  }
+  try {
+    // Check whether Figma node is supported by DTIF
+    if (
+      !Object.values(ESupportedFigmaNodeTypes).includes(
+        node.type as ESupportedFigmaNodeTypes
+      )
+    ) {
+      throw new UnsupportedFigmaNodeException(
+        `The Figma node '${node.type}' is not yet supported!`,
+        node
+      );
+    }
 
-  // Handle special SVG formatting if applicable
-  if (formattedNode == null) {
-    formattedNode = await handleSpecialSVGFormatting({
-      node,
-      svgExportIdentifierRegex,
-      isParent,
-      frameToSVG,
-      config: config,
-    });
-  }
+    // Handle special SVG formatting if applicable
+    if (formattedNode == null) {
+      formattedNode = await handleSpecialSVGFormatting({
+        node,
+        svgExportIdentifierRegex,
+        isParent,
+        frameToSVG,
+        config: config,
+      });
+    }
 
-  // Handle supported node formatting
-  if (formattedNode == null) {
-    formattedNode = await handleSupportedNodeFormatting(node, config);
-  }
+    // Handle supported node formatting
+    if (formattedNode == null) {
+      formattedNode = await handleSupportedNodeFormatting(node, config);
+    }
 
-  if (!isVisible) {
-    node.visible = isVisible;
-    formattedNode.opacity = 0;
+    resetVisibility(node, isVisible);
+  } catch (e) {
+    resetVisibility(node, isVisible);
+    throw e;
   }
 
   return formattedNode;
+}
+
+function resetVisibility(node: SceneNode, isVisible: boolean) {
+  if (!isVisible) {
+    node.visible = isVisible;
+  }
 }
 
 async function handleSupportedNodeFormatting(

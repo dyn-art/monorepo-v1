@@ -19,6 +19,9 @@ export async function formatTextNode(
     // BasNode mixin
     id: node.id,
     name: node.name,
+    // SceneNode mixin
+    isLocked: node.locked,
+    isVisible: node.visible,
     // Layout mixin
     height: node.height,
     width: node.width,

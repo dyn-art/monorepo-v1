@@ -13,6 +13,9 @@ export async function formatGroupNode(
     // BaseNode mixin
     id: node.id,
     name: node.name,
+    // SceneNode mixin
+    isLocked: node.locked,
+    isVisible: node.visible,
     // Children mixin
     children: (
       await Promise.all(

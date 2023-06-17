@@ -5,7 +5,7 @@ import {
 } from '../../exceptions';
 import { TFormatNodeConfig } from '../../formatting';
 import { convert2DMatrixTo3DMatrix } from '../convert-2d-matrix-to-3d-matrix';
-import { exportImageFill } from '../export-image-fill';
+import { exportImageData } from '../export-image-fill';
 import { getImageType } from '../get-image-type';
 
 export async function handleImageFill(
@@ -13,7 +13,11 @@ export async function handleImageFill(
   fill: ImagePaint,
   config: TFormatNodeConfig
 ): Promise<TImagePaint> {
-  const { hash, inline } = await uploadImage(node, fill, config);
+  const { hash, inline, size } = await exportAndUploadImage(
+    node,
+    fill.imageHash,
+    config
+  );
   const baseFillProps: Omit<TImagePaint, 'scaleMode'> = {
     type: 'IMAGE',
     hash,
@@ -22,8 +26,8 @@ export async function handleImageFill(
     blendMode: fill.blendMode ?? 'PASS_THROUGH',
     visible: fill.visible ?? true,
     filters: fill.filters,
-    width: 100, // TODO: get width
-    height: 100, // TODO: get height
+    width: size.width,
+    height: size.height,
   };
   switch (fill.scaleMode) {
     case 'CROP':
@@ -62,27 +66,30 @@ export async function handleImageFill(
   return fill as unknown as TImagePaint;
 }
 
-async function uploadImage(
+async function exportAndUploadImage(
   node: SceneNode,
-  fill: ImagePaint,
+  imageHash: string | null,
   config: TFormatNodeConfig
 ): Promise<{
   hash: TImagePaint['hash'];
   inline: TImagePaint['inline'];
+  size: { width: number; height: number };
 }> {
   let uploaded = false;
 
   // Check whether image fill has actual image
-  if (fill.imageHash == null) {
+  if (imageHash == null) {
     throw new ExportImageException(
       `Can't export node '${node.name}' as it has no valid image hash!`,
       node
     );
   }
-  let imageHash = fill.imageHash;
 
   // Export image
-  const imageData = await exportImageFill(node, imageHash);
+  const { data: imageData, size: imageSize } = await exportImageData(
+    imageHash,
+    node
+  );
 
   // Upload image data
   if (config.uploadStaticData != null) {
@@ -103,5 +110,6 @@ async function uploadImage(
   return {
     hash: imageHash,
     inline: uploaded ? undefined : imageData,
+    size: imageSize,
   };
 }

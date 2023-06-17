@@ -20,7 +20,7 @@ export async function exportAndUploadNode(
   } = config;
   let uploaded = false;
 
-  // Reset transform before upload so that its not embedded into the SVG
+  // Reset transform before upload so that the transform is not embedded into the SVG
   const clone = shouldClone ? node.clone() : node;
   resetNodeTransform(clone);
 
@@ -45,16 +45,16 @@ export async function exportAndUploadNode(
       uploaded = true;
     }
 
-    // Remove clone as its shown in the editor
-    if (shouldClone) {
-      clone.remove();
-    }
-
+    removeClone(clone, shouldClone);
     return { hash, data, uploaded };
   } catch (e) {
-    if (shouldClone) {
-      clone.remove();
-    }
+    removeClone(clone, shouldClone);
     throw e;
+  }
+}
+
+function removeClone(clone: SceneNode, shouldClone: boolean) {
+  if (shouldClone) {
+    clone.remove();
   }
 }

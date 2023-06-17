@@ -1,9 +1,18 @@
 import { ExportImageException } from '../exceptions';
 
-export async function exportImageFill(node: SceneNode, imageHash: string) {
-  let data: Uint8Array | null;
+export async function exportImageData(
+  imageHash: string,
+  node: SceneNode
+): Promise<{ data: Uint8Array; size: { width: number; height: number } }> {
+  let data: Uint8Array | null = null;
+  let size: { width: number; height: number } | null = null;
+
   try {
-    data = (await figma.getImageByHash(imageHash)?.getBytesAsync()) ?? null;
+    const image = figma.getImageByHash(imageHash);
+    if (image != null) {
+      data = await image.getBytesAsync();
+      size = await image.getSizeAsync();
+    }
   } catch (error) {
     let errorMessage: string;
     if (error instanceof Error) {
@@ -16,11 +25,13 @@ export async function exportImageFill(node: SceneNode, imageHash: string) {
       node
     );
   }
-  if (data == null) {
+
+  if (data == null || size == null) {
     throw new ExportImageException(
       `Failed to export node '${node.name}' as image!`,
       node
     );
   }
-  return data;
+
+  return { data, size };
 }

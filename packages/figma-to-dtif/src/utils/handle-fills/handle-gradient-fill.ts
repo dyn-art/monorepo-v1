@@ -30,8 +30,7 @@ export async function handleGradientFill(
         clone: false, // Not cloning node again as its already cloned
       });
 
-      // Remove clone as its shown in the editor
-      clone.remove();
+      removeClone(clone);
 
       exported = {
         type: config.format,
@@ -39,7 +38,7 @@ export async function handleGradientFill(
         inline: uploaded ? undefined : data,
       };
     } catch (e) {
-      clone.remove();
+      removeClone(clone);
       throw e;
     }
   }
@@ -53,6 +52,10 @@ export async function handleGradientFill(
     transform: convert2DMatrixTo3DMatrix(fill.gradientTransform),
     exported: exported ?? undefined,
   };
+}
+
+function removeClone(clone: SceneNode) {
+  clone.remove();
 }
 
 function cloneToFillNode(node: TNodeWithFills, fills: Paint[]): SceneNode {

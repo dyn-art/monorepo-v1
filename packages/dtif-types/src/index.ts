@@ -29,6 +29,7 @@ export type TFrameNode = {
   type: ENodeTypes.FRAME;
   clipsContent: boolean;
 } & TBaseNodeMixin &
+  TSceneNodeMixin &
   TChildrenMixin &
   TLayoutMixin &
   TBlendMixin &
@@ -63,6 +64,7 @@ export type TTextNode = {
 export type TGroupNode = {
   type: ENodeTypes.GROUP;
 } & TBaseNodeMixin &
+  TSceneNodeMixin &
   TChildrenMixin &
   TBlendMixin &
   TLayoutMixin;
@@ -78,7 +80,10 @@ export type TNode =
 // Mixins
 // ============================================================================
 
-export type TDefaultShapeMixin = TBaseNodeMixin & TLayoutMixin & TBlendMixin;
+export type TDefaultShapeMixin = TBaseNodeMixin &
+  TLayoutMixin &
+  TBlendMixin &
+  TSceneNodeMixin;
 
 export type TRectangleCornerMixin = {
   topLeftRadius: number;
@@ -104,6 +109,11 @@ export type TLayoutMixin = {
 
 export type TFillsMixin = {
   fills: Array<TPaint>;
+};
+
+export type TSceneNodeMixin = {
+  isVisible: boolean;
+  isLocked: boolean;
 };
 
 // ============================================================================

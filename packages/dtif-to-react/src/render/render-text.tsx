@@ -7,13 +7,17 @@ import {
   figmaTransformToCSS,
 } from '../to-css';
 import { figmaTextAlignToCSS } from '../to-css/figma-text-align-to-css';
+import { TInherit } from '../types';
 import { getIdentifier } from '../utils';
 import { renderFill } from './render-fill';
 
 export async function renderText(
   node: TTextNode,
+  inherit: TInherit,
   style: React.CSSProperties = {}
 ): Promise<React.ReactNode> {
+  const isVisible = node.isVisible || inherit.isVisible;
+  const isLocked = node.isLocked || inherit.isLocked;
   const fontFamily = node.fontName.family || 'Roboto';
   const fontWeight = node.fontWeight || 400;
   const fontSize = node.fontSize || 12;
@@ -43,6 +47,7 @@ export async function renderText(
       {...getIdentifier(node)}
       style={{
         position: 'absolute',
+        display: isVisible ? 'block' : 'none',
         width: node.width,
         height: node.height,
         opacity: node.opacity,
@@ -62,6 +67,7 @@ export async function renderText(
           node.textAlignHorizontal,
           node.textAlignVertical
         ),
+        pointerEvents: isLocked ? 'none' : 'auto',
         ...figmaTransformToCSS(node.relativeTransform),
         ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
