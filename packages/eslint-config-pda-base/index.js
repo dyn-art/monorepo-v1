@@ -16,7 +16,7 @@ module.exports = {
   parserOptions: {
     project: ['tsconfig.json'],
   },
-  ignorePatterns: ['.eslintrc.js', 'node_modules', 'jest.config.js'],
+  ignorePatterns: ['.eslintrc.js', 'node_modules', '*.config.js', 'scripts'],
   rules: {
     '@typescript-eslint/no-use-before-define': OFF,
     '@typescript-eslint/lines-between-class-members': OFF,

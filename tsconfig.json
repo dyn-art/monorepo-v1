@@ -1,0 +1,53 @@
+{
+    "files": [],
+    "references": [
+        {
+            "path": "apps/core"
+        },
+        {
+            "path": "apps/discord"
+        },
+        {
+            "path": "apps/figma-plugin"
+        },
+        {
+            "path": "apps/order-worker"
+        },
+        {
+            "path": "packages/ads-renderer"
+        },
+        {
+            "path": "packages/discord-handler"
+        },
+        {
+            "path": "packages/dtif-to-react"
+        },
+        {
+            "path": "packages/dtif-types"
+        },
+        {
+            "path": "packages/etsy"
+        },
+        {
+            "path": "packages/figma-handler"
+        },
+        {
+            "path": "packages/figma-to-dtif"
+        },
+        {
+            "path": "packages/logger"
+        },
+        {
+            "path": "packages/music"
+        },
+        {
+            "path": "packages/product-renderer"
+        },
+        {
+            "path": "packages/s3"
+        },
+        {
+            "path": "packages/utils"
+        }
+    ]
+}

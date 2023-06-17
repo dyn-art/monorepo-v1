@@ -1,2 +1,0 @@
-# `@pda/chrome`
-> coming soon

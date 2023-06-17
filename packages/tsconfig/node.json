@@ -3,7 +3,7 @@
   "display": "NodeJs App",
   "extends": "./base.json",
   "compilerOptions": {
-    "lib": ["es2015"],
+    "lib": ["es6"],
     "target": "esnext",
     "module": "commonjs",
     "outDir": "./dist",

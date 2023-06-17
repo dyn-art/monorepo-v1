@@ -23,6 +23,10 @@ export class EtsyClient {
     this.setupInterceptors();
   }
 
+  public get authService() {
+    return this._authService;
+  }
+
   private setupInterceptors() {
     // Intercept requests to inject the Authorization header
     this._httpClient.interceptors.request.use(

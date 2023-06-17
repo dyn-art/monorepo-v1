@@ -5,7 +5,8 @@ const port = process.env.APP_PORT ?? 9000;
 const version = process.env.APP_VERSION ?? 1;
 const packageVersion = process.env.npm_package_version;
 const baseUrl = process.env.APP_BASE_URL ?? 'http://localhost:{}';
-const corsOrigins = process.env.APP_CORS_ORIGIN ?? 'http://localhost:3000';
+const corsOrigins = process.env.APP_CORS_ORIGIN ?? '*';
+const corsApiKey = process.env.APP_CORS_API_KEY;
 const nodeEnv = process.env.NODE_ENV ?? STAGE.LOCAL;
 const rootPath = process.cwd() ?? 'not-set';
 
@@ -14,7 +15,8 @@ export default {
   packageVersion,
   port,
   baseUrl: `${replaceBracket(baseUrl, port.toString())}/v${version}`,
-  corsOrigins: corsOrigins.split(', '),
+  corsOrigins: corsOrigins.includes(',') ? corsOrigins.split(',') : corsOrigins,
+  corsApiKey,
   stage: nodeEnv as STAGE,
   rootPath,
   repository: 'https://github.com/physical-art/physicaldotart',
