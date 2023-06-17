@@ -5,13 +5,18 @@ async function getPreSignedUploadUrl(
   key: string,
   scope: string,
   contentType: string
-): Promise<{ uploadUrl: string; key: string }> {
+): Promise<
+  | { objectExists: false; uploadUrl: string; key: string }
+  | { objectExists: true }
+> {
   // Build url
   const url = `${
     coreConfig.baseUrl
   }/media/pre-signed-upload-url?contentType=${encodeURIComponent(
     contentType
-  )}&key=${encodeURIComponent(key)}&scope=${encodeURIComponent(scope)}`;
+  )}&key=${encodeURIComponent(key)}&scope=${encodeURIComponent(
+    scope
+  )}&overwrite${encodeURIComponent(false)}`;
 
   // Send request
   const response = await fetch(url.toString(), {
@@ -28,7 +33,13 @@ async function getPreSignedUploadUrl(
     );
   }
 
-  return await response.json();
+  // Check whether object already exists
+  if (response.status === 200) {
+    return { objectExists: true };
+  }
+
+  const data = await response.json();
+  return { objectExists: false, ...data };
 }
 
 export async function uploadDataToBucket(
@@ -37,28 +48,34 @@ export async function uploadDataToBucket(
   mimeType: string
 ): Promise<string> {
   const scope = 'public-read';
+  let fileKey = key;
 
-  const { uploadUrl, key: fileKey } = await getPreSignedUploadUrl(
-    key,
+  const preSignedUploadUrl = await getPreSignedUploadUrl(
+    fileKey,
     scope,
     mimeType
   );
 
-  // Send request
-  const uploadResponse = await fetch(uploadUrl, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': mimeType,
-      'x-amz-acl': scope,
-    },
-    body: data,
-  });
+  // Upload if object doesn't already exist
+  if (!preSignedUploadUrl.objectExists) {
+    const { uploadUrl } = preSignedUploadUrl;
+    fileKey = preSignedUploadUrl.key;
 
-  // Handle error
-  if (!uploadResponse.ok) {
-    throw new UploadToBucketException(
-      `Failed to upload file to S3 bucket: ${uploadResponse.status} - ${uploadResponse.statusText}`
-    );
+    const uploadResponse = await fetch(uploadUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': mimeType,
+        'x-amz-acl': scope,
+      },
+      body: data,
+    });
+
+    // Handle error
+    if (!uploadResponse.ok) {
+      throw new UploadToBucketException(
+        `Failed to upload file to S3 bucket: ${uploadResponse.status} - ${uploadResponse.statusText}`
+      );
+    }
   }
 
   return fileKey;

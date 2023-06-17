@@ -38,7 +38,7 @@ export async function exportAndUploadNode(
       );
       if (hash === null) {
         throw new UploadStaticDataException(
-          `Failed to upload ${config.exportSettings.format} with the hash ${hash} to S3 bucket!`,
+          `Failed to upload ${config.exportSettings.format} with the hash ${hash}!`,
           node
         );
       }

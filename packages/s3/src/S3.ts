@@ -1,7 +1,9 @@
 import {
   DeleteObjectCommand,
   GetObjectCommand,
-  ListObjectsCommand,
+  HeadObjectCommand,
+  HeadObjectCommandInput,
+  NotFound,
   PutObjectCommand,
   PutObjectCommandInputType,
   S3Client,
@@ -9,9 +11,6 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { logger } from './logger';
-
-// TODO: cache credentials
-// https://stackoverflow.com/questions/53523159/429-too-many-requests-when-generating-presigned-urls-for-s3-objects-using-aws-sd
 
 export default class S3 {
   private client: S3Client;
@@ -24,7 +23,32 @@ export default class S3 {
     this.bucket = config.bucket;
   }
 
-  async upload(
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/headobjectcommand.html
+  async doesObjectExist(key: string): Promise<boolean> {
+    const params: HeadObjectCommandInput = {
+      Bucket: this.bucket,
+      Key: key,
+    };
+    try {
+      await this.client.send(new HeadObjectCommand(params));
+      logger.success(`Object '${this.bucket}/${key}' exists.`);
+      return true;
+    } catch (error) {
+      if (error instanceof NotFound) {
+        logger.success(`Object '${this.bucket}/${key}' does not exist.`);
+        return false;
+      } else {
+        logger.error(
+          `Failed to retrieve object metadata for '${this.bucket}/${key}'.`,
+          error
+        );
+        throw error;
+      }
+    }
+  }
+
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/putobjectcommand.html
+  async uploadObject(
     key: string,
     data: PutObjectCommandInputType['Body']
   ): Promise<boolean> {
@@ -44,25 +68,8 @@ export default class S3 {
     return false;
   }
 
-  async listFiles(): Promise<any> {
-    try {
-      const response = await this.client.send(
-        new ListObjectsCommand({ Bucket: this.bucket })
-      );
-      logger.success(
-        `Successfully fetched file list from bucket '${this.bucket}'.`,
-        response
-      );
-      return response;
-    } catch (e) {
-      logger.error(
-        `Failed to fetch file list from bucket '${this.bucket}'!`,
-        e
-      );
-    }
-  }
-
-  async deleteFile(key: string): Promise<boolean> {
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/deleteobjectcommand.html
+  async deleteObject(key: string): Promise<boolean> {
     try {
       await this.client.send(
         new DeleteObjectCommand({
@@ -80,7 +87,8 @@ export default class S3 {
     return false;
   }
 
-  async download<TOutputType extends TDownloadOutputType>(
+  // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/getobjectcommand.html
+  async downloadObject<TOutputType extends TDownloadOutputType>(
     key: string,
     config: {
       outputType?: TOutputType;
@@ -115,7 +123,7 @@ export default class S3 {
     return null;
   }
 
-  async preSignedDownloadUrl(
+  async getPreSignedDownloadUrl(
     key: string,
     config: { expiresIn?: number } = {}
   ): Promise<string | null> {
@@ -143,7 +151,7 @@ export default class S3 {
     return null;
   }
 
-  async preSignedUploadUrl(
+  async getPreSignedUploadUrl(
     key: string,
     config: { contentType?: string; expiresIn?: number; scope?: string } = {}
   ): Promise<string | null> {

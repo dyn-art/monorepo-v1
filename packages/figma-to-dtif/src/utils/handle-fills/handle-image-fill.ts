@@ -100,7 +100,7 @@ async function exportAndUploadImage(
     );
     if (imageHash == null) {
       throw new UploadStaticDataException(
-        `Failed to upload image with the hash ${imageHash} to S3 bucket!`,
+        `Failed to upload image with the hash ${imageHash}!`,
         node
       );
     }
