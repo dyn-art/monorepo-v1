@@ -1,4 +1,4 @@
-import { LOG_LEVEL, Logger } from '..';
+import { LOG_LEVEL, Logger } from '../logger';
 
 describe('Logger class tests', () => {
   const consoleSpyKeys = ['log', 'debug', 'info', 'warn', 'error'] as const;

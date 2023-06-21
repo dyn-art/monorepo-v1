@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "description": "Figma Plugin",
   "private": true,
-  "main": "code.js",
   "scripts": {
     "build": "shx rm -rf dist && rollup --config rollup.config.js --bundleConfigAsCjs --prod",
     "build:dev": "shx rm -rf dist && rollup --config rollup.config.js --bundleConfigAsCjs",

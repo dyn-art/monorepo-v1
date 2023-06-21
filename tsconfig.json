@@ -14,6 +14,9 @@
             "path": "apps/order-worker"
         },
         {
+            "path": "apps/web"
+        },
+        {
             "path": "packages/ads-renderer"
         },
         {

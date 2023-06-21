@@ -5,8 +5,4 @@
   },
   "extends": "@pda/tsconfig/node.json",
   "include": ["src"],
-  "exclude": [
-    "**/__tests__/*",
-    "**/*.test.ts",
-  ]
 }

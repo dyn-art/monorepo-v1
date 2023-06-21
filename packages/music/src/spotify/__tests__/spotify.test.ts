@@ -1,4 +1,6 @@
-import { OAuth2Service, SpotifyClient, SpotifyService } from '../spotify';
+import { OAuth2Service } from '../OAuth2Service';
+import { SpotifyClient } from '../SpotifyClient';
+import { SpotifyService } from '../SpotifyService';
 
 describe('spotify tests', () => {
   it('send request to spotify api', async () => {

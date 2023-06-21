@@ -1,4 +1,9 @@
+const OFF = 0;
+const WARNING = 1;
+const ERROR = 2;
+
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
-  extends: ["@remix-run/eslint-config", "@remix-run/eslint-config/node"],
+  root: true,
+  extends: ['pda-base', '@remix-run/eslint-config'],
 };

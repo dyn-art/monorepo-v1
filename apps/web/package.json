@@ -1,28 +1,42 @@
 {
+  "name": "@pda/web",
+  "version": "0.0.0",
+  "description": "Web App",
   "private": true,
   "sideEffects": false,
   "scripts": {
     "build": "remix build",
-    "dev": "remix dev",
-    "typecheck": "tsc"
+    "start:dev": "remix dev",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
     "@remix-run/css-bundle": "^1.17.1",
     "@remix-run/node": "^1.17.1",
     "@remix-run/react": "^1.17.1",
     "@remix-run/vercel": "^1.17.1",
     "@vercel/node": "^2.10.3",
+    "class-variance-authority": "^0.6.0",
+    "clsx": "^1.2.1",
     "isbot": "^3.6.8",
+    "lucide-react": "^0.246.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^1.13.2",
+    "tailwindcss-animate": "^1.0.6"
   },
   "devDependencies": {
+    "@pda/tsconfig": "workspace:*",
     "@remix-run/dev": "^1.17.1",
     "@remix-run/eslint-config": "^1.17.1",
     "@remix-run/serve": "^1.17.1",
     "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.11",
     "eslint": "^8.38.0",
+    "eslint-config-pda-base": "workspace:*",
     "typescript": "^5.0.4"
   },
   "engines": {

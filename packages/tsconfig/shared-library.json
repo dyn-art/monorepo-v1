@@ -3,8 +3,8 @@
   "display": "Shared Library",
   "extends": "./base.json",
   "compilerOptions": {
-    "lib": ["es6"],
-    "target": "es6",
+    "lib": ["es2019"],
+    "target": "es2019",
     "module": "esnext",
     "outDir": "./dist",
     "rootDir": "./src"

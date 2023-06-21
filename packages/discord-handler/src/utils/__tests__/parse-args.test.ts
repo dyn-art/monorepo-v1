@@ -1,4 +1,4 @@
-import { TParseArgsConfig, parseArgs } from '../../utils/parse-args';
+import { TParseArgsConfig, parseArgs } from '../parse-args';
 
 describe('parseArgs() method tests', () => {
   const testCases: [string[], TParseArgsConfig, Map<string, any>][] = [
