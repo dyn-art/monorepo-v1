@@ -3,9 +3,9 @@
   "display": "React Base",
   "extends": "./base.json",
   "compilerOptions": {
-    "lib": ["es6", "dom", "dom.iterable"],
+    "lib": ["es2019", "dom", "dom.iterable"],
+    "target": "es2019",
     "module": "esnext",
-    "target": "es6",
     "jsx": "react-jsx"
   },
   "include": ["src"]

@@ -14,7 +14,7 @@
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf bundle && shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",
-    "test": "jest"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "@bennodev19",
@@ -24,12 +24,10 @@
     "remotion": "^3.3.83"
   },
   "devDependencies": {
-    "@pda/jest-presets": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@remotion/bundler": "^3.3.83",
     "@remotion/cli": "^3.3.83",
     "@remotion/media-utils": "^3.3.83",
-    "@types/jest": "^29.5.1",
     "@types/node": "^18.15.13",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
@@ -45,7 +43,6 @@
     "eslint-config-pda-base": "workspace:*",
     "eslint-plugin-tailwindcss-jsx": "^0.0.1",
     "geojson": "^0.5.0",
-    "jest": "^29.5.0",
     "postcss": "^8.4.23",
     "postcss-loader": "^7.2.4",
     "postcss-preset-env": "^8.3.2",

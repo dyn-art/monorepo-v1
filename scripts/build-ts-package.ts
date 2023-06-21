@@ -6,7 +6,7 @@ import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import * as rollup from './rollup';
 import * as tsc from './tsc';
-import { Logger, readFile } from './utils';
+import { Logger, doesFileExist, readFile } from './utils';
 
 const logger = new Logger('ts-library');
 
@@ -52,6 +52,16 @@ async function build() {
       logger.info(`Detected rollup.config at ${chalk.green(rollupConfigPath)}`);
     }
 
+    let tsConfigPath: string;
+    if (isProduction) {
+      tsConfigPath = path.resolve(process.cwd(), './tsconfig.prod.json');
+      if (!doesFileExist(tsConfigPath)) {
+        tsConfigPath = path.resolve(process.cwd(), './tsconfig.json');
+      }
+    } else {
+      tsConfigPath = path.resolve(process.cwd(), './tsconfig.json');
+    }
+
     if (useTsc) {
       await tsc.compile();
     } else {
@@ -63,6 +73,7 @@ async function build() {
           analyze,
           sourcemap,
           rollupOptions: rollupOptions ?? undefined,
+          tsconfig: tsConfigPath,
         })
       );
       await rollup.compile(
@@ -73,9 +84,10 @@ async function build() {
           analyze,
           sourcemap,
           rollupOptions: rollupOptions ?? undefined,
+          tsconfig: tsConfigPath,
         })
       );
-      await tsc.generateDts();
+      await tsc.generateDts({ tsconfig: tsConfigPath });
     }
 
     logger.info(

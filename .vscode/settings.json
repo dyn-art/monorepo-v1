@@ -18,6 +18,7 @@
         "./apps/discord",
         "./apps/figma-plugin",
         "./apps/order-worker",
+        "./apps/web",
         "./packages/ads-renderer",
         "./packages/ads-renderer/ui",
         "./packages/discord-handler",

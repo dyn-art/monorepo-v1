@@ -11,7 +11,7 @@ async function getCompositionByName(
   inputProps: Record<string, any> = {}
 ): Promise<TCompMetadata | null> {
   // Get compositions from webpack bundle
-  const webpackBundleLocation = await getWebpackBundleLocation();
+  const webpackBundleLocation = getWebpackBundleLocation();
   const compositions = await getCompositions(webpackBundleLocation, {
     inputProps,
   });
