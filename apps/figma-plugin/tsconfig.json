@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@figma"
+    ],
+    "outDir": "./dist",
+    "rootDir": "./src",
+  },
+  "extends": "@pda/tsconfig/react-base.json",
+  "include": ["src", "../../packages/figma-to-dtif/src/format-frame-node.ts"]
+}

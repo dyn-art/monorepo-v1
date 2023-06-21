@@ -1,9 +1,9 @@
 import DCClientHandler from './DcClientHandler';
 
 export * from './DcClientHandler';
-export * from './command-handler';
+export * from './commands-handler';
 export * from './components-handler';
-export * from './event-handler';
+export * from './events-handler';
 export { DCClientHandler };
 
 export default DCClientHandler;

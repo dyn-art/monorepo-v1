@@ -30,12 +30,16 @@
 ---
 
 # 🆔 License
-`physicaldotart` monorepo is licensed under the [GNU GENERAL PUBLIC License](https://opensource.org/license/gpl-3-0/).
+
+`physicaldotart` monorepo is licensed under the
+[GNU GENERAL PUBLIC License](https://opensource.org/license/gpl-3-0/).
 
 ---
+
 # 🙏 Contribution
 
 ### 🔴 Debug via Jest Test
+
 - [StackOverflow](https://stackoverflow.com/questions/33247602/how-do-you-debug-jest-tests)
 
 1. Start `Javascript Debug` Terminal
@@ -48,4 +52,6 @@
 ---
 
 # 🌟 Credit
-- Mono repo based on [`kitchen-sink` example](https://github.com/vercel/turbo/tree/main/examples/kitchen-sink)
+
+- Mono repo based on
+  [`kitchen-sink` example](https://github.com/vercel/turbo/tree/main/examples/kitchen-sink)

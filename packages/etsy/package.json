@@ -3,14 +3,15 @@
   "version": "0.0.0",
   "description": "Utility library to communicate with Etsy",
   "private": true,
-  "main": "./dist/index.js",
   "source": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "shx rm -rf dist && tsc",
+    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts",
     "start:dev": "tsc -w",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
-    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx -rf .turbo",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",
     "test": "jest"
   },

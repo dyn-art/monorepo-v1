@@ -17,6 +17,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.temp.*
 
 # local env files
 .env.local
@@ -28,7 +29,7 @@ yarn-error.log*
 # turbo
 .turbo
 
-# ide
+# IDE
 .idea
 
 # local db
@@ -38,3 +39,4 @@ yarn-error.log*
 # build
 dist
 target
+.compile

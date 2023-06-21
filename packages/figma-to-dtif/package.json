@@ -1,0 +1,42 @@
+{
+  "name": "@pda/figma-to-dtif",
+  "version": "0.0.0",
+  "description": "Provides utilities to convert Figma design node tree into the Design Tree Interchange Format (DTIF).",
+  "private": true,
+  "source": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts",
+    "start:dev": "tsc -w",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "dependencies": {
+    "@pda/dtif-types": "workspace:*",
+    "@pda/logger": "workspace:*",
+    "@pda/utils": "workspace:*",
+    "crypto-js": "^4.1.1"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.64.0",
+    "@pda/jest-presets": "workspace:*",
+    "@pda/tsconfig": "workspace:*",
+    "@types/jest": "^29.5.1",
+    "@types/node": "^18.15.13",
+    "eslint": "^8.38.0",
+    "eslint-config-pda-base": "workspace:*",
+    "jest": "^29.5.0",
+    "typescript": "^4.9.5"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}

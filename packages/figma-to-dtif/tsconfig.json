@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@figma"
+    ]
+  },
+  "extends": "@pda/tsconfig/shared-library.json",
+  "include": ["src"],
+  "exclude": [
+    "**/__tests__/*",
+    "**/*.test.ts"
+  ]
+}

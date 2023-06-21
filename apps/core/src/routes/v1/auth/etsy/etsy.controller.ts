@@ -11,6 +11,7 @@ export async function getOAuthChallenge(
   req: express.Request,
   res: express.Response
 ) {
+  // Check whether Etsy can be reached
   const success = await etsyClient.ping();
   if (!success) {
     throw new AppError(
@@ -18,7 +19,10 @@ export async function getOAuthChallenge(
       'Failed to communicate with Etsy API! Either Etsy can not be reached or the App Credentials are not valid!'
     );
   }
+
+  // Generate PKCE Code Challenge
   const challenge = etsyClient.authService.generatePKCECodeChallengeUri();
+
   res.send(challenge);
 }
 
@@ -28,7 +32,7 @@ export async function handleOAuthRedirect(
 ) {
   const { code, state, error, error_description } = req.query;
 
-  // Handle error response
+  // Handle error parameters
   if (error != null && error_description != null) {
     res.send({
       error,
@@ -37,9 +41,9 @@ export async function handleOAuthRedirect(
     return;
   }
 
-  // Handle no code or state present
+  // Validate query parameters
   if (typeof code !== 'string' || typeof state !== 'string') {
-    throw new AppError(500, 'No valid code or/and state provided');
+    throw new AppError(500, 'Invalid query parameters provided!');
   }
 
   // Token exchange
