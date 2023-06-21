@@ -6,6 +6,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "remix build",
+    "build:vercel": "cd ../.. && turbo run build --scope=web --include-dependencies --no-deps",
     "start:dev": "remix dev",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
