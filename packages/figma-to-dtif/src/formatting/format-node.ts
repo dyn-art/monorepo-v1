@@ -7,8 +7,8 @@ import { logger } from '../logger';
 import { isSVGCompatibleNode, isSVGNode } from '../utils';
 import { formatFrameNode } from './format-frame-node';
 import { formatGroupNode } from './format-group-node';
-import { TFormatNodeConfig } from './format-node-to-dtif';
 import { formatRectangleNode } from './format-rectangle-node';
+import { TFormatNodeConfig } from './format-root';
 import { formatTextNode } from './format-text-node';
 import { formatToSvgNode } from './format-to-svg-node';
 

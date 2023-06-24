@@ -34,6 +34,7 @@
         "./packages/product-renderer/ui",
         "./packages/product-renderer/scripts",
         "./packages/s3",
+        "./packages/svgson",
         "./packages/utils",
     ],
     "cSpell.words": [

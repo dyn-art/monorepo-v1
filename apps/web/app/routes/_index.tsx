@@ -8,6 +8,10 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
+// Separate object that keeps entire design document "dom" (json structure)
+// useState in each node representing the state
+//
+
 export default function Index() {
   return (
     <div

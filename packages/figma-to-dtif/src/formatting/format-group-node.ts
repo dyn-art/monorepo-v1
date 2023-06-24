@@ -2,7 +2,7 @@ import { ENodeTypes, TGroupNode } from '@pda/dtif-types';
 import { notEmpty } from '@pda/utils';
 import { convert2DMatrixTo3DMatrix } from '../utils';
 import { formatNode } from './format-node';
-import { TFormatNodeConfig } from './format-node-to-dtif';
+import { TFormatNodeConfig } from './format-root';
 
 export async function formatGroupNode(
   node: GroupNode,

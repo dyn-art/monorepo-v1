@@ -15,6 +15,13 @@ vercel
 
 It is generally recommended to use a Git repository, because future commits will then automatically be deployed by Vercel, through its [Git Integration](https://vercel.com/docs/concepts/git).
 
+### Configure Project
+```
+cd ../.. && turbo run build --scope=web --include-dependencies --no-deps
+
+pnpm install --no-frozen-lockfile
+```
+
 ## Development
 
 To run your Remix app locally, make sure your project's local dependencies are installed:
@@ -32,3 +39,5 @@ npm run dev
 Open up [http://localhost:3000](http://localhost:3000) and you should be ready to go!
 
 If you're used to using the `vercel dev` command provided by [Vercel CLI](https://vercel.com/cli) instead, you can also use that, but it's not needed.
+
+

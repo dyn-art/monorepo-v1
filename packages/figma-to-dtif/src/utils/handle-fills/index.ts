@@ -1,5 +1,5 @@
 import { TPaint } from '@pda/dtif-types';
-import { TFormatNodeConfig } from '../../formatting/format-node-to-dtif';
+import { TFormatNodeConfig } from '../../formatting/format-root';
 import { handleGradientFill } from './handle-gradient-fill';
 import { handleImageFill } from './handle-image-fill';
 

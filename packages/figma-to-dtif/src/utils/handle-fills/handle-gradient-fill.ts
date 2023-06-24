@@ -1,5 +1,5 @@
 import { TGradientPaint } from '@pda/dtif-types';
-import { TFormatNodeConfig } from '../../formatting/format-node-to-dtif';
+import { TFormatNodeConfig } from '../../formatting/format-root';
 import { TNodeWithFills } from '../../types';
 import { convert2DMatrixTo3DMatrix } from '../convert-2d-matrix-to-3d-matrix';
 import { exportAndUploadNode } from '../export-and-upload-node';

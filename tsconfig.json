@@ -50,6 +50,9 @@
             "path": "packages/s3"
         },
         {
+            "path": "packages/svgson"
+        },
+        {
             "path": "packages/utils"
         }
     ]

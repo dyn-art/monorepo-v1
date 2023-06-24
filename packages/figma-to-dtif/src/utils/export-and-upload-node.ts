@@ -1,5 +1,5 @@
 import { UploadStaticDataException } from '../exceptions';
-import { TFormatNodeConfig } from '../formatting/format-node-to-dtif';
+import { TFormatNodeConfig } from '../formatting/format-root';
 import { exportNode } from './export-node';
 import { getImageType } from './get-image-type';
 import { resetNodeTransform } from './reset-node-transform';

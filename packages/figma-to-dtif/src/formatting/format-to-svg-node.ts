@@ -2,7 +2,7 @@ import { ENodeTypes, TEffect, TSVGNode } from '@pda/dtif-types';
 import { logger } from '../logger';
 import { TSVGCompatibleNode } from '../types';
 import { convert2DMatrixTo3DMatrix, exportAndUploadNode } from '../utils';
-import { TFormatNodeConfig } from './format-node-to-dtif';
+import { TFormatNodeConfig } from './format-root';
 
 export async function formatToSvgNode(
   node: TSVGCompatibleNode,
