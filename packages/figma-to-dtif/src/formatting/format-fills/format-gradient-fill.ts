@@ -4,7 +4,8 @@ import {
   TLinearGradientPaintInline,
   TRadialGradientPaintInline,
 } from '@pda/dtif-types';
-import { svgParser } from '@pda/svgson';
+import { TSVGElement, svgParser } from '@pda/svgson';
+import { decodeUint8Array } from '@pda/utils';
 import { logger } from '../../logger';
 import { TFormatGradientFillOptions, TNodeWithFills } from '../../types';
 import { convert2DMatrixTo3DMatrix } from '../../utils/convert-2d-matrix-to-3d-matrix';
@@ -24,11 +25,11 @@ export async function formatGradientFill(
 
   switch (fill.type) {
     case 'GRADIENT_LINEAR':
-      return options.inline && options.exportOptions?.format === 'SVG'
+      return options.inline
         ? formatToInlineLinearGradientPaint(node, fill)
         : formatToGradientPaintExported(node, fill, options.exportOptions);
     case 'GRADIENT_RADIAL':
-      return options.inline && options.exportOptions?.format === 'SVG'
+      return options.inline
         ? formatToInlineRadialGradientPaint(node, fill)
         : formatToGradientPaintExported(node, fill, options.exportOptions);
     case 'GRADIENT_ANGULAR':
@@ -51,23 +52,23 @@ async function formatToInlineLinearGradientPaint(
 
   try {
     // Export fill to SVG and extract relevant gradient values
-    // TODO: figure out how to calculate them
+    // TODO: figure out how to calculate start & end without requiring on svg data
     const rawUint8Array = await exportNode(fillNode, { format: 'SVG' });
-    const raw = new TextDecoder().decode(rawUint8Array);
+    const raw = decodeUint8Array(rawUint8Array);
     const svgObject = svgParser.parse(raw);
-    const gradientElement = svgObject.children as any; // TODO:
+    const gradientElement = findGradient(svgObject);
 
     // Build gradient object
     gradient = {
       gradientStops: fill.gradientStops,
       transform: convert2DMatrixTo3DMatrix(fill.gradientTransform),
       start: {
-        x: gradientElement['x1'] ?? -1,
-        y: gradientElement['y1'] ?? -1,
+        x: +(gradientElement?.attributes['x1'] ?? -1),
+        y: +(gradientElement?.attributes['y1'] ?? -1),
       },
       end: {
-        x: gradientElement['x2'] ?? -1,
-        y: gradientElement['y2'] ?? -1,
+        x: +(gradientElement?.attributes['x2'] ?? -1),
+        y: +(gradientElement?.attributes['y2'] ?? -1),
       },
       ...getGradientBaseFillProperties(fill),
     } as TLinearGradientPaintInline;
@@ -89,17 +90,17 @@ async function formatToInlineRadialGradientPaint(
 
   try {
     // Export fill to SVG and extract relevant gradient values
-    // TODO: figure out how to calculate them
+    // TODO: figure out how to calculate radius without requiring on svg data
     const rawUint8Array = await exportNode(fillNode, { format: 'SVG' });
-    const raw = new TextDecoder().decode(rawUint8Array);
+    const raw = decodeUint8Array(rawUint8Array);
     const svgObject = svgParser.parse(raw);
-    const gradientElement = svgObject.children as any; // TODO:
+    const gradientElement = findGradient(svgObject);
 
     // Build gradient object
     gradient = {
       gradientStops: fill.gradientStops,
       transform: convert2DMatrixTo3DMatrix(fill.gradientTransform),
-      radius: (gradientElement['radius'] as number) ?? -1,
+      radius: +(gradientElement?.attributes['r'] ?? -1),
       ...getGradientBaseFillProperties(fill),
     } as TRadialGradientPaintInline;
 
@@ -143,7 +144,7 @@ async function formatToGradientPaintExported(
 
     // Build gradient object
     gradient = {
-      exported: true,
+      isExported: true,
       format,
       hash,
       inline: uploaded ? undefined : data,
@@ -168,6 +169,19 @@ export function getGradientBaseFillProperties(
     opacity: fill.opacity ?? 1,
     visible: fill.visible ?? true,
   };
+}
+
+function findGradient(svgObject: TSVGElement): TSVGElement | null {
+  for (const child of svgObject.children) {
+    if (child.type === 'defs') {
+      for (const defsChild of child.children) {
+        if (defsChild.type === 'linearGradient') {
+          return defsChild;
+        }
+      }
+    }
+  }
+  return null;
 }
 
 export function createFillNode(

@@ -19,7 +19,7 @@ export default {
     // Process supported nodes
     for (const node of supportedNodes) {
       if (node != null) {
-        await processNode(instance, node, args.config);
+        await processNode(instance, node as FrameNode, args.options);
       }
     }
   },

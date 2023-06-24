@@ -1,6 +1,7 @@
 import { TNode } from '@pda/dtif-types';
-import formatNodeToDTIF, {
+import formatFrameToScene, {
   NodeException,
+  TUploadStaticData,
   UploadStaticDataException,
   sha256,
 } from '@pda/figma-to-dtif';
@@ -11,21 +12,43 @@ import { stringToUint8Array } from '../../core/utils/json-to-uint8array';
 
 export async function processNode(
   instance: TBackgroundHandler,
-  node: SceneNode,
-  config: TIntermediateFormatExportEvent['args']['config']
+  node: FrameNode | InstanceNode | ComponentNode,
+  options: TIntermediateFormatExportEvent['args']['options']
 ) {
   try {
+    const uploadStaticData: TUploadStaticData = async (
+      key,
+      data,
+      contentType
+    ) => {
+      if (contentType == null) {
+        throw new UploadStaticDataException(
+          `Can't upload data for '${key}' as no content type could be resolved!`,
+          node
+        );
+      }
+      return uploadDataToBucket(key, data, contentType?.mimeType);
+    };
     // Format the node for export
-    const toExportNode = await formatNodeToDTIF(node, {
-      ...config,
-      uploadStaticData: async (key, data, contentType) => {
-        if (contentType == null) {
-          throw new UploadStaticDataException(
-            `Can't upload data for '${key}' as no content type could be resolved!`,
-            node
-          );
-        }
-        return uploadDataToBucket(key, data, contentType?.mimeType);
+    const toExportNode = await formatFrameToScene(node, {
+      ...options,
+      gradientFill: {
+        ...(options.gradientFill ?? {}),
+        exportOptions: {
+          uploadStaticData,
+          ...(options.gradientFill?.exportOptions ?? {}),
+        },
+      },
+      imageFill: {
+        uploadStaticData,
+        ...(options.imageFill ?? {}),
+      },
+      svg: {
+        ...(options.svg ?? {}),
+        exportOptions: {
+          uploadStaticData,
+          ...(options.svg?.exportOptions ?? {}),
+        },
       },
     });
 
@@ -39,7 +62,7 @@ export async function processNode(
     await uploadDataToBucket(key, stringToUint8Array(json), 'application/json');
 
     // Post success message and notify the user
-    handleSuccess(instance, node, toExportNode, key);
+    handleSuccess(instance, node, toExportNode.root, key);
   } catch (error) {
     handleError(error, instance, node);
   }

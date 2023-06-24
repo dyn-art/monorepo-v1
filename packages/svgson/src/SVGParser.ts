@@ -26,8 +26,11 @@ export class SVGParser {
     return this.parseRawElement(jsonObject.svg, 'svg');
   }
 
-  private parseRawElement(rawElement: TRawElement, name: string): TElement {
-    const node: TElement = {
+  private parseRawElement(
+    rawElement: TRawSVGElement,
+    name: string
+  ): TSVGElement {
+    const node: TSVGElement = {
       type: name,
       attributes: {},
       children: [],
@@ -74,11 +77,13 @@ export class SVGParser {
   }
 }
 
-type TElement = {
+export type TSVGElement = {
   type: string;
   value?: string; // Text value
   attributes: { [key: string]: string };
-  children: TElement[];
+  children: TSVGElement[];
 };
 
-type TRawElement = { [key: string]: string | TRawElement[] | TRawElement };
+type TRawSVGElement = {
+  [key: string]: string | TRawSVGElement[] | TRawSVGElement;
+};

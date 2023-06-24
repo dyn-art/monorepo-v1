@@ -6,6 +6,7 @@ import {
   TSVGNodeInline,
 } from '@pda/dtif-types';
 import { svgParser } from '@pda/svgson';
+import { decodeUint8Array } from '@pda/utils';
 import { logger } from '../logger';
 import { TSVGCompatibleNode, TSVGOptions } from '../types';
 import {
@@ -46,10 +47,10 @@ export async function formatToSvgNode(
   // Handle inline SVG
   if (inline) {
     const rawUint8Array = await exportNodeCloned(node, { format: 'SVG' });
-    const raw = new TextDecoder().decode(rawUint8Array);
+    const raw = decodeUint8Array(rawUint8Array);
     const svgObject = svgParser.parse(raw);
     svgNode = {
-      exported: false,
+      isExported: false,
       attributes: svgObject.attributes,
       children: svgObject.children,
       ...baseNodeProperties,
@@ -63,7 +64,7 @@ export async function formatToSvgNode(
       exportSettings: { format: svgToRaster ? 'JPG' : 'SVG' },
     });
     svgNode = {
-      exported: true,
+      isExported: true,
       format: 'SVG',
       hash,
       inline: uploaded ? undefined : data,

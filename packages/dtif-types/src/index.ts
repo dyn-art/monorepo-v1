@@ -58,7 +58,7 @@ export type TSVGNode = TSVGNodeExported | TSVGNodeInline;
 
 export type TSVGNodeExported = {
   type: ENodeTypes.SVG;
-  exported: true;
+  isExported: true;
   format: 'JPG' | 'SVG';
   hash: string;
   inline?: Uint8Array;
@@ -66,7 +66,7 @@ export type TSVGNodeExported = {
 
 export type TSVGNodeInline = {
   type: ENodeTypes.SVG;
-  exported: false;
+  isExported: false;
   attributes: TSVGElement['attributes'];
   children: TSVGElement['children'];
 } & TDefaultShapeMixin;
@@ -234,7 +234,7 @@ export type TGradientPaintInline =
 
 export type TLinearGradientPaintInline = {
   type: 'GRADIENT_LINEAR';
-  exported: false;
+  isExported: false;
   start: TVector;
   end: TVector;
   transform: TTransform;
@@ -243,7 +243,7 @@ export type TLinearGradientPaintInline = {
 
 export type TRadialGradientPaintInline = {
   type: 'GRADIENT_RADIAL';
-  exported: false;
+  isExported: false;
   radius: number;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
@@ -251,14 +251,14 @@ export type TRadialGradientPaintInline = {
 
 export type TAngularGradientPaintInline = {
   type: 'GRADIENT_ANGULAR';
-  exported: false;
+  isExported: false;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
 } & TGradientPaintBase;
 
 export type TDiamondGradientPaintInline = {
   type: 'GRADIENT_DIAMOND';
-  exported: false;
+  isExported: false;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
 } & TGradientPaintBase;
@@ -269,7 +269,7 @@ export type TGradientPaintExported = {
     | 'GRADIENT_RADIAL'
     | 'GRADIENT_ANGULAR'
     | 'GRADIENT_DIAMOND';
-  exported: true;
+  isExported: true;
   format: 'JPG' | 'SVG';
   hash: string;
   inline?: Uint8Array;
