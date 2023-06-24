@@ -1,3 +1,5 @@
+export * from './format-children-nodes';
+export * from './format-fills';
 export * from './format-frame-node';
 export * from './format-frame-to-scene';
 export * from './format-group-node';

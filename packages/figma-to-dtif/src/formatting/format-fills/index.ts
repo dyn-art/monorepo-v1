@@ -1,24 +1,29 @@
 import { TPaint } from '@pda/dtif-types';
-import { TFormatNodeOptions } from '../../formatting/format-frame-to-scene';
-import { handleGradientFill } from './handle-gradient-fill';
-import { handleImageFill } from './handle-image-fill';
+import {
+  TFormatGradientFillOptions,
+  TFormatImageFillOptions,
+} from '../../types';
+import { formatGradientFill } from './format-gradient-fill';
+import { formatImageFill } from './format-image-fill';
 
-export async function handleFills(
+export async function formatFills(
   node: SceneNode,
   inputFills: Paint[],
-  config: TFormatNodeOptions
+  options: {
+    gradientFill?: TFormatGradientFillOptions;
+    imageFill?: TFormatImageFillOptions;
+  } = {}
 ): Promise<TPaint[]> {
   const fillPromises = inputFills.map((fill) => {
     if (!fill.visible) return Promise.resolve(null);
     switch (fill.type) {
       case 'GRADIENT_ANGULAR':
       case 'GRADIENT_DIAMOND':
-        return handleGradientFill(node, fill, { ...config, format: 'JPG' });
       case 'GRADIENT_LINEAR':
       case 'GRADIENT_RADIAL':
-        return handleGradientFill(node, fill, { ...config, format: 'SVG' });
+        return formatGradientFill(node, fill, options.gradientFill);
       case 'IMAGE':
-        return handleImageFill(node, fill, config);
+        return formatImageFill(node, fill, options.imageFill);
       case 'SOLID':
         return Promise.resolve(fill);
       default:

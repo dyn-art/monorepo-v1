@@ -4,7 +4,7 @@ import { resetNodeTransform } from './reset-node-transform';
 export async function exportNodeCloned(
   node: SceneNode,
   exportSettings: ExportSettings
-) {
+): Promise<Uint8Array> {
   // TODO: add clone to specific clone group so that its organized
   const clone = node.clone();
 
@@ -12,7 +12,7 @@ export async function exportNodeCloned(
   resetNodeTransform(clone);
 
   try {
-    // Convert node to SVG data
+    // Export node to SVG or raster image
     const data = await exportNode(clone, exportSettings);
 
     clone.remove();

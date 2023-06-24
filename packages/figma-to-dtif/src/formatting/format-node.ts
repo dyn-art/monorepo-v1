@@ -5,9 +5,9 @@ import {
   UnsupportedFigmaNodeException,
 } from '../exceptions';
 import { logger } from '../logger';
+import { TFormatNodeOptions } from '../types';
 import { isSVGCompatibleNode } from '../utils';
 import { formatFrameNode } from './format-frame-node';
-import { TFormatNodeOptions } from './format-frame-to-scene';
 import { formatGroupNode } from './format-group-node';
 import { formatRectangleNode } from './format-rectangle-node';
 import { formatTextNode } from './format-text-node';
@@ -19,8 +19,10 @@ export async function formatNode(
   isRoot = true
 ): Promise<TNode> {
   const {
-    frameToSVG = true,
-    svgExportIdentifierRegex = null,
+    svg: {
+      frameToSVG = true,
+      exportIdentifierRegex: svgExportIdentifierRegex = null,
+    } = {},
     ignoreInvisible = true,
   } = options;
   let formattedNode: TNode;
@@ -91,26 +93,26 @@ function resetVisibility(node: SceneNode, isVisible: boolean) {
 
 async function handleSupportedNodeFormatting(
   node: SceneNode,
-  config: TFormatNodeOptions
+  options: TFormatNodeOptions
 ): Promise<TNode> {
   switch (node.type) {
     case 'FRAME':
     case 'COMPONENT':
     case 'INSTANCE':
-      return formatFrameNode(node, config);
+      return formatFrameNode(node, options);
     case 'GROUP':
-      return formatGroupNode(node, config);
+      return formatGroupNode(node, options);
     case 'TEXT':
-      return formatTextNode(node, config);
+      return formatTextNode(node, options);
     case 'RECTANGLE':
-      return formatRectangleNode(node, config);
+      return formatRectangleNode(node, options);
     case 'LINE':
     case 'ELLIPSE':
     case 'POLYGON':
     case 'STAR':
     case 'VECTOR':
     case 'BOOLEAN_OPERATION':
-      return formatToSvgNode(node, config);
+      return formatToSvgNode(node, options.svg);
     default:
       throw new UnsupportedFigmaNodeException(
         `The Figma node '${node.type}' is not yet supported!`,
@@ -126,13 +128,7 @@ async function handleSpecialSVGFormatting(args: {
   frameToSVG: boolean;
   options: TFormatNodeOptions;
 }): Promise<TSVGNode> {
-  const {
-    node,
-    svgExportIdentifierRegex,
-    isRoot,
-    frameToSVG,
-    options: config,
-  } = args;
+  const { node, svgExportIdentifierRegex, isRoot, frameToSVG, options } = args;
 
   // Check if the node is SVG compatible
   if (!isSVGCompatibleNode(node)) {
@@ -148,7 +144,7 @@ async function handleSpecialSVGFormatting(args: {
     svgExportIdentifierRegex: svgExportIdentifierRegex,
   });
 
-  return formatToSvgNode(node, config);
+  return formatToSvgNode(node, options.svg);
 }
 
 function shouldExportNodeAsSVG(args: {

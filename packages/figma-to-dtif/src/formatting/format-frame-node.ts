@@ -1,10 +1,8 @@
 import { ENodeTypes, TFrameNode } from '@pda/dtif-types';
-import {
-  convert2DMatrixTo3DMatrix,
-  handleFills,
-  processChildren,
-} from '../utils';
-import { TFormatNodeOptions } from './format-frame-to-scene';
+import { TFormatNodeOptions } from '../types';
+import { convert2DMatrixTo3DMatrix } from '../utils';
+import { formatChildrenNodes } from './format-children-nodes';
+import { formatFills } from './format-fills';
 
 export async function formatFrameNode(
   node: FrameNode | ComponentNode | InstanceNode,
@@ -20,7 +18,7 @@ export async function formatFrameNode(
     isLocked: node.locked,
     isVisible: node.visible,
     // Children mixin
-    children: await processChildren(node.children as SceneNode[], options),
+    children: await formatChildrenNodes(node.children as SceneNode[], options),
     // Layout mixin
     height: node.height,
     width: node.width,
@@ -36,6 +34,6 @@ export async function formatFrameNode(
     topLeftRadius: node.topLeftRadius,
     topRightRadius: node.topRightRadius,
     // Fills mixin
-    fills: await handleFills(node, node.fills as Paint[], options),
+    fills: await formatFills(node, node.fills as Paint[], options),
   } as TFrameNode;
 }

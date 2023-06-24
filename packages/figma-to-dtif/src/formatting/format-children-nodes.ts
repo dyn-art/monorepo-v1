@@ -1,9 +1,10 @@
 import { TNode } from '@pda/dtif-types';
 import { notEmpty } from '@pda/utils';
+import { formatNode } from '.';
 import { InvisibleNodeException } from '../exceptions';
-import { TFormatNodeOptions, formatNode } from '../formatting';
+import { TFormatNodeOptions } from '../types';
 
-export async function processChildren(
+export async function formatChildrenNodes(
   children: SceneNode[],
   options: TFormatNodeOptions
 ): Promise<TNode[]> {

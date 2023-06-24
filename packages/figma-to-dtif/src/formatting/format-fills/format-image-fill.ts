@@ -3,20 +3,20 @@ import {
   ExportImageException,
   UploadStaticDataException,
 } from '../../exceptions';
-import { TFormatNodeOptions } from '../../formatting';
-import { convert2DMatrixTo3DMatrix } from '../convert-2d-matrix-to-3d-matrix';
-import { exportImageData } from '../export-image-fill';
-import { getImageType } from '../get-image-type';
+import { TFormatImageFillOptions } from '../../types';
+import { convert2DMatrixTo3DMatrix } from '../../utils/convert-2d-matrix-to-3d-matrix';
+import { exportImageData } from '../../utils/export-image-fill';
+import { getImageType } from '../../utils/get-image-type';
 
-export async function handleImageFill(
+export async function formatImageFill(
   node: SceneNode,
   fill: ImagePaint,
-  config: TFormatNodeOptions
+  options: TFormatImageFillOptions = {}
 ): Promise<TImagePaint> {
   const { hash, inline, size } = await exportAndUploadImage(
     node,
     fill.imageHash,
-    config
+    options
   );
   const baseFillProps: Omit<TImagePaint, 'scaleMode'> = {
     type: 'IMAGE',
@@ -69,12 +69,13 @@ export async function handleImageFill(
 async function exportAndUploadImage(
   node: SceneNode,
   imageHash: string | null,
-  config: TFormatNodeOptions
+  options: TFormatImageFillOptions
 ): Promise<{
   hash: TImagePaint['hash'];
   inline: TImagePaint['inline'];
   size: { width: number; height: number };
 }> {
+  const { uploadStaticData } = options;
   let uploaded = false;
 
   // Check whether image fill has actual image
@@ -92,8 +93,8 @@ async function exportAndUploadImage(
   );
 
   // Upload image data
-  if (config.uploadStaticData != null) {
-    imageHash = await config.uploadStaticData(
+  if (uploadStaticData != null) {
+    imageHash = await uploadStaticData(
       imageHash,
       imageData,
       getImageType(imageData) ?? undefined

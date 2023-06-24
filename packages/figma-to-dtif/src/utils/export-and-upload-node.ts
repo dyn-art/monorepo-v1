@@ -1,5 +1,5 @@
 import { UploadStaticDataException } from '../exceptions';
-import { TFormatNodeOptions } from '../formatting/format-frame-to-scene';
+import { TUploadStaticData } from '../types';
 import { exportNode } from './export-node';
 import { exportNodeCloned } from './export-node-cloned';
 import { getImageType } from './get-image-type';
@@ -8,8 +8,8 @@ import { sha256 } from './sha256';
 export async function exportAndUploadNode(
   node: SceneNode,
   config: {
-    uploadStaticData: TFormatNodeOptions['uploadStaticData'];
     exportSettings: ExportSettings;
+    uploadStaticData?: TUploadStaticData;
     clone?: boolean;
   }
 ): Promise<{ hash: string; data: Uint8Array; uploaded: boolean }> {
@@ -27,7 +27,7 @@ export async function exportAndUploadNode(
 
   // Upload exported SVG data
   let hash = sha256(data);
-  if (uploadStaticData != null) {
+  if (typeof uploadStaticData === 'function') {
     hash = await uploadStaticData(hash, data, getImageType(data) ?? undefined);
     if (hash === null) {
       throw new UploadStaticDataException(

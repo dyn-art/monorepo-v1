@@ -1,5 +1,6 @@
 import { TFrameNode, TScene } from '@pda/dtif-types';
 import { formatNode } from '.';
+import { TFormatNodeOptions } from '../types';
 
 export async function formatFrameToScene(
   node: FrameNode | ComponentNode | InstanceNode,
@@ -26,22 +27,3 @@ export async function formatFrameToScene(
     width: formattedNode.width,
   };
 }
-
-export type TFormatNodeOptions = {
-  frameToSVG?: boolean;
-  svgExportIdentifierRegex?: string | null; // Note RegExp can't be passed to the Javascript Sandbox
-  gradientToSVG?: boolean;
-  ignoreInvisible?: boolean;
-  inlineSVG?: boolean;
-  uploadStaticData?: (
-    key: string,
-    data: Uint8Array,
-    contentType?: TContentType
-  ) => Promise<string>;
-};
-
-export type TContentType = {
-  name: string;
-  mimeType: 'image/jpeg' | 'image/png' | 'image/svg+xml' | 'image/gif' | string;
-  ending: string;
-};

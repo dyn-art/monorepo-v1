@@ -7,19 +7,23 @@ import {
 } from '@pda/dtif-types';
 import { svgParser } from '@pda/svgson';
 import { logger } from '../logger';
-import { TSVGCompatibleNode } from '../types';
+import { TSVGCompatibleNode, TSVGOptions } from '../types';
 import {
   convert2DMatrixTo3DMatrix,
   exportAndUploadNode,
   exportNodeCloned,
 } from '../utils';
-import { TFormatNodeOptions } from './format-frame-to-scene';
 
 export async function formatToSvgNode(
   node: TSVGCompatibleNode,
-  options: TFormatNodeOptions
+  options: TSVGOptions = {}
 ): Promise<TSVGNode> {
-  const baseNodeProperties = {
+  const {
+    inline = true,
+    exportOptions: { svgToRaster = false, uploadStaticData } = {},
+  } = options;
+
+  const baseNodeProperties: Partial<TSVGNode> = {
     type: ENodeTypes.SVG,
     // BaseNode mixin
     id: node.id,
@@ -40,7 +44,7 @@ export async function formatToSvgNode(
   let svgNode: TSVGNode;
 
   // Handle inline SVG
-  if (options.inlineSVG) {
+  if (inline) {
     const rawUint8Array = await exportNodeCloned(node, { format: 'SVG' });
     const raw = new TextDecoder().decode(rawUint8Array);
     const svgObject = svgParser.parse(raw);
@@ -55,8 +59,8 @@ export async function formatToSvgNode(
   // Handle to export SVG
   else {
     const { hash, data, uploaded } = await exportAndUploadNode(node, {
-      uploadStaticData: options.uploadStaticData,
-      exportSettings: { format: 'SVG' },
+      uploadStaticData,
+      exportSettings: { format: svgToRaster ? 'JPG' : 'SVG' },
     });
     svgNode = {
       exported: true,

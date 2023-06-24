@@ -1,6 +1,7 @@
 import { ENodeTypes, TGroupNode } from '@pda/dtif-types';
-import { convert2DMatrixTo3DMatrix, processChildren } from '../utils';
-import { TFormatNodeOptions } from './format-frame-to-scene';
+import { TFormatNodeOptions } from '../types';
+import { convert2DMatrixTo3DMatrix } from '../utils';
+import { formatChildrenNodes } from './format-children-nodes';
 
 export async function formatGroupNode(
   node: GroupNode,
@@ -15,7 +16,7 @@ export async function formatGroupNode(
     isLocked: node.locked,
     isVisible: node.visible,
     // Children mixin
-    children: await processChildren(node.children as SceneNode[], options),
+    children: await formatChildrenNodes(node.children as SceneNode[], options),
     // Layout mixin
     height: node.height,
     width: node.width,

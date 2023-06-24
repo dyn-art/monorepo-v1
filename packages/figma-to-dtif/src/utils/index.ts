@@ -4,8 +4,6 @@ export * from './export-image-fill';
 export * from './export-node';
 export * from './export-node-cloned';
 export * from './get-image-type';
-export * from './handle-fills';
 export * from './is-node';
-export * from './process-children';
 export * from './reset-node-transform';
 export * from './sha256';
