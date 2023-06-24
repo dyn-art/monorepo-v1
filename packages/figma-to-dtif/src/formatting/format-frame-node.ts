@@ -1,12 +1,14 @@
 import { ENodeTypes, TFrameNode } from '@pda/dtif-types';
-import { notEmpty } from '@pda/utils';
-import { convert2DMatrixTo3DMatrix, handleFills } from '../utils';
-import { formatNode } from './format-node';
-import { TFormatNodeConfig } from './format-root';
+import {
+  convert2DMatrixTo3DMatrix,
+  handleFills,
+  processChildren,
+} from '../utils';
+import { TFormatNodeOptions } from './format-frame-to-scene';
 
 export async function formatFrameNode(
   node: FrameNode | ComponentNode | InstanceNode,
-  options: TFormatNodeConfig
+  options: TFormatNodeOptions
 ): Promise<TFrameNode> {
   return {
     type: ENodeTypes.FRAME,
@@ -18,11 +20,7 @@ export async function formatFrameNode(
     isLocked: node.locked,
     isVisible: node.visible,
     // Children mixin
-    children: (
-      await Promise.all(
-        node.children.map((node) => formatNode(node, options, false))
-      )
-    ).filter(notEmpty),
+    children: await processChildren(node.children as SceneNode[], options),
     // Layout mixin
     height: node.height,
     width: node.width,

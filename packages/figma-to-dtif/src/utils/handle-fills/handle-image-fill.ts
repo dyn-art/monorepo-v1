@@ -3,7 +3,7 @@ import {
   ExportImageException,
   UploadStaticDataException,
 } from '../../exceptions';
-import { TFormatNodeConfig } from '../../formatting';
+import { TFormatNodeOptions } from '../../formatting';
 import { convert2DMatrixTo3DMatrix } from '../convert-2d-matrix-to-3d-matrix';
 import { exportImageData } from '../export-image-fill';
 import { getImageType } from '../get-image-type';
@@ -11,7 +11,7 @@ import { getImageType } from '../get-image-type';
 export async function handleImageFill(
   node: SceneNode,
   fill: ImagePaint,
-  config: TFormatNodeConfig
+  config: TFormatNodeOptions
 ): Promise<TImagePaint> {
   const { hash, inline, size } = await exportAndUploadImage(
     node,
@@ -69,7 +69,7 @@ export async function handleImageFill(
 async function exportAndUploadImage(
   node: SceneNode,
   imageHash: string | null,
-  config: TFormatNodeConfig
+  config: TFormatNodeOptions
 ): Promise<{
   hash: TImagePaint['hash'];
   inline: TImagePaint['inline'];

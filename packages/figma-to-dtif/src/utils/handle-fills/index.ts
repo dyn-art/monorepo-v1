@@ -1,12 +1,12 @@
 import { TPaint } from '@pda/dtif-types';
-import { TFormatNodeConfig } from '../../formatting/format-root';
+import { TFormatNodeOptions } from '../../formatting/format-frame-to-scene';
 import { handleGradientFill } from './handle-gradient-fill';
 import { handleImageFill } from './handle-image-fill';
 
 export async function handleFills(
   node: SceneNode,
   inputFills: Paint[],
-  config: TFormatNodeConfig
+  config: TFormatNodeOptions
 ): Promise<TPaint[]> {
   const fillPromises = inputFills.map((fill) => {
     if (!fill.visible) return Promise.resolve(null);

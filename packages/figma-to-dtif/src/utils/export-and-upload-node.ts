@@ -1,14 +1,14 @@
 import { UploadStaticDataException } from '../exceptions';
-import { TFormatNodeConfig } from '../formatting/format-root';
+import { TFormatNodeOptions } from '../formatting/format-frame-to-scene';
 import { exportNode } from './export-node';
+import { exportNodeCloned } from './export-node-cloned';
 import { getImageType } from './get-image-type';
-import { resetNodeTransform } from './reset-node-transform';
 import { sha256 } from './sha256';
 
 export async function exportAndUploadNode(
   node: SceneNode,
   config: {
-    uploadStaticData: TFormatNodeConfig['uploadStaticData'];
+    uploadStaticData: TFormatNodeOptions['uploadStaticData'];
     exportSettings: ExportSettings;
     clone?: boolean;
   }
@@ -20,41 +20,23 @@ export async function exportAndUploadNode(
   } = config;
   let uploaded = false;
 
-  // Reset transform before upload so that the transform is not embedded into the SVG
-  const clone = shouldClone ? node.clone() : node;
-  resetNodeTransform(clone);
+  // Export node
+  const data = shouldClone
+    ? await exportNodeCloned(node, exportSettings)
+    : await exportNode(node, exportSettings);
 
-  try {
-    // Convert node to SVG data
-    const data = await exportNode(clone, exportSettings);
-
-    // Upload SVG data
-    let hash = sha256(data);
-    if (uploadStaticData != null) {
-      hash = await uploadStaticData(
-        hash,
-        data,
-        getImageType(data) ?? undefined
+  // Upload exported SVG data
+  let hash = sha256(data);
+  if (uploadStaticData != null) {
+    hash = await uploadStaticData(hash, data, getImageType(data) ?? undefined);
+    if (hash === null) {
+      throw new UploadStaticDataException(
+        `Failed to upload ${config.exportSettings.format} with the hash ${hash}!`,
+        node
       );
-      if (hash === null) {
-        throw new UploadStaticDataException(
-          `Failed to upload ${config.exportSettings.format} with the hash ${hash}!`,
-          node
-        );
-      }
-      uploaded = true;
     }
-
-    removeClone(clone, shouldClone);
-    return { hash, data, uploaded };
-  } catch (e) {
-    removeClone(clone, shouldClone);
-    throw e;
+    uploaded = true;
   }
-}
 
-function removeClone(clone: SceneNode, shouldClone: boolean) {
-  if (shouldClone) {
-    clone.remove();
-  }
+  return { hash, data, uploaded };
 }

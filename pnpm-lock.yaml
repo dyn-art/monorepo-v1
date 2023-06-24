@@ -746,6 +746,9 @@ importers:
       '@pda/logger':
         specifier: workspace:*
         version: link:../logger
+      '@pda/svgson':
+        specifier: workspace:^
+        version: link:../svgson
       '@pda/utils':
         specifier: workspace:*
         version: link:../utils
@@ -1004,6 +1007,9 @@ importers:
 
   packages/svgson:
     dependencies:
+      '@pda/logger':
+        specifier: workspace:^
+        version: link:../logger
       fast-xml-parser:
         specifier: ^4.2.5
         version: 4.2.5

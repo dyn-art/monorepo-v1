@@ -21,6 +21,7 @@
   "dependencies": {
     "@pda/dtif-types": "workspace:*",
     "@pda/logger": "workspace:*",
+    "@pda/svgson": "workspace:*",
     "@pda/utils": "workspace:*",
     "crypto-js": "^4.1.1"
   },

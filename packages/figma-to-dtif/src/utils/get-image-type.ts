@@ -1,4 +1,4 @@
-import { TContentType } from '../formatting/format-root';
+import { TContentType } from '../formatting/format-frame-to-scene';
 
 export function getImageType(imageData?: Uint8Array): TContentType | null {
   if (imageData == null || imageData.length < 4) {

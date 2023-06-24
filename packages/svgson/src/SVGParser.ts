@@ -1,4 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
+import { InvalidSVGException } from './exceptions';
+import { logger } from './logger';
 
 export class SVGParser {
   private readonly _parser: XMLParser;
@@ -15,17 +17,17 @@ export class SVGParser {
     // Parse the SVG-XML into a JavaScript object
     const jsonObject = this._parser.parse(xml);
 
-    // Throw error if no root SVG node found -> no valid SVG
+    // Throw error if no top level SVG-XML element found -> no valid SVG
     if (typeof jsonObject['svg'] !== 'object') {
-      throw new Error(); // TODO: custom error
+      throw new InvalidSVGException();
     }
 
     // Convert the SVG jsonObject into a better to process node
     return this.parseRawElement(jsonObject.svg, 'svg');
   }
 
-  private parseRawElement(rawElement: TElement, name: string): TNode {
-    const node: TNode = {
+  private parseRawElement(rawElement: TRawElement, name: string): TElement {
+    const node: TElement = {
       type: name,
       attributes: {},
       children: [],
@@ -64,7 +66,7 @@ export class SVGParser {
 
       // Log warning if property couldn't be resolved
       else {
-        // TODO: warn log
+        logger.warn(`Couldn't process '${rawElement}' at '${key}'.`);
       }
     }
 
@@ -72,11 +74,11 @@ export class SVGParser {
   }
 }
 
-type TNode = {
+type TElement = {
   type: string;
   value?: string; // Text value
   attributes: { [key: string]: string };
-  children: TNode[];
+  children: TElement[];
 };
 
-type TElement = { [key: string]: string | TElement[] | TElement };
+type TRawElement = { [key: string]: string | TRawElement[] | TRawElement };

@@ -33,6 +33,7 @@
     "README.md"
   ],
   "dependencies": {
+    "@pda/logger": "workspace:*",
     "fast-xml-parser": "^4.2.5"
   }
 }

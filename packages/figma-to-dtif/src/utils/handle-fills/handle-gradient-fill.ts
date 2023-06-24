@@ -1,15 +1,16 @@
 import { TGradientPaint } from '@pda/dtif-types';
-import { TFormatNodeConfig } from '../../formatting/format-root';
+import { TFormatNodeOptions } from '../../formatting/format-frame-to-scene';
 import { TNodeWithFills } from '../../types';
 import { convert2DMatrixTo3DMatrix } from '../convert-2d-matrix-to-3d-matrix';
 import { exportAndUploadNode } from '../export-and-upload-node';
 import { isNodeWithFills, isTextNode } from '../is-node';
 import { resetNodeTransform } from '../reset-node-transform';
 
+// TODO:
 export async function handleGradientFill(
   node: SceneNode,
   fill: GradientPaint,
-  config: TFormatNodeConfig & { format: 'SVG' | 'JPG' }
+  config: TFormatNodeOptions & { format: 'SVG' | 'JPG' }
 ): Promise<TGradientPaint> {
   let exported: TGradientPaint['exported'] | null = null;
 

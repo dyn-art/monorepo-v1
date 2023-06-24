@@ -1,10 +1,10 @@
 import { ENodeTypes, TEffect, TRectangleNode } from '@pda/dtif-types';
 import { convert2DMatrixTo3DMatrix, handleFills } from '../utils';
-import { TFormatNodeConfig } from './format-root';
+import { TFormatNodeOptions } from './format-frame-to-scene';
 
 export async function formatRectangleNode(
   node: RectangleNode,
-  config: TFormatNodeConfig
+  options: TFormatNodeOptions
 ): Promise<TRectangleNode> {
   return {
     type: ENodeTypes.RECTANGLE,
@@ -29,6 +29,6 @@ export async function formatRectangleNode(
     topLeftRadius: node.topLeftRadius,
     topRightRadius: node.topRightRadius,
     // Fills mixin
-    fills: await handleFills(node, node.fills as Paint[], config),
+    fills: await handleFills(node, node.fills as Paint[], options),
   };
 }

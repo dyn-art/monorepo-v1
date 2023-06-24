@@ -1,33 +1,37 @@
 import { ESupportedFigmaNodeTypes, TNode, TSVGNode } from '@pda/dtif-types';
 import {
   IncompatibleSVGNodeException,
+  InvisibleNodeException,
   UnsupportedFigmaNodeException,
 } from '../exceptions';
 import { logger } from '../logger';
-import { isSVGCompatibleNode, isSVGNode } from '../utils';
+import { isSVGCompatibleNode } from '../utils';
 import { formatFrameNode } from './format-frame-node';
+import { TFormatNodeOptions } from './format-frame-to-scene';
 import { formatGroupNode } from './format-group-node';
 import { formatRectangleNode } from './format-rectangle-node';
-import { TFormatNodeConfig } from './format-root';
 import { formatTextNode } from './format-text-node';
 import { formatToSvgNode } from './format-to-svg-node';
 
 export async function formatNode(
   node: SceneNode,
-  config: TFormatNodeConfig,
-  isParent = true
-): Promise<TNode | null> {
+  options: TFormatNodeOptions,
+  isRoot = true
+): Promise<TNode> {
   const {
     frameToSVG = true,
     svgExportIdentifierRegex = null,
     ignoreInvisible = true,
-  } = config;
-  let formattedNode: TNode | null = null;
+  } = options;
+  let formattedNode: TNode;
 
   // Check whether node is visible
   const isVisible = node.visible;
   if (!isVisible && ignoreInvisible) {
-    return null;
+    throw new InvisibleNodeException(
+      `Node '${node.name}' couldn't be exported because it is probably invisible.`,
+      node
+    );
   }
   // If invisible node to be exported, make it visible during export to avoid unwanted errors
   else if (!isVisible) {
@@ -42,25 +46,32 @@ export async function formatNode(
       )
     ) {
       throw new UnsupportedFigmaNodeException(
-        `The Figma node '${node.type}' is not yet supported!`,
+        `The Figma node '${node.name}' of the type '${node.type}' is not supported yet!`,
         node
       );
     }
 
     // Handle special SVG formatting if applicable
-    if (formattedNode == null) {
+    if (
+      shouldExportNodeAsSVG({
+        node,
+        svgExportIdentifierRegex,
+        isRoot: isRoot,
+        frameToSVG,
+      })
+    ) {
       formattedNode = await handleSpecialSVGFormatting({
         node,
         svgExportIdentifierRegex,
-        isParent,
+        isRoot,
         frameToSVG,
-        config: config,
+        options: options,
       });
     }
 
     // Handle supported node formatting
-    if (formattedNode == null) {
-      formattedNode = await handleSupportedNodeFormatting(node, config);
+    else {
+      formattedNode = await handleSupportedNodeFormatting(node, options);
     }
 
     resetVisibility(node, isVisible);
@@ -80,7 +91,7 @@ function resetVisibility(node: SceneNode, isVisible: boolean) {
 
 async function handleSupportedNodeFormatting(
   node: SceneNode,
-  config: TFormatNodeConfig
+  config: TFormatNodeOptions
 ): Promise<TNode> {
   switch (node.type) {
     case 'FRAME':
@@ -111,41 +122,61 @@ async function handleSupportedNodeFormatting(
 async function handleSpecialSVGFormatting(args: {
   node: SceneNode;
   svgExportIdentifierRegex: string | null;
-  isParent: boolean;
+  isRoot: boolean;
   frameToSVG: boolean;
-  config: TFormatNodeConfig;
-}): Promise<TSVGNode | null> {
-  const { node, svgExportIdentifierRegex, isParent, frameToSVG, config } = args;
+  options: TFormatNodeOptions;
+}): Promise<TSVGNode> {
+  const {
+    node,
+    svgExportIdentifierRegex,
+    isRoot,
+    frameToSVG,
+    options: config,
+  } = args;
+
+  // Check if the node is SVG compatible
+  if (!isSVGCompatibleNode(node)) {
+    throw new IncompatibleSVGNodeException(
+      `Node '${node.name}' can not be formatted to SVG!`,
+      node
+    );
+  }
+
+  logger.info(`Export node '${node.name}' as SVG.'`, {
+    isRoot,
+    frameToSVG: frameToSVG,
+    svgExportIdentifierRegex: svgExportIdentifierRegex,
+  });
+
+  return formatToSvgNode(node, config);
+}
+
+function shouldExportNodeAsSVG(args: {
+  node: SceneNode;
+  svgExportIdentifierRegex: string | null;
+  isRoot: boolean;
+  frameToSVG: boolean;
+}): boolean {
+  const { node, svgExportIdentifierRegex, isRoot, frameToSVG } = args;
   const isFrame = ['FRAME', 'COMPONENT', 'INSTANCE'].includes(node.type);
 
   // Check if the node name matches SVG export identifier regex
-  let matchesSvgExportIdentifier = false;
-  if (svgExportIdentifierRegex != null) {
-    const svgExportIdentifier = new RegExp(svgExportIdentifierRegex);
-    matchesSvgExportIdentifier = svgExportIdentifier.test(node.name);
-  }
+  const matchesSvgExportIdentifier = matchesSVGExportIdentifierRegex(
+    svgExportIdentifierRegex,
+    node
+  );
 
-  // Format node to svg node
-  if (
-    (matchesSvgExportIdentifier || (!isParent && isFrame && frameToSVG)) &&
-    !isSVGNode(node)
-  ) {
-    // Check if the node is SVG compatible
-    if (!isSVGCompatibleNode(node)) {
-      throw new IncompatibleSVGNodeException(
-        `Node '${node.name}' can not be formatted to SVG!`,
-        node
-      );
-    }
+  // Check if frame node should be exported as SVG
+  const shouldExportFrameAsSVG = isFrame && frameToSVG && !isRoot;
 
-    logger.info(`Export node '${node.name}' as SVG.'`, {
-      isParent,
-      frameToSVG: frameToSVG,
-      svgExportIdentifierRegex: svgExportIdentifierRegex,
-    });
+  return matchesSvgExportIdentifier || shouldExportFrameAsSVG;
+}
 
-    return formatToSvgNode(node, config);
-  }
-
-  return null;
+function matchesSVGExportIdentifierRegex(
+  svgExportIdentifierRegex: string | null,
+  node: SceneNode
+): boolean {
+  if (svgExportIdentifierRegex == null) return false;
+  const svgExportIdentifier = new RegExp(svgExportIdentifierRegex);
+  return svgExportIdentifier.test(node.name);
 }

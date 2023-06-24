@@ -58,6 +58,7 @@ export type TSVGNode = TSVGNodeExported | TSVGNodeInline;
 
 export type TSVGNodeExported = {
   type: ENodeTypes.SVG;
+  exported: true;
   format: 'JPG' | 'SVG';
   hash: string;
   inline?: Uint8Array;
@@ -65,9 +66,17 @@ export type TSVGNodeExported = {
 
 export type TSVGNodeInline = {
   type: ENodeTypes.SVG;
-  attributes: Record<string, string>;
-  children: { type: string; attributes: Record<string, string> };
+  exported: false;
+  attributes: TSVGElement['attributes'];
+  children: TSVGElement['children'];
 } & TDefaultShapeMixin;
+
+type TSVGElement = {
+  type: string;
+  value?: string; // Text value
+  attributes: { [key: string]: string };
+  children: TSVGElement[];
+};
 
 export type TTextNode = {
   type: ENodeTypes.TEXT;
