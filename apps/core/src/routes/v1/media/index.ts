@@ -4,6 +4,10 @@ import { getPreSignedUploadUrl } from './media.controller';
 
 const router: Router = Router();
 
-router.get('/pre-signed-upload-url', controllerWrapper(getPreSignedUploadUrl));
+router.get(
+  '/pre-signed-upload-url',
+  ...getPreSignedUploadUrl.validator,
+  controllerWrapper(getPreSignedUploadUrl)
+);
 
 export default router;

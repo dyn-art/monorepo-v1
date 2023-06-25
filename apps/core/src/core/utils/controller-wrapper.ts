@@ -1,4 +1,5 @@
 import express from 'express';
+import { validationResult } from 'express-validator';
 import { appConfig, STAGE } from '../../environment';
 import { AppError } from '../../middlewares';
 
@@ -7,8 +8,8 @@ import { AppError } from '../../middlewares';
  */
 export function controllerWrapper(
   controller: (
-    req: express.Request,
-    res: express.Response,
+    req: express.Request<any, any, any, any, any>,
+    res: express.Response<any, any>,
     next: express.NextFunction
   ) => Promise<void>,
   stage?: STAGE
@@ -19,11 +20,21 @@ export function controllerWrapper(
     next: express.NextFunction
   ) => {
     try {
-      if (!stage || appConfig.stage === stage) {
-        await controller(req, res, next);
-      } else {
+      // Check stage
+      if (stage != null && appConfig.stage !== stage) {
         throw new AppError(404);
       }
+
+      // Check validation
+      const result = validationResult(req);
+      if (!result.isEmpty()) {
+        throw new AppError(400, 'Bad Request', {
+          description: 'Invalid query data provided! See additional errors.',
+          additionalErrors: result.array(),
+        });
+      }
+
+      await controller(req, res, next);
     } catch (e) {
       next(e);
     }

@@ -10,7 +10,7 @@ import { TErrorJsonResponseDto } from '../types';
  * https://reflectoring.io/express-error-handling/
  */
 export function errorHandlerMiddleware(
-  err: any,
+  err: unknown,
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
@@ -20,6 +20,7 @@ export function errorHandlerMiddleware(
     error: 'not-set',
     error_description: null,
     error_uri: null,
+    additional_errors: [],
   };
 
   // Handle application-specific errors (instances of AppError)
@@ -28,15 +29,19 @@ export function errorHandlerMiddleware(
     jsonResponse.error = err.message;
     jsonResponse.error_description = err.description;
     jsonResponse.error_uri = err.uri;
+    jsonResponse.additional_errors = err.additionalErrors;
   }
+
   // Handle unknown errors
-  else {
-    if (err.message != null) {
+  else if (typeof err === 'object' && err != null) {
+    if ('message' in err && typeof err.message === 'string') {
       jsonResponse.error = err.message;
     }
-    if (typeof err.status === 'number') {
+    if ('status' in err && typeof err.status === 'number') {
       statusCode = err.status;
     }
+  } else {
+    jsonResponse.error = 'An unknown error occurred!';
   }
 
   // Send the error response with appropriate status code

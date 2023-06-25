@@ -51,7 +51,6 @@ export async function formatToSvgNode(
     const svgObject = svgParser.parse(raw);
     svgNode = {
       isExported: false,
-      attributes: svgObject.attributes,
       children: svgObject.children,
       ...baseNodeProperties,
     } as TSVGNodeInline;

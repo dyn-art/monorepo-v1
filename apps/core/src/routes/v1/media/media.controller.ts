@@ -1,29 +1,27 @@
 import { randomUUID } from 'crypto';
 import express from 'express';
+import { query } from 'express-validator';
 import { s3 } from '../../../core/aws';
-import { AppError } from '../../../middlewares';
 
 export async function getPreSignedUploadUrl(
-  req: express.Request,
+  req: express.Request<
+    {},
+    {},
+    {},
+    {
+      key?: string;
+      contentType: string;
+      scope?: string;
+      overwrite: boolean;
+    },
+    {}
+  >,
   res: express.Response
 ) {
   const { contentType, key, scope, overwrite = false } = req.query;
 
-  // Validate query parameters
-  if (
-    typeof contentType !== 'string' ||
-    typeof scope !== 'string' ||
-    typeof overwrite !== 'boolean'
-  ) {
-    throw new AppError(500, 'Invalid query parameters provided!');
-  }
-
   // Check whether object already exists
-  if (
-    !overwrite &&
-    typeof key === 'string' &&
-    (await s3.doesObjectExist(key))
-  ) {
+  if (key != null && !overwrite && (await s3.doesObjectExist(key))) {
     res.status(200).send();
     return;
   }
@@ -39,3 +37,10 @@ export async function getPreSignedUploadUrl(
     key,
   });
 }
+
+getPreSignedUploadUrl.validator = [
+  query('contentType').notEmpty().isString(),
+  query('scope').notEmpty().isString(),
+  query('overwrite').optional().isBoolean(),
+  query('key').optional().isString(),
+];

@@ -75,6 +75,7 @@ const DTIFExport: React.FC = () => {
           selectedElements: [selectedFrame],
           options: {
             svg: {
+              inline: true,
               exportIdentifierRegex: '_svg$',
             },
             gradientFill: {

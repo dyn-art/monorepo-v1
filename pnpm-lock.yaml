@@ -85,6 +85,9 @@ importers:
       express-rate-limit:
         specifier: ^6.7.0
         version: 6.7.0(express@4.18.2)
+      express-validator:
+        specifier: ^7.0.1
+        version: 7.0.1
       helmet:
         specifier: ^6.1.5
         version: 6.1.5
@@ -386,6 +389,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@pda/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.0.2(@types/react@18.0.37)(react@18.2.0)
@@ -747,7 +753,7 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@pda/svgson':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../svgson
       '@pda/utils':
         specifier: workspace:*
@@ -1008,7 +1014,7 @@ importers:
   packages/svgson:
     dependencies:
       '@pda/logger':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../logger
       fast-xml-parser:
         specifier: ^4.2.5
@@ -11174,6 +11180,14 @@ packages:
       express: 4.18.2
     dev: false
 
+  /express-validator@7.0.1:
+    resolution: {integrity: sha512-oB+z9QOzQIE8FnlINqyIFA8eIckahC6qc8KtqLdLJcU3/phVyuhXH3bA4qzcrhme+1RYaCSwrq+TlZ/kAKIARA==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      lodash: 4.17.21
+      validator: 13.9.0
+    dev: false
+
   /express@4.18.2:
     resolution: {integrity: sha512-5/PsL6iGPdfQ/lKM1UuielYgv3BUoJfz1aUwU9vHZ+J7gyvwdQXFEBIEIaxeGf0GIcreATNyBExtalisDbuMqQ==}
     engines: {node: '>= 0.10.0'}
@@ -18012,6 +18026,11 @@ packages:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
     dev: true
+
+  /validator@13.9.0:
+    resolution: {integrity: sha512-B+dGG8U3fdtM0/aNK4/X8CXq/EcxU2WPrPEkJGslb47qyHsxmbggTWK0yEA4qnYVNF+nxNlN88o14hIcPmSIEA==}
+    engines: {node: '>= 0.10'}
+    dev: false
 
   /vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}

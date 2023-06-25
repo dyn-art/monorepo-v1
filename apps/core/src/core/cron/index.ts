@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import { logger } from '../../logger';
+import { logger } from '../logger';
 
 export const cronTasks: cron.ScheduledTask[] = [
   // Etsy Orders/Receipts polling Cron Schedule (Runs all 5min)

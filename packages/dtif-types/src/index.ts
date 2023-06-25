@@ -67,7 +67,6 @@ export type TSVGNodeExported = {
 export type TSVGNodeInline = {
   type: ENodeTypes.SVG;
   isExported: false;
-  attributes: TSVGElement['attributes'];
   children: TSVGElement['children'];
 } & TDefaultShapeMixin;
 
