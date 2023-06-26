@@ -8,7 +8,7 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "pnpm run bundle && shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts",
+    "build": "pnpm run bundle && shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod",
     "bundle": "shx rm -rf bundle && ts-node ./scripts/bundle",
     "start:dev": "tsc -w",
     "start:remotion": "remotion preview ./ui/src/index.ts --config ./ui/remotion.config.ts",

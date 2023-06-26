@@ -1,10 +1,11 @@
 import express from 'express';
+import { query } from 'express-validator';
 import { etsyClient } from '../../../../core/services';
 import { AppError } from '../../../../middlewares';
 
 export async function getPing(req: express.Request, res: express.Response) {
   const success = await etsyClient.ping();
-  res.send(success);
+  res.status(200).send(success);
 }
 
 export async function getOAuthChallenge(
@@ -23,40 +24,53 @@ export async function getOAuthChallenge(
   // Generate PKCE Code Challenge
   const challenge = etsyClient.authService.generatePKCECodeChallengeUri();
 
-  res.send(challenge);
+  res.status(200).send(challenge);
 }
 
 export async function handleOAuthRedirect(
-  req: express.Request,
+  req: express.Request<
+    {},
+    {},
+    {},
+    {
+      code?: string;
+      state?: string;
+      error?: string;
+      error_description?: string;
+    }
+  >,
   res: express.Response
 ) {
   const { code, state, error, error_description } = req.query;
 
   // Handle error parameters
   if (error != null && error_description != null) {
-    res.send({
-      error,
-      error_description,
-    });
-    return;
+    throw new AppError(500, error, { description: error_description });
   }
 
   // Validate query parameters
-  if (typeof code !== 'string' || typeof state !== 'string') {
-    throw new AppError(500, 'Invalid query parameters provided!');
+  else if (code != null && state != null) {
+    // Token exchange
+    const accessToken =
+      await etsyClient.authService.retrieveAccessTokenByAuthorizationCode(
+        code,
+        state
+      );
+    const refreshTokenInfo = etsyClient.authService.getRefreshTokenInfo();
+
+    res.status(200).send({
+      accessToken,
+      refreshToken: refreshTokenInfo.refreshToken,
+      refreshTokenExpiresAt: refreshTokenInfo.expiresAt,
+    });
   }
 
-  // Token exchange
-  const accessToken =
-    await etsyClient.authService.retrieveAccessTokenByAuthorizationCode(
-      code,
-      state
-    );
-  const refreshTokenInfo = etsyClient.authService.getRefreshTokenInfo();
-
-  res.send({
-    accessToken,
-    refreshToken: refreshTokenInfo.refreshToken,
-    refreshTokenExpiresAt: refreshTokenInfo.expiresAt,
-  });
+  throw new AppError(500, 'No query parameter code and state present!');
 }
+
+handleOAuthRedirect.validator = [
+  query('code').optional().isString(),
+  query('state').optional().isString(),
+  query('error').optional().isString(),
+  query('error_description').optional().isString(),
+];

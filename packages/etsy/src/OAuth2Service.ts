@@ -1,7 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
 import crypto from 'crypto';
 import { etsyConfig } from './environment';
+import { RefreshTokenExpiredException } from './exceptions/RefreshTokenExpiredException';
+import { RetrieveAccessTokenException } from './exceptions/RetrieveAccessTokenException';
+import { logger } from './logger';
 import { TAuthResponseDto } from './types';
+import { handleAxiosError } from './utils';
 
 export class OAuth2Service {
   private readonly _httpClient: AxiosInstance;
@@ -12,7 +16,7 @@ export class OAuth2Service {
 
   private _accessToken: string | null = null;
   private _accessTokenExpiresAt = 0;
-  private readonly _accessTokenPuffer = 60 * 5; // 5min
+  private readonly _accessTokenBuffer = 60 * 5; // 5 min
 
   private _refreshToken: string | null = null; // 90 day life span
   private _refreshTokenExpiresAt = 0;
@@ -24,13 +28,14 @@ export class OAuth2Service {
       scopes: config.scopes,
     };
     if (config.refresh != null) {
-      this._refreshToken = config.refresh.refreshToken;
-      this._refreshTokenExpiresAt = config.refresh.expiresAt;
+      const { refreshToken, expiresAt } = config.refresh;
+      this._refreshToken = refreshToken;
+      this._refreshTokenExpiresAt = expiresAt;
     }
     this._httpClient = httpClient;
   }
 
-  public async getAccessToken(force = false): Promise<string | null> {
+  public async getAccessToken(force = false): Promise<string> {
     if (
       this._accessToken != null &&
       Date.now() < this._accessTokenExpiresAt &&
@@ -39,18 +44,17 @@ export class OAuth2Service {
       return this._accessToken;
     }
 
+    // Check whether refresh token is expired
     if (
-      this._refreshToken != null &&
-      Date.now() < this._refreshTokenExpiresAt
+      this._refreshToken == null ||
+      Date.now() > this._refreshTokenExpiresAt
     ) {
-      return this.retrieveAccessTokenByRefreshToken(this._refreshToken);
-    } else {
-      console.error(
-        'Refresh Token expired and the access needs to be regranted via manual authorization!'
+      throw new RefreshTokenExpiredException(
+        'Refresh Token expired and the access needs to be re-granted by manual authorization!'
       );
     }
 
-    return null;
+    return this.retrieveAccessTokenByRefreshToken(this._refreshToken);
   }
 
   public getRefreshTokenInfo() {
@@ -98,12 +102,14 @@ export class OAuth2Service {
   public async retrieveAccessTokenByAuthorizationCode(
     code: string,
     state: string
-  ): Promise<string | null> {
+  ): Promise<string> {
     try {
       const codeVerifier = this._codeVerifiers[state];
       if (codeVerifier == null) {
         console.error('No matching code verifier found!');
-        return null;
+        throw new RetrieveAccessTokenException({
+          message: `Node matching code verifier found for state '${state}'!`,
+        });
       }
 
       // Prepare body
@@ -126,14 +132,13 @@ export class OAuth2Service {
 
       return this.handleRetrieveAccessTokenResponse(response.data);
     } catch (error) {
-      console.error(error);
+      throw handleAxiosError(error, RetrieveAccessTokenException);
     }
-    return null;
   }
 
   public async retrieveAccessTokenByRefreshToken(
     refreshToken: string
-  ): Promise<string | null> {
+  ): Promise<string> {
     try {
       // Prepare body
       const body = {
@@ -148,11 +153,11 @@ export class OAuth2Service {
         body
       );
 
+      // Handle response
       return this.handleRetrieveAccessTokenResponse(response.data);
     } catch (error) {
-      console.error(error);
+      throw handleAxiosError(error, RetrieveAccessTokenException);
     }
-    return null;
   }
 
   private handleRetrieveAccessTokenResponse(data: TAuthResponseDto) {
@@ -160,20 +165,25 @@ export class OAuth2Service {
       data.access_token == null ||
       data.expires_in == null ||
       data.refresh_token == null
-    )
-      return null;
+    ) {
+      throw new RetrieveAccessTokenException({
+        message: `Invalid response DTO! Either 'access_token', 'expires_in' or 'refresh_token' is missing.`,
+      });
+    }
 
+    // Update access token
     this._accessToken = data.access_token;
     this._accessTokenExpiresAt =
-      Date.now() + (data.expires_in - this._accessTokenPuffer) * 1000;
+      Date.now() + (data.expires_in - this._accessTokenBuffer) * 1000;
 
+    // Update refresh token
     if (data.refresh_token !== this._refreshToken) {
       this._refreshToken = data.refresh_token;
       this._refreshTokenExpiresAt = Date.now() + (90 - 5) * 24 * 60 * 60 * 1000; // 90 days - 5 days as puffer
     }
 
-    console.log(
-      `Successfully retrieved new Etsy Access Token that will expire at ${new Date(
+    logger.info(
+      `Successfully retrieved new Etsy access token that expires at: ${new Date(
         this._accessTokenExpiresAt
       ).toLocaleTimeString()}`
     );

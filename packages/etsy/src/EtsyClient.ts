@@ -1,16 +1,18 @@
 import axios, { AxiosInstance } from 'axios';
 import { OAuth2Service } from './OAuth2Service';
 import { etsyConfig } from './environment';
+import { NetworkException } from './exceptions/NetworkException';
 import {
   TGetMeResponseDto,
   TGetShopReceiptsQueryParametersDto,
   TGetShopReceiptsResponseDto,
   TPingResponseDto,
 } from './types';
+import { handleAxiosError, isStatusCode } from './utils';
 
 export class EtsyClient {
   private readonly _httpClient: AxiosInstance;
-  public readonly _authService: OAuth2Service;
+  private readonly _authService: OAuth2Service;
 
   constructor(authService: OAuth2Service) {
     this._authService = authService;
@@ -52,7 +54,7 @@ export class EtsyClient {
       );
       return response.data.application_id != null;
     } catch (error) {
-      console.error(error);
+      // do nothing
     }
     return false;
   }
@@ -64,9 +66,12 @@ export class EtsyClient {
       );
       return response.data;
     } catch (error) {
-      console.error(error);
+      if (isStatusCode(error, 404)) {
+        return null;
+      } else {
+        throw handleAxiosError(error, NetworkException);
+      }
     }
-    return null;
   }
 
   public async getShopReceipts(
@@ -74,14 +79,17 @@ export class EtsyClient {
     params: TGetShopReceiptsQueryParametersDto = {}
   ): Promise<TGetShopReceiptsResponseDto | null> {
     try {
-      const response = await this._httpClient.get<any>(
+      const response = await this._httpClient.get<TGetShopReceiptsResponseDto>(
         `/application/shops/${shopId}/receipts`,
         { params }
       );
       return response.data;
     } catch (error) {
-      console.error(error);
+      if (isStatusCode(error, 404)) {
+        return null;
+      } else {
+        throw handleAxiosError(error, NetworkException);
+      }
     }
-    return null;
   }
 }
