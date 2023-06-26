@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { RequestException } from '../exceptions/RequestException';
+import { EtsyServiceException } from '../exceptions/EtsyServiceException';
 
 export function isStatusCode(error: unknown, errorCode: number): boolean {
   // Handle axios error
@@ -8,8 +8,8 @@ export function isStatusCode(error: unknown, errorCode: number): boolean {
   }
 
   // Handle RequestException
-  if (error instanceof RequestException) {
-    return error.status === 404;
+  if (error instanceof EtsyServiceException) {
+    return error.statusCode === 404;
   }
 
   return false;

@@ -1,14 +1,14 @@
 import axios, { AxiosInstance } from 'axios';
+import { etsyConfig } from '../environment';
+import { NetworkException } from '../exceptions';
+import { isStatusCode, mapAxiosError } from '../utils';
 import { OAuth2Service } from './OAuth2Service';
-import { etsyConfig } from './environment';
-import { NetworkException } from './exceptions/NetworkException';
 import {
   TGetMeResponseDto,
   TGetShopReceiptsQueryParametersDto,
   TGetShopReceiptsResponseDto,
   TPingResponseDto,
 } from './types';
-import { handleAxiosError, isStatusCode } from './utils';
 
 export class EtsyClient {
   private readonly _httpClient: AxiosInstance;
@@ -69,7 +69,7 @@ export class EtsyClient {
       if (isStatusCode(error, 404)) {
         return null;
       } else {
-        throw handleAxiosError(error, NetworkException);
+        throw mapAxiosError(error, NetworkException);
       }
     }
   }
@@ -88,7 +88,7 @@ export class EtsyClient {
       if (isStatusCode(error, 404)) {
         return null;
       } else {
-        throw handleAxiosError(error, NetworkException);
+        throw mapAxiosError(error, NetworkException);
       }
     }
   }

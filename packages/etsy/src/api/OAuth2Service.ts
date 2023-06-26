@@ -1,11 +1,13 @@
 import axios, { AxiosInstance } from 'axios';
 import crypto from 'crypto';
-import { etsyConfig } from './environment';
-import { RefreshTokenExpiredException } from './exceptions/RefreshTokenExpiredException';
-import { RetrieveAccessTokenException } from './exceptions/RetrieveAccessTokenException';
-import { logger } from './logger';
+import { etsyConfig } from '../environment';
+import {
+  RefreshTokenExpiredException,
+  RetrieveAccessTokenException,
+} from '../exceptions';
+import { logger } from '../logger';
+import { mapAxiosError } from '../utils';
 import { TAuthResponseDto } from './types';
-import { handleAxiosError } from './utils';
 
 export class OAuth2Service {
   private readonly _httpClient: AxiosInstance;
@@ -132,7 +134,7 @@ export class OAuth2Service {
 
       return this.handleRetrieveAccessTokenResponse(response.data);
     } catch (error) {
-      throw handleAxiosError(error, RetrieveAccessTokenException);
+      throw mapAxiosError(error, RetrieveAccessTokenException);
     }
   }
 
@@ -156,7 +158,7 @@ export class OAuth2Service {
       // Handle response
       return this.handleRetrieveAccessTokenResponse(response.data);
     } catch (error) {
-      throw handleAxiosError(error, RetrieveAccessTokenException);
+      throw mapAxiosError(error, RetrieveAccessTokenException);
     }
   }
 

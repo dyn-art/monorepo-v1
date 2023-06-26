@@ -1,8 +1,8 @@
-import { EtsyClient } from './EtsyClient';
+import { EtsyClient } from './api';
 import {
   TGetShopReceiptsQueryParametersDto,
   TGetShopReceiptsResponseDto,
-} from './types';
+} from './api/types';
 
 export class EtsyService {
   private readonly _etsyClient: EtsyClient;

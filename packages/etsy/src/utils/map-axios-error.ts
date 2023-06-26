@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { EtsyServiceException } from '../exceptions/EtsyServiceException';
 import { NetworkException } from '../exceptions/NetworkException';
-import { RequestException } from '../exceptions/RequestException';
+import { logger } from '../logger';
 
-export function handleAxiosError<T extends RequestException>(
+export function mapAxiosError<T extends EtsyServiceException>(
   error: unknown,
   ExceptionType: new (...args: any[]) => T
 ): Error {
@@ -10,22 +11,26 @@ export function handleAxiosError<T extends RequestException>(
   if (axios.isAxiosError(error)) {
     // Handle network errors
     if (error.code === 'ECONNABORTED') {
-      return new NetworkException({
+      const exception = new NetworkException({
         message: 'The request was timed out!',
         code: error.code,
         throwable: error,
       });
+      logger.error(exception.message);
+      return exception;
     }
     // This catches network errors like ECONNREFUSED, ECONNRESET etc.
     else if (error.code != null) {
-      return new NetworkException({
+      const exception = new NetworkException({
         message: 'Network error occurred!',
         code: error.code,
         throwable: error,
       });
+      logger.error(exception.message);
+      return exception;
     }
 
-    // Handle response errors
+    // Handle response error
     const response = error.response;
     if (response != null) {
       let message: string;
@@ -52,34 +57,42 @@ export function handleAxiosError<T extends RequestException>(
           message = 'Unknown HTTP error occurred';
           break;
       }
-      return new ExceptionType({
+      const exception = new ExceptionType({
         message: `${message}: ${error.message}`,
         status: response.status,
         throwable: error,
       });
+      logger.error(exception.message);
+      return exception;
     }
 
     // Handle if request was made but no response was received
     const request = error.request;
     if (request != null) {
-      return new NetworkException({
+      const exception = new NetworkException({
         message: 'The request was made but no response was received',
         code: 408,
         throwable: error,
       });
+      logger.error(exception.message);
+      return exception;
     }
 
     // Handle unknown request error
-    return new ExceptionType({
+    const exception = new ExceptionType({
       message: 'An unknown request error occurred!',
       throwable: error,
     });
+    logger.error(exception.message);
+    return exception;
   }
 
-  // Handle non Axios errors
+  // Handle non Axios error
   if (error instanceof Error) {
+    logger.error(error.message);
     return error;
   }
 
+  logger.error('An unknown error occurred!');
   return new Error('An unknown error occurred!');
 }

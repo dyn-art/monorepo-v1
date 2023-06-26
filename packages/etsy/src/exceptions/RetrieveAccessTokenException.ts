@@ -1,3 +1,3 @@
-import { RequestException } from './RequestException';
+import { EtsyServiceException } from './EtsyServiceException';
 
-export class RetrieveAccessTokenException extends RequestException {}
+export class RetrieveAccessTokenException extends EtsyServiceException {}

@@ -1,2 +1,2 @@
-export * from './handle-axios-error';
 export * from './is-status-code';
+export * from './map-axios-error';

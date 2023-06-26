@@ -1,6 +1,6 @@
 import { EtsyClient } from '../EtsyClient';
 import { EtsyService } from '../EtsyService';
-import { OAuth2Service } from '../OAuth2Service';
+import { OAuth2Service } from '../api/OAuth2Service';
 
 describe('etsy tests', () => {
   it('send request to etsy api', async () => {
