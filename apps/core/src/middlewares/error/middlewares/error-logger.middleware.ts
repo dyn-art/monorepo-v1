@@ -10,6 +10,6 @@ export function errorLoggerMiddleware(
   res: express.Response,
   next: express.NextFunction
 ) {
-  logger.error('\x1b[31m', err); // Adding some color to the log
+  logger.error(err);
   next(err);
 }

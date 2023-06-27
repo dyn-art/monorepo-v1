@@ -1,6 +1,6 @@
+import { TError_ResponseDTO } from '@pda/core-types';
 import express from 'express';
 import { AppError } from '../AppError';
-import { TErrorJsonResponseDto } from '../types';
 
 /**
  * Error handling middleware for handling application-specific errors and unknown errors.
@@ -16,7 +16,7 @@ export function errorHandlerMiddleware(
   next: express.NextFunction
 ) {
   let statusCode = 500;
-  const jsonResponse: TErrorJsonResponseDto = {
+  const jsonResponse: TError_ResponseDTO = {
     error: 'not-set',
     error_description: null,
     error_uri: null,

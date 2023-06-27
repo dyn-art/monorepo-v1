@@ -1,7 +1,7 @@
 import { EtsyClient } from './api';
 import {
-  TGetShopReceiptsQueryParametersDto,
-  TGetShopReceiptsResponseDto,
+  TGet_ShopReceipts_QueryParamsDTO,
+  TGet_ShopReceipts_ResponseDTO,
 } from './api/types';
 
 export class EtsyService {
@@ -30,8 +30,8 @@ export class EtsyService {
   }
 
   public async getShopReceipts(
-    options: TGetShopReceiptsQueryParametersDto = {}
-  ): Promise<TGetShopReceiptsResponseDto | null> {
+    options: TGet_ShopReceipts_QueryParamsDTO = {}
+  ): Promise<TGet_ShopReceipts_ResponseDTO | null> {
     const me = await this.getMe();
     if (me == null) return null;
     return this._etsyClient.getShopReceipts(me.shopId, options);

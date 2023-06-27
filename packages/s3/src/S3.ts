@@ -147,7 +147,11 @@ export default class S3 {
     key: string,
     options: { contentType?: string; expiresIn?: number; scope?: string } = {}
   ): Promise<string> {
-    const { contentType = 'text', expiresIn = 15 * 60, scope } = options;
+    const {
+      contentType = 'text',
+      expiresIn = 15 * 60,
+      scope = 'authenticated-read',
+    } = options;
     try {
       const url = await getSignedUrl(
         this.client,

@@ -1,20 +1,30 @@
-export type TPingResponseDto = {
+// ============================================================================
+// /application/ping
+// ============================================================================
+
+export type TGet_Ping_ResponseDTO = {
   application_id: number;
 };
 
-export type TAuthResponseDto = {
-  access_token: string;
-  token_type: string;
-  refresh_token: string;
-  expires_in: number;
-};
+// ============================================================================
+// /application/users
+// ============================================================================
 
-export type TGetMeResponseDto = {
+export type TGet_Users_Me_ResponseDTO = {
   user_id: string;
   shop_id: string;
 };
 
-export type TGetShopReceiptsQueryParametersDto = {
+// ============================================================================
+// /application/shops
+// ============================================================================
+
+export type TGet_ShopReceipts_ResponseDTO = {
+  count: number;
+  results: TReceiptDTO[];
+};
+
+export type TGet_ShopReceipts_QueryParamsDTO = {
   min_created?: number;
   max_created?: number;
   min_last_modified?: number;
@@ -28,20 +38,20 @@ export type TGetShopReceiptsQueryParametersDto = {
   was_delivered?: boolean;
 };
 
-export type TMoneyDto = {
+export type TMoneyDTO = {
   amount: number;
   divisor: number;
   currency_code: string;
 };
 
-export type TShipmentDto = {
+export type TShipmentDTO = {
   receipt_shipping_id?: number;
   shipment_notification_timestamp: number;
   carrier_name: string;
   tracking_code: string;
 };
 
-export type TTransactionDto = {
+export type TTransactionDTO = {
   transaction_id: number;
   title?: string;
   description?: string;
@@ -60,8 +70,8 @@ export type TTransactionDto = {
   transaction_type: string;
   product_id?: number;
   sku?: string;
-  price: TMoneyDto;
-  shipping_cost: TMoneyDto;
+  price: TMoneyDTO;
+  shipping_cost: TMoneyDTO;
   variations: Array<{
     property_id: number;
     value_id?: number;
@@ -86,15 +96,15 @@ export type TTransactionDto = {
   shop_coupon: number;
 };
 
-export type TRefundDto = {
-  amount: TMoneyDto;
+export type TRefundDTO = {
+  amount: TMoneyDTO;
   created_timestamp: number;
   reason?: string;
   note_from_issuer?: string;
   status?: string;
 };
 
-export type TReceiptDto = {
+export type TReceiptDTO = {
   receipt_id: number;
   receipt_type: number;
   seller_user_id: number;
@@ -123,20 +133,44 @@ export type TReceiptDto = {
   updated_timestamp: number;
   is_gift: boolean;
   gift_message: string;
-  grandtotal: TMoneyDto;
-  subtotal: TMoneyDto;
-  total_price: TMoneyDto;
-  total_shipping_cost: TMoneyDto;
-  total_tax_cost: TMoneyDto;
-  total_vat_cost: TMoneyDto;
-  discount_amt: TMoneyDto;
-  gift_wrap_price: TMoneyDto;
-  shipments: TShipmentDto[];
-  transactions: TTransactionDto[];
-  refunds: TRefundDto[];
+  grandtotal: TMoneyDTO;
+  subtotal: TMoneyDTO;
+  total_price: TMoneyDTO;
+  total_shipping_cost: TMoneyDTO;
+  total_tax_cost: TMoneyDTO;
+  total_vat_cost: TMoneyDTO;
+  discount_amt: TMoneyDTO;
+  gift_wrap_price: TMoneyDTO;
+  shipments: TShipmentDTO[];
+  transactions: TTransactionDTO[];
+  refunds: TRefundDTO[];
 };
 
-export type TGetShopReceiptsResponseDto = {
-  count: number;
-  results: TReceiptDto[];
+// ============================================================================
+// /oauth/token
+// ============================================================================
+
+export type TPost_OAuthToken_ResponseDTO = {
+  access_token: string;
+  token_type: string;
+  refresh_token: string;
+  expires_in: number;
+};
+
+export type TPost_OAuthToken_BodyDTO =
+  | TPost_OAuthTokenRefreshToken_BodyDTO
+  | TPost_OAuthTokenAuthorizationCode_BodyDTO;
+
+export type TPost_OAuthTokenRefreshToken_BodyDTO = {
+  grant_type: 'refresh_token';
+  client_id: string;
+  refresh_token: string;
+};
+
+export type TPost_OAuthTokenAuthorizationCode_BodyDTO = {
+  grant_type: 'authorization_code';
+  client_id: string;
+  redirect_uri: string;
+  code: string;
+  code_verifier: string;
 };

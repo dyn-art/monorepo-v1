@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { EtsyServiceException, NetworkException } from '../exceptions';
+import { CoreServiceException, NetworkException } from '../exceptions';
 import { logger } from '../logger';
 
-export function mapAxiosError<T extends EtsyServiceException>(
+export function mapAxiosError<T extends CoreServiceException>(
   error: unknown,
   ExceptionType: new (...args: any[]) => T
 ): Error {

@@ -1,16 +1,25 @@
+import {
+  TGet_Auth_Etsy_GetPing_ResponseDTO,
+  TGet_Auth_Etsy_OAuthChallenge_ResponseDTO,
+  TGet_Auth_Etsy_OAuthRedirect_QueryParamsDTO,
+  TGet_Auth_Etsy_OAuthRedirect_ResponseDTO,
+} from '@pda/core-types';
 import express from 'express';
 import { query } from 'express-validator';
 import { etsyClient } from '../../../../core/services';
 import { AppError } from '../../../../middlewares';
 
-export async function getPing(req: express.Request, res: express.Response) {
+export async function getPing(
+  req: express.Request,
+  res: express.Response<TGet_Auth_Etsy_GetPing_ResponseDTO>
+) {
   const success = await etsyClient.ping();
   res.status(200).send(success);
 }
 
 export async function getOAuthChallenge(
   req: express.Request,
-  res: express.Response
+  res: express.Response<TGet_Auth_Etsy_OAuthChallenge_ResponseDTO>
 ) {
   // Check whether Etsy can be reached
   const success = await etsyClient.ping();
@@ -24,22 +33,12 @@ export async function getOAuthChallenge(
   // Generate PKCE Code Challenge
   const challenge = etsyClient.authService.generatePKCECodeChallengeUri();
 
-  res.status(200).send(challenge);
+  res.status(200).send({ challenge });
 }
 
 export async function handleOAuthRedirect(
-  req: express.Request<
-    {},
-    {},
-    {},
-    {
-      code?: string;
-      state?: string;
-      error?: string;
-      error_description?: string;
-    }
-  >,
-  res: express.Response
+  req: express.Request<{}, {}, {}, TGet_Auth_Etsy_OAuthRedirect_QueryParamsDTO>,
+  res: express.Response<TGet_Auth_Etsy_OAuthRedirect_ResponseDTO>
 ) {
   const { code, state, error, error_description } = req.query;
 
@@ -57,15 +56,18 @@ export async function handleOAuthRedirect(
         state
       );
     const refreshTokenInfo = etsyClient.authService.getRefreshTokenInfo();
+    if (refreshTokenInfo.refreshToken == null) {
+      throw new AppError(500, 'Failed to resolve refresh token!');
+    }
 
     res.status(200).send({
-      accessToken,
-      refreshToken: refreshTokenInfo.refreshToken,
-      refreshTokenExpiresAt: refreshTokenInfo.expiresAt,
+      access_token: accessToken,
+      refresh_token: refreshTokenInfo.refreshToken,
+      refresh_token_expires_at: refreshTokenInfo.expiresAt,
     });
   }
 
-  throw new AppError(500, 'No query parameter code and state present!');
+  throw new AppError(500, 'No valid query parameters present!');
 }
 
 handleOAuthRedirect.validator = [

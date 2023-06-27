@@ -4,10 +4,10 @@ import { NetworkException } from '../exceptions';
 import { isStatusCode, mapAxiosError } from '../utils';
 import { OAuth2Service } from './OAuth2Service';
 import {
-  TGetMeResponseDto,
-  TGetShopReceiptsQueryParametersDto,
-  TGetShopReceiptsResponseDto,
-  TPingResponseDto,
+  TGet_Ping_ResponseDTO,
+  TGet_ShopReceipts_QueryParamsDTO,
+  TGet_ShopReceipts_ResponseDTO,
+  TGet_Users_Me_ResponseDTO,
 } from './types';
 
 export class EtsyClient {
@@ -49,7 +49,7 @@ export class EtsyClient {
   public async ping(): Promise<boolean> {
     try {
       // Send request
-      const response = await this._httpClient.get<TPingResponseDto>(
+      const response = await this._httpClient.get<TGet_Ping_ResponseDTO>(
         '/application/openapi-ping'
       );
       return response.data.application_id != null;
@@ -59,9 +59,9 @@ export class EtsyClient {
     return false;
   }
 
-  public async getMe(): Promise<TGetMeResponseDto | null> {
+  public async getMe(): Promise<TGet_Users_Me_ResponseDTO | null> {
     try {
-      const response = await this._httpClient.get<TGetMeResponseDto>(
+      const response = await this._httpClient.get<TGet_Users_Me_ResponseDTO>(
         '/application/users/me'
       );
       return response.data;
@@ -76,13 +76,14 @@ export class EtsyClient {
 
   public async getShopReceipts(
     shopId: string,
-    params: TGetShopReceiptsQueryParametersDto = {}
-  ): Promise<TGetShopReceiptsResponseDto | null> {
+    params: TGet_ShopReceipts_QueryParamsDTO = {}
+  ): Promise<TGet_ShopReceipts_ResponseDTO | null> {
     try {
-      const response = await this._httpClient.get<TGetShopReceiptsResponseDto>(
-        `/application/shops/${shopId}/receipts`,
-        { params }
-      );
+      const response =
+        await this._httpClient.get<TGet_ShopReceipts_ResponseDTO>(
+          `/application/shops/${shopId}/receipts`,
+          { params }
+        );
       return response.data;
     } catch (error) {
       if (isStatusCode(error, 404)) {

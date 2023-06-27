@@ -1,3 +1,9 @@
+import {
+  TGet_Media_PreSignedDownloadUrl_ParamsDTO,
+  TGet_Media_PreSignedDownloadUrl_ResponseDTO,
+  TGet_Media_PreSignedUploadUrl_QueryParamsDTO,
+  TGet_Media_PreSignedUploadUrl_ResponseDTO,
+} from '@pda/core-types';
 import { randomUUID } from 'crypto';
 import express from 'express';
 import { param, query } from 'express-validator';
@@ -8,35 +14,32 @@ export async function getPreSignedUploadUrl(
     {},
     {},
     {},
-    {
-      key?: string;
-      contentType: string;
-      scope?: string;
-      overwrite: boolean;
-    }
+    TGet_Media_PreSignedUploadUrl_QueryParamsDTO
   >,
-  res: express.Response
+  res: express.Response<TGet_Media_PreSignedUploadUrl_ResponseDTO>
 ) {
-  const { contentType, key, scope, overwrite = false } = req.query;
+  const { content_type, key, scope, overwrite = false } = req.query;
 
   // Check whether object already exists
   if (key != null && !overwrite) {
     const exists = await s3.doesObjectExist(key);
     if (exists) {
-      res.status(200).send();
+      res.sendStatus(200);
       return;
     }
   }
 
   // Generate presigned upload URL
-  const uploadUrl = await s3.getPreSignedUploadUrl(
-    typeof key === 'string' ? key : randomUUID(),
-    { contentType, expiresIn: 5 * 60, scope }
-  );
+  const finalKey = typeof key === 'string' ? key : randomUUID();
+  const uploadUrl = await s3.getPreSignedUploadUrl(finalKey, {
+    contentType: content_type,
+    expiresIn: 5 * 60,
+    scope,
+  });
 
   res.status(201).send({
     uploadUrl,
-    key,
+    key: finalKey,
   });
 }
 
@@ -48,21 +51,26 @@ getPreSignedUploadUrl.validator = [
 ];
 
 export async function getPreSignedDownloadUrl(
-  req: express.Request<{ key: string }>,
-  res: express.Response
+  req: express.Request<TGet_Media_PreSignedDownloadUrl_ParamsDTO>,
+  res: express.Response<TGet_Media_PreSignedDownloadUrl_ResponseDTO>
 ) {
   const { key } = req.params;
 
   // Check whether object exists
   const exists = await s3.doesObjectExist(key);
   if (!exists) {
-    res.send(404);
+    res.sendStatus(404);
+    return;
   }
 
   // Generate presigned download URL
   const downloadUrl = await s3.getPreSignedDownloadUrl(key);
+  if (downloadUrl == null) {
+    res.sendStatus(404);
+    return;
+  }
 
-  res.status(200).send({ downloadUrl });
+  res.status(200).send({ download_url: downloadUrl, key });
 }
 
 getPreSignedDownloadUrl.validator = [param('key').notEmpty().isString()];

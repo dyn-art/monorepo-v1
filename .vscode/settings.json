@@ -21,6 +21,8 @@
         "./apps/web",
         "./packages/ads-renderer",
         "./packages/ads-renderer/ui",
+        "./packages/core-client",
+        "./packages/core-types",
         "./packages/discord-handler",
         "./packages/dtif-to-react",
         "./packages/dtif-types",

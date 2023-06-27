@@ -20,6 +20,12 @@
             "path": "packages/ads-renderer"
         },
         {
+            "path": "packages/core-client"
+        },
+        {
+            "path": "packages/core-types"
+        },
+        {
             "path": "packages/discord-handler"
         },
         {

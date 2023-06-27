@@ -7,7 +7,10 @@ import {
 } from '../exceptions';
 import { logger } from '../logger';
 import { mapAxiosError } from '../utils';
-import { TAuthResponseDto } from './types';
+import {
+  TPost_OAuthToken_BodyDTO,
+  TPost_OAuthToken_ResponseDTO,
+} from './types';
 
 export class OAuth2Service {
   private readonly _httpClient: AxiosInstance;
@@ -17,11 +20,11 @@ export class OAuth2Service {
   private readonly _codeVerifiers: Record<string, string> = {};
 
   private _accessToken: string | null = null;
-  private _accessTokenExpiresAt = 0;
+  private _accessTokenExpiresAt: number | null = null;
   private readonly _accessTokenBuffer = 60 * 5; // 5 min
 
   private _refreshToken: string | null = null; // 90 day life span
-  private _refreshTokenExpiresAt = 0;
+  private _refreshTokenExpiresAt: number | null = null;
 
   constructor(config: TOAuth2Config, httpClient: AxiosInstance = axios) {
     this._config = {
@@ -40,6 +43,7 @@ export class OAuth2Service {
   public async getAccessToken(force = false): Promise<string> {
     if (
       this._accessToken != null &&
+      this._accessTokenExpiresAt != null &&
       Date.now() < this._accessTokenExpiresAt &&
       !force
     ) {
@@ -49,6 +53,7 @@ export class OAuth2Service {
     // Check whether refresh token is expired
     if (
       this._refreshToken == null ||
+      this._refreshTokenExpiresAt == null ||
       Date.now() > this._refreshTokenExpiresAt
     ) {
       throw new RefreshTokenExpiredException(
@@ -115,7 +120,7 @@ export class OAuth2Service {
       }
 
       // Prepare body
-      const body = {
+      const body: TPost_OAuthToken_BodyDTO = {
         grant_type: 'authorization_code',
         client_id: this._config.clientId,
         redirect_uri: this._config.redirectUrl,
@@ -124,10 +129,11 @@ export class OAuth2Service {
       };
 
       // Send request
-      const response = await this._httpClient.post<TAuthResponseDto>(
-        etsyConfig.auth.tokenEndpoint,
-        body
-      );
+      const response =
+        await this._httpClient.post<TPost_OAuthToken_ResponseDTO>(
+          etsyConfig.auth.tokenEndpoint,
+          body
+        );
 
       // Delete code verifier as the code can only be used once
       delete this._codeVerifiers[state];
@@ -143,17 +149,18 @@ export class OAuth2Service {
   ): Promise<string> {
     try {
       // Prepare body
-      const body = {
+      const body: TPost_OAuthToken_BodyDTO = {
         grant_type: 'refresh_token',
         client_id: this._config.clientId,
         refresh_token: refreshToken,
       };
 
       // Send request
-      const response = await this._httpClient.post<TAuthResponseDto>(
-        etsyConfig.auth.tokenEndpoint,
-        body
-      );
+      const response =
+        await this._httpClient.post<TPost_OAuthToken_ResponseDTO>(
+          etsyConfig.auth.tokenEndpoint,
+          body
+        );
 
       // Handle response
       return this.handleRetrieveAccessTokenResponse(response.data);
@@ -162,7 +169,9 @@ export class OAuth2Service {
     }
   }
 
-  private handleRetrieveAccessTokenResponse(data: TAuthResponseDto) {
+  private handleRetrieveAccessTokenResponse(
+    data: TPost_OAuthToken_ResponseDTO
+  ) {
     if (
       data.access_token == null ||
       data.expires_in == null ||
