@@ -17,7 +17,7 @@ export function errorHandlerMiddleware(
 ) {
   let statusCode = 500;
   const jsonResponse: TError_ResponseDTO = {
-    error: 'not-set',
+    error_code: '#ERR_UNKNOWN',
     error_description: null,
     error_uri: null,
     additional_errors: [],
@@ -25,23 +25,23 @@ export function errorHandlerMiddleware(
 
   // Handle application-specific errors (instances of AppError)
   if (err instanceof AppError) {
-    statusCode = err.statusCode;
-    jsonResponse.error = err.message;
-    jsonResponse.error_description = err.description;
-    jsonResponse.error_uri = err.uri;
+    statusCode = err.status;
+    jsonResponse.error_code = err.code;
+    jsonResponse.error_description = err.description ?? null;
+    jsonResponse.error_uri = err.uri ?? null;
     jsonResponse.additional_errors = err.additionalErrors;
   }
 
   // Handle unknown errors
   else if (typeof err === 'object' && err != null) {
     if ('message' in err && typeof err.message === 'string') {
-      jsonResponse.error = err.message;
+      jsonResponse.error_description = err.message;
     }
-    if ('status' in err && typeof err.status === 'number') {
-      statusCode = err.status;
+    if ('code' in err && typeof err.code === 'string') {
+      jsonResponse.error_code = err.code;
     }
   } else {
-    jsonResponse.error = 'An unknown error occurred!';
+    jsonResponse.error_description = 'An unknown error occurred!';
   }
 
   // Send the error response with appropriate status code

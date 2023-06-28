@@ -9,7 +9,7 @@ export type TGet_Media_PreSignedUploadUrl_ResponseDTO = {
 
 export type TGet_Media_PreSignedUploadUrl_QueryParamsDTO = {
   key?: string;
-  content_type: string;
+  content_type?: string;
   scope?: string;
   overwrite?: boolean;
 };
@@ -51,8 +51,8 @@ export type TGet_Auth_Etsy_OAuthRedirect_ResponseDTO = {
 // ============================================================================
 
 export type TError_ResponseDTO = {
-  error: string;
+  error_code: string;
   error_description: string | null;
   error_uri: string | null;
-  additional_errors: Array<any>;
+  additional_errors: Array<Record<string, any>>;
 };

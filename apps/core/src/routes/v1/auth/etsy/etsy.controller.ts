@@ -24,10 +24,10 @@ export async function getOAuthChallenge(
   // Check whether Etsy can be reached
   const success = await etsyClient.ping();
   if (!success) {
-    throw new AppError(
-      500,
-      'Failed to communicate with Etsy API! Either Etsy can not be reached or the App Credentials are not valid!'
-    );
+    throw new AppError(500, '#ERR_PING', {
+      description:
+        'Failed to communicate with Etsy API! Either Etsy can not be reached or the App Credentials are not valid!',
+    });
   }
 
   // Generate PKCE Code Challenge
@@ -56,8 +56,13 @@ export async function handleOAuthRedirect(
         state
       );
     const refreshTokenInfo = etsyClient.authService.getRefreshTokenInfo();
-    if (refreshTokenInfo.refreshToken == null) {
-      throw new AppError(500, 'Failed to resolve refresh token!');
+    if (
+      refreshTokenInfo.refreshToken == null ||
+      refreshTokenInfo.expiresAt == null
+    ) {
+      throw new AppError(500, '#ERR_RESOLVE_REFRESH_TOKEN', {
+        description: 'Failed to resolve refresh token!',
+      });
     }
 
     res.status(200).send({
@@ -67,7 +72,9 @@ export async function handleOAuthRedirect(
     });
   }
 
-  throw new AppError(500, 'No valid query parameters present!');
+  throw new AppError(400, '#ERR_BAD_REQUEST', {
+    description: 'No valid query parameters present!',
+  });
 }
 
 handleOAuthRedirect.validator = [

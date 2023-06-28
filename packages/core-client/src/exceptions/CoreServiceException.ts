@@ -1,19 +1,26 @@
 export class CoreServiceException extends Error {
-  public readonly statusCode?: number;
+  public readonly status?: number;
+  public readonly code: string;
+  public readonly description: string;
   public readonly throwable?: Error;
 
-  constructor(args: {
-    message: string;
-    statusCode?: number;
-    throwable?: Error;
-  }) {
-    const { message, statusCode, throwable } = args;
+  constructor(
+    code: string,
+    description: string,
+    options: {
+      status?: number;
+      throwable?: Error;
+    }
+  ) {
+    const { status, throwable } = options;
     super(
       `Call to endpoint failed${
-        statusCode ? ` with status '${statusCode}'` : ''
-      }: ${message}`
+        status != null ? ` with status '${status}'` : ''
+      }: ${code != null ? `[${code}] ` : ''}${description}`
     );
-    this.statusCode = statusCode;
+    this.code = code;
+    this.description = description;
+    this.status = status;
     this.throwable = throwable;
   }
 }

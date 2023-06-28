@@ -22,13 +22,13 @@ export function controllerWrapper(
     try {
       // Check stage
       if (stage != null && appConfig.stage !== stage) {
-        throw new AppError(404);
+        throw new AppError(404, '#ERR_NOT_FOUND');
       }
 
       // Check validation
       const result = validationResult(req);
       if (!result.isEmpty()) {
-        throw new AppError(400, 'Bad Request', {
+        throw new AppError(400, '#ERR_BAD_REQUEST', {
           description: 'Invalid query data provided! See additional errors.',
           additionalErrors: result.array(),
         });

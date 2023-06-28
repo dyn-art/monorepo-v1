@@ -1,5 +1,5 @@
-import { EtsyClient } from '../EtsyClient';
 import { EtsyService } from '../EtsyService';
+import { EtsyClient } from '../api/EtsyClient';
 import { OAuth2Service } from '../api/OAuth2Service';
 
 describe('etsy tests', () => {

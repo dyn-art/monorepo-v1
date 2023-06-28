@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import { etsyConfig } from '../environment';
-import { NetworkException } from '../exceptions';
+import { EtsyServiceException } from '../exceptions';
 import { isStatusCode, mapAxiosError } from '../utils';
 import { OAuth2Service } from './OAuth2Service';
 import {
@@ -48,7 +48,6 @@ export class EtsyClient {
 
   public async ping(): Promise<boolean> {
     try {
-      // Send request
       const response = await this._httpClient.get<TGet_Ping_ResponseDTO>(
         '/application/openapi-ping'
       );
@@ -69,7 +68,7 @@ export class EtsyClient {
       if (isStatusCode(error, 404)) {
         return null;
       } else {
-        throw mapAxiosError(error, NetworkException);
+        throw mapAxiosError(error, EtsyServiceException);
       }
     }
   }
@@ -89,7 +88,7 @@ export class EtsyClient {
       if (isStatusCode(error, 404)) {
         return null;
       } else {
-        throw mapAxiosError(error, NetworkException);
+        throw mapAxiosError(error, EtsyServiceException);
       }
     }
   }
