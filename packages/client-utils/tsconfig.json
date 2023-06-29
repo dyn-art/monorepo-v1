@@ -3,6 +3,6 @@
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "extends": "@pda/tsconfig/node.json",
+  "extends": "@pda/tsconfig/shared-library.json",
   "include": ["src"],
 }

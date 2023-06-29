@@ -20,6 +20,9 @@
             "path": "packages/ads-renderer"
         },
         {
+            "path": "packages/client-utils"
+        },
+        {
             "path": "packages/core-client"
         },
         {
@@ -35,7 +38,7 @@
             "path": "packages/dtif-types"
         },
         {
-            "path": "packages/etsy"
+            "path": "packages/etsy-client"
         },
         {
             "path": "packages/figma-handler"

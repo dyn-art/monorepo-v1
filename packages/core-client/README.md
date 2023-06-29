@@ -1,1 +1,1 @@
-# `@pda/etsy`
+# `@pda/core-client`

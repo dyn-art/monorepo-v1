@@ -16,7 +16,11 @@ export class AppError extends Error {
 
   constructor(status: number, code: string, options: TErrorOptions = {}) {
     const { additionalErrors = [], description, uri } = options;
-    super(`${code}${description != null ? `: ${description}` : ''}`);
+    super(
+      `Call to endpoint failed with status ${status} and error code ${code}${
+        description != null ? `: ${description}` : '!'
+      }`
+    );
 
     // Set the prototype explicity
     Object.setPrototypeOf(this, new.target.prototype);

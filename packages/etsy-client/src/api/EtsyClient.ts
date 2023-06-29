@@ -1,7 +1,7 @@
+import { isStatusCode } from '@pda/client-utils';
 import axios, { AxiosInstance } from 'axios';
 import { etsyConfig } from '../environment';
-import { EtsyServiceException } from '../exceptions';
-import { isStatusCode, mapAxiosError } from '../utils';
+import { mapAxiosError } from '../utils';
 import { OAuth2Service } from './OAuth2Service';
 import {
   TGet_Ping_ResponseDTO,
@@ -68,7 +68,7 @@ export class EtsyClient {
       if (isStatusCode(error, 404)) {
         return null;
       } else {
-        throw mapAxiosError(error, EtsyServiceException);
+        throw mapAxiosError(error);
       }
     }
   }
@@ -88,7 +88,7 @@ export class EtsyClient {
       if (isStatusCode(error, 404)) {
         return null;
       } else {
-        throw mapAxiosError(error, EtsyServiceException);
+        throw mapAxiosError(error);
       }
     }
   }

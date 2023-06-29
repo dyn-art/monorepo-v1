@@ -1,2 +1,4 @@
+import { NetworkException } from '@pda/client-utils';
+
 export * from './CoreServiceException';
-export * from './NetworkException';
+export { NetworkException };

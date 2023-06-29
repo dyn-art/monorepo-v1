@@ -56,9 +56,10 @@ export class OAuth2Service {
       this._refreshTokenExpiresAt == null ||
       Date.now() > this._refreshTokenExpiresAt
     ) {
-      throw new RefreshTokenExpiredException(
-        'Refresh Token expired and the access needs to be re-granted by manual authorization!'
-      );
+      throw new RefreshTokenExpiredException('#ERR_REFRESH_TOKEN_EXPIRED', {
+        description:
+          'Refresh Token expired and the access needs to be re-granted by manual authorization!',
+      });
     }
 
     return this.retrieveAccessTokenByRefreshToken(this._refreshToken);
@@ -113,10 +114,12 @@ export class OAuth2Service {
     try {
       const codeVerifier = this._codeVerifiers[state];
       if (codeVerifier == null) {
-        console.error('No matching code verifier found!');
-        throw new RetrieveAccessTokenException({
-          message: `Node matching code verifier found for state '${state}'!`,
-        });
+        throw new RetrieveAccessTokenException(
+          '#ERR_NO_MATCHING_CODE_VERIFIER',
+          {
+            description: `No matching code verifier found for state '${state}'!`,
+          }
+        );
       }
 
       // Prepare body
@@ -177,8 +180,8 @@ export class OAuth2Service {
       data.expires_in == null ||
       data.refresh_token == null
     ) {
-      throw new RetrieveAccessTokenException({
-        message: `Invalid response DTO! Either 'access_token', 'expires_in' or 'refresh_token' is missing.`,
+      throw new RetrieveAccessTokenException('#ERR_RETRIEVE_ACCESS_TOKEN', {
+        description: `Invalid response DTO! Either 'access_token', 'expires_in' or 'refresh_token' is missing.`,
       });
     }
 

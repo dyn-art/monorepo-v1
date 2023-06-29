@@ -22,7 +22,7 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/etsy": "workspace:*",
+    "@pda/etsy-client": "workspace:*",
     "@pda/logger": "workspace:*",
     "@pda/s3": "workspace:*",
     "@prisma/client": "^4.13.0",

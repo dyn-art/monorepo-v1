@@ -6,7 +6,6 @@ import {
 } from '@pda/core-types';
 import axios, { AxiosInstance } from 'axios';
 import { coreConfig } from '../environment';
-import { CoreServiceException } from '../exceptions';
 import { mapAxiosError } from '../utils';
 
 export class CoreClient {
@@ -38,7 +37,7 @@ export class CoreClient {
         );
       return response.data;
     } catch (error) {
-      throw mapAxiosError(error, CoreServiceException);
+      throw mapAxiosError(error);
     }
   }
 
@@ -57,7 +56,7 @@ export class CoreClient {
         );
       return response.data;
     } catch (error) {
-      throw mapAxiosError(error, CoreServiceException);
+      throw mapAxiosError(error);
     }
   }
 }
