@@ -13,7 +13,7 @@ export async function renderSVG(
 ): Promise<React.ReactNode> {
   const isVisible = node.isVisible || inherit.isVisible;
   const isLocked = node.isLocked || inherit.isLocked;
-  const svgContent = await getSVGFromHash(node?.hash || '');
+  const svgContent = await getSVGFromHash(node.isExported ? node.hash : '');
   if (svgContent == null) return <div>Failed to load SVG</div>;
 
   const svgStyles: React.CSSProperties = {

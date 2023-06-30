@@ -1,12 +1,11 @@
 import { ENodeTypes, TGroupNode } from '@pda/dtif-types';
-import { notEmpty } from '@pda/utils';
+import { TFormatNodeOptions } from '../types';
 import { convert2DMatrixTo3DMatrix } from '../utils';
-import { formatNode } from './format-node';
-import { TFormatNodeConfig } from './format-node-to-dtif';
+import { formatChildrenNodes } from './format-children-nodes';
 
 export async function formatGroupNode(
   node: GroupNode,
-  options: TFormatNodeConfig
+  options: TFormatNodeOptions
 ): Promise<TGroupNode> {
   return {
     type: ENodeTypes.GROUP,
@@ -17,11 +16,7 @@ export async function formatGroupNode(
     isLocked: node.locked,
     isVisible: node.visible,
     // Children mixin
-    children: (
-      await Promise.all(
-        node.children.map((node) => formatNode(node, options, false))
-      )
-    ).filter(notEmpty),
+    children: await formatChildrenNodes(node.children as SceneNode[], options),
     // Layout mixin
     height: node.height,
     width: node.width,

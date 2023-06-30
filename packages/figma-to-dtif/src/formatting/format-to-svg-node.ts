@@ -1,25 +1,31 @@
-import { ENodeTypes, TEffect, TSVGNode } from '@pda/dtif-types';
+import {
+  ENodeTypes,
+  TEffect,
+  TSVGNode,
+  TSVGNodeExported,
+  TSVGNodeInline,
+} from '@pda/dtif-types';
+import { svgParser } from '@pda/svgson';
+import { decodeUint8Array } from '@pda/utils';
 import { logger } from '../logger';
-import { TSVGCompatibleNode } from '../types';
-import { convert2DMatrixTo3DMatrix, exportAndUploadNode } from '../utils';
-import { TFormatNodeConfig } from './format-node-to-dtif';
+import { TSVGCompatibleNode, TSVGOptions } from '../types';
+import {
+  convert2DMatrixTo3DMatrix,
+  exportAndUploadNode,
+  exportNodeCloned,
+} from '../utils';
 
 export async function formatToSvgNode(
   node: TSVGCompatibleNode,
-  config: TFormatNodeConfig
+  options: TSVGOptions = {}
 ): Promise<TSVGNode> {
-  // Convert node to SVG data and try to upload SVG data
-  const { hash, data, uploaded } = await exportAndUploadNode(node, {
-    uploadStaticData: config.uploadStaticData,
-    exportSettings: { format: 'SVG' },
-  });
+  const {
+    inline = true,
+    exportOptions: { svgToRaster = false, uploadStaticData } = {},
+  } = options;
 
-  logger.success(`Formatted '${node.type}' node '${node.name}' to SVG.`);
-
-  return {
+  const baseNodeProperties: Partial<TSVGNode> = {
     type: ENodeTypes.SVG,
-    hash,
-    inline: uploaded ? undefined : data,
     // BaseNode mixin
     id: node.id,
     name: node.name,
@@ -36,4 +42,36 @@ export async function formatToSvgNode(
     isMask: node.isMask,
     effects: node.effects as TEffect[],
   };
+  let svgNode: TSVGNode;
+
+  // Handle inline SVG
+  if (inline) {
+    const rawUint8Array = await exportNodeCloned(node, { format: 'SVG' });
+    const raw = decodeUint8Array(rawUint8Array);
+    const svgObject = svgParser.parse(raw);
+    svgNode = {
+      isExported: false,
+      children: svgObject.children,
+      ...baseNodeProperties,
+    } as TSVGNodeInline;
+  }
+
+  // Handle to export SVG
+  else {
+    const { hash, data, uploaded } = await exportAndUploadNode(node, {
+      uploadStaticData,
+      exportSettings: { format: svgToRaster ? 'JPG' : 'SVG' },
+    });
+    svgNode = {
+      isExported: true,
+      format: 'SVG',
+      hash,
+      inline: uploaded ? undefined : data,
+      ...baseNodeProperties,
+    } as TSVGNodeExported;
+  }
+
+  logger.success(`Formatted '${node.type}' node '${node.name}' to SVG.`);
+
+  return svgNode;
 }

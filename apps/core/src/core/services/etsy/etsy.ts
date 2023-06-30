@@ -1,4 +1,4 @@
-import { EtsyClient, EtsyService, OAuth2Service } from '@pda/etsy';
+import { EtsyClient, EtsyService, OAuth2Service } from '@pda/etsy-client';
 import { etsyConfig } from '../../../environment';
 
 const authService = new OAuth2Service({

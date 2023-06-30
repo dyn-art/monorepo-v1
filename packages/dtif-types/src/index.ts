@@ -27,9 +27,10 @@ export enum ENodeTypes {
 
 export type TScene = {
   version: '1.0';
+  name: string;
   width: number;
   height: number;
-  nodes: TNode[];
+  root: TFrameNode;
 };
 
 // ============================================================================
@@ -53,11 +54,28 @@ export type TRectangleNode = {
   TRectangleCornerMixin &
   TFillsMixin;
 
-export type TSVGNode = {
+export type TSVGNode = TSVGNodeExported | TSVGNodeInline;
+
+export type TSVGNodeExported = {
   type: ENodeTypes.SVG;
+  isExported: true;
+  format: 'JPG' | 'SVG';
   hash: string;
   inline?: Uint8Array;
 } & TDefaultShapeMixin;
+
+export type TSVGNodeInline = {
+  type: ENodeTypes.SVG;
+  isExported: false;
+  children: TSVGElement['children'];
+} & TDefaultShapeMixin;
+
+type TSVGElement = {
+  type: string;
+  value?: string; // Text value
+  attributes: { [key: string]: string };
+  children: TSVGElement[];
+};
 
 export type TTextNode = {
   type: ENodeTypes.TEXT;
@@ -104,8 +122,8 @@ export type TRectangleCornerMixin = {
 };
 
 export type TBaseNodeMixin = {
-  id: string;
-  name: string;
+  id: string; // e.g. "1798:14711"
+  name: string; // e.g. "Spotify Classic | Gradient"
 };
 
 export type TChildrenMixin = {
@@ -199,23 +217,62 @@ export type TSolidPaint = {
   blendMode: TBlendMode;
 };
 
-export type TGradientPaint = {
+export type TGradientPaint = TGradientPaintExported | TGradientPaintInline;
+
+export type TGradientPaintBase = {
+  visible: boolean;
+  opacity: number;
+  blendMode: TBlendMode;
+};
+
+export type TGradientPaintInline =
+  | TLinearGradientPaintInline
+  | TRadialGradientPaintInline
+  | TAngularGradientPaintInline
+  | TDiamondGradientPaintInline;
+
+export type TLinearGradientPaintInline = {
+  type: 'GRADIENT_LINEAR';
+  isExported: false;
+  start: TVector;
+  end: TVector;
+  transform: TTransform;
+  gradientStops: Array<TColorStop>;
+} & TGradientPaintBase;
+
+export type TRadialGradientPaintInline = {
+  type: 'GRADIENT_RADIAL';
+  isExported: false;
+  radius: number;
+  transform: TTransform;
+  gradientStops: Array<TColorStop>;
+} & TGradientPaintBase;
+
+export type TAngularGradientPaintInline = {
+  type: 'GRADIENT_ANGULAR';
+  isExported: false;
+  transform: TTransform;
+  gradientStops: Array<TColorStop>;
+} & TGradientPaintBase;
+
+export type TDiamondGradientPaintInline = {
+  type: 'GRADIENT_DIAMOND';
+  isExported: false;
+  transform: TTransform;
+  gradientStops: Array<TColorStop>;
+} & TGradientPaintBase;
+
+export type TGradientPaintExported = {
   type:
     | 'GRADIENT_LINEAR'
     | 'GRADIENT_RADIAL'
     | 'GRADIENT_ANGULAR'
     | 'GRADIENT_DIAMOND';
-  transform: TTransform;
-  gradientStops: Array<TColorStop>;
-  visible: boolean;
-  opacity: number;
-  blendMode: TBlendMode;
-  exported?: {
-    type: 'JPG' | 'SVG';
-    hash: string;
-    inline?: Uint8Array;
-  };
-};
+  isExported: true;
+  format: 'JPG' | 'SVG';
+  hash: string;
+  inline?: Uint8Array;
+} & TGradientPaintBase;
 
 export type TImagePaint =
   | TImagePaintFill

@@ -10,12 +10,15 @@ import {
 const router: Router = Router();
 
 router.get('/ping', controllerWrapper(getPing));
+
 router.get(
   '/oauth/challenge',
   controllerWrapper(getOAuthChallenge, STAGE.LOCAL)
 );
+
 router.get(
   '/oauth/redirect',
+  ...handleOAuthRedirect.validator,
   controllerWrapper(handleOAuthRedirect, STAGE.LOCAL)
 );
 

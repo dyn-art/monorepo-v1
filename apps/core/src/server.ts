@@ -1,19 +1,19 @@
 import { createServer as createHttpServer } from 'http';
 import { cronTasks } from './core/cron';
 import { dbConnection } from './core/db';
+import { logger } from './core/logger';
 import { appConfig } from './environment';
 
 async function initAsyncDependencies() {
-  console.log('Initializing async modules...');
+  logger.info('Initializing async modules...');
 
   // Init DB connection
   dbConnection.connectDB();
 
   // Start cron tasks/jobs
-
   cronTasks.forEach((task) => task.start());
 
-  console.log('Initialized async modules.');
+  logger.info('Initialized async modules.');
 }
 
 // Initialize the server
@@ -32,9 +32,9 @@ async function initAsyncDependencies() {
 
   // Set up server event listeners
   httpServer.on('error', (error) => {
-    console.error(`Error: ${error.message}`);
+    logger.error(`Error occurred in http server: ${error.message}`);
   });
   httpServer.on('listening', () => {
-    console.log(`Server running on Port: ${appConfig.port}`);
+    logger.info(`Server running on Port: ${appConfig.port}`);
   });
 })();

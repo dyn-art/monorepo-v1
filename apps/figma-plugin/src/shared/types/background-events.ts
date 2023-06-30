@@ -1,5 +1,5 @@
 import { TBaseFigmaMessageEvent } from '@pda/figma-handler';
-import { TFormatNodeConfig } from '@pda/figma-to-dtif';
+import { TFormatNodeOptions } from '@pda/figma-to-dtif';
 import { EUIPageRoute } from './other';
 
 export interface TIntermediateFormatExportEvent extends TBaseFigmaMessageEvent {
@@ -9,7 +9,7 @@ export interface TIntermediateFormatExportEvent extends TBaseFigmaMessageEvent {
       FrameNode | ComponentNode | InstanceNode,
       'name' | 'id'
     >[];
-    config: Omit<TFormatNodeConfig, 'uploadStaticData'>;
+    options: Omit<TFormatNodeOptions, 'uploadStaticData'>;
   };
 }
 

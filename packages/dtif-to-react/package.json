@@ -8,7 +8,7 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --analyze",
+    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod --analyze",
     "start:dev": "tsc -w",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",

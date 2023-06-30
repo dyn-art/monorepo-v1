@@ -1,10 +1,11 @@
 import { ENodeTypes, TTextNode } from '@pda/dtif-types';
-import { convert2DMatrixTo3DMatrix, handleFills } from '../utils';
-import { TFormatNodeConfig } from './format-node-to-dtif';
+import { TFormatNodeOptions } from '../types';
+import { convert2DMatrixTo3DMatrix } from '../utils';
+import { formatFills } from './format-fills';
 
 export async function formatTextNode(
   node: TextNode,
-  config: TFormatNodeConfig
+  options: TFormatNodeOptions
 ): Promise<TTextNode> {
   return {
     type: ENodeTypes.TEXT,
@@ -32,6 +33,6 @@ export async function formatTextNode(
     isMask: node.isMask,
     effects: node.effects,
     // Fills mixin
-    fills: await handleFills(node, node.fills as Paint[], config),
+    fills: await formatFills(node, node.fills as Paint[], options),
   } as TTextNode;
 }

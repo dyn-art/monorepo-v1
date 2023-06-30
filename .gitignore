@@ -12,6 +12,8 @@ coverage
 .DS_Store
 *.pem
 .eslintcache
+*.local
+TODOs.md
 
 # debug
 npm-debug.log*

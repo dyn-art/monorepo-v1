@@ -8,7 +8,7 @@
   "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts",
+    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod",
     "start:dev": "tsc -w",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
@@ -21,6 +21,7 @@
   "dependencies": {
     "@pda/dtif-types": "workspace:*",
     "@pda/logger": "workspace:*",
+    "@pda/svgson": "workspace:*",
     "@pda/utils": "workspace:*",
     "crypto-js": "^4.1.1"
   },

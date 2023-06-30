@@ -73,10 +73,14 @@ const DTIFExport: React.FC = () => {
       if (selectedFrame != null) {
         uiHandler.postMessage('intermediate-format-export', {
           selectedElements: [selectedFrame],
-          config: {
-            svgExportIdentifierRegex: '_svg$',
-            frameToSVG: false,
-            gradientToSVG: true,
+          options: {
+            svg: {
+              inline: true,
+              exportIdentifierRegex: '_svg$',
+            },
+            gradientFill: {
+              inline: true,
+            },
           },
         });
       } else {

@@ -1,12 +1,12 @@
 import { ENodeTypes, TFrameNode } from '@pda/dtif-types';
-import { notEmpty } from '@pda/utils';
-import { convert2DMatrixTo3DMatrix, handleFills } from '../utils';
-import { formatNode } from './format-node';
-import { TFormatNodeConfig } from './format-node-to-dtif';
+import { TFormatNodeOptions } from '../types';
+import { convert2DMatrixTo3DMatrix } from '../utils';
+import { formatChildrenNodes } from './format-children-nodes';
+import { formatFills } from './format-fills';
 
 export async function formatFrameNode(
   node: FrameNode | ComponentNode | InstanceNode,
-  options: TFormatNodeConfig
+  options: TFormatNodeOptions
 ): Promise<TFrameNode> {
   return {
     type: ENodeTypes.FRAME,
@@ -18,11 +18,7 @@ export async function formatFrameNode(
     isLocked: node.locked,
     isVisible: node.visible,
     // Children mixin
-    children: (
-      await Promise.all(
-        node.children.map((node) => formatNode(node, options, false))
-      )
-    ).filter(notEmpty),
+    children: await formatChildrenNodes(node.children as SceneNode[], options),
     // Layout mixin
     height: node.height,
     width: node.width,
@@ -38,6 +34,6 @@ export async function formatFrameNode(
     topLeftRadius: node.topLeftRadius,
     topRightRadius: node.topRightRadius,
     // Fills mixin
-    fills: await handleFills(node, node.fills as Paint[], options),
+    fills: await formatFills(node, node.fills as Paint[], options),
   } as TFrameNode;
 }

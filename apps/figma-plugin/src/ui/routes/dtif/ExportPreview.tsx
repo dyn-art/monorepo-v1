@@ -39,7 +39,7 @@ const ExportPreview: React.FC<TProps> = (props) => {
       if (node != null) {
         const jsxNode = await (isFrameNode(node)
           ? renderRelativeParent(node, 0.2)
-          : renderNode(node));
+          : renderNode(node, { isLocked: false, isVisible: true }));
         setNodeAsJSX(jsxNode);
         setNodeAsJSXString(toJSXString(jsxNode as React.ReactElement));
       }

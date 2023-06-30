@@ -20,6 +20,15 @@
             "path": "packages/ads-renderer"
         },
         {
+            "path": "packages/client-utils"
+        },
+        {
+            "path": "packages/core-client"
+        },
+        {
+            "path": "packages/core-types"
+        },
+        {
             "path": "packages/discord-handler"
         },
         {
@@ -29,7 +38,7 @@
             "path": "packages/dtif-types"
         },
         {
-            "path": "packages/etsy"
+            "path": "packages/etsy-client"
         },
         {
             "path": "packages/figma-handler"
@@ -48,6 +57,9 @@
         },
         {
             "path": "packages/s3"
+        },
+        {
+            "path": "packages/svgson"
         },
         {
             "path": "packages/utils"
