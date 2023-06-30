@@ -44,8 +44,8 @@ export async function getPreSignedUploadUrl(
 }
 
 getPreSignedUploadUrl.validator = [
-  query('contentType').notEmpty().isString(),
-  query('scope').notEmpty().isString(),
+  query('contentType').optional().isString(),
+  query('scope').optional().isString(),
   query('overwrite').optional().isBoolean(),
   query('key').optional().isString(),
 ];

@@ -47,12 +47,7 @@ export class CoreClient {
     try {
       const response =
         await this._httpClient.get<TGet_Media_PreSignedDownloadUrl_ResponseDTO>(
-          `/media/pre-signed-download-url`,
-          {
-            params: {
-              key,
-            } as TGet_Media_PreSignedDownloadUrl_ParamsDTO,
-          }
+          `/media/pre-signed-download-url/${key}`
         );
       return response.data;
     } catch (error) {

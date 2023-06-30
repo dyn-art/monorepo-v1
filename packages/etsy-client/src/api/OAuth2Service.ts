@@ -6,6 +6,7 @@ import {
   RetrieveAccessTokenException,
 } from '../exceptions';
 import { logger } from '../logger';
+import { TOAuth2Config } from '../types';
 import { mapAxiosError } from '../utils';
 import {
   TPost_OAuthToken_BodyDTO,
@@ -205,13 +206,3 @@ export class OAuth2Service {
     return this._accessToken;
   }
 }
-
-type TOAuth2Config = {
-  clientId: string;
-  redirectUrl: string;
-  scopes: string[];
-  refresh?: {
-    refreshToken: string;
-    expiresAt: number;
-  };
-};

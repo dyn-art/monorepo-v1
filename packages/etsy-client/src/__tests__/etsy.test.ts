@@ -1,10 +1,8 @@
-import { EtsyService } from '../EtsyService';
-import { EtsyClient } from '../api/EtsyClient';
-import { OAuth2Service } from '../api/OAuth2Service';
+import { createEtsyService } from '../etsy-service.factory';
 
 describe('etsy tests', () => {
   it('send request to etsy api', async () => {
-    const authService = new OAuth2Service({
+    const etsyService = createEtsyService({
       clientId: process.env.ETSY_KEY_STRING || 'not-set',
       scopes: ['email_r', 'transactions_r', 'transactions_w', 'shops_r'],
       redirectUrl: 'http://localhost:8080',
@@ -13,10 +11,8 @@ describe('etsy tests', () => {
         expiresAt: +(process.env.ETSY_REFRESH_TOKEN_EXPIRES_AT || 0),
       },
     });
-    const etsyClient = new EtsyClient(authService);
-    const etsyService = new EtsyService(etsyClient);
 
-    const success = await etsyClient.ping();
+    const success = await etsyService.etsyClient.ping();
     const shopReceipts = await etsyService.getShopReceipts();
 
     expect(success).toBe(true);

@@ -5,20 +5,20 @@ import {
 } from './api/types';
 
 export class EtsyService {
-  private readonly _etsyClient: EtsyClient;
+  public readonly etsyClient: EtsyClient;
 
   private _userId: string;
   private _shopId: string;
 
   constructor(etsyClient: EtsyClient) {
-    this._etsyClient = etsyClient;
+    this.etsyClient = etsyClient;
   }
 
   public async getMe(
     force = true
   ): Promise<{ shopId: string; userId: string } | null> {
     if (this._userId == null || this._shopId == null || force) {
-      const response = await this._etsyClient.getMe();
+      const response = await this.etsyClient.getMe();
       if (response == null) return null;
       this._userId = response.user_id;
       this._shopId = response.shop_id;
@@ -34,6 +34,6 @@ export class EtsyService {
   ): Promise<TGet_ShopReceipts_ResponseDTO | null> {
     const me = await this.getMe();
     if (me == null) return null;
-    return this._etsyClient.getShopReceipts(me.shopId, options);
+    return this.etsyClient.getShopReceipts(me.shopId, options);
   }
 }
