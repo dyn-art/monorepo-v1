@@ -1,4 +1,4 @@
-import { TNode } from '@pda/dtif-types';
+import { TNode } from '@pda/types/dtif';
 
 export type TPoint = {
   x: number;

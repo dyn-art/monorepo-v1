@@ -98,12 +98,12 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
     devDependencies:
-      '@pda/core-types':
-        specifier: workspace:^
-        version: link:../../packages/core-types
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.2
@@ -189,9 +189,6 @@ importers:
       '@pda/dtif-to-react':
         specifier: workspace:*
         version: link:../../packages/dtif-to-react
-      '@pda/dtif-types':
-        specifier: workspace:*
-        version: link:../../packages/dtif-types
       '@pda/figma-handler':
         specifier: workspace:*
         version: link:../../packages/figma-handler
@@ -201,6 +198,9 @@ importers:
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@pda/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -581,15 +581,9 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
     devDependencies:
-      '@pda/core-types':
-        specifier: workspace:^
-        version: link:../core-types
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      axios:
-        specifier: ^1.3.6
-        version: 1.3.6
       eslint:
         specifier: ^8.38.0
         version: 8.38.0
@@ -603,7 +597,7 @@ importers:
   packages/core-client:
     dependencies:
       '@pda/client-utils':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../client-utils
       '@pda/logger':
         specifier: workspace:*
@@ -612,15 +606,15 @@ importers:
         specifier: ^1.3.6
         version: 1.3.6
     devDependencies:
-      '@pda/core-types':
-        specifier: workspace:^
-        version: link:../core-types
       '@pda/jest-presets':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../jest-presets
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/jest':
         specifier: ^29.5.1
         version: 29.5.1
@@ -633,21 +627,6 @@ importers:
       jest:
         specifier: ^29.5.0
         version: 29.5.0(@types/node@18.15.13)(ts-node@10.9.1)
-      typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
-
-  packages/core-types:
-    devDependencies:
-      '@pda/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      eslint:
-        specifier: ^8.38.0
-        version: 8.38.0
-      eslint-config-pda-base:
-        specifier: workspace:*
-        version: link:../eslint-config-pda-base
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
@@ -694,11 +673,8 @@ importers:
       '@figma-plugin/helpers':
         specifier: ^0.15.2
         version: 0.15.2
-      '@pda/dtif-types':
-        specifier: workspace:^
-        version: link:../dtif-types
       '@pda/logger':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../logger
       mathjs:
         specifier: ^11.8.0
@@ -716,6 +692,9 @@ importers:
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/react':
         specifier: ^18.0.37
         version: 18.0.37
@@ -740,21 +719,6 @@ importers:
       rollup-plugin-postcss:
         specifier: ^4.0.2
         version: 4.0.2(postcss@8.4.23)(ts-node@10.9.1)
-      typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
-
-  packages/dtif-types:
-    devDependencies:
-      '@pda/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      eslint:
-        specifier: ^8.38.0
-        version: 8.38.0
-      eslint-config-pda-base:
-        specifier: workspace:*
-        version: link:../eslint-config-pda-base
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
@@ -857,15 +821,15 @@ importers:
 
   packages/figma-to-dtif:
     dependencies:
-      '@pda/dtif-types':
-        specifier: workspace:*
-        version: link:../dtif-types
       '@pda/logger':
         specifier: workspace:*
         version: link:../logger
       '@pda/svgson':
         specifier: workspace:*
         version: link:../svgson
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../types
       '@pda/utils':
         specifier: workspace:*
         version: link:../utils
@@ -991,15 +955,15 @@ importers:
         specifier: ^1.6.28
         version: 1.6.28
     devDependencies:
-      '@pda/dtif-types':
-        specifier: workspace:*
-        version: link:../dtif-types
       '@pda/jest-presets':
         specifier: workspace:*
         version: link:../jest-presets
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../types
       '@remotion/bundler':
         specifier: ^3.3.83
         version: 3.3.83(react-dom@18.2.0)(react@18.2.0)
@@ -1157,6 +1121,21 @@ importers:
         version: 4.9.5
 
   packages/tsconfig: {}
+
+  packages/types:
+    devDependencies:
+      '@pda/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      eslint:
+        specifier: ^8.38.0
+        version: 8.38.0
+      eslint-config-pda-base:
+        specifier: workspace:*
+        version: link:../eslint-config-pda-base
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
 
   packages/utils:
     devDependencies:

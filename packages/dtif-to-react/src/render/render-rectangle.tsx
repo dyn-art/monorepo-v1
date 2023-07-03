@@ -1,4 +1,4 @@
-import { TRectangleNode } from '@pda/dtif-types';
+import { TRectangleNode } from '@pda/types/dtif';
 import React from 'react';
 import {
   figmaBlendModeToCSS,

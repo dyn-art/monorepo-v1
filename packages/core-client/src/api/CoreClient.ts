@@ -3,10 +3,9 @@ import {
   TGet_Media_PreSignedDownloadUrl_ResponseDTO,
   TGet_Media_PreSignedUploadUrl_QueryParamsDTO,
   TGet_Media_PreSignedUploadUrl_ResponseDTO,
-} from '@pda/core-types';
+} from '@pda/types/core';
 import axios, { AxiosInstance } from 'axios';
 import { coreConfig } from '../environment';
-import { mapAxiosError } from '../utils';
 
 export class CoreClient {
   private readonly _httpClient: AxiosInstance;
@@ -37,7 +36,8 @@ export class CoreClient {
         );
       return response.data;
     } catch (error) {
-      throw mapAxiosError(error);
+      // TODO:
+      throw new Error();
     }
   }
 
@@ -51,7 +51,8 @@ export class CoreClient {
         );
       return response.data;
     } catch (error) {
-      throw mapAxiosError(error);
+      // TODO:
+      throw new Error();
     }
   }
 }

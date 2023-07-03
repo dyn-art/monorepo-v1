@@ -5,7 +5,7 @@ import {
   TGet_Auth_Etsy_OAuthChallenge_ResponseDTO,
   TGet_Auth_Etsy_OAuthRedirect_QueryParamsDTO,
   TGet_Auth_Etsy_OAuthRedirect_ResponseDTO,
-} from '@pda/core-types';
+} from '@pda/types/core';
 import express from 'express';
 import { query } from 'express-validator';
 
@@ -24,7 +24,7 @@ export async function getOAuthChallenge(
   // Check whether Etsy can be reached
   const success = await etsyService.ping();
   if (!success) {
-    throw new AppError(500, '#ERR_PING', {
+    throw new AppError(500, '#ERR_ETSY_PING', {
       description:
         'Failed to communicate with Etsy API! Either Etsy can not be reached or the App Credentials are not valid!',
     });

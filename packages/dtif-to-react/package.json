@@ -20,8 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "@figma-plugin/helpers": "^0.15.2",
-    "@pda/dtif-types": "workspace:^",
-    "@pda/logger": "workspace:^",
+    "@pda/logger": "workspace:*",
     "mathjs": "^11.8.0",
     "webfontloader": "^1.6.28"
   },
@@ -30,6 +29,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@pda/types": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",

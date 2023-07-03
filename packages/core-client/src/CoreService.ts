@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { CoreClient } from './api';
-import { mapAxiosError } from './utils';
 
 export class CoreService {
   public readonly coreClient: CoreClient;
@@ -19,7 +18,8 @@ export class CoreService {
       );
       return downloadResponse.data;
     } catch (error) {
-      throw mapAxiosError(error);
+      // TODO:
+      throw new Error();
     }
   }
 }

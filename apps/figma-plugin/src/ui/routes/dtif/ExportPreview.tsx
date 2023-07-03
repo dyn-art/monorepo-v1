@@ -1,6 +1,6 @@
 import { renderNode, renderRelativeParent } from '@pda/dtif-to-react';
-import { TNode } from '@pda/dtif-types';
 import { isFrameNode } from '@pda/figma-to-dtif';
+import { TNode } from '@pda/types/dtif';
 import clsx from 'clsx';
 import Prism from 'prismjs';
 import React from 'react';

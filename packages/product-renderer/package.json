@@ -30,9 +30,9 @@
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
-    "@pda/dtif-types": "workspace:*",
     "@pda/jest-presets": "workspace:*",
     "@pda/tsconfig": "workspace:*",
+    "@pda/types": "workspace:*",
     "@remotion/bundler": "^3.3.83",
     "@remotion/cli": "^3.3.83",
     "@types/jest": "^29.5.1",

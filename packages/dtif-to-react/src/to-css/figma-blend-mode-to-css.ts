@@ -1,4 +1,4 @@
-import { TBlendMode } from '@pda/dtif-types';
+import { TBlendMode } from '@pda/types/dtif';
 
 export const figmaBlendModeToCSSMap: Record<
   TBlendMode,

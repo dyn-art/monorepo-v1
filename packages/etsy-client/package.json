@@ -10,7 +10,7 @@
   "scripts": {
     "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod",
     "start:dev": "tsc -w",
-    "generate:openapi": "npx openapi-typescript ./resources/openapi-3.json -o ./src/gen/v3.ts",
+    "generate:openapi": "npx openapi-typescript ./resources/openapi-v3.json -o ./src/gen/v3.ts",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",

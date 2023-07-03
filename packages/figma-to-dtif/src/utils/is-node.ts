@@ -1,4 +1,4 @@
-import { TSVGNode } from '@pda/dtif-types';
+import { TSVGNode } from '@pda/types/dtif';
 import { TNodeWithFills, TSVGCompatibleNode } from '../types';
 
 // ============================================================================

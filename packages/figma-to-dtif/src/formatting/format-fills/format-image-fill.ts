@@ -1,4 +1,4 @@
-import { TImagePaint } from '@pda/dtif-types';
+import { TImagePaint } from '@pda/types/dtif';
 import {
   ExportImageException,
   UploadStaticDataException,

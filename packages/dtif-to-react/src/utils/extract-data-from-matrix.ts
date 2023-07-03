@@ -1,4 +1,4 @@
-import { TTransform } from '@pda/dtif-types';
+import { TTransform } from '@pda/types/dtif';
 
 export function extractMatrixData(matrix: TTransform): T2DMatrixData {
   // Extract translation values (tx and ty)

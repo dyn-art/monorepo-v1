@@ -1,10 +1,10 @@
+import { TSVGElement, svgParser } from '@pda/svgson';
 import {
   TGradientPaint,
   TGradientPaintExported,
   TLinearGradientPaintInline,
   TRadialGradientPaintInline,
-} from '@pda/dtif-types';
-import { TSVGElement, svgParser } from '@pda/svgson';
+} from '@pda/types/dtif';
 import { decodeUint8Array } from '@pda/utils';
 import { logger } from '../../logger';
 import { TFormatGradientFillOptions, TNodeWithFills } from '../../types';

@@ -21,7 +21,6 @@
   "dependencies": {
     "@agile-ts/core": "^0.2.9",
     "@pda/dtif-to-react": "workspace:*",
-    "@pda/dtif-types": "workspace:*",
     "@pda/figma-handler": "workspace:*",
     "@pda/figma-to-dtif": "workspace:^",
     "@pda/logger": "workspace:*",
@@ -38,6 +37,7 @@
   },
   "devDependencies": {
     "@figma/plugin-typings": "^1.64.0",
+    "@pda/types": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@rollup/plugin-html": "^1.0.2",
     "@rollup/plugin-replace": "^5.0.2",

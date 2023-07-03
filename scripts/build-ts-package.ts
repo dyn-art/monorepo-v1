@@ -16,12 +16,12 @@ const argv = yargs(hideBin(process.argv))
     prod: {
       type: 'boolean',
       default: false,
-      description: 'Build in production mode',
+      description: 'Build in production mode.',
     },
-    tsc: {
-      type: 'boolean',
-      default: false,
-      description: 'Compile with Typescript Compiler',
+    buildStrategy: {
+      type: 'string',
+      default: 'rollup',
+      description: `Define build strategy like 'tsc', 'rollup' or 'typesonly'.`,
     },
     analyze: {
       type: 'boolean',
@@ -36,7 +36,7 @@ const argv = yargs(hideBin(process.argv))
   })
   .parseSync();
 
-const { tsc: useTsc, prod: isProduction, analyze, sourcemap } = argv;
+const { buildStrategy, prod: isProduction, analyze, sourcemap } = argv;
 
 async function build() {
   const startTime = Date.now();
@@ -62,32 +62,41 @@ async function build() {
       tsConfigPath = path.resolve(process.cwd(), './tsconfig.json');
     }
 
-    if (useTsc) {
-      await tsc.compile();
-    } else {
-      await rollup.compile(
-        rollup.createPackageConfig({
-          format: 'esm',
-          isProduction,
-          preserveModules: true,
-          analyze,
-          sourcemap,
-          rollupOptions: rollupOptions ?? undefined,
-          tsconfig: tsConfigPath,
-        })
-      );
-      await rollup.compile(
-        rollup.createPackageConfig({
-          format: 'cjs',
-          isProduction,
-          preserveModules: true,
-          analyze,
-          sourcemap,
-          rollupOptions: rollupOptions ?? undefined,
-          tsconfig: tsConfigPath,
-        })
-      );
-      await tsc.generateDts({ tsconfig: tsConfigPath });
+    // Build package
+    switch (buildStrategy) {
+      case 'tsc':
+        await tsc.compile();
+        break;
+      case 'rollup':
+        await rollup.compile(
+          rollup.createPackageConfig({
+            format: 'esm',
+            isProduction,
+            preserveModules: true,
+            analyze,
+            sourcemap,
+            rollupOptions: rollupOptions ?? undefined,
+            tsconfig: tsConfigPath,
+          })
+        );
+        await rollup.compile(
+          rollup.createPackageConfig({
+            format: 'cjs',
+            isProduction,
+            preserveModules: true,
+            analyze,
+            sourcemap,
+            rollupOptions: rollupOptions ?? undefined,
+            tsconfig: tsConfigPath,
+          })
+        );
+        await tsc.generateDts({ tsconfig: tsConfigPath });
+        break;
+      case 'typesonly':
+        await tsc.generateDts({ tsconfig: tsConfigPath });
+        break;
+      default:
+        logger.error(`Invalid compiler type '${buildStrategy}' chosen!`);
     }
 
     logger.info(

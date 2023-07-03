@@ -1,4 +1,4 @@
-import { TError_ResponseDTO } from '@pda/core-types';
+import { TError_ResponseDTO } from '@pda/types/core';
 import express from 'express';
 import { AppError } from '../AppError';
 

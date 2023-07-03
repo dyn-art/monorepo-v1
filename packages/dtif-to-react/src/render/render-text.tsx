@@ -1,4 +1,4 @@
-import { TTextNode } from '@pda/dtif-types';
+import { TTextNode } from '@pda/types/dtif';
 import React from 'react';
 import WebFont from 'webfontloader';
 import {

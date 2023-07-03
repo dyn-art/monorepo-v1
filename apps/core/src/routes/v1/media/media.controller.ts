@@ -3,7 +3,7 @@ import {
   TGet_Media_PreSignedDownloadUrl_ResponseDTO,
   TGet_Media_PreSignedUploadUrl_QueryParamsDTO,
   TGet_Media_PreSignedUploadUrl_ResponseDTO,
-} from '@pda/core-types';
+} from '@pda/types/core';
 import { randomUUID } from 'crypto';
 import express from 'express';
 import { param, query } from 'express-validator';

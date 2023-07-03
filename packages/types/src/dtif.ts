@@ -1,25 +1,18 @@
-export enum ESupportedFigmaNodeTypes {
-  FRAME = 'FRAME',
-  COMPONENT = 'COMPONENT',
-  INSTANCE = 'INSTANCE',
-  GROUP = 'GROUP',
-  TEXT = 'TEXT',
-  RECTANGLE = 'RECTANGLE',
-  LINE = 'LINE',
-  ELLIPSE = 'ELLIPSE',
-  POLYGON = 'POLYGON',
-  STAR = 'STAR',
-  VECTOR = 'VECTOR',
-  'BOOLEAN_OPERATION' = 'BOOLEAN_OPERATION',
-}
+export type TSupportedFigmaNodeTypes =
+  | 'FRAME'
+  | 'COMPONENT'
+  | 'INSTANCE'
+  | 'GROUP'
+  | 'TEXT'
+  | 'RECTANGLE'
+  | 'LINE'
+  | 'ELLIPSE'
+  | 'POLYGON'
+  | 'STAR'
+  | 'VECTOR'
+  | 'BOOLEAN_OPERATION';
 
-export enum ENodeTypes {
-  FRAME = 'FRAME',
-  GROUP = 'GROUP',
-  TEXT = 'TEXT',
-  RECTANGLE = 'RECTANGLE',
-  SVG = 'SVG',
-}
+export type TNodeTypes = 'FRAME' | 'GROUP' | 'TEXT' | 'RECTANGLE' | 'SVG';
 
 // ============================================================================
 // Scene
@@ -38,7 +31,7 @@ export type TScene = {
 // ============================================================================
 
 export type TFrameNode = {
-  type: ENodeTypes.FRAME;
+  type: 'FRAME';
   clipsContent: boolean;
 } & TBaseNodeMixin &
   TSceneNodeMixin &
@@ -49,7 +42,7 @@ export type TFrameNode = {
   TFillsMixin;
 
 export type TRectangleNode = {
-  type: ENodeTypes.RECTANGLE;
+  type: 'RECTANGLE';
 } & TDefaultShapeMixin &
   TRectangleCornerMixin &
   TFillsMixin;
@@ -57,7 +50,7 @@ export type TRectangleNode = {
 export type TSVGNode = TSVGNodeExported | TSVGNodeInline;
 
 export type TSVGNodeExported = {
-  type: ENodeTypes.SVG;
+  type: 'SVG';
   isExported: true;
   format: 'JPG' | 'SVG';
   hash: string;
@@ -65,7 +58,7 @@ export type TSVGNodeExported = {
 } & TDefaultShapeMixin;
 
 export type TSVGNodeInline = {
-  type: ENodeTypes.SVG;
+  type: 'SVG';
   isExported: false;
   children: TSVGElement['children'];
 } & TDefaultShapeMixin;
@@ -78,7 +71,7 @@ type TSVGElement = {
 };
 
 export type TTextNode = {
-  type: ENodeTypes.TEXT;
+  type: 'TEXT';
   textAlignHorizontal: 'LEFT' | 'CENTER' | 'RIGHT' | 'JUSTIFIED';
   textAlignVertical: 'TOP' | 'CENTER' | 'BOTTOM';
   fontSize: number;
@@ -91,7 +84,7 @@ export type TTextNode = {
   TFillsMixin;
 
 export type TGroupNode = {
-  type: ENodeTypes.GROUP;
+  type: 'GROUP';
 } & TBaseNodeMixin &
   TSceneNodeMixin &
   TChildrenMixin &

@@ -1,4 +1,4 @@
-import { TTransform } from '@pda/dtif-types';
+import { TTransform } from '@pda/types/dtif';
 import * as math from 'mathjs';
 
 export function applyScaleToMatrix(

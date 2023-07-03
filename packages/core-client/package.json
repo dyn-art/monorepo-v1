@@ -19,14 +19,14 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/client-utils": "workspace:^",
+    "@pda/client-utils": "workspace:*",
     "@pda/logger": "workspace:*",
     "axios": "^1.3.6"
   },
   "devDependencies": {
-    "@pda/core-types": "workspace:^",
-    "@pda/jest-presets": "workspace:^",
+    "@pda/jest-presets": "workspace:*",
     "@pda/tsconfig": "workspace:*",
+    "@pda/types": "workspace:*",
     "@types/jest": "^29.5.1",
     "eslint": "^8.38.0",
     "eslint-config-pda-base": "workspace:*",

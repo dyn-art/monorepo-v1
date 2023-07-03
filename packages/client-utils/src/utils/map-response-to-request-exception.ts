@@ -8,13 +8,13 @@ export async function mapResponseToRequestException(
     const error = await response.clone().json();
     const errorCode = getErrorCode(error) ?? defaultErrorCode;
     const errorDescription = getErrorDescription(error) ?? undefined;
-    return new RequestException(errorCode, {
+    return new RequestException(errorCode, response.status, {
       raw: error as any,
       description: errorDescription,
     });
   } catch {
     const error = await response.clone().text();
-    return new RequestException(defaultErrorCode, {
+    return new RequestException(defaultErrorCode, response.status, {
       description: error,
       raw: error as any,
     });
