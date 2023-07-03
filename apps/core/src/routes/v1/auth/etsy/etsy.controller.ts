@@ -1,3 +1,5 @@
+import { etsyAuthService, etsyService } from '@/core/services';
+import { AppError } from '@/middlewares';
 import {
   TGet_Auth_Etsy_GetPing_ResponseDTO,
   TGet_Auth_Etsy_OAuthChallenge_ResponseDTO,
@@ -6,14 +8,12 @@ import {
 } from '@pda/core-types';
 import express from 'express';
 import { query } from 'express-validator';
-import { etsyClient } from '../../../../core/services';
-import { AppError } from '../../../../middlewares';
 
 export async function getPing(
   req: express.Request,
   res: express.Response<TGet_Auth_Etsy_GetPing_ResponseDTO>
 ) {
-  const success = await etsyClient.ping();
+  const success = await etsyService.ping();
   res.status(200).send(success);
 }
 
@@ -22,7 +22,7 @@ export async function getOAuthChallenge(
   res: express.Response<TGet_Auth_Etsy_OAuthChallenge_ResponseDTO>
 ) {
   // Check whether Etsy can be reached
-  const success = await etsyClient.ping();
+  const success = await etsyService.ping();
   if (!success) {
     throw new AppError(500, '#ERR_PING', {
       description:
@@ -31,7 +31,7 @@ export async function getOAuthChallenge(
   }
 
   // Generate PKCE Code Challenge
-  const challenge = etsyClient.authService.generatePKCECodeChallengeUri();
+  const challenge = etsyAuthService.generatePKCECodeChallengeUri();
 
   res.status(200).send({ challenge });
 }
@@ -51,11 +51,8 @@ export async function handleOAuthRedirect(
   else if (code != null && state != null) {
     // Token exchange
     const accessToken =
-      await etsyClient.authService.retrieveAccessTokenByAuthorizationCode(
-        code,
-        state
-      );
-    const refreshTokenInfo = etsyClient.authService.getRefreshTokenInfo();
+      await etsyAuthService.retrieveAccessTokenByAuthorizationCode(code, state);
+    const refreshTokenInfo = etsyAuthService.getRefreshTokenInfo();
     if (
       refreshTokenInfo.refreshToken == null ||
       refreshTokenInfo.expiresAt == null

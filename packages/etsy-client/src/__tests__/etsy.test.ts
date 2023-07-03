@@ -1,4 +1,4 @@
-import { createEtsyService } from '../etsy-service.factory';
+import { createEtsyService } from '../service/etsy-service.factory';
 
 describe('etsy tests', () => {
   it('send request to etsy api', async () => {
@@ -12,7 +12,7 @@ describe('etsy tests', () => {
       },
     });
 
-    const success = await etsyService.etsyClient.ping();
+    const success = await etsyService.ping();
     const shopReceipts = await etsyService.getShopReceipts();
 
     expect(success).toBe(true);
