@@ -2,7 +2,7 @@ import {
   RequestClient,
   ServiceException,
   isStatusCode,
-} from '@pda/client-utils';
+} from '@pda/openapi-fetch';
 import { paths } from '../gen/v3';
 import { logger } from '../logger';
 

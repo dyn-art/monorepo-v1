@@ -1,3 +1,3 @@
-import { ServiceException } from '@pda/client-utils';
+import { ServiceException } from '@pda/openapi-fetch';
 
 export class EtsyServiceException extends ServiceException {}

@@ -2,7 +2,7 @@ import {
   fetchWithRetries,
   mapCatchToNetworkException,
   mapResponseToRequestException,
-} from '@pda/client-utils';
+} from '@pda/openapi-fetch';
 import crypto from 'crypto';
 import { etsyConfig } from '../environment';
 import {

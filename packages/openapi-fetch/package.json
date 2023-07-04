@@ -1,7 +1,7 @@
 {
-  "name": "@pda/client-utils",
+  "name": "@pda/openapi-fetch",
   "version": "0.0.0",
-  "description": "Utility library to communicate with the Core",
+  "description": "Fetch using defined OpenAPI types.",
   "private": true,
   "source": "./src/index.ts",
   "main": "./dist/cjs/index.js",
@@ -25,9 +25,12 @@
     "openapi-fetch": "^0.6.0"
   },
   "devDependencies": {
+    "@pda/jest-presets": "workspace:^",
     "@pda/tsconfig": "workspace:*",
+    "@types/jest": "^29.5.1",
     "eslint": "^8.38.0",
     "eslint-config-pda-base": "workspace:*",
+    "jest": "^29.5.0",
     "typescript": "^4.9.5"
   },
   "files": [

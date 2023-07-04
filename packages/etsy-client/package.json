@@ -20,7 +20,7 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/client-utils": "workspace:*",
+    "@pda/openapi-fetch": "workspace:*",
     "@pda/logger": "workspace:*"
   },
   "devDependencies": {
