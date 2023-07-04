@@ -106,13 +106,33 @@ export type TMediaType = `${string}/${string}`;
 // Request parameters
 // ============================================================================
 
-export type TRequestPathParams<T> = T extends { parameters: { path?: any } }
-  ? NonNullable<T['parameters']['path']>
-  : undefined;
+// type Test1 = { parameters: { query: number } }; // query is required
+// type Test2 = { parameters: { query?: number } }; // query is optional
+// type Test3 = { }
 
-export type TRequestQueryParams<T> = T extends { parameters: { query?: any } }
-  ? NonNullable<T['parameters']['query']>
-  : undefined;
+// type Result1 = TRequestQueryObject<Test1>; // number
+// type Result2 = TRequestQueryObject<Test2>; // number | undefined
+// type Result3 = TRequestQueryObject<Test3>; // never
+
+export type TRequestPathParamsObject<T> = T extends {
+  parameters: { path?: any };
+}
+  ? T['parameters']['path']
+  : never;
+
+export type TRequestPathParams<T> = TRequestPathParamsObject<T> extends never
+  ? NonNullable<TRequestPathParamsObject<T>> | undefined
+  : TRequestPathParamsObject<T>;
+
+export type TRequestQueryParamsObject<T> = T extends {
+  parameters: { query?: any };
+}
+  ? T['parameters']['query']
+  : never;
+
+export type TRequestQueryParams<T> = TRequestQueryParamsObject<T> extends never
+  ? NonNullable<TRequestQueryParamsObject<T>> | undefined
+  : TRequestQueryParamsObject<T>;
 
 // ============================================================================
 // Request body
@@ -120,7 +140,7 @@ export type TRequestQueryParams<T> = T extends { parameters: { query?: any } }
 
 export type TRequestBodyObject<T> = T extends { requestBody?: any }
   ? T['requestBody']
-  : undefined;
+  : never;
 
 export type TRequestBodyContent<T> = undefined extends TRequestBodyObject<T>
   ? TFilterKeys<NonNullable<TRequestBodyObject<T>>, 'content'> | undefined
@@ -147,13 +167,13 @@ export type TErrorResponseContent<T> = TFilterKeys<
   'content'
 >;
 
-export type TSuccessResponseBody<T> = T extends { responses: any }
+export type TSuccessResponseBody<T> = T extends { responses?: any }
   ? NonNullable<
       TFilterKeys<TSuccessResponseContent<T['responses']>, TMediaType>
     >
   : unknown;
 
-export type TErrorResponseBody<T> = T extends { responses: any }
+export type TErrorResponseBody<T> = T extends { responses?: any }
   ? NonNullable<TFilterKeys<TErrorResponseContent<T['responses']>, TMediaType>>
   : unknown;
 
@@ -181,18 +201,20 @@ export type TRequestMiddleware = (
 // ============================================================================
 
 export type TFetchOptionsQueryParamsPart<T> =
-  undefined extends TRequestQueryParams<T>
-    ? { queryParams?: Record<string, any> }
-    : { queryParams: TRequestQueryParams<T> & Record<string, any> };
+  undefined extends TRequestQueryParams<T> // Note: 'undefined extends xyz' behaves different than 'xyz extends undefined'
+    ? {
+        queryParams?: TRequestQueryParams<T> | Record<string, any>;
+      }
+    : { queryParams: TRequestQueryParams<T> };
 
 export type TFetchOptionsPathParamsPart<T> =
   undefined extends TRequestPathParams<T>
-    ? { pathParams?: Record<string, any> }
-    : { pathParams: TRequestPathParams<T> & Record<string, any> };
+    ? { pathParams?: TRequestPathParams<T> | Record<string, any> }
+    : { pathParams: TRequestPathParams<T> };
 
 export type TFetchOptionsBodyPart<T> = undefined extends TRequestBody<T>
-  ? { body?: TRequestBody<T> & Record<string, any> }
-  : { body: TRequestBody<T> & Record<string, any> };
+  ? { body?: TRequestBody<T> | Record<string, any> }
+  : { body: TRequestBody<T> };
 
 export type TFetchOptionsBase<T> = {
   querySerializer?: TQuerySerializer<T>;
