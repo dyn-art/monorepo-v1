@@ -198,7 +198,7 @@ export class OAuth2Service {
     this._accessTokenExpiresAt =
       Date.now() + (data.expires_in - this._accessTokenBuffer) * 1000;
 
-    // Update refresh token
+    // Update refresh token if changed
     if (data.refresh_token !== this._refreshToken) {
       this._refreshToken = data.refresh_token;
       this._refreshTokenExpiresAt = Date.now() + (90 - 5) * 24 * 60 * 60 * 1000; // 90 days - 5 days as buffer

@@ -47,6 +47,8 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - challenge
                 properties:
                   challenge:
                     type: string
@@ -90,6 +92,10 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - access_token
+                  - refresh_token
+                  - refresh_token_expires_at
                 properties:
                   access_token:
                     type: string
@@ -141,6 +147,9 @@ paths:
             application/json:
               schema:
                 type: object
+                required:
+                  - upload_url
+                  - key
                 properties:
                   upload_url:
                     type: string
@@ -194,6 +203,33 @@ paths:
               schema:
                 type: boolean
               example: true
+
+    post:
+      summary: API Ping
+      description: Ping the API to check if it's working.
+      operationId: postPingAPI
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - hello
+              properties:
+                hello:
+                  type: string
+            example:
+              hello: 'Jeff'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+              example: 'Pong Jeff'
 
 components:
   responses:

@@ -105,13 +105,13 @@ export function createPackageConfig(options: TCreatePackageOptions = {}) {
                 sourcemap: true,
                 gzipSize: true,
               }),
-              visualizer({
-                title: packageJson.name,
-                filename: visualizeFilePath,
-                sourcemap: true,
-                gzipSize: true,
-                template: 'raw-data',
-              }),
+              // visualizer({
+              //   title: packageJson.name,
+              //   filename: visualizeFilePath,
+              //   sourcemap: true,
+              //   gzipSize: true,
+              //   template: 'raw-data',
+              // }),
             ]
           : []),
       ],
