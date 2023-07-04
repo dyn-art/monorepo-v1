@@ -1,5 +1,5 @@
 import {
-  RequestClient,
+  OpenAPIFetchClient,
   ServiceException,
   isStatusCode,
 } from '@pda/openapi-fetch';
@@ -7,12 +7,12 @@ import { paths } from '../gen/v3';
 import { logger } from '../logger';
 
 export class EtsyService {
-  public readonly etsyClient: RequestClient<paths>;
+  public readonly etsyClient: OpenAPIFetchClient<paths>;
 
   private _userId: number;
   private _shopId: number;
 
-  constructor(etsyClient: RequestClient<paths>) {
+  constructor(etsyClient: OpenAPIFetchClient<paths>) {
     this.etsyClient = etsyClient;
   }
 
@@ -69,12 +69,10 @@ export class EtsyService {
     const response = await this.etsyClient.get(
       '/v3/application/shops/{shop_id}/receipts',
       {
-        params: {
-          path: {
-            shop_id: me.shop_id,
-          },
-          query: options,
+        pathParams: {
+          shop_id: me.shop_id,
         },
+        queryParams: options,
       }
     );
 

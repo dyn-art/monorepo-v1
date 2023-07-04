@@ -236,6 +236,10 @@ export interface operations {
         /** @description The unique positive non-zero numeric ID for an Etsy Shop. */
         shop_id: number;
       };
+      query: {
+        /** @description The unique positive non-zero numeric ID for an Etsy Shop. */
+        shop_id: number;
+      };
     };
     /** @description Request body */
     requestBody?: {

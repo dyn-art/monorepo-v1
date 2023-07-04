@@ -16,7 +16,7 @@ import {
   TOpenAPIFetchClientOptions,
   TPathsWith,
   TQuerySerializer,
-  TRequestBody,
+  TRequestBodyFilteredNever,
   TRequestMiddleware,
 } from './types';
 import {
@@ -78,7 +78,7 @@ export class OpenAPIFetchClient<GPaths extends {}> {
 
   public async put<GPutPaths extends TPathsWith<GPaths, 'put'>>(
     url: GPutPaths,
-    body: TRequestBody<
+    body: TRequestBodyFilteredNever<
       'put' extends keyof GPaths[GPutPaths] ? GPaths[GPutPaths]['put'] : unknown
     >,
     options?: TFetchOptions<TFilterKeys<GPaths[GPutPaths], 'put'>>
@@ -91,7 +91,7 @@ export class OpenAPIFetchClient<GPaths extends {}> {
 
   public async post<GPostPaths extends TPathsWith<GPaths, 'post'>>(
     url: GPostPaths,
-    body: TRequestBody<
+    body: TRequestBodyFilteredNever<
       'post' extends keyof GPaths[GPostPaths]
         ? GPaths[GPostPaths]['post']
         : unknown
