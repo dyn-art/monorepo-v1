@@ -259,13 +259,18 @@ export type TFetchOptionsWithBody<T> = TFetchOptions<T> &
 export type TFetchResponseSuccess<T> = {
   isError: false;
   data: TResponseBody<T>;
-  response: Response;
+  raw: Response;
 };
+
 export type TFetchResponseError<T> = {
   isError: true;
-  error: NetworkException | RequestException<T> | ServiceException;
-  response: Response | null;
+  error:
+    | NetworkException
+    | RequestException<TErrorResponseBody<T>>
+    | ServiceException;
+  raw: Response | null;
 };
+
 export type TFetchResponse<T> =
   | TFetchResponseSuccess<T>
   | TFetchResponseError<T>;

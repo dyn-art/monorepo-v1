@@ -1,19 +1,15 @@
 import 'cross-fetch';
-import { ServiceException } from './exceptions';
+import { ServiceException } from '../../exceptions';
 import {
   TBodySerializer,
-  TFetchOptions,
   TFetchOptionsWithBody,
   TFetchResponse,
   TFetchResponseError,
-  TFilterKeys,
   THttpMethod,
   TOpenAPIFetchClientOptions,
-  TPathsWith,
   TQuerySerializer,
-  TRequestBodyFilteredNever,
   TRequestMiddleware,
-} from './types';
+} from '../../types';
 import {
   buildURI,
   fetchWithRetries,
@@ -21,9 +17,9 @@ import {
   mapResponseToRequestException,
   serializeBodyToJson,
   serializeQueryParams,
-} from './utils';
+} from '../../utils';
 
-export class OpenAPIFetchClient<GPaths extends {} = {}> {
+export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
   private static readonly DEFAULT_HEADERS = {
     'Content-Type': 'application/json; charset=utf-8',
   };
@@ -53,7 +49,7 @@ export class OpenAPIFetchClient<GPaths extends {} = {}> {
     this._defaultQuerySerializer = querySerializer;
     this._defaultBodySerializer = bodySerializer;
     this._defaultHeaders = new Headers({
-      ...OpenAPIFetchClient.DEFAULT_HEADERS,
+      ...OpenAPIFetchClientBase.DEFAULT_HEADERS,
       ...rootFetchProps.headers,
     });
     this._defaultFetchProps = rootFetchProps;
@@ -62,64 +58,6 @@ export class OpenAPIFetchClient<GPaths extends {} = {}> {
       ? requestMiddleware
       : [requestMiddleware];
   }
-
-  // ============================================================================
-  // Requests
-  // ============================================================================
-
-  public async get<GGetPaths extends TPathsWith<GPaths, 'get'>>(
-    path: GGetPaths | (string & Record<never, never>), // https://github.com/microsoft/TypeScript/issues/29729
-    options?: TFetchOptions<TFilterKeys<GPaths[GGetPaths], 'get'>>
-  ) {
-    return this.fetch<GGetPaths, 'get'>(
-      path as GGetPaths,
-      'GET',
-      options as any
-    );
-  }
-
-  public async put<GPutPaths extends TPathsWith<GPaths, 'put'>>(
-    path: GPutPaths | (string & Record<never, never>), // https://github.com/microsoft/TypeScript/issues/29729
-    body: TRequestBodyFilteredNever<
-      'put' extends keyof GPaths[GPutPaths] ? GPaths[GPutPaths]['put'] : unknown
-    >,
-    options?: TFetchOptions<TFilterKeys<GPaths[GPutPaths], 'put'>>
-  ) {
-    return this.fetch<GPutPaths, 'put'>(path as GPutPaths, 'PUT', {
-      ...(options ?? {}),
-      body,
-    } as any);
-  }
-
-  public async post<GPostPaths extends TPathsWith<GPaths, 'post'>>(
-    path: GPostPaths | (string & Record<never, never>), // https://github.com/microsoft/TypeScript/issues/29729
-    body: TRequestBodyFilteredNever<
-      'post' extends keyof GPaths[GPostPaths]
-        ? GPaths[GPostPaths]['post']
-        : unknown
-    >,
-    options?: TFetchOptions<TFilterKeys<GPaths[GPostPaths], 'post'>>
-  ) {
-    return this.fetch<GPostPaths, 'post'>(path as GPostPaths, 'POST', {
-      ...(options ?? {}),
-      body,
-    } as any);
-  }
-
-  public async del<GDeletePaths extends TPathsWith<GPaths, 'delete'>>(
-    path: GDeletePaths | (string & Record<never, never>), // https://github.com/microsoft/TypeScript/issues/29729
-    options?: TFetchOptions<TFilterKeys<GPaths[GDeletePaths], 'delete'>>
-  ) {
-    return this.fetch<GDeletePaths, 'delete'>(
-      path as GDeletePaths,
-      'DELETE',
-      options as any
-    );
-  }
-
-  // ============================================================================
-  // Helper
-  // ============================================================================
 
   public async fetch<
     GPathKeys extends keyof GPaths,
@@ -199,7 +137,7 @@ export class OpenAPIFetchClient<GPaths extends {} = {}> {
             ? await cloned[parseAs]()
             : await cloned.text();
       }
-      return { isError: false, data: data as any, response };
+      return { isError: false, data: data as any, raw: response };
     }
 
     // Handle errors (always parse as .json() or .text())
@@ -243,7 +181,7 @@ export class OpenAPIFetchClient<GPaths extends {} = {}> {
       return {
         isError: true,
         error,
-        response: null,
+        raw: null,
       };
     } else if (error instanceof Error) {
       return {
@@ -251,13 +189,13 @@ export class OpenAPIFetchClient<GPaths extends {} = {}> {
         error: new ServiceException('#ERR_MIDDLEWARE', {
           description: error.message,
         }),
-        response: null,
+        raw: null,
       };
     } else {
       return {
         isError: true,
         error: new ServiceException('#ERR_MIDDLEWARE'),
-        response: null,
+        raw: null,
       };
     }
   }
@@ -272,7 +210,7 @@ export class OpenAPIFetchClient<GPaths extends {} = {}> {
     return {
       isError: true,
       error: requestException,
-      response,
+      raw: response,
     };
   }
 
@@ -281,7 +219,7 @@ export class OpenAPIFetchClient<GPaths extends {} = {}> {
     return {
       isError: true,
       error: networkException,
-      response: null,
+      raw: null,
     };
   }
 }

@@ -64,6 +64,9 @@ importers:
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@pda/openapi-fetch':
+        specifier: workspace:*
+        version: link:../../packages/openapi-fetch
       '@pda/s3':
         specifier: workspace:*
         version: link:../../packages/s3

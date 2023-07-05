@@ -1,24 +1,21 @@
 import { STAGE, appConfig } from '@/environment';
 import { AppError } from '@/middlewares';
-import { TRequestController } from '@/types';
+import { TExpressController } from '@/types';
 import express from 'express';
 import { validationResult } from 'express-validator';
 
 export function controllerWrapper(
-  controller: TRequestController<any, any>,
+  controller: TExpressController<any, any>,
   stage?: STAGE
 ): any[] {
   if (Array.isArray(controller)) {
-    return [...controller[1], controllerMethodWrapper(controller[0], stage)];
+    return [...controller[1], expressRouteHandlerWrapper(controller[0], stage)];
   } else {
-    return [controllerMethodWrapper(controller, stage)];
+    return [expressRouteHandlerWrapper(controller, stage)];
   }
 }
 
-/**
- * Wrapper function for Express controllers to handle errors and stage-based activation.
- */
-export function controllerMethodWrapper(
+export function expressRouteHandlerWrapper(
   controller: (
     req: express.Request,
     res: express.Response,

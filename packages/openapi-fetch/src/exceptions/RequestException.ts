@@ -1,19 +1,20 @@
-import { TErrorResponseBody } from '../types';
 import { ServiceException } from './ServiceException';
 
-export class RequestException<GPathMethod = any> extends ServiceException {
+export class RequestException<TData = any> extends ServiceException {
   public readonly status: number;
-  public readonly raw?: TErrorResponseBody<GPathMethod>;
+  public readonly response?: Response;
+  public readonly data?: TData;
 
   constructor(
     code: string,
     status: number,
     options: {
       description?: string;
-      raw?: TErrorResponseBody<GPathMethod>;
+      data?: TData;
+      response?: Response;
     } = {}
   ) {
-    const { description, raw } = options;
+    const { description, response, data } = options;
     super(code, {
       description,
       message: `Call to endpoint failed with status ${status} and error code ${code}${
@@ -21,6 +22,7 @@ export class RequestException<GPathMethod = any> extends ServiceException {
       }`,
     });
     this.status = status;
-    this.raw = raw;
+    this.response = response;
+    this.data = data;
   }
 }

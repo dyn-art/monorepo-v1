@@ -6,7 +6,7 @@ import { OAuth2Service } from './OAuth2Service';
 export function createEtsyClient(
   authService: OAuth2Service
 ): OpenAPIFetchClient<paths> {
-  const client = new OpenAPIFetchClient<paths>(etsyConfig.baseUrl, {
+  return new OpenAPIFetchClient<paths>(etsyConfig.baseUrl, {
     requestMiddleware: [
       // Authorization headers middleware
       async (requestInit, props) => {
@@ -23,6 +23,4 @@ export function createEtsyClient(
       },
     ],
   });
-
-  return client;
 }

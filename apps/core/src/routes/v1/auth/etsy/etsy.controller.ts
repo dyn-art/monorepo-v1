@@ -1,9 +1,9 @@
 import { etsyAuthService, etsyService } from '@/core/services';
 import { AppError } from '@/middlewares';
-import { TRequestController } from '@/types';
+import { TExpressController } from '@/types';
 import { query } from 'express-validator';
 
-export const getPing: TRequestController<'/v1/auth/etsy/ping', 'get'> = async (
+export const getPing: TExpressController<'/v1/auth/etsy/ping', 'get'> = async (
   req,
   res
 ) => {
@@ -11,7 +11,7 @@ export const getPing: TRequestController<'/v1/auth/etsy/ping', 'get'> = async (
   res.status(200).send(success);
 };
 
-export const getOAuthChallenge: TRequestController<
+export const getOAuthChallenge: TExpressController<
   '/v1/auth/etsy/oauth/challenge',
   'get'
 > = async (req, res) => {
@@ -30,7 +30,7 @@ export const getOAuthChallenge: TRequestController<
   res.status(200).send({ challenge });
 };
 
-export const handleOAuthRedirect: TRequestController<
+export const handleOAuthRedirect: TExpressController<
   '/v1/auth/etsy/oauth/redirect',
   'get'
 > = [

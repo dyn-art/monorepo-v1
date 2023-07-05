@@ -9,14 +9,16 @@ export async function mapResponseToRequestException(
     const errorCode = getErrorCode(error) ?? defaultErrorCode;
     const errorDescription = getErrorDescription(error) ?? undefined;
     return new RequestException(errorCode, response.status, {
-      raw: error as any,
+      data: error as any,
       description: errorDescription,
+      response,
     });
   } catch {
     const error = await response.clone().text();
     return new RequestException(defaultErrorCode, response.status, {
       description: error,
-      raw: error as any,
+      data: error as any,
+      response,
     });
   }
 }

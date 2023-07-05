@@ -1,5 +1,4 @@
-export * from './OpenAPIFetchClient';
-export * from './RawFetchClient';
+export * from './clients';
 export * from './exceptions';
 export * from './types';
 export * from './utils';

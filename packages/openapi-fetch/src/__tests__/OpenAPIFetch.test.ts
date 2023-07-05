@@ -1,5 +1,5 @@
-import { OpenAPIFetchClient } from '../OpenAPIFetchClient';
-import { RawFetchClient } from '../RawFetchClient';
+import { OpenAPIFetchClient, RawFetchClient } from '../clients';
+import { RequestException } from '../exceptions';
 import { paths } from './resources/mock-openapi-types';
 
 describe('OpenAPIFetch class tests', () => {
@@ -8,7 +8,7 @@ describe('OpenAPIFetch class tests', () => {
     const rawClient = new RawFetchClient('some-base-url');
     rawClient.get('test');
 
-    const test = await rawClient.rawGet<'test'>('test');
+    const test = await rawClient.get<'test'>('test');
 
     client.get('/v1/media/pre-signed-download-url/{key}', {
       pathParams: {
@@ -27,7 +27,7 @@ describe('OpenAPIFetch class tests', () => {
       queryParams: { test: 123 },
     });
 
-    client.post(
+    const response = await client.post(
       '/v1/ping',
       { hello: 'jeff', jeff: 123 },
       {
@@ -41,6 +41,13 @@ describe('OpenAPIFetch class tests', () => {
         },
       }
     );
+    if (response.isError) {
+      const error = response.error;
+      if (error instanceof RequestException) {
+        error.data;
+      }
+    }
+
     client.fetch('/v1/ping', 'POST', {
       pathParams: { shop_id: 123 },
       queryParams: { shop_id: 123 },

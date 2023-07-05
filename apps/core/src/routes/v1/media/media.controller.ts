@@ -1,9 +1,9 @@
 import { s3 } from '@/core/aws';
-import { TRequestController } from '@/types';
+import { TExpressController } from '@/types';
 import { randomUUID } from 'crypto';
 import { param, query } from 'express-validator';
 
-export const getPreSignedUploadUrl: TRequestController<
+export const getPreSignedUploadUrl: TExpressController<
   '/v1/media/pre-signed-upload-url',
   'get'
 > = [
@@ -40,7 +40,7 @@ export const getPreSignedUploadUrl: TRequestController<
   ],
 ];
 
-export const getPreSignedDownloadUrl: TRequestController<
+export const getPreSignedDownloadUrl: TExpressController<
   '/v1/media/pre-signed-download-url/{key}',
   'get'
 > = [
