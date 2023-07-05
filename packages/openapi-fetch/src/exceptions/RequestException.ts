@@ -1,16 +1,16 @@
-import { Error, FilterKeys, MediaType } from 'openapi-fetch';
+import { TErrorResponseBody } from '../types';
 import { ServiceException } from './ServiceException';
 
-export class RequestException<T = any> extends ServiceException {
+export class RequestException<GPathMethod = any> extends ServiceException {
   public readonly status: number;
-  public readonly raw?: TRaw<T>;
+  public readonly raw?: TErrorResponseBody<GPathMethod>;
 
   constructor(
     code: string,
     status: number,
     options: {
       description?: string;
-      raw?: TRaw<T>;
+      raw?: TErrorResponseBody<GPathMethod>;
     } = {}
   ) {
     const { description, raw } = options;
@@ -24,7 +24,3 @@ export class RequestException<T = any> extends ServiceException {
     this.raw = raw;
   }
 }
-
-type TRaw<T> = T extends { responses: any }
-  ? NonNullable<FilterKeys<Error<T['responses']>, MediaType>>
-  : unknown;

@@ -914,18 +914,12 @@ importers:
 
   packages/openapi-fetch:
     dependencies:
-      '@pda/logger':
-        specifier: workspace:*
-        version: link:../logger
       '@pda/utils':
         specifier: workspace:*
         version: link:../utils
       cross-fetch:
         specifier: ^3.1.6
         version: 3.1.6
-      openapi-fetch:
-        specifier: ^0.6.0
-        version: 0.6.0
     devDependencies:
       '@pda/jest-presets':
         specifier: workspace:^
@@ -14567,10 +14561,6 @@ packages:
       is-inside-container: 1.0.0
       is-wsl: 2.2.0
     dev: true
-
-  /openapi-fetch@0.6.0:
-    resolution: {integrity: sha512-EA9Ic4CvaPXPOXWkQl/S5ZVxD9YeKgIQsYsYhvTZgeXnrN/sllN2jF/xgzXYFqXvB7Jec8XUWv4dT1NQNiiAeg==}
-    dev: false
 
   /openapi-typescript@6.2.8:
     resolution: {integrity: sha512-yA+y5MHiu6cjmtsGfNLavzVuvGCKzjL3H+exgHDPK6bnp6ZVFibtAiafenNSRDWL0x+7Sw/VPv5SbaqiPLW46w==}

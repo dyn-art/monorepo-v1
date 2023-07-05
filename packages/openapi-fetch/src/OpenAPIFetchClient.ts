@@ -1,9 +1,4 @@
 import 'cross-fetch';
-import {
-  createFinalURL,
-  defaultBodySerializer,
-  defaultQuerySerializer,
-} from 'openapi-fetch';
 import { ServiceException } from './exceptions';
 import {
   TBodySerializer,
@@ -20,12 +15,15 @@ import {
   TRequestMiddleware,
 } from './types';
 import {
+  buildURI,
   fetchWithRetries,
   mapCatchToNetworkException,
   mapResponseToRequestException,
+  serializeBodyToJson,
+  serializeQueryParams,
 } from './utils';
 
-export class OpenAPIFetchClient<GPaths extends {}> {
+export class OpenAPIFetchClient<GPaths extends {} = {}> {
   private static readonly DEFAULT_HEADERS = {
     'Content-Type': 'application/json; charset=utf-8',
   };
@@ -46,8 +44,8 @@ export class OpenAPIFetchClient<GPaths extends {}> {
     options: TOpenAPIFetchClientOptions<GPaths> = {}
   ) {
     const {
-      querySerializer = defaultQuerySerializer,
-      bodySerializer = defaultBodySerializer,
+      querySerializer = serializeQueryParams,
+      bodySerializer = serializeBodyToJson,
       rootFetchProps = {},
       requestMiddleware = [],
     } = options;
@@ -70,27 +68,31 @@ export class OpenAPIFetchClient<GPaths extends {}> {
   // ============================================================================
 
   public async get<GGetPaths extends TPathsWith<GPaths, 'get'>>(
-    url: GGetPaths,
+    path: GGetPaths | (string & Record<never, never>), // https://github.com/microsoft/TypeScript/issues/29729
     options?: TFetchOptions<TFilterKeys<GPaths[GGetPaths], 'get'>>
   ) {
-    return this.fetch<GGetPaths, 'get'>(url, 'GET', options as any);
+    return this.fetch<GGetPaths, 'get'>(
+      path as GGetPaths,
+      'GET',
+      options as any
+    );
   }
 
   public async put<GPutPaths extends TPathsWith<GPaths, 'put'>>(
-    url: GPutPaths,
+    path: GPutPaths | (string & Record<never, never>), // https://github.com/microsoft/TypeScript/issues/29729
     body: TRequestBodyFilteredNever<
       'put' extends keyof GPaths[GPutPaths] ? GPaths[GPutPaths]['put'] : unknown
     >,
     options?: TFetchOptions<TFilterKeys<GPaths[GPutPaths], 'put'>>
   ) {
-    return this.fetch<GPutPaths, 'put'>(url, 'PUT', {
+    return this.fetch<GPutPaths, 'put'>(path as GPutPaths, 'PUT', {
       ...(options ?? {}),
       body,
     } as any);
   }
 
   public async post<GPostPaths extends TPathsWith<GPaths, 'post'>>(
-    url: GPostPaths,
+    path: GPostPaths | (string & Record<never, never>), // https://github.com/microsoft/TypeScript/issues/29729
     body: TRequestBodyFilteredNever<
       'post' extends keyof GPaths[GPostPaths]
         ? GPaths[GPostPaths]['post']
@@ -98,17 +100,21 @@ export class OpenAPIFetchClient<GPaths extends {}> {
     >,
     options?: TFetchOptions<TFilterKeys<GPaths[GPostPaths], 'post'>>
   ) {
-    return this.fetch<GPostPaths, 'post'>(url, 'POST', {
+    return this.fetch<GPostPaths, 'post'>(path as GPostPaths, 'POST', {
       ...(options ?? {}),
       body,
     } as any);
   }
 
   public async del<GDeletePaths extends TPathsWith<GPaths, 'delete'>>(
-    url: GDeletePaths,
+    path: GDeletePaths | (string & Record<never, never>), // https://github.com/microsoft/TypeScript/issues/29729
     options?: TFetchOptions<TFilterKeys<GPaths[GDeletePaths], 'delete'>>
   ) {
-    return this.fetch<GDeletePaths, 'delete'>(url, 'DELETE', options as any);
+    return this.fetch<GDeletePaths, 'delete'>(
+      path as GDeletePaths,
+      'DELETE',
+      options as any
+    );
   }
 
   // ============================================================================
@@ -124,7 +130,7 @@ export class OpenAPIFetchClient<GPaths extends {}> {
       ? GPaths[GPathKeys][GHttpMethod]
       : unknown
   >(
-    url: GPathKeys,
+    path: GPathKeys | (string & Record<never, never>), // https://github.com/microsoft/TypeScript/issues/29729
     method: RequestInit['method'],
     options?: TFetchOptionsWithBody<
       GHttpMethod extends keyof GPaths[GPathKeys]
@@ -145,13 +151,13 @@ export class OpenAPIFetchClient<GPaths extends {}> {
     } = options ?? {};
 
     // Build final URL
-    const finalURL = createFinalURL(url as string, {
-      baseUrl: this._baseUrl,
+    const finalURL = buildURI(this._baseUrl, {
+      path: path as `/${string}`, // OpenAPI type already enforces to start with leading slash
       params: {
         path: pathParams,
         query: queryParams,
       },
-      querySerializer: querySerializer as any,
+      querySerializer,
     });
 
     // Build request init object

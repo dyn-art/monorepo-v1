@@ -1,8 +1,4 @@
-import {
-  fetchWithRetries,
-  mapCatchToNetworkException,
-  mapResponseToRequestException,
-} from '@pda/openapi-fetch';
+import { RawFetchClient } from '@pda/openapi-fetch';
 import crypto from 'crypto';
 import { etsyConfig } from '../environment';
 import {
@@ -13,6 +9,7 @@ import { logger } from '../logger';
 
 export class OAuth2Service {
   public readonly _config: Omit<TOAuth2Config, 'refresh'>;
+  public readonly _client: RawFetchClient;
 
   private readonly _codeVerifiers: Record<string, string> = {};
 
@@ -29,6 +26,7 @@ export class OAuth2Service {
       redirectUrl: config.redirectUrl,
       scopes: config.scopes,
     };
+    this._client = new RawFetchClient();
     if (config.refresh != null) {
       const { refreshToken, expiresAt } = config.refresh;
       this._refreshToken = refreshToken;
@@ -127,19 +125,14 @@ export class OAuth2Service {
 
     // Send request
     let data: TPost_OAuthToken_ResponseDTO;
-    try {
-      const response = await fetchWithRetries(etsyConfig.auth.tokenEndpoint, {
-        requestInit: {
-          method: 'POST',
-          body: JSON.stringify(body),
-        },
-      });
-      if (!response.ok) {
-        throw mapResponseToRequestException(response);
-      }
-      data = (await response.json()) as TPost_OAuthToken_ResponseDTO;
-    } catch (error) {
-      throw mapCatchToNetworkException(error);
+    const response = await this._client.rawPost<TPost_OAuthToken_ResponseDTO>(
+      etsyConfig.auth.tokenEndpoint,
+      body
+    );
+    if (response.isError) {
+      throw response.error;
+    } else {
+      data = response.data;
     }
 
     // Delete code verifier as the code can only be used once
@@ -161,19 +154,14 @@ export class OAuth2Service {
 
     // Send request
     let data: TPost_OAuthToken_ResponseDTO;
-    try {
-      const response = await fetchWithRetries(etsyConfig.auth.tokenEndpoint, {
-        requestInit: {
-          method: 'POST',
-          body: JSON.stringify(body),
-        },
-      });
-      if (!response.ok) {
-        throw mapResponseToRequestException(response);
-      }
-      data = (await response.json()) as TPost_OAuthToken_ResponseDTO;
-    } catch (error) {
-      throw mapCatchToNetworkException(error);
+    const response = await this._client.rawPost<TPost_OAuthToken_ResponseDTO>(
+      etsyConfig.auth.tokenEndpoint,
+      body
+    );
+    if (response.isError) {
+      throw response.error;
+    } else {
+      data = response.data;
     }
 
     // Handle response data

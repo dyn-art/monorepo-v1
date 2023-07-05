@@ -1,11 +1,26 @@
 import { OpenAPIFetchClient } from '../OpenAPIFetchClient';
+import { RawFetchClient } from '../RawFetchClient';
 import { paths } from './resources/mock-openapi-types';
 
 describe('OpenAPIFetch class tests', () => {
-  it('should work', () => {
+  it('should work', async () => {
     const client = new OpenAPIFetchClient<paths>('some-base-url');
-    const rawClient = new OpenAPIFetchClient('some-base-url');
-    rawClient.get('test' as never, {}); // TODO: make it work also without paths
+    const rawClient = new RawFetchClient('some-base-url');
+    rawClient.get('test');
+
+    const test = await rawClient.rawGet<'test'>('test');
+
+    client.get('/v1/media/pre-signed-download-url/{key}', {
+      pathParams: {
+        key: 'test',
+      },
+      bodySerializer: (body) => {
+        return '';
+      },
+      querySerializer: (query) => {
+        return '';
+      },
+    });
 
     client.get('/v1/ping', {
       pathParams: { test: 123 },
@@ -18,6 +33,12 @@ describe('OpenAPIFetch class tests', () => {
       {
         pathParams: { shop_id: 123 },
         queryParams: { shop_id: 123 },
+        bodySerializer: (body) => {
+          return '';
+        },
+        querySerializer: (query) => {
+          return '';
+        },
       }
     );
     client.fetch('/v1/ping', 'POST', {

@@ -192,9 +192,15 @@ export type TResponseBody<T> = TSuccessResponseBody<T>; // No ErrorResponse as e
 // Serializer methods
 // ============================================================================
 
-export type TQuerySerializer<T> = (query: TRequestQueryParams<T>) => string;
+export type TQuerySerializer<T> = (
+  query: TRequestQueryParams<T> extends never
+    ? Record<string, any>
+    : TRequestQueryParams<T>
+) => string;
 
-export type TBodySerializer<T> = (body: TRequestBodyFilteredNever<T>) => any;
+export type TBodySerializer<T> = (
+  body: TRequestBody<T> extends never ? any : TRequestBody<T>
+) => any;
 
 // ============================================================================
 // Middleware
@@ -228,7 +234,7 @@ export type TFetchOptionsPathParamsPart<T> =
 export type TFetchOptionsBodyPart<T> = undefined extends TRequestBody<T>
   ? { body?: TRequestBody<T> }
   : TRequestBody<T> extends never
-  ? { body?: Record<string, any> }
+  ? { body?: any }
   : { body: TRequestBody<T> };
 
 export type TFetchOptionsBase<T> = {
