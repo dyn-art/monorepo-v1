@@ -13,7 +13,7 @@ export class RawFetchClient extends OpenAPIFetchClient<any> {
     super(baseUrl ?? '', options);
   }
 
-  public async rawGet<TResponseBody = any, TResponseErrorBody = any>(
+  public async get<TResponseBody = any, TResponseErrorBody = any>(
     url: string,
     options?: TFetchOptions<any>
   ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
@@ -24,7 +24,7 @@ export class RawFetchClient extends OpenAPIFetchClient<any> {
     )) as TRawFetchResponse<TResponseBody, TResponseErrorBody>;
   }
 
-  public async rawPut<
+  public async put<
     TResponseBody = any,
     TRequestBody = any,
     TResponseErrorBody = any
@@ -39,11 +39,7 @@ export class RawFetchClient extends OpenAPIFetchClient<any> {
     })) as TRawFetchResponse<TResponseBody, TResponseErrorBody>;
   }
 
-  public async rawPost<
-    TResponseBody = any,
-    TBody = any,
-    TResponseErrorBody = any
-  >(
+  public async post<TResponseBody = any, TBody = any, TResponseErrorBody = any>(
     url: string,
     body: TBody,
     options?: TFetchOptions<any>
@@ -54,7 +50,7 @@ export class RawFetchClient extends OpenAPIFetchClient<any> {
     })) as TRawFetchResponse<TResponseBody, TResponseErrorBody>;
   }
 
-  public async rawDelete<TResponseBody = any, TResponseErrorBody = any>(
+  public async del<TResponseBody = any, TResponseErrorBody = any>(
     url: string,
     options?: TFetchOptions<any>
   ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {

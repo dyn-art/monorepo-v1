@@ -125,7 +125,7 @@ export class OAuth2Service {
 
     // Send request
     let data: TPost_OAuthToken_ResponseDTO;
-    const response = await this._client.rawPost<TPost_OAuthToken_ResponseDTO>(
+    const response = await this._client.post<TPost_OAuthToken_ResponseDTO>(
       etsyConfig.auth.tokenEndpoint,
       body
     );
@@ -154,7 +154,7 @@ export class OAuth2Service {
 
     // Send request
     let data: TPost_OAuthToken_ResponseDTO;
-    const response = await this._client.rawPost<TPost_OAuthToken_ResponseDTO>(
+    const response = await this._client.post<TPost_OAuthToken_ResponseDTO>(
       etsyConfig.auth.tokenEndpoint,
       body
     );
