@@ -1,5 +1,5 @@
 import { OpenAPIFetchClient, RawFetchClient } from '../clients';
-import { RequestException } from '../exceptions';
+import { isRequestException } from '../utils';
 import { paths } from './resources/mock-openapi-types';
 
 describe('OpenAPIFetch class tests', () => {
@@ -10,24 +10,36 @@ describe('OpenAPIFetch class tests', () => {
 
     const test = await rawClient.get<'test'>('test');
 
-    client.get('/v1/media/pre-signed-download-url/{key}', {
-      pathParams: {
-        key: 'test',
-      },
-      bodySerializer: (body) => {
-        return '';
-      },
-      querySerializer: (query) => {
-        return '';
-      },
-    });
+    const response = await client.get(
+      '/v1/media/pre-signed-download-url/{key}',
+      {
+        pathParams: {
+          key: 'test',
+        },
+        bodySerializer: (body) => {
+          return '';
+        },
+        querySerializer: (query) => {
+          return '';
+        },
+      }
+    );
+
+    if (response.isError) {
+      const error = response.error;
+      if (isRequestException(error)) {
+        const data = error.data;
+      }
+    } else {
+      const data = response.data;
+    }
 
     client.get('/v1/ping', {
       pathParams: { test: 123 },
       queryParams: { test: 123 },
     });
 
-    const response = await client.post(
+    await client.post(
       '/v1/ping',
       { hello: 'jeff', jeff: 123 },
       {
@@ -41,12 +53,6 @@ describe('OpenAPIFetch class tests', () => {
         },
       }
     );
-    if (response.isError) {
-      const error = response.error;
-      if (error instanceof RequestException) {
-        error.data;
-      }
-    }
 
     client.fetch('/v1/ping', 'POST', {
       pathParams: { shop_id: 123 },
