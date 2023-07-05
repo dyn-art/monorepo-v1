@@ -4,7 +4,7 @@ import { paths } from './resources/mock-openapi-types';
 
 describe('OpenAPIFetch class tests', () => {
   it('should work', async () => {
-    const client = new OpenAPIFetchClient<paths>('some-base-url');
+    const client = new OpenAPIFetchClient<paths>('some-base-url', {});
     const rawClient = new RawFetchClient('some-base-url');
     rawClient.get('test');
 

@@ -4,19 +4,21 @@ import { paths } from '../gen/v3';
 import { OAuth2Service } from './OAuth2Service';
 
 export function createEtsyClient(
-  authService: OAuth2Service
+  authService: OAuth2Service,
+  options: TEtsyClientOptions = {}
 ): OpenAPIFetchClient<paths> {
-  return new OpenAPIFetchClient<paths>(etsyConfig.baseUrl, {
+  const { baseUrl = etsyConfig.baseUrl } = options;
+  return new OpenAPIFetchClient<paths>(baseUrl, {
     requestMiddleware: [
       // Authorization headers middleware
       async (requestInit, props) => {
         const { headers = {} } = requestInit;
-        const newHeaders = new Headers(headers);
-        newHeaders.append('x-api-key', authService._config.clientId);
+        const newHeaders = { ...headers };
+        newHeaders['x-api-key'] = authService._config.clientId;
         if (!props.noAuth) {
           const token = await authService.getAccessToken();
           if (token != null) {
-            newHeaders.append('Authorization', `Bearer ${token}`);
+            newHeaders['Authorization'] = `Bearer ${token}`;
           }
         }
         return { ...requestInit, headers: newHeaders };
@@ -24,3 +26,7 @@ export function createEtsyClient(
     ],
   });
 }
+
+export type TEtsyClientOptions = {
+  baseUrl?: string;
+};

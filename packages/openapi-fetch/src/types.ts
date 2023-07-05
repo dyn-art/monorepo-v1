@@ -241,7 +241,7 @@ export type TFetchOptionsBase<T> = {
   querySerializer?: TQuerySerializer<T>;
   bodySerializer?: TBodySerializer<T>;
   parseAs?: TParseAs;
-  headers?: RequestInit['headers'];
+  headers?: Record<string, string>;
   rootFetchProps?: Omit<RequestInit, 'body' | 'headers' | 'method'>;
   middlewareProps?: Record<string, any>;
 };
@@ -283,5 +283,7 @@ export type TOpenAPIFetchClientOptions<T> = {
   requestMiddleware?: TRequestMiddleware | TRequestMiddleware[];
   querySerializer?: TQuerySerializer<T>;
   bodySerializer?: TBodySerializer<T>;
-  rootFetchProps?: Omit<RequestInit, 'body' | 'method'>;
+  rootFetchProps?: Omit<RequestInit, 'body' | 'method' | 'headers'> & {
+    headers?: Record<string, string>;
+  };
 };

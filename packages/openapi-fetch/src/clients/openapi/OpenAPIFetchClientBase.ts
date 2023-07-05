@@ -1,4 +1,3 @@
-import 'cross-fetch';
 import { ServiceException } from '../../exceptions';
 import {
   TBodySerializer,
@@ -27,7 +26,7 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
   private readonly _baseUrl: string;
   private readonly _requestMiddlewares: TRequestMiddleware[];
 
-  private readonly _defaultHeaders: Headers;
+  private readonly _defaultHeaders: Record<string, string>;
   private readonly _defaultFetchProps: Omit<
     RequestInit,
     'method' | 'headers' | 'body'
@@ -48,12 +47,17 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
     this._baseUrl = baseUrl;
     this._defaultQuerySerializer = querySerializer;
     this._defaultBodySerializer = bodySerializer;
-    this._defaultHeaders = new Headers({
-      ...OpenAPIFetchClientBase.DEFAULT_HEADERS,
-      ...rootFetchProps.headers,
-    });
     this._defaultFetchProps = rootFetchProps;
-    delete this._defaultFetchProps['headers']; // Remove headers as they are present in _defaultHeaders
+    this._defaultHeaders = {
+      ...OpenAPIFetchClientBase.DEFAULT_HEADERS,
+    };
+    if ('headers' in rootFetchProps) {
+      this._defaultHeaders = {
+        ...this._defaultHeaders,
+        ...(rootFetchProps.headers as Record<string, string>),
+      };
+      delete this._defaultFetchProps['headers']; // Remove headers as they are present in _defaultHeaders
+    }
     this._requestMiddlewares = Array.isArray(requestMiddleware)
       ? requestMiddleware
       : [requestMiddleware];
@@ -122,7 +126,9 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
     // Send request
     let response: Response;
     try {
-      response = await fetchWithRetries(finalURL, { requestInit });
+      response = await fetchWithRetries(finalURL, {
+        requestInit,
+      });
     } catch (error) {
       return this.mapNetworkException<GPathMethod>(error);
     }
@@ -146,17 +152,18 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
     }
   }
 
-  private applyDefaultHeaders(headers: HeadersInit = {}): Headers {
-    const finalHeaders = new Headers(this._defaultHeaders);
-    const inputHeaders = new Headers(headers);
-    inputHeaders.forEach((value, key) => {
+  private applyDefaultHeaders(
+    headers: Record<string, string> = {}
+  ): Record<string, string> {
+    const finalHeaders = { ...this._defaultHeaders };
+    for (const key in headers) {
       // Allow `undefined` | `null` to erase default header
-      if (value == null) {
-        finalHeaders.delete(key);
+      if (headers[key] == null) {
+        delete finalHeaders[key];
       } else {
-        finalHeaders.set(key, value);
+        finalHeaders[key] = headers[key];
       }
-    });
+    }
     return finalHeaders;
   }
 

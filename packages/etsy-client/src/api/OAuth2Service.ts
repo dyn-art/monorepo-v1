@@ -8,8 +8,11 @@ import {
 import { logger } from '../logger';
 
 export class OAuth2Service {
-  public readonly _config: Omit<TOAuth2Config, 'refresh'>;
+  public readonly _config: Omit<TOAuth2Config, 'refresh' | 'endpoints'>;
   public readonly _client: RawFetchClient;
+
+  private readonly _authTokenEndpoint: string;
+  private readonly _authChallengeEndpoint: string;
 
   private readonly _codeVerifiers: Record<string, string> = {};
 
@@ -32,6 +35,10 @@ export class OAuth2Service {
       this._refreshToken = refreshToken;
       this._refreshTokenExpiresAt = expiresAt;
     }
+    this._authTokenEndpoint =
+      config.endpoints?.tokenEndpoint ?? etsyConfig.auth.tokenEndpoint;
+    this._authChallengeEndpoint =
+      config.endpoints?.challengeEndpoint ?? etsyConfig.auth.challengeEndpoint;
   }
 
   public async getAccessToken(force = false): Promise<string> {
@@ -91,7 +98,7 @@ export class OAuth2Service {
     this._codeVerifiers[state] = codeVerifier;
 
     // Build URI
-    return `${etsyConfig.auth.challengeEndpoint}
+    return `${this._authChallengeEndpoint}
     ?response_type=code
     &redirect_uri=${this._config.redirectUrl}
     &scope=${this._config.scopes.join('%20')}
@@ -126,7 +133,7 @@ export class OAuth2Service {
     // Send request
     let data: TPost_OAuthToken_ResponseDTO;
     const response = await this._client.post<TPost_OAuthToken_ResponseDTO>(
-      etsyConfig.auth.tokenEndpoint,
+      this._authTokenEndpoint,
       body
     );
     if (response.isError) {
@@ -155,7 +162,7 @@ export class OAuth2Service {
     // Send request
     let data: TPost_OAuthToken_ResponseDTO;
     const response = await this._client.post<TPost_OAuthToken_ResponseDTO>(
-      etsyConfig.auth.tokenEndpoint,
+      this._authTokenEndpoint,
       body
     );
     if (response.isError) {
@@ -206,6 +213,10 @@ export type TOAuth2Config = {
   clientId: string;
   redirectUrl: string;
   scopes: string[];
+  endpoints?: {
+    tokenEndpoint?: string;
+    challengeEndpoint?: string;
+  };
   refresh?: {
     refreshToken: string;
     expiresAt: number;

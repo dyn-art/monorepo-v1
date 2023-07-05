@@ -1,4 +1,5 @@
 import { sleep } from '@pda/utils';
+// import { fetch } from 'cross-fetch';
 
 export async function fetchWithRetries(
   url: RequestInfo | URL,
@@ -8,7 +9,7 @@ export async function fetchWithRetries(
     retryCount?: number;
   } = {}
 ): Promise<Response> {
-  const { requestInit, maxRetries = 5, retryCount = 0 } = options;
+  const { requestInit, maxRetries = 3, retryCount = 0 } = options;
   try {
     // Send request
     const response = await fetch(url, requestInit);
@@ -17,7 +18,7 @@ export async function fetchWithRetries(
     if (response.status === 429 && maxRetries > 0) {
       await sleep(calculateRateLimitTimeout(response));
       return fetchWithRetries(url, {
-        requestInit: requestInit,
+        requestInit,
         maxRetries: maxRetries - 1,
         retryCount: retryCount + 1,
       });
@@ -29,7 +30,7 @@ export async function fetchWithRetries(
     if (maxRetries > 0) {
       await sleep(calculateNetworkErrorTimeout(retryCount));
       return fetchWithRetries(url, {
-        requestInit: requestInit,
+        requestInit,
         maxRetries: maxRetries - 1,
         retryCount: retryCount + 1,
       });

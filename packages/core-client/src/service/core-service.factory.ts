@@ -1,7 +1,7 @@
-import { createCoreClient } from '../api';
+import { TCoreClientOptions, createCoreClient } from '../api';
 import { CoreService } from './CoreService';
 
-export function createCoreService() {
-  const client = createCoreClient();
+export function createCoreService(options: TCoreClientOptions) {
+  const client = createCoreClient(options);
   return new CoreService(client);
 }

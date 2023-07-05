@@ -195,6 +195,9 @@ importers:
       '@agile-ts/core':
         specifier: ^0.2.9
         version: 0.2.9
+      '@pda/core-client':
+        specifier: workspace:*
+        version: link:../../packages/core-client
       '@pda/dtif-to-react':
         specifier: workspace:*
         version: link:../../packages/dtif-to-react
@@ -207,6 +210,9 @@ importers:
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@pda/openapi-fetch':
+        specifier: workspace:^
+        version: link:../../packages/openapi-fetch
       '@pda/utils':
         specifier: workspace:*
         version: link:../../packages/utils
