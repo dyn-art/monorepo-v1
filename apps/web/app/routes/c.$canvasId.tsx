@@ -9,7 +9,7 @@ export async function loader(args: LoaderArgs) {
     params: { canvasId },
   } = args;
   logger.info('Called canvas loader', { canvasId });
-  let data: Record<string, any> | null = null;
+  let data: Record<string, any> | null = {};
   if (canvasId != null) {
     data = await coreService.downloadJsonFromS3(canvasId);
   }

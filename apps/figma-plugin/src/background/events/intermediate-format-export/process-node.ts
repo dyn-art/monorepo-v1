@@ -1,7 +1,8 @@
-import formatFrameToScene, {
+import {
   NodeException,
   TUploadStaticData,
   UploadStaticDataException,
+  formatFrameToScene,
   sha256,
 } from '@pda/figma-to-dtif';
 import { TNode } from '@pda/types/dtif';

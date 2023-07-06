@@ -151,10 +151,14 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
       if (parseAs !== 'stream') {
         const cloned = // Clone method not supported by Figma sandbox environment
           typeof response.clone === 'function' ? response.clone() : response;
-        data =
-          typeof cloned[parseAs] === 'function'
-            ? await cloned[parseAs]()
-            : await cloned.text();
+        try {
+          data =
+            typeof cloned[parseAs] === 'function'
+              ? await cloned[parseAs]()
+              : await cloned.text();
+        } catch (error) {
+          data = cloned.text();
+        }
       }
       return { isError: false, data: data as any, raw: response };
     }
