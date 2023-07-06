@@ -1,4 +1,4 @@
-import { TNode } from '@pda/dtif-types';
+import { TNode } from '@pda/types/dtif';
 import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { EUIPageRoute, TOnSelectFrameEvent, logger } from '../../../shared';
@@ -100,7 +100,7 @@ const DTIFExport: React.FC = () => {
   );
 
   // ============================================================================
-  // UI
+  // Render
   // ============================================================================
 
   return (

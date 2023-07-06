@@ -1,5 +1,5 @@
-import { TNode } from '@pda/dtif-types';
 import { TBaseFigmaMessageEvent } from '@pda/figma-handler';
+import { TNode } from '@pda/types/dtif';
 
 export interface TOnSelectFrameEvent extends TBaseFigmaMessageEvent {
   key: 'on-select-frame';

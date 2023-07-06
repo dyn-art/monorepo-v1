@@ -1,4 +1,4 @@
-import { TError_ResponseDTO } from '@pda/core-types';
+import { components } from '@pda/types/core';
 import express from 'express';
 import { AppError } from '../AppError';
 
@@ -16,7 +16,7 @@ export function errorHandlerMiddleware(
   next: express.NextFunction
 ) {
   let statusCode = 500;
-  const jsonResponse: TError_ResponseDTO = {
+  const jsonResponse: components['schemas']['ServerError'] = {
     error_code: '#ERR_UNKNOWN',
     error_description: null,
     error_uri: null,
@@ -29,7 +29,7 @@ export function errorHandlerMiddleware(
     jsonResponse.error_code = err.code;
     jsonResponse.error_description = err.description ?? null;
     jsonResponse.error_uri = err.uri ?? null;
-    jsonResponse.additional_errors = err.additionalErrors;
+    jsonResponse.additional_errors = err.additionalErrors as any;
   }
 
   // Handle unknown errors

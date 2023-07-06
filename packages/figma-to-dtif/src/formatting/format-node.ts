@@ -1,4 +1,4 @@
-import { ESupportedFigmaNodeTypes, TNode, TSVGNode } from '@pda/dtif-types';
+import { TNode, TSVGNode, TSupportedFigmaNodeTypes } from '@pda/types/dtif';
 import {
   IncompatibleSVGNodeException,
   InvisibleNodeException,
@@ -12,6 +12,21 @@ import { formatGroupNode } from './format-group-node';
 import { formatRectangleNode } from './format-rectangle-node';
 import { formatTextNode } from './format-text-node';
 import { formatToSvgNode } from './format-to-svg-node';
+
+export const supportedNodeTypes: TSupportedFigmaNodeTypes[] = [
+  'FRAME',
+  'COMPONENT',
+  'INSTANCE',
+  'GROUP',
+  'TEXT',
+  'RECTANGLE',
+  'LINE',
+  'ELLIPSE',
+  'POLYGON',
+  'STAR',
+  'VECTOR',
+  'BOOLEAN_OPERATION',
+];
 
 export async function formatNode(
   node: SceneNode,
@@ -42,11 +57,7 @@ export async function formatNode(
 
   try {
     // Check whether Figma node is supported by DTIF
-    if (
-      !Object.values(ESupportedFigmaNodeTypes).includes(
-        node.type as ESupportedFigmaNodeTypes
-      )
-    ) {
+    if (!supportedNodeTypes.includes(node.type as TSupportedFigmaNodeTypes)) {
       throw new UnsupportedFigmaNodeException(
         `The Figma node '${node.name}' of the type '${node.type}' is not supported yet!`,
         node

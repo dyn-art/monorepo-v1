@@ -1,4 +1,4 @@
-import { TGroupNode } from '@pda/dtif-types';
+import { TGroupNode } from '@pda/types/dtif';
 import React from 'react';
 import { figmaBlendModeToCSS, figmaEffectToCSS } from '../to-css';
 import { TInherit } from '../types';

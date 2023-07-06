@@ -1,4 +1,4 @@
-import { TNode } from '@pda/dtif-types';
+import { TNode } from '@pda/types/dtif';
 import { notEmpty } from '@pda/utils';
 import { formatNode } from '.';
 import { InvisibleNodeException } from '../exceptions';

@@ -19,7 +19,6 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/dtif-types": "workspace:*",
     "@pda/logger": "workspace:*",
     "@pda/svgson": "workspace:*",
     "@pda/utils": "workspace:*",
@@ -28,6 +27,7 @@
   "devDependencies": {
     "@figma/plugin-typings": "^1.64.0",
     "@pda/jest-presets": "workspace:*",
+    "@pda/types": "workspace:*",
     "@pda/tsconfig": "workspace:*",
     "@types/jest": "^29.5.1",
     "@types/node": "^18.15.13",

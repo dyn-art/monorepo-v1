@@ -1,4 +1,4 @@
-import { TSolidPaint } from '@pda/dtif-types';
+import { TSolidPaint } from '@pda/types/dtif';
 import { figmaRGBToCss } from '../figma-rgb-to-css';
 
 export function handleSolidFill(fill: TSolidPaint): React.CSSProperties {

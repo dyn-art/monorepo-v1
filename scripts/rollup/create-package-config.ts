@@ -25,7 +25,10 @@ export function createPackageConfig(options: TCreatePackageOptions = {}) {
 
   const {
     format = 'esm',
-    inputPath = path.resolve(process.cwd(), './src/index.ts'),
+    inputPath = path.resolve(
+      process.cwd(),
+      'source' in packageJson ? packageJson.source : './src/index.ts'
+    ),
     tsconfig = path.resolve(process.cwd(), './tsconfig.json'),
     rollupOptions = {},
     isProduction,
@@ -102,13 +105,13 @@ export function createPackageConfig(options: TCreatePackageOptions = {}) {
                 sourcemap: true,
                 gzipSize: true,
               }),
-              visualizer({
-                title: packageJson.name,
-                filename: visualizeFilePath,
-                sourcemap: true,
-                gzipSize: true,
-                template: 'raw-data',
-              }),
+              // visualizer({
+              //   title: packageJson.name,
+              //   filename: visualizeFilePath,
+              //   sourcemap: true,
+              //   gzipSize: true,
+              //   template: 'raw-data',
+              // }),
             ]
           : []),
       ],

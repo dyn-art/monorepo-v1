@@ -1,4 +1,4 @@
-import { TTransform } from '@pda/dtif-types';
+import { TTransform } from '@pda/types/dtif';
 import React from 'react';
 import {
   T2DMatrixData,

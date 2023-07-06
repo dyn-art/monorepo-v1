@@ -1,11 +1,10 @@
+import { svgParser } from '@pda/svgson';
 import {
-  ENodeTypes,
   TEffect,
   TSVGNode,
   TSVGNodeExported,
   TSVGNodeInline,
-} from '@pda/dtif-types';
-import { svgParser } from '@pda/svgson';
+} from '@pda/types/dtif';
 import { decodeUint8Array } from '@pda/utils';
 import { logger } from '../logger';
 import { TSVGCompatibleNode, TSVGOptions } from '../types';
@@ -25,7 +24,7 @@ export async function formatToSvgNode(
   } = options;
 
   const baseNodeProperties: Partial<TSVGNode> = {
-    type: ENodeTypes.SVG,
+    type: 'SVG',
     // BaseNode mixin
     id: node.id,
     name: node.name,

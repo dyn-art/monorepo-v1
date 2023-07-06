@@ -64,6 +64,9 @@ importers:
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@pda/openapi-fetch':
+        specifier: workspace:*
+        version: link:../../packages/openapi-fetch
       '@pda/s3':
         specifier: workspace:*
         version: link:../../packages/s3
@@ -98,18 +101,21 @@ importers:
         specifier: ^3.0.2
         version: 3.0.2
     devDependencies:
-      '@pda/core-types':
-        specifier: workspace:^
-        version: link:../../packages/core-types
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@types/body-parser':
         specifier: ^1.19.2
         version: 1.19.2
       '@types/express':
         specifier: ^4.17.17
         version: 4.17.17
+      '@types/express-serve-static-core':
+        specifier: ^4.17.35
+        version: 4.17.35
       '@types/node':
         specifier: ^18.15.13
         version: 18.15.13
@@ -125,12 +131,18 @@ importers:
       nodemon:
         specifier: ^2.0.22
         version: 2.0.22
+      openapi-typescript:
+        specifier: ^6.2.8
+        version: 6.2.8
       prisma:
         specifier: ^4.13.0
         version: 4.13.0
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@18.15.13)(typescript@4.9.5)
+      tsconfig-paths:
+        specifier: ^4.2.0
+        version: 4.2.0
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
@@ -183,21 +195,24 @@ importers:
       '@agile-ts/core':
         specifier: ^0.2.9
         version: 0.2.9
+      '@pda/core-client':
+        specifier: workspace:*
+        version: link:../../packages/core-client
       '@pda/dtif-to-react':
         specifier: workspace:*
         version: link:../../packages/dtif-to-react
-      '@pda/dtif-types':
-        specifier: workspace:*
-        version: link:../../packages/dtif-types
       '@pda/figma-handler':
         specifier: workspace:*
         version: link:../../packages/figma-handler
       '@pda/figma-to-dtif':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/figma-to-dtif
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@pda/openapi-fetch':
+        specifier: workspace:*
+        version: link:../../packages/openapi-fetch
       '@pda/utils':
         specifier: workspace:*
         version: link:../../packages/utils
@@ -235,6 +250,9 @@ importers:
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@rollup/plugin-html':
         specifier: ^1.0.2
         version: 1.0.2(rollup@3.21.7)
@@ -392,9 +410,18 @@ importers:
 
   apps/web:
     dependencies:
+      '@pda/core-client':
+        specifier: workspace:^
+        version: link:../../packages/core-client
+      '@pda/dtif-to-react':
+        specifier: workspace:^
+        version: link:../../packages/dtif-to-react
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@pda/openapi-fetch':
+        specifier: workspace:^
+        version: link:../../packages/openapi-fetch
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.0.2(@types/react@18.0.37)(react@18.2.0)
@@ -441,6 +468,9 @@ importers:
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      '@pda/types':
+        specifier: workspace:^
+        version: link:../../packages/types
       '@remix-run/dev':
         specifier: ^1.17.1
         version: 1.17.1(@remix-run/serve@1.17.1)(@types/node@14.18.33)(rollup@3.21.7)
@@ -563,52 +593,27 @@ importers:
         specifier: ^5.80.0
         version: 5.80.0(esbuild@0.17.19)
 
-  packages/client-utils:
-    dependencies:
-      '@pda/logger':
-        specifier: workspace:*
-        version: link:../logger
-    devDependencies:
-      '@pda/core-types':
-        specifier: workspace:^
-        version: link:../core-types
-      '@pda/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      axios:
-        specifier: ^1.3.6
-        version: 1.3.6
-      eslint:
-        specifier: ^8.38.0
-        version: 8.38.0
-      eslint-config-pda-base:
-        specifier: workspace:*
-        version: link:../eslint-config-pda-base
-      typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
-
   packages/core-client:
     dependencies:
-      '@pda/client-utils':
-        specifier: workspace:^
-        version: link:../client-utils
       '@pda/logger':
         specifier: workspace:*
         version: link:../logger
+      '@pda/openapi-fetch':
+        specifier: workspace:*
+        version: link:../openapi-fetch
       axios:
         specifier: ^1.3.6
         version: 1.3.6
     devDependencies:
-      '@pda/core-types':
-        specifier: workspace:^
-        version: link:../core-types
       '@pda/jest-presets':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../jest-presets
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/jest':
         specifier: ^29.5.1
         version: 29.5.1
@@ -621,21 +626,6 @@ importers:
       jest:
         specifier: ^29.5.0
         version: 29.5.0(@types/node@18.15.13)(ts-node@10.9.1)
-      typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
-
-  packages/core-types:
-    devDependencies:
-      '@pda/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      eslint:
-        specifier: ^8.38.0
-        version: 8.38.0
-      eslint-config-pda-base:
-        specifier: workspace:*
-        version: link:../eslint-config-pda-base
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
@@ -682,11 +672,8 @@ importers:
       '@figma-plugin/helpers':
         specifier: ^0.15.2
         version: 0.15.2
-      '@pda/dtif-types':
-        specifier: workspace:^
-        version: link:../dtif-types
       '@pda/logger':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../logger
       mathjs:
         specifier: ^11.8.0
@@ -704,6 +691,9 @@ importers:
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/react':
         specifier: ^18.0.37
         version: 18.0.37
@@ -728,21 +718,6 @@ importers:
       rollup-plugin-postcss:
         specifier: ^4.0.2
         version: 4.0.2(postcss@8.4.23)(ts-node@10.9.1)
-      typescript:
-        specifier: ^4.9.5
-        version: 4.9.5
-
-  packages/dtif-types:
-    devDependencies:
-      '@pda/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      eslint:
-        specifier: ^8.38.0
-        version: 8.38.0
-      eslint-config-pda-base:
-        specifier: workspace:*
-        version: link:../eslint-config-pda-base
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
@@ -780,15 +755,12 @@ importers:
 
   packages/etsy-client:
     dependencies:
-      '@pda/client-utils':
-        specifier: workspace:^
-        version: link:../client-utils
       '@pda/logger':
         specifier: workspace:*
         version: link:../logger
-      axios:
-        specifier: ^1.3.6
-        version: 1.3.6
+      '@pda/openapi-fetch':
+        specifier: workspace:*
+        version: link:../openapi-fetch
     devDependencies:
       '@pda/jest-presets':
         specifier: workspace:^
@@ -811,6 +783,9 @@ importers:
       jest:
         specifier: ^29.5.0
         version: 29.5.0(@types/node@18.15.13)(ts-node@10.9.1)
+      openapi-typescript:
+        specifier: ^6.2.8
+        version: 6.2.8
       typescript:
         specifier: ^4.9.5
         version: 4.9.5
@@ -845,9 +820,6 @@ importers:
 
   packages/figma-to-dtif:
     dependencies:
-      '@pda/dtif-types':
-        specifier: workspace:*
-        version: link:../dtif-types
       '@pda/logger':
         specifier: workspace:*
         version: link:../logger
@@ -870,6 +842,9 @@ importers:
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/jest':
         specifier: ^29.5.1
         version: 29.5.1
@@ -958,6 +933,43 @@ importers:
         specifier: ^4.9.5
         version: 4.9.5
 
+  packages/openapi-fetch:
+    dependencies:
+      '@pda/utils':
+        specifier: workspace:*
+        version: link:../utils
+      cross-fetch:
+        specifier: ^3.1.6
+        version: 3.1.6
+      url-parse:
+        specifier: ^1.5.10
+        version: 1.5.10
+    devDependencies:
+      '@pda/jest-presets':
+        specifier: workspace:^
+        version: link:../jest-presets
+      '@pda/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      '@types/jest':
+        specifier: ^29.5.1
+        version: 29.5.1
+      '@types/url-parse':
+        specifier: ^1.4.8
+        version: 1.4.8
+      eslint:
+        specifier: ^8.38.0
+        version: 8.38.0
+      eslint-config-pda-base:
+        specifier: workspace:*
+        version: link:../eslint-config-pda-base
+      jest:
+        specifier: ^29.5.0
+        version: 29.5.0(@types/node@18.15.13)(ts-node@10.9.1)
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
+
   packages/product-renderer:
     dependencies:
       '@figma-plugin/helpers':
@@ -979,15 +991,15 @@ importers:
         specifier: ^1.6.28
         version: 1.6.28
     devDependencies:
-      '@pda/dtif-types':
-        specifier: workspace:*
-        version: link:../dtif-types
       '@pda/jest-presets':
         specifier: workspace:*
         version: link:../jest-presets
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@pda/types':
+        specifier: workspace:*
+        version: link:../types
       '@remotion/bundler':
         specifier: ^3.3.83
         version: 3.3.83(react-dom@18.2.0)(react@18.2.0)
@@ -1145,6 +1157,21 @@ importers:
         version: 4.9.5
 
   packages/tsconfig: {}
+
+  packages/types:
+    devDependencies:
+      '@pda/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
+      eslint:
+        specifier: ^8.38.0
+        version: 8.38.0
+      eslint-config-pda-base:
+        specifier: workspace:*
+        version: link:../eslint-config-pda-base
+      typescript:
+        specifier: ^4.9.5
+        version: 4.9.5
 
   packages/utils:
     devDependencies:
@@ -4321,7 +4348,7 @@ packages:
       discord-api-types: 0.37.39
       file-type: 18.2.1
       tslib: 2.5.0
-      undici: 5.22.0
+      undici: 5.22.1
 
   /@discordjs/util@0.2.0:
     resolution: {integrity: sha512-/8qNbebFzLWKOOg+UV+RB8itp4SmU5jw0tBUD3ifElW6rYNOj1Ku5JaSW7lLl/WgjjxF01l/1uQPCzkwr110vg==}
@@ -7101,19 +7128,20 @@ packages:
     resolution: {integrity: sha512-LG4opVs2ANWZ1TJoKc937iMmNstM/d0ae1vNbnBvBhqCSezgVUOzcLCqbI5elV8Vy6WKwKjaqR+zO9VKirBBCA==}
     dev: true
 
-  /@types/express-serve-static-core@4.17.33:
-    resolution: {integrity: sha512-TPBqmR/HRYI3eC2E5hmiivIzv+bidAfXofM+sbonAGvyDhySGw9/PQZFt2BLOrjUUR++4eJVpx6KnLQK1Fk9tA==}
+  /@types/express-serve-static-core@4.17.35:
+    resolution: {integrity: sha512-wALWQwrgiB2AWTT91CB62b6Yt0sNHpznUXeZEcnPU3DRdlDIz74x8Qg1UUYKSVFi+va5vKOLYRBI1bRKiLLKIg==}
     dependencies:
       '@types/node': 18.15.13
       '@types/qs': 6.9.7
       '@types/range-parser': 1.2.4
+      '@types/send': 0.17.1
     dev: true
 
   /@types/express@4.17.17:
     resolution: {integrity: sha512-Q4FmmuLGBG58btUnfS1c1r/NQdlp3DMfGDGig8WhfpA2YRUtEkxAjkZb0yvplJGYdF1fsQ81iMDcH24sSCNC/Q==}
     dependencies:
       '@types/body-parser': 1.19.2
-      '@types/express-serve-static-core': 4.17.33
+      '@types/express-serve-static-core': 4.17.35
       '@types/qs': 6.9.7
       '@types/serve-static': 1.15.1
     dev: true
@@ -7215,6 +7243,10 @@ packages:
     resolution: {integrity: sha512-vXOTGVSLR2jMw440moWTC7H19iUyLtP3Z1YTj7cSsubOICinjMxFeb/V57v9QdyyPGbbWolUFSSmSiRSn94tFw==}
     dev: true
 
+  /@types/mime@1.3.2:
+    resolution: {integrity: sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==}
+    dev: true
+
   /@types/mime@3.0.1:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==}
     dev: true
@@ -7309,6 +7341,13 @@ packages:
   /@types/semver@7.3.13:
     resolution: {integrity: sha512-21cFJr9z3g5dW8B0CVI9g2O9beqaThGQ6ZFBqHfwhzLDKUxaqTIy3vnfah/UPkfOiF2pLq+tGz+W8RyCskuslw==}
 
+  /@types/send@0.17.1:
+    resolution: {integrity: sha512-Cwo8LE/0rnvX7kIIa3QHCkcuF21c05Ayb0ZfxPiv0W8VRiZiNW/WuRupHKpqqGVGf7SUA44QSOUKaEd9lIrd/Q==}
+    dependencies:
+      '@types/mime': 1.3.2
+      '@types/node': 18.15.13
+    dev: true
+
   /@types/serve-static@1.15.1:
     resolution: {integrity: sha512-NUo5XNiAdULrJENtJXZZ3fHtfMolzZwczzBbnAeBbqBwG+LaG6YaJtuwzwGSQZ2wsCrxjEhNNjAkKigy3n8teQ==}
     dependencies:
@@ -7322,6 +7361,10 @@ packages:
 
   /@types/unist@2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
+    dev: true
+
+  /@types/url-parse@1.4.8:
+    resolution: {integrity: sha512-zqqcGKyNWgTLFBxmaexGUKQyWqeG7HjXj20EuQJSJWwXe54BjX0ihIo5cJB9yAQzH8dNugJ9GvkBYMjPXs/PJw==}
     dev: true
 
   /@types/web@0.0.99:
@@ -8108,6 +8151,11 @@ packages:
     resolution: {integrity: sha512-IOfwwBF5iczOjp/WeY4YxyjqAFMQoZufdQWDd19SEExbVLNXqvpzSJ/M7Za4/sCPmQ0+GRquoA7bGcINcxew6w==}
     dependencies:
       string-width: 4.2.3
+    dev: true
+
+  /ansi-colors@4.1.3:
+    resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
+    engines: {node: '>=6'}
     dev: true
 
   /ansi-escapes@4.3.2:
@@ -9281,6 +9329,14 @@ packages:
 
   /create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
+
+  /cross-fetch@3.1.6:
+    resolution: {integrity: sha512-riRvo06crlE8HiqOwIpQhxwdOk4fOeR7FVM/wXoxchFEqMNUjvbs3bfo4OTgMEMHzppd4DxFBDbyySj8Cv781g==}
+    dependencies:
+      node-fetch: 2.6.11
+    transitivePeerDependencies:
+      - encoding
+    dev: false
 
   /cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
@@ -14313,7 +14369,6 @@ packages:
         optional: true
     dependencies:
       whatwg-url: 5.0.0
-    dev: true
 
   /node-fetch@2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
@@ -14536,6 +14591,18 @@ packages:
       define-lazy-prop: 3.0.0
       is-inside-container: 1.0.0
       is-wsl: 2.2.0
+    dev: true
+
+  /openapi-typescript@6.2.8:
+    resolution: {integrity: sha512-yA+y5MHiu6cjmtsGfNLavzVuvGCKzjL3H+exgHDPK6bnp6ZVFibtAiafenNSRDWL0x+7Sw/VPv5SbaqiPLW46w==}
+    hasBin: true
+    dependencies:
+      ansi-colors: 4.1.3
+      fast-glob: 3.2.12
+      js-yaml: 4.1.0
+      supports-color: 9.4.0
+      undici: 5.22.1
+      yargs-parser: 21.1.1
     dev: true
 
   /optionator@0.8.3:
@@ -15861,6 +15928,10 @@ packages:
     dependencies:
       side-channel: 1.0.4
 
+  /querystringify@2.2.0:
+    resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
+    dev: false
+
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
@@ -16298,6 +16369,10 @@ packages:
     resolution: {integrity: sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==}
     engines: {node: '>=0.10.5'}
     dev: true
+
+  /requires-port@1.0.0:
+    resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
+    dev: false
 
   /resolve-alpn@1.2.1:
     resolution: {integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g==}
@@ -17160,6 +17235,11 @@ packages:
       has-flag: 4.0.0
     dev: true
 
+  /supports-color@9.4.0:
+    resolution: {integrity: sha512-VL+lNrEoIXww1coLPOmiEmK/0sGigko5COxI09KzHc2VJXJsQ37UaQ+8quuxjDeA7+KnLGTWRyOXSLLR2Wb4jw==}
+    engines: {node: '>=12'}
+    dev: true
+
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
@@ -17560,7 +17640,7 @@ packages:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 14.18.33
-      acorn: 8.8.2
+      acorn: 8.9.0
       acorn-walk: 8.2.0
       arg: 4.1.3
       create-require: 1.1.1
@@ -17825,6 +17905,12 @@ packages:
     dependencies:
       busboy: 1.6.0
 
+  /undici@5.22.1:
+    resolution: {integrity: sha512-Ji2IJhFXZY0x/0tVBXeQwgPlLWw13GVzpsWPQ3rV50IFMMof2I55PZZxtm4P6iNq+L5znYN9nSTAq0ZyE6lSJw==}
+    engines: {node: '>=14.0'}
+    dependencies:
+      busboy: 1.6.0
+
   /unfetch@4.2.0:
     resolution: {integrity: sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==}
     dev: true
@@ -18001,6 +18087,13 @@ packages:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
     dependencies:
       punycode: 2.3.0
+
+  /url-parse@1.5.10:
+    resolution: {integrity: sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==}
+    dependencies:
+      querystringify: 2.2.0
+      requires-port: 1.0.0
+    dev: false
 
   /use-resize-observer@9.1.0(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-R25VqO9Wb3asSD4eqtcxk8sJalvIOYBqS8MNZlpDSQ4l4xMQxC/J7Id9HoTqPq8FwULIn0PVW+OAqF2dyYbjow==}

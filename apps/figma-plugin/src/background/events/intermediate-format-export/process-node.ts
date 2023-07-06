@@ -1,10 +1,11 @@
-import { TNode } from '@pda/dtif-types';
-import formatFrameToScene, {
+import {
   NodeException,
   TUploadStaticData,
   UploadStaticDataException,
+  formatFrameToScene,
   sha256,
 } from '@pda/figma-to-dtif';
+import { TNode } from '@pda/types/dtif';
 import { TIntermediateFormatExportEvent, logger } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
 import { uploadDataToBucket } from '../../core/bucket';

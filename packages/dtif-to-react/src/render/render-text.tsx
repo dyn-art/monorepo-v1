@@ -1,6 +1,5 @@
-import { TTextNode } from '@pda/dtif-types';
+import { TTextNode } from '@pda/types/dtif';
 import React from 'react';
-import WebFont from 'webfontloader';
 import {
   figmaBlendModeToCSS,
   figmaEffectToCSS,
@@ -36,11 +35,15 @@ export async function renderText(
     node.characters
   );
 
-  WebFont.load({
-    google: {
-      families: [`${fontFamily}:${fontWeight}`],
-    },
-  });
+  // Load font
+  if (typeof window !== 'undefined') {
+    const WebFont = await import('webfontloader');
+    WebFont.load({
+      google: {
+        families: [`${fontFamily}:${fontWeight}`],
+      },
+    });
+  }
 
   return (
     <div
