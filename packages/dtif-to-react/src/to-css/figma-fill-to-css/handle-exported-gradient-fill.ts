@@ -1,4 +1,4 @@
-import { TGradientPaint } from '@pda/dtif-types';
+import { TGradientPaint } from '@pda/types/dtif';
 import { getS3BucketURLFromHash } from '../../utils';
 
 export function handleExportedGradientFill(

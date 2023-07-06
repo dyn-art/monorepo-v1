@@ -1,4 +1,4 @@
-import { TSVGNode } from '@pda/dtif-types';
+import { TSVGNode } from '@pda/types/dtif';
 import React from 'react';
 import { logger } from '../logger';
 import { figmaTransformToCSS } from '../to-css';

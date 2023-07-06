@@ -1,4 +1,4 @@
-import { TFrameNode, TScene } from '@pda/dtif-types';
+import { TFrameNode, TScene } from '@pda/types/dtif';
 import { formatNode } from '.';
 import { logger } from '../logger';
 import { TFormatNodeOptions } from '../types';

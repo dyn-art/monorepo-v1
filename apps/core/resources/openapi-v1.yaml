@@ -1,0 +1,279 @@
+openapi: 3.1.0
+info:
+  title: "@pda/core"
+  description: "API Documentation for @pda/core"
+  version: 1.0.0
+  contact:
+    email: dev@physical.art
+
+servers:
+  - url: http://localhost:9000
+    description: Development server
+
+tags:
+  - name: auth
+    description: Authentication endpoint
+  - name: media
+    description: Media endpoint
+
+paths:
+  /v1/auth/etsy/ping:
+    get:
+      tags:
+        - auth
+      summary: Etsy Ping
+      description: Ping Etsy API.
+      operationId: getPing
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: true
+
+  /v1/auth/etsy/oauth/challenge:
+    get:
+      tags:
+        - auth
+      summary: Get OAuth Challenge
+      description: Retrieve a PKCE Code Challenge.
+      operationId: getOAuthChallenge
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - challenge
+                properties:
+                  challenge:
+                    type: string
+              example:
+                challenge: "xyz123"
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /v1/auth/etsy/oauth/redirect:
+    get:
+      tags:
+        - auth
+      summary: Handle OAuth Redirect
+      description: Handle the redirect from Etsy after user authorization, and retrieve the access token.
+      operationId: handleOAuthRedirect
+      parameters:
+        - name: code
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: error
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: error_description
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - access_token
+                  - refresh_token
+                  - refresh_token_expires_at
+                properties:
+                  access_token:
+                    type: string
+                  refresh_token:
+                    type: string
+                  refresh_token_expires_at:
+                    type: integer
+              example:
+                access_token: "access123"
+                refresh_token: "refresh123"
+                refresh_token_expires_at: 1633572066
+        400:
+          $ref: '#/components/responses/BadRequest'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /v1/media/pre-signed-upload-url:
+    get:
+      tags:
+        - media
+      summary: Get Pre-Signed Upload URL
+      description: Get a pre-signed URL for uploading files.
+      operationId: getPreSignedUploadUrl
+      parameters:
+        - name: content_type
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: key
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: scope
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: overwrite
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - upload_url
+                  - key
+                properties:
+                  upload_url:
+                    type: string
+                  key:
+                    type: string
+              example:
+                upload_url: "http://upload.url"
+                key: "upload123"
+
+  /v1/media/pre-signed-download-url/{key}:
+    get:
+      tags:
+        - media
+      summary: Get Pre-Signed Download URL
+      description: Get a pre-signed URL for downloading files.
+      operationId: getPreSignedDownloadUrl
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  download_url:
+                    type: string
+                  key:
+                    type: string
+              example:
+                download_url: "http://download.url"
+                key: "download123"
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /v1/ping:
+    get:
+      summary: API Ping
+      description: Ping the API to check if it's working.
+      operationId: getPingAPI
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: boolean
+              example: true
+
+    post:
+      summary: API Ping
+      description: Ping the API to check if it's working.
+      operationId: postPingAPI
+      requestBody:
+        description: Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - hello
+              properties:
+                hello:
+                  type: string
+            example:
+              hello: 'Jeff'
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: string
+              example: 'Pong Jeff'
+
+components:
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerError'
+    ServerError:
+      description: Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerError'
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServerError'
+
+  schemas:
+    ServerError:
+      type: object
+      description: Error Response
+      properties:
+        error_code:
+          type: string
+          description: Error code
+        error_description:
+          type: string
+          description: Error description
+          nullable: true
+        error_uri:
+          type: string
+          description: Error URI
+          nullable: true
+        additional_errors:
+          type: array
+          items:
+            type: object
+      example:
+        error_code: "400"
+        error_description: "Bad Request"
+        error_uri: null
+        additional_errors: []

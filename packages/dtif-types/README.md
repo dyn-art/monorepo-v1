@@ -1,2 +1,0 @@
-# `@pda/dtif-types`
-This package contains TypeScript type definitions for the Design Tree Interchange Format (DTIF). DTIF is a flexible and universal design data format designed for interoperability between various design tools and rendering targets. By using these type definitions, developers can ensure consistent structure and data handling when working with DTIF.

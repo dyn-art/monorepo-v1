@@ -20,22 +20,13 @@
             "path": "packages/ads-renderer"
         },
         {
-            "path": "packages/client-utils"
-        },
-        {
             "path": "packages/core-client"
-        },
-        {
-            "path": "packages/core-types"
         },
         {
             "path": "packages/discord-handler"
         },
         {
             "path": "packages/dtif-to-react"
-        },
-        {
-            "path": "packages/dtif-types"
         },
         {
             "path": "packages/etsy-client"
@@ -53,6 +44,9 @@
             "path": "packages/music"
         },
         {
+            "path": "packages/openapi-fetch"
+        },
+        {
             "path": "packages/product-renderer"
         },
         {
@@ -60,6 +54,9 @@
         },
         {
             "path": "packages/svgson"
+        },
+        {
+            "path": "packages/types"
         },
         {
             "path": "packages/utils"

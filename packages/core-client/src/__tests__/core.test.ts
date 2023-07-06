@@ -1,4 +1,4 @@
-import { createCoreService } from '../core-service.factory';
+import { createCoreService } from '../service';
 
 describe('core tests', () => {
   it('send request to core api', async () => {
@@ -7,8 +7,13 @@ describe('core tests', () => {
 
     // When
     const response = await coreService.downloadJsonFromS3(
-      '546fc1fcdc58c1d2ae18d1575c11345f93c6a5d6e23b6f1e6d844afc9f763e5e'
+      '0989cce5edf8af5698ced8e06a9daa2924620f03b0601cd3c4914ea1e3fd64a6'
     );
+    // const response = await coreService.getPreSignedUploadUrl(
+    //   'test',
+    //   'public:readonly',
+    //   'application/json'
+    // );
 
     // Then
     expect(response).not.toBeNull();

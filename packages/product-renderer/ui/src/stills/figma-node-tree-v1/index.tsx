@@ -1,5 +1,5 @@
 import { applyScaleToMatrix, renderNode } from '@pda/dtif-to-react';
-import { TFrameNode } from '@pda/dtif-types';
+import { TFrameNode } from '@pda/types/dtif';
 import React from 'react';
 import { continueRender, delayRender } from 'remotion';
 import './style.css';
@@ -14,9 +14,12 @@ const FigmaNodeTreeV1: React.FC<TProps> = (props) => {
     const renderNodeAsJSX = async () => {
       const nodeTreeWithScale = {
         ...nodeTree,
-        transform: applyScaleToMatrix(nodeTree.transform, 1).toArray(),
+        transform: applyScaleToMatrix(nodeTree.relativeTransform, 1),
       };
-      const renderedNode = await renderNode(nodeTreeWithScale as any);
+      const renderedNode = await renderNode(nodeTreeWithScale as any, {
+        isLocked: false,
+        isVisible: true,
+      });
       setRenderedNode(renderedNode);
 
       // TODO: figure out a more dynamic way to wait until image has loaded

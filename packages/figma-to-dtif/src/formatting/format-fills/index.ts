@@ -1,4 +1,4 @@
-import { TPaint } from '@pda/dtif-types';
+import { TPaint } from '@pda/types/dtif';
 import {
   TFormatGradientFillOptions,
   TFormatImageFillOptions,

@@ -1,4 +1,4 @@
-import { TFrameNode, TRectangleNode, TTextNode } from '@pda/dtif-types';
+import { TFrameNode, TRectangleNode, TTextNode } from '@pda/types/dtif';
 import React from 'react';
 import { figmaFillToCSS } from '../to-css';
 

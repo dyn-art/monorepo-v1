@@ -1,1 +1,1 @@
-export * from './CoreClient';
+export * from './core-client.factory';

@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import { RawFetchClient } from '@pda/openapi-fetch';
 import crypto from 'crypto';
 import { etsyConfig } from '../environment';
 import {
@@ -6,17 +6,13 @@ import {
   RetrieveAccessTokenException,
 } from '../exceptions';
 import { logger } from '../logger';
-import { TOAuth2Config } from '../types';
-import { mapAxiosError } from '../utils';
-import {
-  TPost_OAuthToken_BodyDTO,
-  TPost_OAuthToken_ResponseDTO,
-} from './types';
 
 export class OAuth2Service {
-  private readonly _httpClient: AxiosInstance;
+  public readonly _config: Omit<TOAuth2Config, 'refresh' | 'endpoints'>;
+  public readonly _client: RawFetchClient;
 
-  public readonly _config: Omit<TOAuth2Config, 'refresh'>;
+  private readonly _authTokenEndpoint: string;
+  private readonly _authChallengeEndpoint: string;
 
   private readonly _codeVerifiers: Record<string, string> = {};
 
@@ -27,21 +23,26 @@ export class OAuth2Service {
   private _refreshToken: string | null = null; // 90 day life span
   private _refreshTokenExpiresAt: number | null = null;
 
-  constructor(config: TOAuth2Config, httpClient: AxiosInstance = axios) {
+  constructor(config: TOAuth2Config) {
     this._config = {
       clientId: config.clientId,
       redirectUrl: config.redirectUrl,
       scopes: config.scopes,
     };
+    this._client = new RawFetchClient();
     if (config.refresh != null) {
       const { refreshToken, expiresAt } = config.refresh;
       this._refreshToken = refreshToken;
       this._refreshTokenExpiresAt = expiresAt;
     }
-    this._httpClient = httpClient;
+    this._authTokenEndpoint =
+      config.endpoints?.tokenEndpoint ?? etsyConfig.auth.tokenEndpoint;
+    this._authChallengeEndpoint =
+      config.endpoints?.challengeEndpoint ?? etsyConfig.auth.challengeEndpoint;
   }
 
   public async getAccessToken(force = false): Promise<string> {
+    // Check whether access token is cached and not expired
     if (
       this._accessToken != null &&
       this._accessTokenExpiresAt != null &&
@@ -63,6 +64,7 @@ export class OAuth2Service {
       });
     }
 
+    // Retrieve new access token by refresh token
     return this.retrieveAccessTokenByRefreshToken(this._refreshToken);
   }
 
@@ -96,7 +98,7 @@ export class OAuth2Service {
     this._codeVerifiers[state] = codeVerifier;
 
     // Build URI
-    return `${etsyConfig.auth.challengeEndpoint}
+    return `${this._authChallengeEndpoint}
     ?response_type=code
     &redirect_uri=${this._config.redirectUrl}
     &scope=${this._config.scopes.join('%20')}
@@ -112,77 +114,77 @@ export class OAuth2Service {
     code: string,
     state: string
   ): Promise<string> {
-    try {
-      const codeVerifier = this._codeVerifiers[state];
-      if (codeVerifier == null) {
-        throw new RetrieveAccessTokenException(
-          '#ERR_NO_MATCHING_CODE_VERIFIER',
-          {
-            description: `No matching code verifier found for state '${state}'!`,
-          }
-        );
-      }
-
-      // Prepare body
-      const body: TPost_OAuthToken_BodyDTO = {
-        grant_type: 'authorization_code',
-        client_id: this._config.clientId,
-        redirect_uri: this._config.redirectUrl,
-        code,
-        code_verifier: codeVerifier,
-      };
-
-      // Send request
-      const response =
-        await this._httpClient.post<TPost_OAuthToken_ResponseDTO>(
-          etsyConfig.auth.tokenEndpoint,
-          body
-        );
-
-      // Delete code verifier as the code can only be used once
-      delete this._codeVerifiers[state];
-
-      return this.handleRetrieveAccessTokenResponse(response.data);
-    } catch (error) {
-      throw mapAxiosError(error, RetrieveAccessTokenException);
+    const codeVerifier = this._codeVerifiers[state];
+    if (codeVerifier == null) {
+      throw new RetrieveAccessTokenException('#ERR_NO_MATCHING_CODE_VERIFIER', {
+        description: `No matching code verifier found for state '${state}'!`,
+      });
     }
+
+    // Prepare body
+    const body: TPost_OAuthToken_BodyDTO = {
+      grant_type: 'authorization_code',
+      client_id: this._config.clientId,
+      redirect_uri: this._config.redirectUrl,
+      code,
+      code_verifier: codeVerifier,
+    };
+
+    // Send request
+    let data: TPost_OAuthToken_ResponseDTO;
+    const response = await this._client.post<TPost_OAuthToken_ResponseDTO>(
+      this._authTokenEndpoint,
+      body
+    );
+    if (response.isError) {
+      throw response.error;
+    } else {
+      data = response.data;
+    }
+
+    // Delete code verifier as the code can only be used once
+    delete this._codeVerifiers[state];
+
+    // Handle response data
+    return this.handleRetrieveAccessTokenResponseData(data);
   }
 
   public async retrieveAccessTokenByRefreshToken(
     refreshToken: string
   ): Promise<string> {
-    try {
-      // Prepare body
-      const body: TPost_OAuthToken_BodyDTO = {
-        grant_type: 'refresh_token',
-        client_id: this._config.clientId,
-        refresh_token: refreshToken,
-      };
+    // Prepare body
+    const body: TPost_OAuthToken_BodyDTO = {
+      grant_type: 'refresh_token',
+      client_id: this._config.clientId,
+      refresh_token: refreshToken,
+    };
 
-      // Send request
-      const response =
-        await this._httpClient.post<TPost_OAuthToken_ResponseDTO>(
-          etsyConfig.auth.tokenEndpoint,
-          body
-        );
-
-      // Handle response
-      return this.handleRetrieveAccessTokenResponse(response.data);
-    } catch (error) {
-      throw mapAxiosError(error, RetrieveAccessTokenException);
+    // Send request
+    let data: TPost_OAuthToken_ResponseDTO;
+    const response = await this._client.post<TPost_OAuthToken_ResponseDTO>(
+      this._authTokenEndpoint,
+      body
+    );
+    if (response.isError) {
+      throw response.error;
+    } else {
+      data = response.data;
     }
+
+    // Handle response data
+    return this.handleRetrieveAccessTokenResponseData(data);
   }
 
-  private handleRetrieveAccessTokenResponse(
+  // ============================================================================
+  // Helper
+  // ============================================================================
+
+  private handleRetrieveAccessTokenResponseData(
     data: TPost_OAuthToken_ResponseDTO
   ) {
-    if (
-      data.access_token == null ||
-      data.expires_in == null ||
-      data.refresh_token == null
-    ) {
+    if (data.access_token == null || data.expires_in == null) {
       throw new RetrieveAccessTokenException('#ERR_RETRIEVE_ACCESS_TOKEN', {
-        description: `Invalid response DTO! Either 'access_token', 'expires_in' or 'refresh_token' is missing.`,
+        description: `Invalid response DTO! Either 'access_token' or 'expires_in' is missing.`,
       });
     }
 
@@ -191,10 +193,10 @@ export class OAuth2Service {
     this._accessTokenExpiresAt =
       Date.now() + (data.expires_in - this._accessTokenBuffer) * 1000;
 
-    // Update refresh token
+    // Update refresh token if changed
     if (data.refresh_token !== this._refreshToken) {
       this._refreshToken = data.refresh_token;
-      this._refreshTokenExpiresAt = Date.now() + (90 - 5) * 24 * 60 * 60 * 1000; // 90 days - 5 days as puffer
+      this._refreshTokenExpiresAt = Date.now() + (90 - 5) * 24 * 60 * 60 * 1000; // 90 days - 5 days as buffer
     }
 
     logger.info(
@@ -206,3 +208,42 @@ export class OAuth2Service {
     return this._accessToken;
   }
 }
+
+export type TOAuth2Config = {
+  clientId: string;
+  redirectUrl: string;
+  scopes: string[];
+  endpoints?: {
+    tokenEndpoint?: string;
+    challengeEndpoint?: string;
+  };
+  refresh?: {
+    refreshToken: string;
+    expiresAt: number;
+  };
+};
+
+export type TPost_OAuthToken_ResponseDTO = {
+  access_token: string;
+  token_type: string;
+  refresh_token: string;
+  expires_in: number;
+};
+
+export type TPost_OAuthToken_BodyDTO =
+  | TPost_OAuthTokenRefreshToken_BodyDTO
+  | TPost_OAuthTokenAuthorizationCode_BodyDTO;
+
+export type TPost_OAuthTokenRefreshToken_BodyDTO = {
+  grant_type: 'refresh_token';
+  client_id: string;
+  refresh_token: string;
+};
+
+export type TPost_OAuthTokenAuthorizationCode_BodyDTO = {
+  grant_type: 'authorization_code';
+  client_id: string;
+  redirect_uri: string;
+  code: string;
+  code_verifier: string;
+};

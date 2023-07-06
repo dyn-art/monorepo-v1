@@ -1,15 +1,24 @@
+import { STAGE, appConfig } from '@/environment';
+import { AppError } from '@/middlewares';
+import { TExpressController } from '@/types';
 import express from 'express';
 import { validationResult } from 'express-validator';
-import { appConfig, STAGE } from '../../environment';
-import { AppError } from '../../middlewares';
 
-/**
- * Wrapper function for Express controllers to handle errors and stage-based activation.
- */
 export function controllerWrapper(
+  controller: TExpressController<any, any>,
+  stage?: STAGE
+): any[] {
+  if (Array.isArray(controller)) {
+    return [...controller[1], expressRouteHandlerWrapper(controller[0], stage)];
+  } else {
+    return [expressRouteHandlerWrapper(controller, stage)];
+  }
+}
+
+export function expressRouteHandlerWrapper(
   controller: (
-    req: express.Request<any, any, any, any, any>,
-    res: express.Response<any, any>,
+    req: express.Request,
+    res: express.Response,
     next: express.NextFunction
   ) => Promise<void>,
   stage?: STAGE
@@ -29,14 +38,15 @@ export function controllerWrapper(
       const result = validationResult(req);
       if (!result.isEmpty()) {
         throw new AppError(400, '#ERR_BAD_REQUEST', {
-          description: 'Invalid query data provided! See additional errors.',
+          description:
+            'Invalid query data provided! See additional errors for more information.',
           additionalErrors: result.array(),
         });
       }
 
       await controller(req, res, next);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      next(error);
     }
   };
 }
