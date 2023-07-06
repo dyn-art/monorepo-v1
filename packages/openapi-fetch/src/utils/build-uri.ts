@@ -11,45 +11,28 @@ import { serializeQueryParams } from './serialize-query-params';
 export function buildURI(baseURL: string, options: TBuildURIOptions): string {
   const {
     path = '',
-    params: { query: queryParams = {}, path: pathParams = {} } = {},
+    params: { query: queryParams = null, path: pathParams = null } = {},
     querySerializer = serializeQueryParams,
   } = options;
   const sanitizedBaseURL = sanitizeBaseURL(baseURL);
-  const sanitizedPath = sanitizePath(path);
-  const pathWithParams = injectPathParams(sanitizedPath, pathParams);
+  const pathWithParams = injectPathParams(path, pathParams ?? undefined);
   const finalURL = appendQueryParams(
-    `${sanitizedBaseURL}/${pathWithParams}`,
-    queryParams,
-    querySerializer
+    `${sanitizedBaseURL}${pathWithParams}`,
+    querySerializer,
+    queryParams ?? undefined
   );
   return finalURL;
 }
-
-type TBuildURIOptions = {
-  path?: `/${string}`;
-  params?: TBuildURLParams;
-  querySerializer?: TQuerySerializer<unknown>;
-};
-
-type TBuildURLParams = {
-  query?: Record<string, unknown>;
-  path?: Record<string, unknown>;
-};
 
 // Removes trailing slash from the base URL
 function sanitizeBaseURL(baseUrl: string): string {
   return baseUrl.replace(/\/$/, '');
 }
 
-// Removes leading slash from the path
-function sanitizePath(path: string): string {
-  return path.replace(/^\//, '');
-}
-
 // Injects path parameters into the URL path
 function injectPathParams(
   path: string,
-  pathParams: Record<string, unknown>
+  pathParams?: Record<string, unknown>
 ): string {
   let pathWithParams = path;
   if (pathParams != null) {
@@ -66,8 +49,8 @@ function injectPathParams(
 // Appends query parameters to the URL
 function appendQueryParams(
   path: string,
-  queryParams: Record<string, unknown>,
-  querySerializer: TQuerySerializer<unknown>
+  querySerializer: TQuerySerializer<unknown>,
+  queryParams?: Record<string, unknown>
 ): string {
   if (queryParams != null) {
     const queryString = querySerializer(queryParams);
@@ -77,3 +60,14 @@ function appendQueryParams(
   }
   return path;
 }
+
+type TBuildURIOptions = {
+  path?: `/${string}`;
+  params?: TBuildURLParams;
+  querySerializer?: TQuerySerializer<unknown>;
+};
+
+type TBuildURLParams = {
+  query?: Record<string, unknown> | null;
+  path?: Record<string, unknown> | null;
+};

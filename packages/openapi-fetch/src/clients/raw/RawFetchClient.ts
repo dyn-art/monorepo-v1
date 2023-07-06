@@ -22,11 +22,11 @@ export class RawFetchClient extends OpenAPIFetchClientBase<any> {
   // ============================================================================
 
   public async get<TResponseBody = any, TResponseErrorBody = any>(
-    url: string,
+    pathOrUrl: string,
     options: TFetchOptions<any> = {}
   ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
     return this.rawFetch<TResponseBody, TResponseErrorBody>(
-      url,
+      pathOrUrl,
       'GET',
       options as TFetchOptions<any>
     );
@@ -37,33 +37,33 @@ export class RawFetchClient extends OpenAPIFetchClientBase<any> {
     TRequestBody = any,
     TResponseErrorBody = any
   >(
-    url: string,
+    pathOrUrl: string,
     body: TRequestBody,
     options: TFetchOptions<any> = {}
   ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
-    return this.rawFetch<TResponseBody, TResponseErrorBody>(url, 'PUT', {
+    return this.rawFetch<TResponseBody, TResponseErrorBody>(pathOrUrl, 'PUT', {
       ...options,
       body: body as any,
     });
   }
 
   public async post<TResponseBody = any, TBody = any, TResponseErrorBody = any>(
-    url: string,
+    pathOrUrl: string,
     body: TBody,
     options: TFetchOptions<any> = {}
   ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
-    return this.rawFetch<TResponseBody, TResponseErrorBody>(url, 'POST', {
+    return this.rawFetch<TResponseBody, TResponseErrorBody>(pathOrUrl, 'POST', {
       ...options,
       body: body as any,
     });
   }
 
   public async del<TResponseBody = any, TResponseErrorBody = any>(
-    url: string,
+    pathOrUrl: string,
     options: TFetchOptions<any> = {}
   ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
     return this.rawFetch<TResponseBody, TResponseErrorBody>(
-      url,
+      pathOrUrl,
       'DELETE',
       options as TFetchOptions<any>
     );
@@ -74,11 +74,11 @@ export class RawFetchClient extends OpenAPIFetchClientBase<any> {
   // ============================================================================
 
   public async rawFetch<TResponseBody = any, TResponseErrorBody = any>(
-    path: string,
+    pathOrUrl: string,
     method: RequestInit['method'],
     options: TFetchOptionsWithBody<any>
   ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
-    return (await super.fetch(path, method, options)) as TRawFetchResponse<
+    return (await super.fetch(pathOrUrl, method, options)) as TRawFetchResponse<
       TResponseBody,
       TResponseErrorBody
     >;

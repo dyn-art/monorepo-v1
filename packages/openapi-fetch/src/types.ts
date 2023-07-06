@@ -244,6 +244,7 @@ export type TFetchOptionsBase<T> = {
   headers?: Record<string, string>;
   rootFetchProps?: Omit<RequestInit, 'body' | 'headers' | 'method'>;
   middlewareProps?: Record<string, any>;
+  baseUrl?: string;
 };
 
 export type TFetchOptions<T> = TFetchOptionsBase<T> &

@@ -205,13 +205,13 @@ importers:
         specifier: workspace:*
         version: link:../../packages/figma-handler
       '@pda/figma-to-dtif':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/figma-to-dtif
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
       '@pda/openapi-fetch':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../../packages/openapi-fetch
       '@pda/utils':
         specifier: workspace:*
@@ -929,6 +929,9 @@ importers:
       cross-fetch:
         specifier: ^3.1.6
         version: 3.1.6
+      url-parse:
+        specifier: ^1.5.10
+        version: 1.5.10
     devDependencies:
       '@pda/jest-presets':
         specifier: workspace:^
@@ -939,6 +942,9 @@ importers:
       '@types/jest':
         specifier: ^29.5.1
         version: 29.5.1
+      '@types/url-parse':
+        specifier: ^1.4.8
+        version: 1.4.8
       eslint:
         specifier: ^8.38.0
         version: 8.38.0
@@ -7343,6 +7349,10 @@ packages:
 
   /@types/unist@2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
+    dev: true
+
+  /@types/url-parse@1.4.8:
+    resolution: {integrity: sha512-zqqcGKyNWgTLFBxmaexGUKQyWqeG7HjXj20EuQJSJWwXe54BjX0ihIo5cJB9yAQzH8dNugJ9GvkBYMjPXs/PJw==}
     dev: true
 
   /@types/web@0.0.99:
@@ -15906,6 +15916,10 @@ packages:
     dependencies:
       side-channel: 1.0.4
 
+  /querystringify@2.2.0:
+    resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
+    dev: false
+
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
@@ -16343,6 +16357,10 @@ packages:
     resolution: {integrity: sha512-L9jEkOi3ASd9PYit2cwRfyppc9NoABujTP8/5gFcbERmo5jUoAKovIC3fsF17pkTnGsrByysqX+Kxd2OTNI1ww==}
     engines: {node: '>=0.10.5'}
     dev: true
+
+  /requires-port@1.0.0:
+    resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
+    dev: false
 
   /resolve-alpn@1.2.1:
     resolution: {integrity: sha512-0a1F4l73/ZFZOakJnQ3FvkJ2+gSTQWz/r2KE5OdDY0TxPm5h4GkqkWWfM47T7HsbnOtcJVEF4epCVy6u7Q3K+g==}
@@ -18057,6 +18075,13 @@ packages:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
     dependencies:
       punycode: 2.3.0
+
+  /url-parse@1.5.10:
+    resolution: {integrity: sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==}
+    dependencies:
+      querystringify: 2.2.0
+      requires-port: 1.0.0
+    dev: false
 
   /use-resize-observer@9.1.0(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-R25VqO9Wb3asSD4eqtcxk8sJalvIOYBqS8MNZlpDSQ4l4xMQxC/J7Id9HoTqPq8FwULIn0PVW+OAqF2dyYbjow==}

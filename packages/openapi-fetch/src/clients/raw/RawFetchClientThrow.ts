@@ -15,44 +15,44 @@ export class RawFetchClientThrow extends RawFetchClient {
   // ============================================================================
 
   public async getThrow<TResponseBody = any>(
-    url: string,
+    pathOrUrl: string,
     options: TFetchOptions<any> = {}
   ): Promise<TResponseBody> {
     return this.rawFetchThrow<TResponseBody>(
-      url,
+      pathOrUrl,
       'GET',
       options as TFetchOptions<any>
     );
   }
 
   public async putThrow<TResponseBody = any, TRequestBody = any>(
-    url: string,
+    pathOrUrl: string,
     body: TRequestBody,
     options: TFetchOptions<any> = {}
   ): Promise<TResponseBody> {
-    return this.rawFetchThrow<TResponseBody>(url, 'PUT', {
+    return this.rawFetchThrow<TResponseBody>(pathOrUrl, 'PUT', {
       ...options,
       body: body as any,
     });
   }
 
   public async postThrow<TResponseBody = any, TBody = any>(
-    url: string,
+    pathOrUrl: string,
     body: TBody,
     options: TFetchOptions<any> = {}
   ): Promise<TResponseBody> {
-    return this.rawFetchThrow<TResponseBody>(url, 'POST', {
+    return this.rawFetchThrow<TResponseBody>(pathOrUrl, 'POST', {
       ...options,
       body: body as any,
     });
   }
 
   public async delThrow<TResponseBody = any>(
-    url: string,
+    pathOrUrl: string,
     options: TFetchOptions<any> = {}
   ): Promise<TResponseBody> {
     return this.rawFetchThrow<TResponseBody>(
-      url,
+      pathOrUrl,
       'DELETE',
       options as TFetchOptions<any>
     );
@@ -63,11 +63,11 @@ export class RawFetchClientThrow extends RawFetchClient {
   // ============================================================================
 
   public async rawFetchThrow<TResponseBody = any>(
-    path: string,
+    pathOrUrl: string,
     method: RequestInit['method'],
     options: TFetchOptionsWithBody<any>
   ): Promise<TResponseBody> {
-    const response = await super.fetch(path, method, options);
+    const response = await super.rawFetch(pathOrUrl, method, options);
     if (response.isError) {
       throw response.error;
     } else {

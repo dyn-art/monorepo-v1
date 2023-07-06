@@ -26,6 +26,7 @@ export async function uploadDataToBucket(
           'Content-Type': mimeType,
           'x-amz-acl': scope,
         },
+        parseAs: 'stream',
       });
     }
   } catch (error) {

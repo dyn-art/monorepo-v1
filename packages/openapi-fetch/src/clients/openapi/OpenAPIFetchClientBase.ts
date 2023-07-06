@@ -14,6 +14,7 @@ import {
   fetchWithRetries,
   mapCatchToNetworkException,
   mapResponseToRequestException,
+  parseAndValidateURL,
   serializeBodyToJson,
   serializeQueryParams,
 } from '../../utils';
@@ -23,16 +24,16 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
     'Content-Type': 'application/json; charset=utf-8',
   };
 
-  private readonly _baseUrl: string;
-  private readonly _requestMiddlewares: TRequestMiddleware[];
+  protected readonly _baseUrl: string;
+  protected readonly _requestMiddlewares: TRequestMiddleware[];
 
-  private readonly _defaultHeaders: Record<string, string>;
-  private readonly _defaultFetchProps: Omit<
+  protected readonly _defaultHeaders: Record<string, string>;
+  protected readonly _defaultFetchProps: Omit<
     RequestInit,
     'method' | 'headers' | 'body'
   >;
-  private readonly _defaultQuerySerializer: TQuerySerializer<unknown>;
-  private readonly _defaultBodySerializer: TBodySerializer<unknown>;
+  protected readonly _defaultQuerySerializer: TQuerySerializer<unknown>;
+  protected readonly _defaultBodySerializer: TBodySerializer<unknown>;
 
   constructor(
     baseUrl: string,
@@ -85,16 +86,24 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
       parseAs = 'json',
       bodySerializer = this._defaultBodySerializer,
       querySerializer = this._defaultQuerySerializer,
-      pathParams = {},
-      queryParams = {},
+      pathParams = null,
+      queryParams = null,
       rootFetchProps = {},
       middlewareProps = {},
       body = undefined,
+      baseUrl = this._baseUrl,
     } = options ?? {};
 
+    // Parse and validate URL to ensure that even if path is a full URL and baseUrl is an empty string,
+    // the finalPath and origin can still be correctly extracted
+    const { path: parsedPath, origin } = parseAndValidateURL(
+      `${baseUrl}${path as string}`,
+      queryParams == null
+    );
+
     // Build final URL
-    const finalURL = buildURI(this._baseUrl, {
-      path: path as `/${string}`, // OpenAPI type already enforces to start with leading slash
+    const finalURL = buildURI(origin, {
+      path: parsedPath,
       params: {
         path: pathParams,
         query: queryParams,
@@ -137,7 +146,8 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
     if (response.ok) {
       let data: unknown = response.body;
       if (parseAs !== 'stream') {
-        const cloned = response.clone();
+        const cloned = // Clone method not supported by Figma sandbox environment
+          typeof response.clone === 'function' ? response.clone() : response;
         data =
           typeof cloned[parseAs] === 'function'
             ? await cloned[parseAs]()
