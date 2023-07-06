@@ -1,28 +1,42 @@
 import { renderRelativeParent } from '@pda/dtif-to-react';
 import { TFrameNode, TScene } from '@pda/types/dtif';
-import { LoaderArgs } from '@remix-run/node';
+import { LoaderArgs, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';
+import Canvas from '../components/canvas';
 import { coreService } from '../core/api';
-import { logger } from '../core/logger';
 
 export async function loader(args: LoaderArgs) {
   const {
     params: { canvasId },
   } = args;
-  logger.info('Called canvas loader', { canvasId });
   let scene: TScene | null = null;
+  let initialRenderedNode: React.ReactNode | null = null;
   if (canvasId != null) {
     scene = await coreService.downloadJsonFromS3(canvasId);
+    // if (scene != null) {
+    //   initialRenderedNode = await renderRelativeParent(
+    //     scene.root as TFrameNode,
+    //     0.2
+    //   );
+    // }
   }
-  logger.info('Resolved canvas loader', { canvasId });
-  return { id: canvasId, scene };
+  return json<TLoader>({
+    id: canvasId ?? 'not-set',
+    scene,
+    initialRenderedNode,
+  });
 }
 
 const CanvasId: React.FC = () => {
-  const { id, scene } = useLoaderData<typeof loader>();
+  const {
+    id,
+    scene: _scene,
+    initialRenderedNode,
+  } = useLoaderData<typeof loader>();
+  const scene: TScene | null = _scene as any;
   const [nodeAsJSX, setNodeAsJSX] = React.useState<React.ReactNode | null>(
-    null
+    initialRenderedNode as React.ReactNode
   );
 
   // ============================================================================
@@ -50,9 +64,16 @@ const CanvasId: React.FC = () => {
   return (
     <div>
       <h1>{id}</h1>
-      {nodeAsJSX}
+      {/* {nodeAsJSX != null ? nodeAsJSX : <div>Loading</div>} */}
+      {scene != null && <Canvas scene={scene} />}
     </div>
   );
 };
 
 export default CanvasId;
+
+type TLoader = {
+  id: string;
+  scene: TScene | null;
+  initialRenderedNode: React.ReactNode | null;
+};
