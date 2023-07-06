@@ -50,6 +50,10 @@ const NodeInspector: React.FC = () => {
     // TODO: check whether events are unregistered when re registered
   }, [selectedNodes]);
 
+  // ============================================================================
+  // Render
+  // ============================================================================
+
   return (
     <div className="mx-4 mb-4">
       {/* Breadcrumbs */}

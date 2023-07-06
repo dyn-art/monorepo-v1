@@ -58,7 +58,7 @@ const ExportPreview: React.FC<TProps> = (props) => {
   }, [nodeAsJSXString, activeTab === EPreviewTabs.JSX]);
 
   // ============================================================================
-  // UI
+  // Render
   // ============================================================================
 
   return (

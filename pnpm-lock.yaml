@@ -413,6 +413,9 @@ importers:
       '@pda/core-client':
         specifier: workspace:^
         version: link:../../packages/core-client
+      '@pda/dtif-to-react':
+        specifier: workspace:^
+        version: link:../../packages/dtif-to-react
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -465,6 +468,9 @@ importers:
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../../packages/tsconfig
+      '@pda/types':
+        specifier: workspace:^
+        version: link:../../packages/types
       '@remix-run/dev':
         specifier: ^1.17.1
         version: 1.17.1(@remix-run/serve@1.17.1)(@types/node@14.18.33)(rollup@3.21.7)

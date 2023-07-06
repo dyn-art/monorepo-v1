@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@pda/core-client": "workspace:^",
+    "@pda/dtif-to-react": "workspace:^",
     "@pda/logger": "workspace:*",
     "@pda/openapi-fetch": "workspace:^",
     "@radix-ui/react-slot": "^1.0.2",
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@pda/tsconfig": "workspace:*",
+    "@pda/types": "workspace:^",
     "@remix-run/dev": "^1.17.1",
     "@remix-run/eslint-config": "^1.17.1",
     "@remix-run/serve": "^1.17.1",
