@@ -1,4 +1,5 @@
 export * from './build-uri';
+export * from './default-body-serializer';
 export * from './fetch-with-retries';
 export * from './is-request-exception';
 export * from './is-status-code';

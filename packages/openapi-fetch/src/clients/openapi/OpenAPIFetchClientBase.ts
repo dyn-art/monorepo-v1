@@ -11,11 +11,11 @@ import {
 } from '../../types';
 import {
   buildURI,
+  defaultBodySerializer,
   fetchWithRetries,
   mapCatchToNetworkException,
   mapResponseToRequestException,
   parseAndValidateURL,
-  serializeBodyToJson,
   serializeQueryParams,
 } from '../../utils';
 
@@ -41,7 +41,7 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
   ) {
     const {
       querySerializer = serializeQueryParams,
-      bodySerializer = serializeBodyToJson,
+      bodySerializer = defaultBodySerializer,
       rootFetchProps = {},
       requestMiddleware = [],
     } = options;
@@ -118,7 +118,10 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
       ...rootFetchProps,
       method,
       headers: this.applyDefaultHeaders(headers),
-      body: body != null ? bodySerializer(body as any) : undefined,
+      body:
+        body != null
+          ? bodySerializer(body as any, headers['Content-Type'])
+          : undefined,
     };
 
     // Call middlewares

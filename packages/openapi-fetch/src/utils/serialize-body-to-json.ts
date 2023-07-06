@@ -8,6 +8,6 @@ export function serializeBodyToJson(body: any): string {
   try {
     return JSON.stringify(body);
   } catch (error) {
-    return '';
+    return body;
   }
 }

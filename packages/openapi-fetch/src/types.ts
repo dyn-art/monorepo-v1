@@ -199,7 +199,8 @@ export type TQuerySerializer<T> = (
 ) => string;
 
 export type TBodySerializer<T> = (
-  body: TRequestBody<T> extends never ? any : TRequestBody<T>
+  body: TRequestBody<T> extends never ? any : TRequestBody<T>,
+  contentType?: string
 ) => any;
 
 // ============================================================================

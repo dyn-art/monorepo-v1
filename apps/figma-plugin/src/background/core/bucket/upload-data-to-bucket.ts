@@ -1,4 +1,4 @@
-import { coreService, fetchClient } from '../network';
+import { coreService, fetchClient } from '../api';
 import { UploadToBucketException } from './exceptions';
 
 export async function uploadDataToBucket(
@@ -27,6 +27,7 @@ export async function uploadDataToBucket(
           'x-amz-acl': scope,
         },
         parseAs: 'stream',
+        bodySerializer: (body) => body,
       });
     }
   } catch (error) {
