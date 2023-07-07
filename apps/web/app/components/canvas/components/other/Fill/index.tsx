@@ -1,6 +1,6 @@
 import { TNode } from '@pda/types/dtif';
 import React from 'react';
-import { SolidPaint } from './components';
+import { ImagePaint, SolidPaint } from './components';
 
 const Fill: React.FC<TProps> = (props) => {
   const { node, clipPathId } = props;
@@ -18,7 +18,23 @@ const Fill: React.FC<TProps> = (props) => {
       {node.fills.map((fill, i) => {
         switch (fill.type) {
           case 'SOLID':
-            return <SolidPaint node={node} index={i} paint={fill} />;
+            return (
+              <SolidPaint
+                node={node}
+                index={i}
+                paint={fill}
+                key={`${fill.type}-${i}`}
+              />
+            );
+          case 'IMAGE':
+            return (
+              <ImagePaint
+                node={node}
+                index={i}
+                paint={fill}
+                key={`${fill.type}-${i}`}
+              />
+            );
           default:
           // do nothing
         }

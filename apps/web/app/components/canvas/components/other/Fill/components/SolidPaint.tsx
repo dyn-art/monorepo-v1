@@ -6,7 +6,7 @@ const SolidPaint: React.FC<TProps> = (props) => {
   const { node, paint, index } = props;
   return (
     <rect
-      id={`solid_fill-${index}-${node.id}`}
+      id={`solid_paint-${index}-${node.id}`}
       width={node.width}
       height={node.height}
       style={{

@@ -27,7 +27,7 @@ const Frame: React.FC<TProps> = (props) => {
         <Fill node={node} clipPathId={fillClipPathId} />
         <g id={`frame_children-${node.id}`}>
           {node.children.map((child) => (
-            <Node node={child} />
+            <Node node={child} key={`node-${child.id}`} />
           ))}
         </g>
       </g>
