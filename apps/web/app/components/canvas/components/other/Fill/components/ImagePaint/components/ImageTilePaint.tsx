@@ -1,8 +1,8 @@
 import { getIdentifier } from '@/components/canvas/utils';
-import { TImagePaintFit, TNode } from '@pda/types/dtif';
+import { TImagePaintTile, TNode } from '@pda/types/dtif';
 import React from 'react';
 
-const ImageFitPaint: React.FC<TProps> = (props) => {
+const ImageTilePaint: React.FC<TProps> = (props) => {
   const { imageUrl, paint, node, index } = props;
   const imageDefinitionId = React.useMemo(
     () =>
@@ -10,10 +10,19 @@ const ImageFitPaint: React.FC<TProps> = (props) => {
         id: node.id,
         index,
         type: 'paint',
-        category: 'image-fit',
+        category: 'image-tile',
         isDefinition: true,
       }),
     [node.id]
+  );
+
+  const tileWidth = React.useMemo(
+    () => paint.width * paint.scalingFactor,
+    [paint.width, paint.scalingFactor]
+  );
+  const tileHeight = React.useMemo(
+    () => paint.height * paint.scalingFactor,
+    [paint.height, paint.scalingFactor]
   );
 
   return (
@@ -22,7 +31,7 @@ const ImageFitPaint: React.FC<TProps> = (props) => {
         id: node.id,
         index,
         type: 'paint',
-        category: 'image-fit',
+        category: 'image-tile',
       })}
     >
       <rect
@@ -34,8 +43,8 @@ const ImageFitPaint: React.FC<TProps> = (props) => {
         <pattern
           id={imageDefinitionId}
           patternUnits="userSpaceOnUse"
-          width={node.width}
-          height={node.height}
+          width={tileWidth}
+          height={tileHeight}
           style={{
             transformOrigin: 'center center',
             transform: `rotate(${paint.rotation}deg)`,
@@ -45,8 +54,8 @@ const ImageFitPaint: React.FC<TProps> = (props) => {
             href={imageUrl}
             x="0"
             y="0"
-            width={node.width}
-            height={node.height}
+            width={tileWidth}
+            height={tileHeight}
           />
         </pattern>
       </defs>
@@ -54,11 +63,11 @@ const ImageFitPaint: React.FC<TProps> = (props) => {
   );
 };
 
-export default ImageFitPaint;
+export default ImageTilePaint;
 
 type TProps = {
   node: TNode;
   index: number;
   imageUrl: string;
-  paint: TImagePaintFit;
+  paint: TImagePaintTile;
 };

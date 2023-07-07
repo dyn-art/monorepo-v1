@@ -8,7 +8,6 @@ const Canvas: React.FC<TProps> = (props) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      id={`scene-${scene.version}-${scene.name}`}
       width={scene.width}
       height={scene.height}
       fill="none"

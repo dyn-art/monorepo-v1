@@ -422,6 +422,9 @@ importers:
       '@pda/openapi-fetch':
         specifier: workspace:^
         version: link:../../packages/openapi-fetch
+      '@pda/utils':
+        specifier: workspace:^
+        version: link:../../packages/utils
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.0.2(@types/react@18.0.37)(react@18.2.0)

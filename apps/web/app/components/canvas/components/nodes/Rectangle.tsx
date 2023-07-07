@@ -1,15 +1,29 @@
-import { transformToCSS } from '@/components/canvas/utils';
+import { getIdentifier, transformToCSS } from '@/components/canvas/utils';
 import { TRectangleNode } from '@pda/types/dtif';
 import React from 'react';
 import { Fill } from '../other';
 
 const Rectangle: React.FC<TProps> = (props) => {
-  const { node } = props;
-  const fillClipPathId = `rectangle_fill-clip-${node.id}`;
+  const { node, index = 0 } = props;
+  const fillClipPathId = React.useMemo(
+    () =>
+      getIdentifier({
+        id: node.id,
+        index,
+        type: 'rectangle',
+        category: 'fill-clip',
+        isDefinition: true,
+      }),
+    [node.id]
+  );
 
   return (
     <g
-      id={`rectangle-${node.id}`}
+      id={getIdentifier({
+        id: node.id,
+        index,
+        type: 'rectangle',
+      })}
       style={{
         display: node.isVisible ? 'block' : 'none',
         borderRadius: `${node.topLeftRadius}px ${node.topRightRadius}px ${node.bottomRightRadius}px ${node.bottomLeftRadius}px`,
@@ -32,4 +46,5 @@ export default Rectangle;
 
 type TProps = {
   node: TRectangleNode;
+  index?: number;
 };

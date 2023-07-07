@@ -1,7 +1,12 @@
 import { getS3BucketURLFromHash } from '@pda/dtif-to-react';
 import { TImagePaint, TNode } from '@pda/types/dtif';
 import React from 'react';
-import { ImageFillPaint, ImageFitPaint } from './components';
+import {
+  ImageCropPaint,
+  ImageFillPaint,
+  ImageFitPaint,
+  ImageTilePaint,
+} from './components';
 
 const ImagePaint: React.FC<TProps> = (props) => {
   const { paint, node, index } = props;
@@ -9,6 +14,7 @@ const ImagePaint: React.FC<TProps> = (props) => {
     () => getS3BucketURLFromHash(paint.hash),
     [paint.hash]
   );
+
   switch (paint.scaleMode) {
     case 'FILL':
       return (
@@ -22,6 +28,24 @@ const ImagePaint: React.FC<TProps> = (props) => {
     case 'FIT':
       return (
         <ImageFitPaint
+          imageUrl={imageUrl}
+          paint={paint}
+          node={node}
+          index={index}
+        />
+      );
+    case 'CROP':
+      return (
+        <ImageCropPaint
+          imageUrl={imageUrl}
+          paint={paint}
+          node={node}
+          index={index}
+        />
+      );
+    case 'TILE':
+      return (
+        <ImageTilePaint
           imageUrl={imageUrl}
           paint={paint}
           node={node}

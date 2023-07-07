@@ -1,6 +1,7 @@
+import { getIdentifier } from '@/components/canvas/utils';
 import { TNode } from '@pda/types/dtif';
 import React from 'react';
-import { ImagePaint, SolidPaint } from './components';
+import { GradientPaint, ImagePaint, SolidPaint } from './components';
 
 const Fill: React.FC<TProps> = (props) => {
   const { node, clipPathId } = props;
@@ -9,7 +10,10 @@ const Fill: React.FC<TProps> = (props) => {
   }
   return (
     <g
-      id={`fill-${node.id}`}
+      id={getIdentifier({
+        id: node.id,
+        type: 'fill',
+      })}
       clipPath={`url(#${clipPathId})`}
       style={{
         pointerEvents: 'none',
@@ -20,19 +24,46 @@ const Fill: React.FC<TProps> = (props) => {
           case 'SOLID':
             return (
               <SolidPaint
-                node={node}
+                key={getIdentifier({
+                  id: node.id,
+                  index: i,
+                  type: 'paint',
+                  category: 'solid',
+                })}
                 index={i}
+                node={node}
                 paint={fill}
-                key={`${fill.type}-${i}`}
               />
             );
           case 'IMAGE':
             return (
               <ImagePaint
-                node={node}
+                key={getIdentifier({
+                  id: node.id,
+                  index: i,
+                  type: 'paint',
+                  category: 'image',
+                })}
                 index={i}
+                node={node}
                 paint={fill}
-                key={`${fill.type}-${i}`}
+              />
+            );
+          case 'GRADIENT_ANGULAR':
+          case 'GRADIENT_DIAMOND':
+          case 'GRADIENT_LINEAR':
+          case 'GRADIENT_RADIAL':
+            return (
+              <GradientPaint
+                key={getIdentifier({
+                  id: node.id,
+                  index: i,
+                  type: 'paint',
+                  category: 'gradient',
+                })}
+                index={i}
+                node={node}
+                paint={fill}
               />
             );
           default:

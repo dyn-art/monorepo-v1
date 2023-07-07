@@ -1,8 +1,10 @@
 import { TTransform } from '@pda/types/dtif';
 import React from 'react';
-import { extractMatrixData } from './extract-matrix-data';
+import { T2DMatrixData, extractMatrixData } from './extract-matrix-data';
 
-export function transformToCSS(transform: TTransform): React.CSSProperties {
+export function transformToCSS(
+  transform: TTransform | T2DMatrixData
+): React.CSSProperties {
   const {
     rotation,
     scaleX,

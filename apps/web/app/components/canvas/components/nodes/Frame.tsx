@@ -1,22 +1,51 @@
-import { transformToCSS } from '@/components/canvas/utils';
+import { getIdentifier, transformToCSS } from '@/components/canvas/utils';
 import { TFrameNode } from '@pda/types/dtif';
 import React from 'react';
 import { Fill } from '../other';
 import Node from './Node';
 
 const Frame: React.FC<TProps> = (props) => {
-  const { node } = props;
-  const contentClipPathId = `frame_content-clip-${node.id}`;
-  const fillClipPathId = `frame_fill-clip-${node.id}`;
+  const { node, index = 0 } = props;
+  const contentClipPathId = React.useMemo(
+    () =>
+      getIdentifier({
+        id: node.id,
+        index,
+        type: 'frame',
+        category: 'content-clip',
+        isDefinition: true,
+      }),
+    [node.id]
+  );
+  const fillClipPathId = React.useMemo(
+    () =>
+      getIdentifier({
+        id: node.id,
+        index,
+        type: 'frame',
+        category: 'fill-clip',
+        isDefinition: true,
+      }),
+    [node.id]
+  );
 
   return (
     <g
-      id={`frame-${node.id}`}
+      id={getIdentifier({
+        id: node.id,
+        index,
+        type: 'frame',
+      })}
       style={{ ...transformToCSS(node.relativeTransform) }}
     >
       {/* Frame Content */}
       <g
-        id={`frame_content-${node.id}`}
+        id={getIdentifier({
+          id: node.id,
+          index,
+          type: 'frame',
+          category: 'content',
+        })}
         clipPath={node.clipsContent ? `url(#${contentClipPathId})` : undefined}
       >
         <defs>
@@ -25,9 +54,24 @@ const Frame: React.FC<TProps> = (props) => {
           </clipPath>
         </defs>
         <Fill node={node} clipPathId={fillClipPathId} />
-        <g id={`frame_children-${node.id}`}>
-          {node.children.map((child) => (
-            <Node node={child} key={`node-${child.id}`} />
+        <g
+          id={getIdentifier({
+            id: node.id,
+            index,
+            type: 'frame',
+            category: 'children',
+          })}
+        >
+          {node.children.map((child, i) => (
+            <Node
+              key={getIdentifier({
+                id: node.id,
+                index: i,
+                type: 'child',
+              })}
+              index={i}
+              node={child}
+            />
           ))}
         </g>
       </g>
@@ -48,4 +92,5 @@ export default Frame;
 
 type TProps = {
   node: TFrameNode;
+  index?: number;
 };

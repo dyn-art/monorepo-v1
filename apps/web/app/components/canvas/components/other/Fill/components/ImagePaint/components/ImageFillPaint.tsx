@@ -1,20 +1,38 @@
+import { getIdentifier } from '@/components/canvas/utils';
 import { TImagePaintFill, TNode } from '@pda/types/dtif';
 import React from 'react';
 
 const ImageFillPaint: React.FC<TProps> = (props) => {
   const { imageUrl, paint, node, index } = props;
-  const imagePattern = `image_fill-pattern-${index}-${node.id}`;
+  const imageDefinitionId = React.useMemo(
+    () =>
+      getIdentifier({
+        id: node.id,
+        index,
+        type: 'paint',
+        category: 'image-fill',
+        isDefinition: true,
+      }),
+    [node.id]
+  );
 
   return (
-    <g id={`image_fill-${index}-${node.id}`}>
+    <g
+      id={getIdentifier({
+        id: node.id,
+        index,
+        type: 'paint',
+        category: 'image-fill',
+      })}
+    >
       <rect
         width={node.width}
         height={node.height}
-        fill={`url(#${imagePattern})`}
+        fill={`url(#${imageDefinitionId})`}
       />
       <defs>
         <pattern
-          id={imagePattern}
+          id={imageDefinitionId}
           patternUnits="userSpaceOnUse"
           width={node.width}
           height={node.height}

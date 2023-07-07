@@ -6,16 +6,17 @@ import Rectangle from './Rectangle';
 import Text from './Text';
 
 const Node: React.FC<TProps> = (props) => {
-  const { node } = props;
+  const { node, index = 0 } = props;
+
   switch (node.type) {
     case 'FRAME':
-      return <Frame node={node} />;
+      return <Frame node={node} index={index} />;
     case 'GROUP':
-      return <Group node={node} />;
+      return <Group node={node} index={index} />;
     case 'RECTANGLE':
-      return <Rectangle node={node} />;
+      return <Rectangle node={node} index={index} />;
     case 'TEXT':
-      return <Text node={node} />;
+      return <Text node={node} index={index} />;
     case 'SVG':
     // TODO:
     default:
@@ -27,4 +28,5 @@ export default Node;
 
 type TProps = {
   node: TNode;
+  index?: number;
 };

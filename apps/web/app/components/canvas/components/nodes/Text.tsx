@@ -1,12 +1,26 @@
-import { textAlignmentToCSS, transformToCSS } from '@/components/canvas/utils';
+import {
+  getIdentifier,
+  textAlignmentToCSS,
+  transformToCSS,
+} from '@/components/canvas/utils';
 import { TTextNode } from '@pda/types/dtif';
 import React from 'react';
 import { Fill } from '../other';
 
 // https://www.mediaevent.de/tutorial/svg-text-alignment.html
 const Text: React.FC<TProps> = (props) => {
-  const { node } = props;
-  const fillClipPathId = `text_fill-clip-${node.id}`;
+  const { node, index = 0 } = props;
+  const fillClipPathId = React.useMemo(
+    () =>
+      getIdentifier({
+        id: node.id,
+        index,
+        type: 'text',
+        category: 'fill-clip',
+        isDefinition: true,
+      }),
+    [node.id]
+  );
 
   return (
     <g
@@ -55,4 +69,5 @@ export default Text;
 
 type TProps = {
   node: TTextNode;
+  index?: number;
 };
