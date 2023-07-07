@@ -1,6 +1,6 @@
 import { TNode } from '@pda/types/dtif';
 import React from 'react';
-import { fillToCSS } from './fill-to-css';
+import { SolidFill } from './components';
 
 const Fills: React.FC<TProps> = (props) => {
   const { node } = props;
@@ -15,15 +15,12 @@ const Fills: React.FC<TProps> = (props) => {
       }}
     >
       {node.fills.map((fill, i) => {
-        const fillProperties = fillToCSS(fill, node);
-        return (
-          <rect
-            id={`fill-${i}-${node.id}`}
-            width={node.width}
-            height={node.height}
-            style={fillProperties}
-          />
-        );
+        switch (fill.type) {
+          case 'SOLID':
+            return <SolidFill node={node} index={i} paint={fill} />;
+          default:
+          // do nothing
+        }
       })}
     </g>
   );

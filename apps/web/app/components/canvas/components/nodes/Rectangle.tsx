@@ -1,7 +1,7 @@
+import { transformToCSS } from '@/components/canvas/utils';
 import { TRectangleNode } from '@pda/types/dtif';
 import React from 'react';
 import { Fills } from '../other';
-import { transformToCSS } from '../utils';
 
 const Rectangle: React.FC<TProps> = (props) => {
   const { node } = props;
@@ -9,8 +9,6 @@ const Rectangle: React.FC<TProps> = (props) => {
   return (
     <g
       id={`rectangle-${node.id}`}
-      width={node.width}
-      height={node.height}
       style={{
         display: node.isVisible ? 'block' : 'none',
         borderRadius: `${node.topLeftRadius}px ${node.topRightRadius}px ${node.bottomRightRadius}px ${node.bottomLeftRadius}px`,

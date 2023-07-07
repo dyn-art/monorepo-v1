@@ -4,17 +4,22 @@ import { Frame } from './components';
 
 const Canvas: React.FC<TProps> = (props) => {
   const { scene } = props;
+
   return (
     <svg
+      xmlns="http://www.w3.org/2000/svg"
+      id={`scene-${scene.version}-${scene.name}`}
       width={scene.width}
       height={scene.height}
       fill="none"
       viewBox={`0 0 ${scene.width} ${scene.height}`}
-      xmlns="http://www.w3.org/2000/svg"
       style={{
-        backgroundColor: 'red',
+        backgroundColor: 'red', // TODO: REMOVE
+        WebkitPrintColorAdjust: 'exact',
       }}
+      version="1.1"
     >
+      <desc>{scene.name}</desc>
       <Frame node={scene.root} />
     </svg>
   );

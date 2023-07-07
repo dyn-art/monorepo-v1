@@ -1,21 +1,18 @@
+import { transformToCSS } from '@/components/canvas/utils';
 import { TFrameNode } from '@pda/types/dtif';
 import React from 'react';
 import { Fills } from '../other';
-import { transformToCSS } from '../utils';
 import Rectangle from './Rectangle';
 
 const Frame: React.FC<TProps> = (props) => {
   const { node } = props;
   const clipPathId = `frame-clip-${node.id}`;
 
-  const frameProps = {
-    width: node.width,
-    height: node.height,
-    style: { ...transformToCSS(node.relativeTransform) },
-  };
-
   return (
-    <g id={`frame-${node.id}`} {...frameProps}>
+    <g
+      id={`frame-${node.id}`}
+      style={{ ...transformToCSS(node.relativeTransform) }}
+    >
       {/* Frame Content */}
       <g
         id={`frame-content-${node.id}`}
@@ -33,7 +30,7 @@ const Frame: React.FC<TProps> = (props) => {
       {node.clipsContent && (
         <defs>
           <clipPath id={clipPathId}>
-            <rect {...frameProps} />
+            <rect width={node.width} height={node.height} />
           </clipPath>
         </defs>
       )}
