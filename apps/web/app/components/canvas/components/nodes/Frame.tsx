@@ -1,12 +1,13 @@
 import { transformToCSS } from '@/components/canvas/utils';
 import { TFrameNode } from '@pda/types/dtif';
 import React from 'react';
-import { Fills } from '../other';
-import Rectangle from './Rectangle';
+import { Fill } from '../other';
+import Node from './Node';
 
 const Frame: React.FC<TProps> = (props) => {
   const { node } = props;
-  const clipPathId = `frame-clip-${node.id}`;
+  const contentClipPathId = `frame_content-clip-${node.id}`;
+  const fillClipPathId = `frame_fill-clip-${node.id}`;
 
   return (
     <g
@@ -15,13 +16,18 @@ const Frame: React.FC<TProps> = (props) => {
     >
       {/* Frame Content */}
       <g
-        id={`frame-content-${node.id}`}
-        clipPath={node.clipsContent ? `url(#${clipPathId})` : undefined}
+        id={`frame_content-${node.id}`}
+        clipPath={node.clipsContent ? `url(#${contentClipPathId})` : undefined}
       >
-        <Fills node={node} />
-        <g id={`frame-children-${node.id}`}>
+        <defs>
+          <clipPath id={fillClipPathId}>
+            <rect width={node.width} height={node.height} />
+          </clipPath>
+        </defs>
+        <Fill node={node} clipPathId={fillClipPathId} />
+        <g id={`frame_children-${node.id}`}>
           {node.children.map((child) => (
-            <Rectangle node={child as any} />
+            <Node node={child} />
           ))}
         </g>
       </g>
@@ -29,7 +35,7 @@ const Frame: React.FC<TProps> = (props) => {
       {/* Clips Content */}
       {node.clipsContent && (
         <defs>
-          <clipPath id={clipPathId}>
+          <clipPath id={contentClipPathId}>
             <rect width={node.width} height={node.height} />
           </clipPath>
         </defs>

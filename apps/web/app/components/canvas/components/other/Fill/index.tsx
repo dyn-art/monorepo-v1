@@ -1,15 +1,16 @@
 import { TNode } from '@pda/types/dtif';
 import React from 'react';
-import { SolidFill } from './components';
+import { SolidPaint } from './components';
 
-const Fills: React.FC<TProps> = (props) => {
-  const { node } = props;
+const Fill: React.FC<TProps> = (props) => {
+  const { node, clipPathId } = props;
   if (!('fills' in node)) {
     return null;
   }
   return (
     <g
-      id={`fills-${node.id}`}
+      id={`fill-${node.id}`}
+      clipPath={`url(#${clipPathId})`}
       style={{
         pointerEvents: 'none',
       }}
@@ -17,7 +18,7 @@ const Fills: React.FC<TProps> = (props) => {
       {node.fills.map((fill, i) => {
         switch (fill.type) {
           case 'SOLID':
-            return <SolidFill node={node} index={i} paint={fill} />;
+            return <SolidPaint node={node} index={i} paint={fill} />;
           default:
           // do nothing
         }
@@ -26,8 +27,9 @@ const Fills: React.FC<TProps> = (props) => {
   );
 };
 
-export default Fills;
+export default Fill;
 
 type TProps = {
   node: TNode;
+  clipPathId: string;
 };

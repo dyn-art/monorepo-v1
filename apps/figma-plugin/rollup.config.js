@@ -115,6 +115,7 @@ export default [
       file: './dist/ui.js',
       format: 'es',
       sourcemap: !isProduction,
+      inlineDynamicImports: true,
     },
     plugins: [
       sharedPlugins.nodeResolve,

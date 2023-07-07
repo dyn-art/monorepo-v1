@@ -77,6 +77,7 @@ const DTIFExport: React.FC = () => {
             svg: {
               inline: true,
               exportIdentifierRegex: '_svg$',
+              frameToSVG: false,
             },
             gradientFill: {
               inline: true,

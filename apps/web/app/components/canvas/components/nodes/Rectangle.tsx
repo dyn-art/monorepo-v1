@@ -1,10 +1,11 @@
 import { transformToCSS } from '@/components/canvas/utils';
 import { TRectangleNode } from '@pda/types/dtif';
 import React from 'react';
-import { Fills } from '../other';
+import { Fill } from '../other';
 
 const Rectangle: React.FC<TProps> = (props) => {
   const { node } = props;
+  const fillClipPathId = `rectangle_fill-clip-${node.id}`;
 
   return (
     <g
@@ -13,12 +14,16 @@ const Rectangle: React.FC<TProps> = (props) => {
         display: node.isVisible ? 'block' : 'none',
         borderRadius: `${node.topLeftRadius}px ${node.topRightRadius}px ${node.bottomRightRadius}px ${node.bottomLeftRadius}px`,
         opacity: node.opacity,
-        overflow: 'hidden', // Fill is always clipped (clipsContent)
         pointerEvents: node.isLocked ? 'none' : 'auto',
         ...transformToCSS(node.relativeTransform),
       }}
     >
-      <Fills node={node} />
+      <defs>
+        <clipPath id={fillClipPathId}>
+          <rect width={node.width} height={node.height} />
+        </clipPath>
+      </defs>
+      <Fill node={node} clipPathId={fillClipPathId} />
     </g>
   );
 };

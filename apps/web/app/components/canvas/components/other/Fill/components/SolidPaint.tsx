@@ -2,7 +2,7 @@ import { rgbToCSS } from '@/components/canvas/utils';
 import { TNode, TSolidPaint } from '@pda/types/dtif';
 import React from 'react';
 
-const SolidFill: React.FC<TProps> = (props) => {
+const SolidPaint: React.FC<TProps> = (props) => {
   const { node, paint, index } = props;
   return (
     <rect
@@ -17,7 +17,7 @@ const SolidFill: React.FC<TProps> = (props) => {
   );
 };
 
-export default SolidFill;
+export default SolidPaint;
 
 type TProps = {
   node: TNode;

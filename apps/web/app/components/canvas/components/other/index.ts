@@ -1,3 +1,3 @@
-import Fills from './Fills';
+import Fill from './Fill';
 
-export { Fills };
+export { Fill };

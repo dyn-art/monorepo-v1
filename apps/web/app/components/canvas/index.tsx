@@ -1,6 +1,6 @@
 import { TScene } from '@pda/types/dtif';
 import React from 'react';
-import { Frame } from './components';
+import { Node } from './components';
 
 const Canvas: React.FC<TProps> = (props) => {
   const { scene } = props;
@@ -20,7 +20,7 @@ const Canvas: React.FC<TProps> = (props) => {
       version="1.1"
     >
       <desc>{scene.name}</desc>
-      <Frame node={scene.root} />
+      <Node node={scene.root} />
     </svg>
   );
 };

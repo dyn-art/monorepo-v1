@@ -1,4 +1,5 @@
 import { TTransform } from '@pda/types/dtif';
+import React from 'react';
 import { extractMatrixData } from './extract-matrix-data';
 
 export function transformToCSS(transform: TTransform): React.CSSProperties {
