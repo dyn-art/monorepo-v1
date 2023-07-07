@@ -33,13 +33,17 @@ const LinearGradientPaint: React.FC<TProps> = (props) => {
       <defs>
         <linearGradient
           id={gradientDefinitionId}
+          gradientUnits="userSpaceOnUse"
           x1={paint.start.x}
           y1={paint.start.y}
           x2={paint.end.x}
           y2={paint.end.y}
         >
           {paint.gradientStops.map((stop) => (
-            <stop offset={stop.position} stopColor={rgbToCSS(stop.color)} />
+            <stop
+              offset={stop.position !== 0 ? stop.position : undefined}
+              stopColor={rgbToCSS(stop.color)}
+            />
           ))}
         </linearGradient>
       </defs>

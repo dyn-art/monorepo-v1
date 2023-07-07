@@ -30,6 +30,7 @@ export async function processNode(
       }
       return uploadDataToBucket(key, data, contentType?.mimeType);
     };
+
     // Format the node for export
     const toExportNode = await formatFrameToScene(node, {
       ...options,
@@ -59,7 +60,7 @@ export async function processNode(
 
     // Upload the node as JSON string to bucket
     const json = JSON.stringify(toExportNode);
-    const key = sha256(json);
+    const key = options.nameAsBucketId ? node.name : sha256(json);
     await uploadDataToBucket(key, stringToUint8Array(json), 'application/json');
 
     // Post success message and notify the user
