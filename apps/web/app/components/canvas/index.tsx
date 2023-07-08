@@ -3,10 +3,11 @@ import React from 'react';
 import { Node } from './components';
 
 const Canvas: React.FC<TProps> = (props) => {
-  const { scene } = props;
+  const { scene, canvasRef } = props;
 
   return (
     <svg
+      ref={canvasRef}
       xmlns="http://www.w3.org/2000/svg"
       width={scene.width}
       height={scene.height}
@@ -28,4 +29,5 @@ export default Canvas;
 
 type TProps = {
   scene: TScene;
+  canvasRef?: React.LegacyRef<SVGSVGElement>;
 };
