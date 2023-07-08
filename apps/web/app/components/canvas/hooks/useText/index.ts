@@ -75,7 +75,6 @@ export function useText(props: TUseTextOptions): TUseTextResponse {
     transforms.push(translate);
     newStyle.textAnchor = textAnchor as any;
     newStyle.dominantBaseline = dominantBaseline as any;
-    // newStyle.lineHeight = lineHeight;
 
     // Apply angle
     if (angle) {

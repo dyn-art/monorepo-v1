@@ -1,6 +1,6 @@
+import { useText } from '@/components/canvas/hooks';
 import { TTextNode } from '@pda/types/dtif';
 import React, { SVGAttributes } from 'react';
-import { useText } from './useText';
 
 const InnerText: React.FC<TProps> = (props) => {
   const {
@@ -31,7 +31,7 @@ const InnerText: React.FC<TProps> = (props) => {
       {wordsByLines.length > 0 ? (
         <text style={updatedStyle}>
           {wordsByLines.map((line, index) => (
-            <tspan key={index} x={0} dy={index === 0 ? 0 : lineHeight}>
+            <tspan key={index} x={0} dy={lineHeight}>
               {line.words.join(' ')}
             </tspan>
           ))}

@@ -22,6 +22,7 @@ export function mapTextAlignment(props: {
     linesCount,
     lineHeight,
   } = props;
+  const totalTextHeight = `(${lineHeight} * ${linesCount})`;
 
   let textAnchor = '';
   let dominantBaseline = '';
@@ -55,20 +56,20 @@ export function mapTextAlignment(props: {
   // Handle vertical text alignment
   switch (textAlignVertical) {
     case 'CENTER':
-      dominantBaseline = 'middle';
+      dominantBaseline = 'text-after-edge';
       translateY = reduceCSSCalc(
-        `calc(${height / 2}px - (${linesCount - 1} * ${lineHeight}))`
+        `calc(${height}px / 2 - ${totalTextHeight} / 2)`
       );
       break;
     case 'BOTTOM':
       dominantBaseline = 'text-after-edge';
       translateY = reduceCSSCalc(
-        `calc(${height}px - (${linesCount - 1} * ${lineHeight}))`
+        `calc(${height}px - (${linesCount} * ${lineHeight}))`
       );
       break;
     case 'TOP':
       dominantBaseline = 'text-before-edge';
-      translateY = '0px';
+      translateY = reduceCSSCalc(`calc(-${lineHeight})`);
       break;
     default:
       dominantBaseline = 'text-before-edge';
