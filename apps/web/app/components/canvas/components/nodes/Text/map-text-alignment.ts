@@ -1,38 +1,54 @@
 import { TTextNode } from '@pda/types/dtif';
+import { SVGAttributes } from 'react';
+import reduceCSSCalc from 'reduce-css-calc';
 
 export function mapTextAlignment(props: {
   textAlignHorizontal: TTextNode['textAlignHorizontal'];
   textAlignVertical: TTextNode['textAlignVertical'];
   width: number;
   height: number;
+  lineHeight: SVGAttributes<SVGTSpanElement>['dy'];
+  linesCount: number;
 }): {
   textAnchor: string;
   translate: string;
   dominantBaseline: string;
 } {
-  const { textAlignHorizontal, textAlignVertical, width, height } = props;
+  const {
+    textAlignHorizontal,
+    textAlignVertical,
+    width,
+    height,
+    linesCount,
+    lineHeight,
+  } = props;
 
   let textAnchor = '';
-  let translate = '';
   let dominantBaseline = '';
+
+  let translateX = '0px';
+  let translateY = '0px';
 
   // Handle horizontal text alignment
   switch (textAlignHorizontal) {
     case 'CENTER':
       textAnchor = 'middle';
-      translate = `translate(${width / 2}px, `;
+      translateX = reduceCSSCalc(`calc(${width}px / 2)`);
       break;
     case 'RIGHT':
       textAnchor = 'end';
-      translate = `translate(${width}px, `;
+      translateX = `${width}px`;
       break;
     case 'JUSTIFIED':
       textAnchor = 'middle'; // SVG doesn't support justified text, so default to center
-      translate = `translate(${width / 2}px, `;
+      translateX = reduceCSSCalc(`calc(${width}px / 2)`);
       break;
+    case 'LEFT':
+      textAnchor = 'start';
+      translateX = '0px';
     default:
       textAnchor = 'start';
-      translate = `translate(0px, `;
+      translateX = '0px';
       break;
   }
 
@@ -40,21 +56,29 @@ export function mapTextAlignment(props: {
   switch (textAlignVertical) {
     case 'CENTER':
       dominantBaseline = 'middle';
-      translate += `${height / 2}px)`;
+      translateY = reduceCSSCalc(
+        `calc(${height / 2}px - (${linesCount - 1} * ${lineHeight}))`
+      );
       break;
     case 'BOTTOM':
       dominantBaseline = 'text-after-edge';
-      translate += `${height}px)`;
+      translateY = reduceCSSCalc(
+        `calc(${height}px - (${linesCount - 1} * ${lineHeight}))`
+      );
       break;
-    default: // TOP
+    case 'TOP':
       dominantBaseline = 'text-before-edge';
-      translate += `0px)`;
+      translateY = '0px';
+      break;
+    default:
+      dominantBaseline = 'text-before-edge';
+      translateY = '0px';
       break;
   }
 
   return {
     textAnchor,
     dominantBaseline,
-    translate,
+    translate: `translate(${translateX}, ${translateY})`,
   };
 }

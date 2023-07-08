@@ -1,7 +1,6 @@
 import { TTextNode } from '@pda/types/dtif';
 import { WordsWithWidth, getStringWidth } from '@visx/text';
 import React, { SVGAttributes, useMemo } from 'react';
-import reduceCSSCalc from 'reduce-css-calc';
 import { mapTextAlignment } from './map-text-alignment';
 
 export function useText(props: TUseTextOptions): TUseTextResponse {
@@ -12,7 +11,6 @@ export function useText(props: TUseTextOptions): TUseTextResponse {
     width,
     height,
     lineHeight = '1em',
-    capHeight = '0.71em', // Magic number from d3
     characters,
     style,
   } = props;
@@ -59,26 +57,6 @@ export function useText(props: TUseTextOptions): TUseTextResponse {
     );
   }, [width, wordsWithWidth, spaceWidth]);
 
-  // Calculate starting position of the text based on the vertical alignment
-  const startDy = useMemo(() => {
-    switch (textAlignVertical) {
-      case 'TOP':
-        return reduceCSSCalc(`calc(${capHeight})`);
-      case 'CENTER':
-        return reduceCSSCalc(
-          `calc(${
-            (wordsByLines.length - 1) / 2
-          } * -${lineHeight} + (${capHeight} / 2))`
-        );
-      case 'BOTTOM':
-        return reduceCSSCalc(
-          `calc(${wordsByLines.length - 1} * -${lineHeight})`
-        );
-      default:
-        return null;
-    }
-  }, [textAlignVertical, capHeight, wordsByLines.length, lineHeight]);
-
   // Calculate updated styles
   const updatedStyle = useMemo<React.CSSProperties>(() => {
     const newStyle: React.CSSProperties = { ...style };
@@ -91,10 +69,13 @@ export function useText(props: TUseTextOptions): TUseTextResponse {
       textAlignVertical,
       width,
       height,
+      lineHeight,
+      linesCount: wordsByLines.length,
     });
     transforms.push(translate);
     newStyle.textAnchor = textAnchor as any;
     newStyle.dominantBaseline = dominantBaseline as any;
+    // newStyle.lineHeight = lineHeight;
 
     // Apply angle
     if (angle) {
@@ -107,7 +88,7 @@ export function useText(props: TUseTextOptions): TUseTextResponse {
     return newStyle;
   }, [width, wordsByLines, angle]);
 
-  return { wordsByLines, startDy, style: updatedStyle };
+  return { wordsByLines, style: updatedStyle };
 }
 
 type TUseTextOptions = {
@@ -135,6 +116,5 @@ type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
 
 type TUseTextResponse = {
   wordsByLines: WordsWithWidth[];
-  startDy: string;
   style: React.CSSProperties;
 };

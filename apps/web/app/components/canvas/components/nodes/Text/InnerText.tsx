@@ -14,11 +14,7 @@ const InnerText: React.FC<TProps> = (props) => {
     height,
     style,
   } = props;
-  const {
-    wordsByLines,
-    startDy,
-    style: updatedStyle,
-  } = useText({
+  const { wordsByLines, style: updatedStyle } = useText({
     characters: children,
     textAlignHorizontal,
     textAlignVertical,

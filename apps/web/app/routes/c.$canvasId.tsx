@@ -49,6 +49,8 @@ const CanvasId: React.FC = () => {
       try {
         const pngDataUrl = await htmlToImage.toPng(canvasRef.current, {
           cacheBust: true,
+          width: scene?.width,
+          height: scene?.height,
         });
         const link = document.createElement('a');
         link.download = 'my-image.png';
