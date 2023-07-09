@@ -40,60 +40,18 @@ const Ellipse: React.FC<TProps> = (props) => {
         ...transformToCSS(node.relativeTransform),
       }}
     >
-      <defs>
-        <clipPath id={fillClipPathId}>
-          <path d={svgPath} />
-        </clipPath>
-      </defs>
       <Fill node={node} clipPathId={fillClipPathId} />
+      {/* <defs>
+        <clipPath id={fillClipPathId}> */}
+      <path d={svgPath} fill={'red'} />
+      {/* </clipPath>
+      </defs> */}
+      {/* <Fill node={node} clipPathId={fillClipPathId} /> */}
     </g>
   );
 };
 
 export default Ellipse;
-
-function polarToCartesian(
-  centerX: number,
-  centerY: number,
-  radius: number,
-  angleInRadians: number
-) {
-  return {
-    x: centerX + radius * Math.cos(angleInRadians),
-    y: centerY - radius * Math.sin(angleInRadians), // notice the minus here, SVG's y axis points downwards
-  };
-}
-
-function describeArc(
-  x: number,
-  y: number,
-  radiusX: number,
-  radiusY: number,
-  startAngle: number,
-  endAngle: number,
-  sweepFlag: number
-) {
-  const start = polarToCartesian(x, y, radiusX, startAngle);
-  const end = polarToCartesian(x, y, radiusY, endAngle);
-
-  const largeArcFlag = endAngle - startAngle <= Math.PI ? '0' : '1';
-
-  const d = [
-    'M',
-    start.x,
-    start.y,
-    'A',
-    radiusX,
-    radiusY,
-    0,
-    largeArcFlag,
-    sweepFlag,
-    end.x,
-    end.y,
-  ].join(' ');
-
-  return d;
-}
 
 function createSVGPath(props: {
   arcData: TEllipseArcData;
@@ -103,47 +61,59 @@ function createSVGPath(props: {
   const { arcData, width, height } = props;
   const { startingAngle, endingAngle, innerRadius } = arcData;
 
-  // Convert angles from mathematical convention to SVG's convention
-  const startingAngleSVG = 2 * Math.PI - startingAngle;
-  const endingAngleSVG = 2 * Math.PI - endingAngle;
+  const rx = width / 2;
+  const ry = height / 2;
 
-  const largeArcFlag =
-    Math.abs(endingAngleSVG - startingAngleSVG) <= Math.PI ? '0' : '1';
+  // If we are drawing a full circle or more, SVG can't handle it directly,
+  // we will need to draw 2 separate arcs.
+  if (endingAngle - startingAngle >= Math.PI * 2) {
+    const firstArc = getSvgArc(
+      { x: rx, y: ry },
+      startingAngle,
+      startingAngle + Math.PI,
+      rx,
+      ry
+    );
+    const secondArc = getSvgArc(
+      { x: rx, y: ry },
+      startingAngle + Math.PI,
+      endingAngle,
+      rx,
+      ry
+    );
+    return `M ${rx} ${ry} ${firstArc} ${secondArc}`;
+  } else {
+    const arc = getSvgArc({ x: rx, y: ry }, startingAngle, endingAngle, rx, ry);
+    return `M ${rx} ${ry} ${arc}`;
+  }
+}
 
-  const sweepFlagOuter = '1'; // counter-clockwise for outer arc
-  const sweepFlagInner = '0'; // clockwise for inner arc
+interface IPoint {
+  x: number;
+  y: number;
+}
 
-  const innerRx = (width / 2) * innerRadius;
-  const innerRy = (height / 2) * innerRadius;
+// Calculate the SVG arc given center point, starting angle, ending angle and radius.
+function getSvgArc(
+  center: IPoint,
+  startAngle: number,
+  endAngle: number,
+  rx: number,
+  ry: number
+): string {
+  const start = {
+    x: center.x + Math.cos(startAngle) * rx,
+    y: center.y + Math.sin(startAngle) * ry,
+  };
+  const end = {
+    x: center.x + Math.cos(endAngle) * rx,
+    y: center.y + Math.sin(endAngle) * ry,
+  };
 
-  const outerRx = width / 2;
-  const outerRy = height / 2;
+  const largeArcFlag = endAngle - startAngle <= Math.PI ? '0' : '1';
+  const sweepFlag = '1';
 
-  const centerX = width / 2;
-  const centerY = height / 2;
-
-  const startXInner = centerX + innerRx * Math.cos(startingAngleSVG);
-  const startYInner = centerY - innerRy * Math.sin(startingAngleSVG);
-
-  const endXInner = centerX + innerRx * Math.cos(endingAngleSVG);
-  const endYInner = centerY - innerRy * Math.sin(endingAngleSVG);
-
-  const startXOuter = centerX + outerRx * Math.cos(startingAngleSVG);
-  const startYOuter = centerY - outerRy * Math.sin(startingAngleSVG);
-
-  const endXOuter = centerX + outerRx * Math.cos(endingAngleSVG);
-  const endYOuter = centerY - outerRy * Math.sin(endingAngleSVG);
-
-  const d = [
-    `M ${startXOuter} ${startYOuter}`,
-    `A ${outerRx} ${outerRy} 0 ${largeArcFlag} ${sweepFlagOuter} ${endXOuter} ${endYOuter}`,
-    `L ${endXInner} ${endYInner}`,
-    `A ${innerRx} ${innerRy} 0 ${largeArcFlag} ${sweepFlagInner} ${startXInner} ${startYInner}`,
-    `L ${startXOuter} ${startYOuter}`,
-    'Z',
-  ].join(' ');
-
-  return d;
+  return `L ${start.x} ${start.y} A ${rx} ${ry} 0 ${largeArcFlag} ${sweepFlag} ${end.x} ${end.y}`;
 }
 
 type TProps = {
