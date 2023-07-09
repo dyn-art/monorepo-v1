@@ -1,22 +1,21 @@
-import { TGroupNode } from '@pda/types/dtif';
+import { TEffect, TEllipseNode } from '@pda/types/dtif';
 import { TFormatNodeOptions } from '../types';
 import { convert2DMatrixTo3DMatrix } from '../utils';
-import { formatChildrenNodes } from './format-children-nodes';
+import { formatFills } from './format-fills';
 
-export async function formatGroupNode(
-  node: GroupNode,
+export async function formatEllipseNode(
+  node: EllipseNode,
   options: TFormatNodeOptions
-): Promise<TGroupNode> {
+): Promise<TEllipseNode> {
   return {
-    type: 'GROUP',
-    // BaseNode mixin
+    type: 'ELLIPSE',
+    arcData: node.arcData,
+    // BasNode mixin
     id: node.id,
     name: node.name,
     // SceneNode mixin
     isLocked: node.locked,
     isVisible: node.visible,
-    // Children mixin
-    children: await formatChildrenNodes(node.children as SceneNode[], options),
     // Layout mixin
     height: node.height,
     width: node.width,
@@ -25,5 +24,8 @@ export async function formatGroupNode(
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
+    effects: node.effects as TEffect[],
+    // Fills mixin
+    fills: await formatFills(node, node.fills as Paint[], options),
   };
 }

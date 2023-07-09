@@ -34,7 +34,29 @@ const Rectangle: React.FC<TProps> = (props) => {
     >
       <defs>
         <clipPath id={fillClipPathId}>
-          <rect width={node.width} height={node.height} />
+          {/* https://medium.com/@dennismphil/one-side-rounded-rectangle-using-svg-fb31cf318d90 */}
+          <path
+            d={`
+            M ${node.topLeftRadius},0
+            h ${node.width - node.topRightRadius - node.topLeftRadius}
+            q ${node.topRightRadius},0 ${node.topRightRadius},${
+              node.topRightRadius
+            }
+            v ${node.height - node.topRightRadius - node.bottomRightRadius}
+            q 0,${node.bottomRightRadius} -${node.bottomRightRadius},${
+              node.bottomRightRadius
+            }
+            h -${node.width - node.bottomRightRadius - node.bottomLeftRadius}
+            q -${node.bottomLeftRadius},0 -${node.bottomLeftRadius},-${
+              node.bottomLeftRadius
+            }
+            v -${node.height - node.bottomLeftRadius - node.topLeftRadius}
+            q 0,-${node.topLeftRadius} ${node.topLeftRadius},-${
+              node.topLeftRadius
+            }
+            Z
+            `}
+          ></path>
         </clipPath>
       </defs>
       <Fill node={node} clipPathId={fillClipPathId} />

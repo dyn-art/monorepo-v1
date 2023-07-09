@@ -39,6 +39,7 @@ export async function formatToSvgNode(
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
+    // Effect mixin
     effects: node.effects as TEffect[],
   };
   let svgNode: TSVGNode;
@@ -65,7 +66,7 @@ export async function formatToSvgNode(
       isExported: true,
       format: 'SVG',
       hash,
-      inline: uploaded ? undefined : data,
+      content: uploaded ? undefined : data,
       ...baseNodeProperties,
     } as TSVGNodeExported;
   }

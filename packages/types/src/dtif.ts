@@ -112,11 +112,13 @@ export type TSVGNodeExported = {
    */
   hash: string;
   /**
-   * Content of the exported file.
+   * Optional content of the exported file.
    * It can be either an array of bytes that contains the exported file's data inline,
    * or a URL string pointing to the file location.
+   *
+   * If not set the content can to be searched by the hash.
    */
-  content: Uint8Array | string;
+  content?: Uint8Array | string;
 } & TDefaultShapeMixin;
 
 /**

@@ -23,6 +23,7 @@ export async function formatRectangleNode(
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
+    // Effect mixin
     effects: node.effects as TEffect[],
     // RectangleCorner mixin
     bottomLeftRadius: node.bottomLeftRadius,

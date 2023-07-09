@@ -7,9 +7,12 @@ import {
 import { logger } from '../logger';
 import { TFormatNodeOptions } from '../types';
 import { isSVGCompatibleNode } from '../utils';
+import { formatEllipseNode } from './format-ellipse-node';
 import { formatFrameNode } from './format-frame-node';
 import { formatGroupNode } from './format-group-node';
+import { formatPolygonNode } from './format-polygon-node';
 import { formatRectangleNode } from './format-rectangle-node';
+import { formatStarNode } from './format-star-node';
 import { formatTextNode } from './format-text-node';
 import { formatToSvgNode } from './format-to-svg-node';
 
@@ -117,10 +120,13 @@ async function handleSupportedNodeFormatting(
       return formatTextNode(node, options);
     case 'RECTANGLE':
       return formatRectangleNode(node, options);
-    case 'LINE':
     case 'ELLIPSE':
+      return formatEllipseNode(node, options);
     case 'POLYGON':
+      return formatPolygonNode(node, options);
     case 'STAR':
+      return formatStarNode(node, options);
+    case 'LINE':
     case 'VECTOR':
     case 'BOOLEAN_OPERATION':
       return formatToSvgNode(node, options.svg);

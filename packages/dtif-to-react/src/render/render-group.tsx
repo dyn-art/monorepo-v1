@@ -1,6 +1,6 @@
 import { TGroupNode } from '@pda/types/dtif';
 import React from 'react';
-import { figmaBlendModeToCSS, figmaEffectToCSS } from '../to-css';
+import { figmaBlendModeToCSS } from '../to-css';
 import { TInherit } from '../types';
 import { getIdentifier } from '../utils';
 import { renderNode } from './render-node';
@@ -19,7 +19,6 @@ export async function renderGroup(
         display: isVisible ? 'block' : 'none',
         opacity: node.opacity,
         pointerEvents: isLocked ? 'none' : 'auto',
-        ...figmaEffectToCSS(node.effects),
         ...figmaBlendModeToCSS(node.blendMode),
         ...style,
       }}
