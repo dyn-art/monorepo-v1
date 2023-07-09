@@ -16,6 +16,25 @@ const Rectangle: React.FC<TProps> = (props) => {
       }),
     [node.id]
   );
+  const svgPath = React.useMemo(
+    () =>
+      createSVGPath({
+        width: node.width,
+        height: node.height,
+        topLeftRadius: node.topLeftRadius,
+        topRightRadius: node.topRightRadius,
+        bottomRightRadius: node.bottomRightRadius,
+        bottomLeftRadius: node.bottomLeftRadius,
+      }),
+    [
+      node.width,
+      node.height,
+      node.topLeftRadius,
+      node.topRightRadius,
+      node.bottomRightRadius,
+      node.bottomLeftRadius,
+    ]
+  );
 
   return (
     <g
@@ -26,7 +45,6 @@ const Rectangle: React.FC<TProps> = (props) => {
       })}
       style={{
         display: node.isVisible ? 'block' : 'none',
-        borderRadius: `${node.topLeftRadius}px ${node.topRightRadius}px ${node.bottomRightRadius}px ${node.bottomLeftRadius}px`,
         opacity: node.opacity,
         pointerEvents: node.isLocked ? 'none' : 'auto',
         ...transformToCSS(node.relativeTransform),
@@ -34,29 +52,7 @@ const Rectangle: React.FC<TProps> = (props) => {
     >
       <defs>
         <clipPath id={fillClipPathId}>
-          {/* https://medium.com/@dennismphil/one-side-rounded-rectangle-using-svg-fb31cf318d90 */}
-          <path
-            d={`
-            M ${node.topLeftRadius},0
-            h ${node.width - node.topRightRadius - node.topLeftRadius}
-            q ${node.topRightRadius},0 ${node.topRightRadius},${
-              node.topRightRadius
-            }
-            v ${node.height - node.topRightRadius - node.bottomRightRadius}
-            q 0,${node.bottomRightRadius} -${node.bottomRightRadius},${
-              node.bottomRightRadius
-            }
-            h -${node.width - node.bottomRightRadius - node.bottomLeftRadius}
-            q -${node.bottomLeftRadius},0 -${node.bottomLeftRadius},-${
-              node.bottomLeftRadius
-            }
-            v -${node.height - node.bottomLeftRadius - node.topLeftRadius}
-            q 0,-${node.topLeftRadius} ${node.topLeftRadius},-${
-              node.topLeftRadius
-            }
-            Z
-            `}
-          ></path>
+          <path d={svgPath} />
         </clipPath>
       </defs>
       <Fill node={node} clipPathId={fillClipPathId} />
@@ -65,6 +61,36 @@ const Rectangle: React.FC<TProps> = (props) => {
 };
 
 export default Rectangle;
+
+function createSVGPath(props: {
+  width: number;
+  height: number;
+  topLeftRadius: number;
+  topRightRadius: number;
+  bottomRightRadius: number;
+  bottomLeftRadius: number;
+}): string {
+  const {
+    width,
+    height,
+    topLeftRadius,
+    topRightRadius,
+    bottomRightRadius,
+    bottomLeftRadius,
+  } = props;
+  return [
+    `M ${topLeftRadius},0`,
+    `h ${width - topRightRadius - topLeftRadius}`,
+    `q ${topRightRadius},0 ${topRightRadius},${topRightRadius}`,
+    `v ${height - topRightRadius - bottomRightRadius}`,
+    `q 0,${bottomRightRadius} -${bottomRightRadius},${bottomRightRadius}`,
+    `h -${width - bottomRightRadius - bottomLeftRadius}`,
+    `q -${bottomLeftRadius},0 -${bottomLeftRadius},-${bottomLeftRadius}`,
+    `v -${height - bottomLeftRadius - topLeftRadius}`,
+    `q 0,-${topLeftRadius} ${topLeftRadius},-${topLeftRadius}`,
+    'Z',
+  ].join(' ');
+}
 
 type TProps = {
   node: TRectangleNode;

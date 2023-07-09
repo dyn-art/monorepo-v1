@@ -1,5 +1,6 @@
 import { TNode } from '@pda/types/dtif';
 import React from 'react';
+import Ellipse from './Ellipse';
 import Frame from './Frame';
 import Group from './Group';
 import Rectangle from './Rectangle';
@@ -15,6 +16,8 @@ const Node: React.FC<TProps> = (props) => {
       return <Group node={node} index={index} />;
     case 'RECTANGLE':
       return <Rectangle node={node} index={index} />;
+    case 'ELLIPSE':
+      return <Ellipse node={node} index={index} />;
     case 'TEXT':
       return <Text node={node} index={index} />;
     case 'SVG':
