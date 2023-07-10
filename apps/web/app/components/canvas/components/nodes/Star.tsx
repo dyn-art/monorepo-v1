@@ -1,20 +1,20 @@
 import {
-  createRectanglePath,
+  createStarPath,
   getIdentifier,
   transformToCSS,
 } from '@/components/canvas/utils';
-import { TRectangleNode } from '@pda/types/dtif';
+import { TStarNode } from '@pda/types/dtif';
 import React from 'react';
 import { Fill } from '../other';
 
-const Rectangle: React.FC<TProps> = (props) => {
+const Star: React.FC<TProps> = (props) => {
   const { node, index = 0 } = props;
   const fillClipPathId = React.useMemo(
     () =>
       getIdentifier({
         id: node.id,
         index,
-        type: 'rectangle',
+        type: 'star',
         category: 'fill-clip',
         isDefinition: true,
       }),
@@ -22,22 +22,13 @@ const Rectangle: React.FC<TProps> = (props) => {
   );
   const svgPath = React.useMemo(
     () =>
-      createRectanglePath({
+      createStarPath({
         width: node.width,
         height: node.height,
-        topLeftRadius: node.topLeftRadius,
-        topRightRadius: node.topRightRadius,
-        bottomRightRadius: node.bottomRightRadius,
-        bottomLeftRadius: node.bottomLeftRadius,
+        pointCount: node.pointCount,
+        innerRadiusRatio: node.innerRadiusRation,
       }),
-    [
-      node.width,
-      node.height,
-      node.topLeftRadius,
-      node.topRightRadius,
-      node.bottomRightRadius,
-      node.bottomLeftRadius,
-    ]
+    [node.width, node.height, node.pointCount, node.innerRadiusRation]
   );
 
   return (
@@ -45,7 +36,7 @@ const Rectangle: React.FC<TProps> = (props) => {
       id={getIdentifier({
         id: node.id,
         index,
-        type: 'rectangle',
+        type: 'star',
       })}
       style={{
         display: node.isVisible ? 'block' : 'none',
@@ -64,9 +55,9 @@ const Rectangle: React.FC<TProps> = (props) => {
   );
 };
 
-export default Rectangle;
+export default Star;
 
 type TProps = {
-  node: TRectangleNode;
+  node: TStarNode;
   index?: number;
 };

@@ -9,7 +9,11 @@ export async function formatEllipseNode(
 ): Promise<TEllipseNode> {
   return {
     type: 'ELLIPSE',
-    arcData: node.arcData,
+    arcData: {
+      endingAngle: node.arcData.endingAngle,
+      startingAngle: node.arcData.startingAngle,
+      innerRadiusRatio: node.arcData.innerRadius,
+    },
     // BasNode mixin
     id: node.id,
     name: node.name,

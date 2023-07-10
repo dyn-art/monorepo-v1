@@ -2,7 +2,8 @@ import { TEllipseArcData, TVector } from '@pda/types/dtif';
 import { notEmpty } from '@pda/utils';
 
 /**
- * Constructs a SVG path string based on the given arc data and ellipse width & height.
+ * Constructs a ellipse SVG path string based on the given arc data
+ * and width & height of the ellipse.
  *
  * Good to know: https://dev.to/mustapha/how-to-create-an-interactive-svg-donut-chart-using-angular-19eo
  *
@@ -15,13 +16,14 @@ export function createEllipsePath(props: {
   height: number;
 }) {
   const { arcData, width, height } = props;
-  const { startingAngle, endingAngle, innerRadius } = arcData;
+  const { startingAngle, endingAngle, innerRadiusRatio } = arcData;
 
   // Calculate radius of ellipse
   const rx = width / 2;
   const ry = height / 2;
 
-  const g = getSvgArcPath({
+  // Create SVG path
+  return getSvgArcPath({
     center: { x: rx, y: ry },
     startAngle: startingAngle,
     endAngle: endingAngle,
@@ -29,10 +31,8 @@ export function createEllipsePath(props: {
       x: rx,
       y: ry,
     },
-    innerRadius,
+    innerRadiusRatio,
   });
-
-  return g.join(' ');
 }
 
 // Helper function to construct the SVG path string of an ellipse
@@ -41,14 +41,14 @@ function getSvgArcPath(props: {
   startAngle: number; // In radian
   endAngle: number; // In radian
   radius: { x: number; y: number };
-  innerRadius?: number; // In percent (0 - 1) to the outer radius
-}): string[] {
+  innerRadiusRatio?: number; // In percent (0 - 1) to the outer radius
+}): string {
   const {
     center: { x: cx, y: cy },
     startAngle,
     endAngle,
     radius: { x: rx, y: ry },
-    innerRadius = 0,
+    innerRadiusRatio = 0,
   } = props;
 
   // Calculate start and end coordinates on the boundary of the outer ellipse
@@ -82,14 +82,14 @@ function getSvgArcPath(props: {
   // Calculate start and end coordinates on the boundary of the inner ellipse
   let innerStart: TVector = { x: cx, y: cy };
   let innerEnd: TVector = { x: cx, y: cy };
-  if (innerRadius > 0) {
+  if (innerRadiusRatio > 0) {
     innerStart = {
-      x: cx + Math.cos(startAngle + epsilon) * innerRadius * rx,
-      y: cy + Math.sin(startAngle + epsilon) * innerRadius * ry,
+      x: cx + Math.cos(startAngle + epsilon) * innerRadiusRatio * rx,
+      y: cy + Math.sin(startAngle + epsilon) * innerRadiusRatio * ry,
     };
     innerEnd = {
-      x: cx + Math.cos(endAngle + epsilon) * innerRadius * rx,
-      y: cy + Math.sin(endAngle + epsilon) * innerRadius * ry,
+      x: cx + Math.cos(endAngle + epsilon) * innerRadiusRatio * rx,
+      y: cy + Math.sin(endAngle + epsilon) * innerRadiusRatio * ry,
     };
   }
 
@@ -127,12 +127,14 @@ function getSvgArcPath(props: {
     // if inner radius draw to inner radius end
     `L ${innerEnd.x} ${innerEnd.y}`,
     // If inner radius draw inner radius to the inner start
-    innerRadius > 0
-      ? `A ${rx * innerRadius} ${
-          ry * innerRadius
+    innerRadiusRatio > 0
+      ? `A ${rx * innerRadiusRatio} ${
+          ry * innerRadiusRatio
         } 0 ${largeArcFlag} ${sweepFlagInner} ${innerStart.x} ${innerStart.y}`
       : null,
     // Close the path
     'Z',
-  ].filter(notEmpty);
+  ]
+    .filter(notEmpty)
+    .join(' ');
 }

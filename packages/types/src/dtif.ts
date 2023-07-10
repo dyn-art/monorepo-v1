@@ -234,6 +234,10 @@ export type TStarNode = {
    * Number of "spikes", or outer points of the star. Must be an integer >= 3.
    */
   pointCount: number;
+  /**
+   * Ratio of the inner radius to the outer radius.
+   */
+  innerRadiusRation: number;
 } & TDefaultShapeMixin &
   TFillsMixin;
 
@@ -608,7 +612,10 @@ export type TLineHeight =
 export type TEllipseArcData = {
   startingAngle: number;
   endingAngle: number;
-  innerRadius: number;
+  /**
+   * Ratio of the inner radius to the outer radius.
+   */
+  innerRadiusRatio: number;
 };
 
 export type TEmbedMetaData = {

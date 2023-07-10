@@ -3,7 +3,9 @@ import React from 'react';
 import Ellipse from './Ellipse';
 import Frame from './Frame';
 import Group from './Group';
+import Polygon from './Polygon';
 import Rectangle from './Rectangle';
+import Star from './Star';
 import Text from './Text';
 
 const Node: React.FC<TProps> = (props) => {
@@ -18,6 +20,10 @@ const Node: React.FC<TProps> = (props) => {
       return <Rectangle node={node} index={index} />;
     case 'ELLIPSE':
       return <Ellipse node={node} index={index} />;
+    case 'POLYGON':
+      return <Polygon node={node} index={index} />;
+    case 'STAR':
+      return <Star node={node} index={index} />;
     case 'TEXT':
       return <Text node={node} index={index} />;
     case 'SVG':

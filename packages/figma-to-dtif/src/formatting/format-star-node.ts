@@ -10,6 +10,7 @@ export async function formatStarNode(
   return {
     type: 'STAR',
     pointCount: node.pointCount,
+    innerRadiusRation: node.innerRadius,
     // BasNode mixin
     id: node.id,
     name: node.name,

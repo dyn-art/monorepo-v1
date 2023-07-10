@@ -1,20 +1,20 @@
 import {
-  createRectanglePath,
+  createPolygonPath,
   getIdentifier,
   transformToCSS,
 } from '@/components/canvas/utils';
-import { TRectangleNode } from '@pda/types/dtif';
+import { TPolygonNode } from '@pda/types/dtif';
 import React from 'react';
 import { Fill } from '../other';
 
-const Rectangle: React.FC<TProps> = (props) => {
+const Polygon: React.FC<TProps> = (props) => {
   const { node, index = 0 } = props;
   const fillClipPathId = React.useMemo(
     () =>
       getIdentifier({
         id: node.id,
         index,
-        type: 'rectangle',
+        type: 'polygon',
         category: 'fill-clip',
         isDefinition: true,
       }),
@@ -22,22 +22,12 @@ const Rectangle: React.FC<TProps> = (props) => {
   );
   const svgPath = React.useMemo(
     () =>
-      createRectanglePath({
+      createPolygonPath({
         width: node.width,
         height: node.height,
-        topLeftRadius: node.topLeftRadius,
-        topRightRadius: node.topRightRadius,
-        bottomRightRadius: node.bottomRightRadius,
-        bottomLeftRadius: node.bottomLeftRadius,
+        pointCount: node.pointCount,
       }),
-    [
-      node.width,
-      node.height,
-      node.topLeftRadius,
-      node.topRightRadius,
-      node.bottomRightRadius,
-      node.bottomLeftRadius,
-    ]
+    [node.width, node.height, node.pointCount]
   );
 
   return (
@@ -45,7 +35,7 @@ const Rectangle: React.FC<TProps> = (props) => {
       id={getIdentifier({
         id: node.id,
         index,
-        type: 'rectangle',
+        type: 'polygon',
       })}
       style={{
         display: node.isVisible ? 'block' : 'none',
@@ -64,9 +54,9 @@ const Rectangle: React.FC<TProps> = (props) => {
   );
 };
 
-export default Rectangle;
+export default Polygon;
 
 type TProps = {
-  node: TRectangleNode;
+  node: TPolygonNode;
   index?: number;
 };
