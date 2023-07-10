@@ -1,7 +1,8 @@
 import { TTextNode } from '@pda/types/dtif';
-import { WordsWithWidth, getStringWidth } from '@visx/text';
 import React, { SVGAttributes, useMemo } from 'react';
+import { logger } from '../../../../core/logger';
 import { useHydrated } from '../useHydrated';
+import getStringWidth from './get-string-width';
 import { mapTextAlignment } from './map-text-alignment';
 
 export function useText(props: TUseTextOptions): TUseTextResponse {
@@ -56,6 +57,8 @@ export function useText(props: TUseTextOptions): TUseTextResponse {
     }));
     const spaceWidth = getStringWidth('\u00A0', style) ?? 0;
 
+    logger.info({ wordsWithWidth, spaceWidth });
+
     setIsTextReady(true);
     return {
       wordsWithWidth,
@@ -67,18 +70,28 @@ export function useText(props: TUseTextOptions): TUseTextResponse {
   const wordsByLines = useMemo(() => {
     return wordsWithWidth.reduce(
       (result: WordsWithWidth[], { word, wordWidth }) => {
-        const currentLine = result[result.length - 1];
+        const currentLine =
+          result.length > 0 ? result[result.length - 1] : null;
 
+        logger.info({
+          word,
+          wordWidth,
+          spaceWidth,
+          width,
+          currentWidth: currentLine?.width + wordWidth + spaceWidth,
+          currentLine,
+        });
+
+        // Word can be added to an existing line
         if (
-          currentLine &&
-          (currentLine.width || 0) + wordWidth + spaceWidth < width
+          currentLine != null &&
+          currentLine.width + wordWidth + spaceWidth < width
         ) {
-          // Word can be added to an existing line
           currentLine.words.push(word);
-          currentLine.width = currentLine.width || 0;
-          currentLine.width += wordWidth + spaceWidth;
-        } else {
-          // Add first word to line or word is too long to scaleToFit on existing line
+          currentLine.width = currentLine.width + wordWidth + spaceWidth;
+        }
+        // Add first word to line or word is too long to fit on existing line
+        else {
           const newLine = { words: [word], width: wordWidth };
           result.push(newLine);
         }
@@ -152,3 +165,8 @@ type TUseTextResponse =
       isTextReady: true;
     }
   | { isTextReady: false };
+
+export type WordsWithWidth = {
+  words: string[];
+  width: number;
+};

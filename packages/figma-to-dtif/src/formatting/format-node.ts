@@ -49,7 +49,7 @@ export async function formatNode(
   const isVisible = node.visible;
   if (!isVisible && ignoreInvisible) {
     throw new InvisibleNodeException(
-      `Node '${node.name}' couldn't be exported because it is probably invisible.`,
+      `Node '${node.name}' couldn't be exported because it is invisible.`,
       node
     );
   }

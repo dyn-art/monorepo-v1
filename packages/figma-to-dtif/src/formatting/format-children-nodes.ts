@@ -10,9 +10,10 @@ export async function formatChildrenNodes(
 ): Promise<TNode[]> {
   return (
     await Promise.all(
-      children.map((node) => {
+      children.map(async (node) => {
         try {
-          return formatNode(node, options, false);
+          const formattedNode = await formatNode(node, options, false);
+          return formattedNode;
         } catch (error) {
           if (error instanceof InvisibleNodeException) {
             return null;
