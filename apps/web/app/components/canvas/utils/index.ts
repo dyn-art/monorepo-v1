@@ -1,5 +1,6 @@
 export * from './apply-dimensions-to-image-transform-data';
 export * from './calculate-crop-image-size';
+export * from './create-ellipse-path';
 export * from './extract-matrix-data';
 export * from './get-bucket-url-from-hash';
 export * from './get-identifier';
