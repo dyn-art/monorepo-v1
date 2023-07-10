@@ -78,16 +78,25 @@ function getSvgArcPath(props: {
   // If the ellipse slice is bigger than 180 degrees (half circle),
   // we have to tell SVG to take the longest route (by default it will take the shortest),
   // which is why the largeArcFlag is set to 1 for a > 180 degrees circle.
-  const largeArcFlag = endAngle - startAngle >= Math.PI ? '1' : '0';
+  const largeArcFlag =
+    startAngle < 0 || endAngle < 0 || endAngle - startAngle >= Math.PI
+      ? '1'
+      : '0';
   // If the ellipse slice is a full circle (360 degrees),
   // we have to draw the arc in a clockwise direction for it to appear correct to the viewer,
   // which is why the sweepFlagOuter is set to 0 when it's a full circle
-  const sweepFlagOuter = endAngle - startAngle >= Math.PI * 2 ? '0' : '1';
+  const sweepFlagOuter =
+    startAngle < 0 || endAngle < 0 || endAngle - startAngle >= Math.PI * 2
+      ? '0'
+      : '1';
   // On the other hand, for the inner arc,
   // drawing in a counter-clockwise direction will ensure the hole
   // in the donut segment is rendered correctly,
   // which is why the sweepFlagInner is set to 1 for a full circle
-  const sweepFlagInner = endAngle - startAngle >= Math.PI * 2 ? '1' : '0';
+  const sweepFlagInner =
+    startAngle < 0 || endAngle < 0 || endAngle - startAngle >= Math.PI * 2
+      ? '1'
+      : '0';
 
   return [
     // Start at the center of the ellipse
