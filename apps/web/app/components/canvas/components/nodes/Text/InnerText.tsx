@@ -1,9 +1,12 @@
 import { useText } from '@/components/canvas/hooks';
-import { TTextNode } from '@pda/types/dtif';
+import { getIdentifier } from '@/components/canvas/utils';
+import { TTextNode, TVectorPath } from '@pda/types/dtif';
 import React, { SVGAttributes } from 'react';
 
 const InnerText: React.FC<TProps> = (props) => {
   const {
+    id,
+    fillGeometry,
     children,
     textAlignHorizontal = 'LEFT',
     textAlignVertical = 'BOTTOM',
@@ -14,7 +17,8 @@ const InnerText: React.FC<TProps> = (props) => {
     height,
     style,
   } = props;
-  const { wordsByLines, style: updatedStyle } = useText({
+
+  const text = useText({
     characters: children,
     textAlignHorizontal,
     textAlignVertical,
@@ -26,11 +30,31 @@ const InnerText: React.FC<TProps> = (props) => {
     style,
   });
 
+  if (!text.isTextReady) {
+    return (
+      <>
+        {(fillGeometry ?? []).map((fillGeometry, i) => {
+          return (
+            <path
+              key={getIdentifier({
+                id: id,
+                index: i,
+                type: 'text',
+                category: 'fill-geometry',
+              })}
+              d={fillGeometry.data}
+            />
+          );
+        })}
+      </>
+    );
+  }
+
   return (
     <>
-      {wordsByLines.length > 0 ? (
-        <text style={updatedStyle}>
-          {wordsByLines.map((line, index) => (
+      {text.wordsByLines.length > 0 ? (
+        <text style={text.style}>
+          {text.wordsByLines.map((line, index) => (
             <tspan key={index} x={0} dy={lineHeight}>
               {line.words.join(' ')}
             </tspan>
@@ -44,6 +68,9 @@ const InnerText: React.FC<TProps> = (props) => {
 export default InnerText;
 
 type TProps = {
+  id: string;
+  // Backup while font isn't loaded
+  fillGeometry?: TVectorPath[];
   // Vertical text alignment
   textAlignVertical?: TTextNode['textAlignVertical'];
   // Horizontal text alignment

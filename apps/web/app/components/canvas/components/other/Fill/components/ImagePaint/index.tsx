@@ -1,4 +1,4 @@
-import { getS3BucketURLFromHash } from '@pda/dtif-to-react';
+import { getBucketURLFromHash } from '@/components/canvas/utils';
 import { TImagePaint, TNode } from '@pda/types/dtif';
 import React from 'react';
 import {
@@ -11,7 +11,7 @@ import {
 const ImagePaint: React.FC<TProps> = (props) => {
   const { paint, node, index } = props;
   const imageUrl = React.useMemo(
-    () => getS3BucketURLFromHash(paint.hash),
+    () => getBucketURLFromHash(paint.hash),
     [paint.hash]
   );
 

@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@pda/core-client": "workspace:*",
-    "@pda/dtif-to-react": "workspace:*",
     "@pda/logger": "workspace:*",
     "@pda/openapi-fetch": "workspace:*",
     "@pda/utils": "workspace:*",
@@ -24,6 +23,7 @@
     "@remix-run/node": "^1.17.1",
     "@remix-run/react": "^1.17.1",
     "@remix-run/vercel": "^1.17.1",
+    "@types/webfontloader": "^1.6.35",
     "@vercel/node": "^2.10.3",
     "@visx/text": "^3.0.0",
     "class-variance-authority": "^0.6.0",
@@ -35,7 +35,8 @@
     "react-dom": "^18.2.0",
     "reduce-css-calc": "^2.1.8",
     "tailwind-merge": "^1.13.2",
-    "tailwindcss-animate": "^1.0.6"
+    "tailwindcss-animate": "^1.0.6",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@pda/tsconfig": "workspace:*",

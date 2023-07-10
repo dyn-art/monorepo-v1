@@ -1,9 +1,12 @@
 import { TTextNode } from '@pda/types/dtif';
 import { WordsWithWidth, getStringWidth } from '@visx/text';
 import React, { SVGAttributes, useMemo } from 'react';
+import { useHydrated } from '../useHydrated';
 import { mapTextAlignment } from './map-text-alignment';
 
 export function useText(props: TUseTextOptions): TUseTextResponse {
+  // Check whether component has been hydrated on the client side
+  const isHydrated = useHydrated();
   const {
     textAlignVertical = 'BOTTOM',
     textAlignHorizontal = 'LEFT',
@@ -14,22 +17,51 @@ export function useText(props: TUseTextOptions): TUseTextResponse {
     characters,
     style,
   } = props;
+  const [isTextReady, setIsTextReady] = React.useState(false);
+  const [loadedFontFamily, setLoadedFontFamily] = React.useState<string | null>(
+    null
+  );
+
+  // Load font
+  React.useEffect(() => {
+    (async () => {
+      if (isHydrated && style?.fontFamily != null) {
+        const WebFont = (await import('webfontloader')).default;
+        const fontFamily = `${style?.fontFamily}:${style?.fontWeight ?? 400}`;
+        WebFont.load({
+          google: {
+            families: [fontFamily],
+          },
+        });
+        setLoadedFontFamily(fontFamily);
+      }
+    })();
+  }, [isHydrated, style?.fontFamily, style?.fontWeight]);
 
   const { wordsWithWidth, spaceWidth } = useMemo(() => {
+    if (loadedFontFamily == null) {
+      return { wordsWithWidth: [], spaceWidth: 0 };
+    }
+
     // Split content
     const words: string[] =
       characters == null
         ? []
         : characters.toString().split(/(?:(?!\u00A0+)\s+)/);
 
+    // Calculate word & space width
+    const wordsWithWidth = words.map((word) => ({
+      word,
+      wordWidth: getStringWidth(word, style) ?? 0,
+    }));
+    const spaceWidth = getStringWidth('\u00A0', style) ?? 0;
+
+    setIsTextReady(true);
     return {
-      wordsWithWidth: words.map((word) => ({
-        word,
-        wordWidth: getStringWidth(word, style) || 0,
-      })),
-      spaceWidth: getStringWidth('\u00A0', style) || 0,
+      wordsWithWidth,
+      spaceWidth,
     };
-  }, [characters, style]);
+  }, [characters, style, loadedFontFamily]);
 
   // Arrange words in lines
   const wordsByLines = useMemo(() => {
@@ -87,7 +119,7 @@ export function useText(props: TUseTextOptions): TUseTextResponse {
     return newStyle;
   }, [width, wordsByLines, angle]);
 
-  return { wordsByLines, style: updatedStyle };
+  return { wordsByLines, style: updatedStyle, isTextReady };
 }
 
 type TUseTextOptions = {
@@ -113,7 +145,10 @@ type TUseTextOptions = {
 
 type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
 
-type TUseTextResponse = {
-  wordsByLines: WordsWithWidth[];
-  style: React.CSSProperties;
-};
+type TUseTextResponse =
+  | {
+      wordsByLines: WordsWithWidth[];
+      style: React.CSSProperties;
+      isTextReady: true;
+    }
+  | { isTextReady: false };

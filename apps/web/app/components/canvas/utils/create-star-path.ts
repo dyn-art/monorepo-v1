@@ -42,14 +42,14 @@ export function createStarPath(props: {
   }
 
   // Start the path at the first vertex of the outer polygon
-  const g = [`M ${points[0].x},${points[0].y}`];
+  const d = [`M ${points[0].x},${points[0].y}`];
 
   // Draw lines between the vertices of the outer and inner polygons
   for (let i = 0; i < points.length; i++) {
     // Draw a line from the current outer vertex to the corresponding inner vertex
-    g.push(`L ${innerPoints[i].x},${innerPoints[i].y}`);
+    d.push(`L ${innerPoints[i].x},${innerPoints[i].y}`);
     // Draw a line from the current inner vertex to the next outer vertex
-    g.push(
+    d.push(
       `L ${points[(i + 1) % points.length].x},${
         points[(i + 1) % points.length].y
       }`
@@ -57,7 +57,7 @@ export function createStarPath(props: {
   }
 
   // Close the path
-  g.push('Z');
+  d.push('Z');
 
-  return g.join(' ');
+  return d.join(' ');
 }

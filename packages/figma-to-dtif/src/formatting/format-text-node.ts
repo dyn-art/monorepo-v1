@@ -35,5 +35,8 @@ export async function formatTextNode(
     effects: node.effects,
     // Fills mixin
     fills: await formatFills(node, node.fills as Paint[], options),
+    // Geometry mixin
+    fillGeometry: node.fillGeometry,
+    strokeGeometry: node.strokeGeometry,
   } as TTextNode;
 }

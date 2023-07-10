@@ -35,15 +35,15 @@ export function createPolygonPath(props: {
   }
 
   // Start the path at the first point coordinates
-  const g = [`M ${points[0].x},${points[0].y}`];
+  const d = [`M ${points[0].x},${points[0].y}`];
 
   // Loop over the rest of the points and add "L" (Line to) + point coordinates
   for (let i = 1; i < points.length; i++) {
-    g.push(`L ${points[i].x},${points[i].y}`);
+    d.push(`L ${points[i].x},${points[i].y}`);
   }
 
   // Close the path
-  g.push('Z');
+  d.push('Z');
 
-  return g.join(' ');
+  return d.join(' ');
 }

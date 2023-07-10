@@ -198,19 +198,6 @@ export type TGroupNode = {
   TLayoutMixin;
 
 /**
- * The embed node is one that can be activated to host an iframe
- * of another website inside the canvas.
- */
-export type TEmbedNode = {
-  type: 'EMBED';
-  /**
-   * The metadata for a Embed node.
-   */
-  embedData: TEmbedMetaData;
-} & TDefaultShapeMixin &
-  TRectangleCornerMixin;
-
-/**
  * The ellipse node is a basic shape node representing an ellipse.
  * Note that a circle is an ellipse where width == height.
  */
@@ -259,7 +246,6 @@ export type TNode =
   | TRectangleNode
   | TTextNode
   | TGroupNode
-  | TEmbedNode
   | TEllipseNode
   | TStarNode
   | TPolygonNode
@@ -273,6 +259,7 @@ export type TDefaultShapeMixin = TBaseNodeMixin &
   TLayoutMixin &
   TBlendMixin &
   TEffectsMixin &
+  TGeometryMixin &
   TSceneNodeMixin;
 
 export type TRectangleCornerMixin = {
@@ -374,6 +361,17 @@ export type TEffectsMixin = {
    * An array of effects applied to the node.
    */
   effects: Array<TEffect>;
+};
+
+export type TGeometryMixin = {
+  /**
+   * An array of paths representing the object fills relative to the node.
+   */
+  fillGeometry: TVectorPath[];
+  /**
+   * An array of paths representing the object strokes relative to the node.
+   */
+  strokeGeometry: TVectorPath[];
 };
 
 // ============================================================================
@@ -555,7 +553,12 @@ export type TColorStop = {
   color: TRGBA;
 };
 
-export type TPaint = TSolidPaint | TGradientPaint | TImagePaint;
+export type TEmbedPaint = {
+  type: 'EMBED';
+  embedData: TEmbedMetaData;
+};
+
+export type TPaint = TSolidPaint | TGradientPaint | TImagePaint | TEmbedPaint;
 
 // ============================================================================
 // Base
@@ -565,6 +568,22 @@ export type TVector = {
   x: number;
   y: number;
 };
+
+export type TVectorPath = {
+  /**
+   * The winding rule for the path (same as in SVGs).
+   * This determines whether a given point in space is inside or outside the path.
+   */
+  windingRule: WindingRule;
+  /**
+   * Data of the vector path.
+   *
+   * e.g. 'M 0 100 L 100 100 L 50 0 Z'
+   */
+  data: string;
+};
+
+type WindingRule = 'NONZERO' | 'EVENODD' | 'NONE';
 
 export type TRGBA = {
   a: number;

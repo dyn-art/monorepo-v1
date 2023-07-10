@@ -28,5 +28,8 @@ export async function formatPolygonNode(
     effects: node.effects as TEffect[],
     // Fills mixin
     fills: await formatFills(node, node.fills as Paint[], options),
+    // Geometry mixin
+    fillGeometry: [],
+    strokeGeometry: [],
   };
 }

@@ -31,5 +31,8 @@ export async function formatEllipseNode(
     effects: node.effects as TEffect[],
     // Fills mixin
     fills: await formatFills(node, node.fills as Paint[], options),
+    // Geometry mixin
+    fillGeometry: [],
+    strokeGeometry: [],
   };
 }

@@ -21,7 +21,11 @@ const Text: React.FC<TProps> = (props) => {
 
   return (
     <g
-      id={`text-${node.id}`}
+      id={getIdentifier({
+        id: node.id,
+        index,
+        type: 'text',
+      })}
       style={{
         display: node.isVisible ? 'block' : 'none',
         opacity: node.opacity,
@@ -32,6 +36,8 @@ const Text: React.FC<TProps> = (props) => {
       <defs>
         <clipPath id={fillClipPathId}>
           <InnerText
+            id={node.id}
+            fillGeometry={node.fillGeometry}
             width={node.width}
             height={node.height}
             lineHeight={

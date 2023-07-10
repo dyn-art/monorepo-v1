@@ -32,5 +32,8 @@ export async function formatRectangleNode(
     topRightRadius: node.topRightRadius,
     // Fills mixin
     fills: await formatFills(node, node.fills as Paint[], options),
+    // Geometry mixin
+    fillGeometry: [],
+    strokeGeometry: [],
   };
 }
