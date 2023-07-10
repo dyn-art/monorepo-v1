@@ -61,17 +61,35 @@ function getSvgArcPath(props: {
     y: cy + Math.sin(endAngle) * ry,
   };
 
+  // When creating a SVG path for a full circle with an inner radius (creating a "donut" shape),
+  // the path starts and ends at the same point on the circle's boundary. However, when the
+  // starting and ending angles are exactly the same, the SVG renderer doesn't "know" that it needs
+  // to draw a full circle. Instead, it sees this as a zero-length path, and so it doesn't draw anything.
+  //
+  // By adding a small offset (epsilon) to the ending angle, we ensure that the starting and ending
+  // points are slightly different. This "tricks" the SVG renderer into drawing a nearly complete
+  // circle, which appears as a full circle due to the small size of the offset.
+  //
+  // The value of epsilon is chosen to be small enough that the resulting gap in the circle is not
+  // visible to the naked eye (0.001 radians is approximately 0.057 degrees), but large enough to
+  // ensure that the SVG renderer recognizes the path as a non-zero length path, and therefore
+  // draws the expected shape.
+  //
+  // Note that this solution is a workaround to a known issue with SVG rendering, and may not be
+  // necessary if the SVG rendering behavior is changed in future versions of SVG or the rendering engine.
+  const epsilon = 0.001;
+
   // Calculate start and end coordinates on the boundary of the inner ellipse
   let innerStart: TVector = { x: cx, y: cy };
   let innerEnd: TVector = { x: cx, y: cy };
   if (innerRadius > 0) {
     innerStart = {
-      x: cx + Math.cos(startAngle) * innerRadius * rx,
-      y: cy + Math.sin(startAngle) * innerRadius * ry,
+      x: cx + Math.cos(startAngle + epsilon) * innerRadius * rx,
+      y: cy + Math.sin(startAngle + epsilon) * innerRadius * ry,
     };
     innerEnd = {
-      x: cx + Math.cos(endAngle) * innerRadius * rx,
-      y: cy + Math.sin(endAngle) * innerRadius * ry,
+      x: cx + Math.cos(endAngle + epsilon) * innerRadius * rx,
+      y: cy + Math.sin(endAngle + epsilon) * innerRadius * ry,
     };
   }
 
