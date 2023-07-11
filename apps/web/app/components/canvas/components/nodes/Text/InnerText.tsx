@@ -10,10 +10,9 @@ const InnerText: React.FC<TProps> = (props) => {
     children,
     textAlignHorizontal = 'LEFT',
     textAlignVertical = 'BOTTOM',
-    angle = 0,
-    capHeight,
     width,
     height,
+    lineHeight,
     style,
   } = props;
 
@@ -21,11 +20,10 @@ const InnerText: React.FC<TProps> = (props) => {
     characters: children,
     textAlignHorizontal,
     textAlignVertical,
-    angle,
-    capHeight,
     width,
     height,
-    style,
+    lineHeight,
+    textStyle: style,
   });
 
   if (!text.hasLoaded) {
@@ -50,25 +48,33 @@ const InnerText: React.FC<TProps> = (props) => {
 
   return (
     <>
-      {text.wordsByLines.length > 0 ? (
-        <text style={text.style}>
-          {text.wordsByLines.map((line, index) => {
-            const isEnter =
+      {text.lines.length > 0
+        ? text.lines.map((line, index) => {
+            const isEmpty =
               line.words.length === 0 ||
               (line.words.length === 1 && line.words[0] === '');
             return (
-              <tspan
-                key={index}
-                x={0}
-                dy={style?.lineHeight}
-                visibility={isEnter ? 'hidden' : undefined}
+              <text
+                key={getIdentifier({
+                  id,
+                  type: 'text',
+                  index,
+                })}
+                visibility={isEmpty ? 'hidden' : undefined}
+                lengthAdjust={'spacingAndGlyphs'}
+                dominantBaseline={'ideographic'}
+                style={{
+                  ...style,
+                  transform: `translate(${
+                    typeof line.x === 'string' ? line.x : `${line.x}px`
+                  }, ${typeof line.y === 'string' ? line.y : `${line.y}px`})`,
+                }}
               >
-                {isEnter ? '&nbsp' : line.words.join(' ')}
-              </tspan>
+                {isEmpty ? '&nbsp' : line.words.join(' ')}
+              </text>
             );
-          })}
-        </text>
-      ) : null}
+          })
+        : null}
     </>
   );
 };
@@ -77,22 +83,20 @@ export default InnerText;
 
 type TProps = {
   id: string;
+  // Width of text box
+  width: number;
+  // Height of text box
+  height: number;
+  // String (or number coercible to one) to be styled and positioned
+  children: string | number;
+  // Line height of the text, implemented as y offsets
+  lineHeight: number;
   // Backup while font isn't loaded
   fillGeometry?: TVectorPath[];
   // Vertical text alignment
   textAlignVertical?: TTextNode['textAlignVertical'];
   // Horizontal text alignment
   textAlignHorizontal?: TTextNode['textAlignHorizontal'];
-  // Rotation angle of the text
-  angle?: number;
-  // Width of text box
-  width: number;
-  // Height of text box
-  height: number;
-  // Cap height of the text
-  capHeight?: SVGTSpanProps['capHeight'];
-  // String (or number coercible to one) to be styled and positioned
-  children: string | number;
   // Styles to be applied to the text (and used in computation of its size)
   style?: React.CSSProperties;
 };

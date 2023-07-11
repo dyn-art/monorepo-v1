@@ -55,7 +55,7 @@ export function useTextDimensions(
   }, [characters, style, font.hasLoaded]);
 }
 
-type TWordWithWidth = {
+export type TWordWithWidth = {
   word: string;
   width: number;
   height: number;

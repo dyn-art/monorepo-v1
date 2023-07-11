@@ -19,6 +19,25 @@ const Text: React.FC<TProps> = (props) => {
     [node.id]
   );
 
+  const letterSpacing = React.useMemo<number | null>(
+    () =>
+      node.letterSpacing.unit !== 'AUTO'
+        ? node.letterSpacing.unit === 'PERCENT'
+          ? node.fontSize * (node.letterSpacing.value / 100)
+          : node.letterSpacing.value
+        : null,
+    [node.letterSpacing]
+  );
+  const lineHeight = React.useMemo<number | null>(
+    () =>
+      node.lineHeight.unit !== 'AUTO'
+        ? node.lineHeight.unit === 'PERCENT'
+          ? node.fontSize * (node.lineHeight.value / 100)
+          : node.lineHeight.value
+        : null,
+    [node.lineHeight]
+  );
+
   return (
     <g
       id={getIdentifier({
@@ -33,7 +52,7 @@ const Text: React.FC<TProps> = (props) => {
         ...transformToCSS(node.relativeTransform),
       }}
     >
-      {/* TODO: REMOVE */}
+      {/* TODO: REMOVE LATER - Its just for reference */}
       {(node.fillGeometry ?? []).map((fillGeometry, i) => {
         return (
           <path
@@ -58,24 +77,18 @@ const Text: React.FC<TProps> = (props) => {
             height={node.height}
             textAlignHorizontal={node.textAlignHorizontal}
             textAlignVertical={node.textAlignVertical}
+            lineHeight={lineHeight ?? node.fontSize}
             style={{
               fontFamily: node.fontName.family,
               fontSize: node.fontSize,
               textTransform: 'none',
               fontStyle: node.fontName.style,
               fontWeight: node.fontWeight,
-              letterSpacing: `${
-                node.letterSpacing.unit === 'PERCENT'
-                  ? node.fontSize * (node.letterSpacing.value / 100)
-                  : node.letterSpacing.value
-              }px`,
+              letterSpacing:
+                letterSpacing != null ? `${letterSpacing}px` : 'normal',
               direction: 'ltr',
-              lineHeight:
-                node.lineHeight.unit !== 'AUTO'
-                  ? `${node.lineHeight.value}${
-                      node.lineHeight.unit === 'PIXELS' ? 'px' : '%'
-                    }`
-                  : undefined,
+              lineHeight: lineHeight != null ? `${lineHeight}px` : 'normal',
+              whiteSpace: 'nowrap',
             }}
           >
             {node.characters}
