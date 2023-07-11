@@ -610,10 +610,14 @@ export type TFontName = {
   style: string;
 };
 
-export type TLetterSpacing = {
-  value: number;
-  unit: 'PIXELS' | 'PERCENT';
-};
+export type TLetterSpacing =
+  | {
+      value: number;
+      unit: 'PIXELS' | 'PERCENT';
+    }
+  | {
+      unit: 'AUTO';
+    };
 
 export type TLineHeight =
   | {

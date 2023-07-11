@@ -33,7 +33,7 @@ const Text: React.FC<TProps> = (props) => {
         ...transformToCSS(node.relativeTransform),
       }}
     >
-      {/* TODO: REMOVE */}
+      {/* TODO: REMOVE LATER - Its just for reference */}
       {(node.fillGeometry ?? []).map((fillGeometry, i) => {
         return (
           <path
@@ -56,6 +56,7 @@ const Text: React.FC<TProps> = (props) => {
             fillGeometry={node.fillGeometry}
             width={node.width}
             height={node.height}
+            position={{ x: 0, y: 0 }}
             textAlignHorizontal={node.textAlignHorizontal}
             textAlignVertical={node.textAlignVertical}
             style={{
@@ -64,18 +65,24 @@ const Text: React.FC<TProps> = (props) => {
               textTransform: 'none',
               fontStyle: node.fontName.style,
               fontWeight: node.fontWeight,
-              letterSpacing: `${
-                node.letterSpacing.unit === 'PERCENT'
-                  ? node.fontSize * (node.letterSpacing.value / 100)
-                  : node.letterSpacing.value
-              }px`,
+              letterSpacing:
+                node.letterSpacing.unit !== 'AUTO'
+                  ? `${
+                      node.letterSpacing.unit === 'PERCENT'
+                        ? node.fontSize * (node.letterSpacing.value / 100)
+                        : node.letterSpacing.value
+                    }px`
+                  : 'normal',
               direction: 'ltr',
               lineHeight:
                 node.lineHeight.unit !== 'AUTO'
-                  ? `${node.lineHeight.value}${
-                      node.lineHeight.unit === 'PIXELS' ? 'px' : '%'
-                    }`
-                  : undefined,
+                  ? `${
+                      node.lineHeight.unit === 'PERCENT'
+                        ? node.fontSize * (node.lineHeight.value / 100)
+                        : node.lineHeight.value
+                    }px`
+                  : 'normal',
+              whiteSpace: 'nowrap',
             }}
           >
             {node.characters}
