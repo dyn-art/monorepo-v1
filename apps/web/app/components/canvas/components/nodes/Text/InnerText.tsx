@@ -1,6 +1,6 @@
 import { useText } from '@/components/canvas/hooks';
 import { getIdentifier } from '@/components/canvas/utils';
-import { TTextNode, TVector, TVectorPath } from '@pda/types/dtif';
+import { TTextNode, TVectorPath } from '@pda/types/dtif';
 import React, { SVGAttributes } from 'react';
 
 const InnerText: React.FC<TProps> = (props) => {
@@ -12,8 +12,8 @@ const InnerText: React.FC<TProps> = (props) => {
     textAlignVertical = 'BOTTOM',
     width,
     height,
+    lineHeight,
     style,
-    position,
   } = props;
 
   const text = useText({
@@ -22,8 +22,8 @@ const InnerText: React.FC<TProps> = (props) => {
     textAlignVertical,
     width,
     height,
+    lineHeight,
     textStyle: style,
-    position,
   });
 
   if (!text.hasLoaded) {
@@ -63,11 +63,12 @@ const InnerText: React.FC<TProps> = (props) => {
                 visibility={isEmpty ? 'hidden' : undefined}
                 lengthAdjust={'spacingAndGlyphs'}
                 dominantBaseline={'ideographic'}
-                style={style}
-                transform={`translate(${
-                  typeof line.x === 'string' ? line.x : `${line.x}px`
-                }, ${typeof line.y === 'string' ? line.y : `${line.y}px`}`}
-                // textLength={text.length}
+                style={{
+                  ...style,
+                  transform: `translate(${
+                    typeof line.x === 'string' ? line.x : `${line.x}px`
+                  }, ${typeof line.y === 'string' ? line.y : `${line.y}px`})`,
+                }}
               >
                 {isEmpty ? '&nbsp' : line.words.join(' ')}
               </text>
@@ -88,8 +89,8 @@ type TProps = {
   height: number;
   // String (or number coercible to one) to be styled and positioned
   children: string | number;
-  // Text position
-  position: TVector;
+  // Line height of the text, implemented as y offsets
+  lineHeight: number;
   // Backup while font isn't loaded
   fillGeometry?: TVectorPath[];
   // Vertical text alignment
