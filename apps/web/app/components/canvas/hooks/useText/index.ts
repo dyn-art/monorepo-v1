@@ -17,13 +17,22 @@ export function useText(options: TUseTextOptions): TUseTextResponse {
 
   const textDimensions = useTextDimensions(characters, style ?? {});
 
-  const wordsByLines = React.useMemo<WordsWithWidth[] | null>(() => {
+  const wordsByLines = React.useMemo<TWordsWithWidth[] | null>(() => {
     if (textDimensions.hasLoaded) {
-      const { spaceWidth, wordsWithWidth } = textDimensions;
-      return wordsWithWidth.reduce(
-        (result: any[], { word, width: wordWidth }) => {
+      const { spaceWidth, lines } = textDimensions;
+      const wordsByLines: TWordsWithWidth[] = [];
+
+      for (const line of lines) {
+        // Add new line
+        wordsByLines.push({ words: [], width: 0 });
+
+        // Add words to line and check its width,
+        // if its width is too long add a new line
+        for (const { word, width: wordWidth } of line) {
           const currentLine =
-            result.length > 0 ? result[result.length - 1] : null;
+            wordsByLines.length > 0
+              ? wordsByLines[wordsByLines.length - 1]
+              : null;
           if (
             currentLine != null &&
             currentLine.width + wordWidth + spaceWidth < width
@@ -32,12 +41,12 @@ export function useText(options: TUseTextOptions): TUseTextResponse {
             currentLine.width = currentLine.width + wordWidth + spaceWidth;
           } else {
             const newLine = { words: [word], width: wordWidth };
-            result.push(newLine);
+            wordsByLines.push(newLine);
           }
-          return result;
-        },
-        []
-      );
+        }
+      }
+
+      return wordsByLines;
     } else {
       return null;
     }
@@ -105,7 +114,7 @@ type TUseTextOptions = {
 
 type TUseTextResponse =
   | {
-      wordsByLines: WordsWithWidth[];
+      wordsByLines: TWordsWithWidth[];
       style: React.CSSProperties;
       hasLoaded: true;
     }
@@ -113,7 +122,7 @@ type TUseTextResponse =
 
 type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
 
-export type WordsWithWidth = {
+export type TWordsWithWidth = {
   words: string[];
   width: number;
 };

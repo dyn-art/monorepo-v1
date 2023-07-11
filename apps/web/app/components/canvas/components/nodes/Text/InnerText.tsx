@@ -54,11 +54,21 @@ const InnerText: React.FC<TProps> = (props) => {
     <>
       {text.wordsByLines.length > 0 ? (
         <text style={text.style}>
-          {text.wordsByLines.map((line, index) => (
-            <tspan key={index} x={0} dy={lineHeight}>
-              {line.words.join(' ')}
-            </tspan>
-          ))}
+          {text.wordsByLines.map((line, index) => {
+            const isEnter =
+              line.words.length === 0 ||
+              (line.words.length === 1 && line.words[0] === '');
+            return (
+              <tspan
+                key={index}
+                x={0}
+                dy={lineHeight}
+                visibility={isEnter ? 'hidden' : undefined}
+              >
+                {isEnter ? '&nbsp' : line.words.join(' ')}
+              </tspan>
+            );
+          })}
         </text>
       ) : null}
     </>

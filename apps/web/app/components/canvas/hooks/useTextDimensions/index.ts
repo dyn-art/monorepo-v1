@@ -18,30 +18,45 @@ export function useTextDimensions(
       return { hasLoaded: false };
     }
 
-    // Split text into words at space
-    const words: string[] =
-      characters == null
-        ? []
-        : characters.toString().split(/(?:(?!\u00A0+)\s+)/);
+    const characterLines = characters.toString().split('\n');
+    const wordsWithWidthPerLine: TWordWithWidth[][] = [];
 
-    // Calculate words width
-    const wordsWithWidth: WordWithWidth[] = words.map((word) => ({
-      word,
-      width: getStringWidth(word, style) as number,
-    }));
+    // Split text into words at space
+    for (const characterLine of characterLines) {
+      const words: string[] =
+        characters == null
+          ? []
+          : characterLine.toString().split(/(?:(?!\u00A0+)\s+)/);
+
+      // Calculate words width
+      wordsWithWidthPerLine.push(
+        words.map((word) => ({
+          word,
+          width: getStringWidth(word, style) as number,
+        }))
+      );
+    }
 
     // Calculate space width
     const spaceWidth = getStringWidth('\u00A0', style);
 
-    return { hasLoaded: true, wordsWithWidth, spaceWidth };
+    return {
+      hasLoaded: true,
+      spaceWidth,
+      lines: wordsWithWidthPerLine,
+    };
   }, [characters, style, font.hasLoaded]);
 }
 
-export type WordWithWidth = {
+type TWordWithWidth = {
   word: string;
   width: number;
 };
 
 export type TUseTextDimensionsResponse =
-  | { hasLoaded: true; wordsWithWidth: WordWithWidth[]; spaceWidth: number }
+  | {
+      hasLoaded: true;
+      lines: TWordWithWidth[][];
+      spaceWidth: number;
+    }
   | { hasLoaded: false };
