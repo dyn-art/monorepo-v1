@@ -30,7 +30,7 @@ const InnerText: React.FC<TProps> = (props) => {
     style,
   });
 
-  if (!text.isTextReady) {
+  if (!text.hasLoaded) {
     return (
       <>
         {(fillGeometry ?? []).map((fillGeometry, i) => {

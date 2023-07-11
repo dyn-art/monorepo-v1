@@ -33,6 +33,22 @@ const Text: React.FC<TProps> = (props) => {
         ...transformToCSS(node.relativeTransform),
       }}
     >
+      {/* TODO: REMOVE */}
+      {(node.fillGeometry ?? []).map((fillGeometry, i) => {
+        return (
+          <path
+            key={getIdentifier({
+              id: node.id,
+              index: i,
+              type: 'text',
+              category: 'fill-geometry',
+            })}
+            d={fillGeometry.data}
+            fill={'red'}
+          />
+        );
+      })}
+
       <defs>
         <clipPath id={fillClipPathId}>
           <InnerText

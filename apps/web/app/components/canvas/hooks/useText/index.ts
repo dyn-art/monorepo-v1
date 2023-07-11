@@ -1,13 +1,9 @@
 import { TTextNode } from '@pda/types/dtif';
-import React, { SVGAttributes, useMemo } from 'react';
-import { logger } from '../../../../core/logger';
-import { useHydrated } from '../useHydrated';
-import getStringWidth from './get-string-width';
+import React, { SVGAttributes } from 'react';
+import { useTextDimensions } from '../useTextDimensions';
 import { mapTextAlignment } from './map-text-alignment';
 
-export function useText(props: TUseTextOptions): TUseTextResponse {
-  // Check whether component has been hydrated on the client side
-  const isHydrated = useHydrated();
+export function useText(options: TUseTextOptions): TUseTextResponse {
   const {
     textAlignVertical = 'BOTTOM',
     textAlignHorizontal = 'LEFT',
@@ -17,122 +13,73 @@ export function useText(props: TUseTextOptions): TUseTextResponse {
     lineHeight = '1em',
     characters,
     style,
-  } = props;
-  const [isTextReady, setIsTextReady] = React.useState(false);
-  const [loadedFontFamily, setLoadedFontFamily] = React.useState<string | null>(
-    null
-  );
+  } = options;
 
-  // Load font
-  React.useEffect(() => {
-    (async () => {
-      if (isHydrated && style?.fontFamily != null) {
-        const WebFont = (await import('webfontloader')).default;
-        const fontFamily = `${style?.fontFamily}:${style?.fontWeight ?? 400}`;
-        WebFont.load({
-          google: {
-            families: [fontFamily],
-          },
-        });
-        setLoadedFontFamily(fontFamily);
-      }
-    })();
-  }, [isHydrated, style?.fontFamily, style?.fontWeight]);
+  const textDimensions = useTextDimensions(characters, style ?? {});
 
-  const { wordsWithWidth, spaceWidth } = useMemo(() => {
-    if (loadedFontFamily == null) {
-      return { wordsWithWidth: [], spaceWidth: 0 };
+  const wordsByLines = React.useMemo<WordsWithWidth[] | null>(() => {
+    if (textDimensions.hasLoaded) {
+      const { spaceWidth, wordsWithWidth } = textDimensions;
+      return wordsWithWidth.reduce(
+        (result: any[], { word, width: wordWidth }) => {
+          const currentLine =
+            result.length > 0 ? result[result.length - 1] : null;
+          if (
+            currentLine != null &&
+            currentLine.width + wordWidth + spaceWidth < width
+          ) {
+            currentLine.words.push(word);
+            currentLine.width = currentLine.width + wordWidth + spaceWidth;
+          } else {
+            const newLine = { words: [word], width: wordWidth };
+            result.push(newLine);
+          }
+          return result;
+        },
+        []
+      );
+    } else {
+      return null;
     }
+  }, [width, textDimensions]);
 
-    // Split content
-    const words: string[] =
-      characters == null
-        ? []
-        : characters.toString().split(/(?:(?!\u00A0+)\s+)/);
-
-    // Calculate word & space width
-    const wordsWithWidth = words.map((word) => ({
-      word,
-      wordWidth: getStringWidth(word, style) ?? 0,
-    }));
-    const spaceWidth = getStringWidth('\u00A0', style) ?? 0;
-
-    logger.info({ wordsWithWidth, spaceWidth });
-
-    setIsTextReady(true);
-    return {
-      wordsWithWidth,
-      spaceWidth,
-    };
-  }, [characters, style, loadedFontFamily]);
-
-  // Arrange words in lines
-  const wordsByLines = useMemo(() => {
-    return wordsWithWidth.reduce(
-      (result: WordsWithWidth[], { word, wordWidth }) => {
-        const currentLine =
-          result.length > 0 ? result[result.length - 1] : null;
-
-        logger.info({
-          word,
-          wordWidth,
-          spaceWidth,
-          width,
-          currentWidth: currentLine?.width + wordWidth + spaceWidth,
-          currentLine,
-        });
-
-        // Word can be added to an existing line
-        if (
-          currentLine != null &&
-          currentLine.width + wordWidth + spaceWidth < width
-        ) {
-          currentLine.words.push(word);
-          currentLine.width = currentLine.width + wordWidth + spaceWidth;
-        }
-        // Add first word to line or word is too long to fit on existing line
-        else {
-          const newLine = { words: [word], width: wordWidth };
-          result.push(newLine);
-        }
-
-        return result;
-      },
-      []
-    );
-  }, [width, wordsWithWidth, spaceWidth]);
-
-  // Calculate updated styles
-  const updatedStyle = useMemo<React.CSSProperties>(() => {
+  const updatedStyle = React.useMemo<React.CSSProperties>(() => {
     const newStyle: React.CSSProperties = { ...style };
-
     const transforms: string[] = [];
 
-    // Apply text alignment
-    const { translate, textAnchor, dominantBaseline } = mapTextAlignment({
-      textAlignHorizontal,
-      textAlignVertical,
-      width,
-      height,
-      lineHeight,
-      linesCount: wordsByLines.length,
-    });
-    transforms.push(translate);
-    newStyle.textAnchor = textAnchor as any;
-    newStyle.dominantBaseline = dominantBaseline as any;
+    if (wordsByLines != null) {
+      // Apply text alignment
+      const { translate, textAnchor, dominantBaseline } = mapTextAlignment({
+        textAlignHorizontal,
+        textAlignVertical,
+        width,
+        height,
+        lineHeight,
+        linesCount: wordsByLines.length,
+      });
 
-    // Apply angle
+      transforms.push(translate);
+      newStyle.textAnchor = textAnchor as any;
+      newStyle.dominantBaseline = dominantBaseline as any;
+    }
+
+    // Apply rotation
     if (angle) {
       transforms.push(`rotate(${angle})`);
     }
 
     newStyle.transform =
       transforms.length > 0 ? transforms.join(' ') : newStyle.transform;
-
     return newStyle;
-  }, [width, wordsByLines, angle]);
+  }, [style, width, height, lineHeight, wordsByLines, angle]);
 
-  return { wordsByLines, style: updatedStyle, isTextReady };
+  return wordsByLines != null && updatedStyle != null
+    ? {
+        hasLoaded: true,
+        wordsByLines,
+        style: updatedStyle,
+      }
+    : { hasLoaded: false };
 }
 
 type TUseTextOptions = {
@@ -156,15 +103,15 @@ type TUseTextOptions = {
   style?: React.CSSProperties;
 };
 
-type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
-
 type TUseTextResponse =
   | {
       wordsByLines: WordsWithWidth[];
       style: React.CSSProperties;
-      isTextReady: true;
+      hasLoaded: true;
     }
-  | { isTextReady: false };
+  | { hasLoaded: false };
+
+type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
 
 export type WordsWithWidth = {
   words: string[];
