@@ -10,38 +10,49 @@ export function useText(options: TUseTextOptions): TUseTextResponse {
     angle,
     width,
     height,
-    lineHeight = '1em',
+    lineHeight,
     characters,
     style,
   } = options;
 
   const textDimensions = useTextDimensions(characters, style ?? {});
 
-  const wordsByLines = React.useMemo<TWordsWithWidth[] | null>(() => {
+  const wordsByLines = React.useMemo<TLine[] | null>(() => {
     if (textDimensions.hasLoaded) {
       const { spaceWidth, lines } = textDimensions;
-      const wordsByLines: TWordsWithWidth[] = [];
+      const wordsByLines: TLine[] = [];
 
       for (const line of lines) {
+        let totalHeight = 0;
+
         // Add new line
-        wordsByLines.push({ words: [], width: 0 });
+        wordsByLines.push({ words: [], width: 0, height: 0 });
 
         // Add words to line and check its width,
-        // if its width is too long add a new line
-        for (const { word, width: wordWidth } of line) {
+        for (let i = 0; i < line.length; i++) {
+          const { word, width: wordWidth, height: wordHeight } = line[i];
           const currentLine =
             wordsByLines.length > 0
               ? wordsByLines[wordsByLines.length - 1]
               : null;
+          const finalSpace = i === line.length - 1 ? 0 : spaceWidth;
           if (
             currentLine != null &&
-            currentLine.width + wordWidth + spaceWidth < width
+            currentLine.width + wordWidth + finalSpace < width
           ) {
             currentLine.words.push(word);
-            currentLine.width = currentLine.width + wordWidth + spaceWidth;
-          } else {
-            const newLine = { words: [word], width: wordWidth };
-            wordsByLines.push(newLine);
+            currentLine.width = currentLine.width + wordWidth + finalSpace;
+            totalHeight += wordHeight;
+            currentLine.height = totalHeight / currentLine.words.length;
+          }
+          // If its width is too long add a new line
+          else {
+            totalHeight = 0;
+            wordsByLines.push({
+              words: [word],
+              width: wordWidth,
+              height: wordHeight,
+            });
           }
         }
       }
@@ -56,14 +67,20 @@ export function useText(options: TUseTextOptions): TUseTextResponse {
     const newStyle: React.CSSProperties = { ...style };
     const transforms: string[] = [];
 
-    if (wordsByLines != null) {
+    if (wordsByLines != null && wordsByLines.length > 0) {
+      const tSpanHeight = `${wordsByLines.reduce(
+        (sum, current, _, { length }) => sum + current.height / length,
+        0
+      )}px`;
+
       // Apply text alignment
       const { translate, textAnchor, dominantBaseline } = mapTextAlignment({
         textAlignHorizontal,
         textAlignVertical,
         width,
         height,
-        lineHeight,
+        lineHeight: style?.lineHeight ?? tSpanHeight,
+        tSpanHeight,
         linesCount: wordsByLines.length,
       });
 
@@ -114,7 +131,7 @@ type TUseTextOptions = {
 
 type TUseTextResponse =
   | {
-      wordsByLines: TWordsWithWidth[];
+      wordsByLines: TLine[];
       style: React.CSSProperties;
       hasLoaded: true;
     }
@@ -122,7 +139,8 @@ type TUseTextResponse =
 
 type SVGTSpanProps = SVGAttributes<SVGTSpanElement>;
 
-export type TWordsWithWidth = {
+export type TLine = {
   words: string[];
   width: number;
+  height: number;
 };

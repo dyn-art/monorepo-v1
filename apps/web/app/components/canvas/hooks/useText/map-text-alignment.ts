@@ -1,19 +1,27 @@
 import { TTextNode } from '@pda/types/dtif';
 import { SVGAttributes } from 'react';
 import reduceCSSCalc from 'reduce-css-calc';
+import { logger } from '../../../../core/logger';
 
+// TODO also get line height or lets say the dy
+// also when its auto get the line height
+// and then calculate center and top by my self lul
+// because dominantBaseline is crap
+// techAnchor is ok
 export function mapTextAlignment(props: {
   textAlignHorizontal: TTextNode['textAlignHorizontal'];
   textAlignVertical: TTextNode['textAlignVertical'];
   width: number;
   height: number;
   lineHeight: SVGAttributes<SVGTSpanElement>['dy'];
+  tSpanHeight: SVGAttributes<SVGTSpanElement>['dy'];
   linesCount: number;
 }): {
   textAnchor: string;
   translate: string;
   dominantBaseline: string;
 } {
+  logger.info({ props });
   const {
     textAlignHorizontal,
     textAlignVertical,
@@ -21,6 +29,7 @@ export function mapTextAlignment(props: {
     height,
     linesCount,
     lineHeight,
+    tSpanHeight,
   } = props;
   const totalTextHeight = `(${lineHeight} * ${linesCount})`;
 
@@ -56,26 +65,26 @@ export function mapTextAlignment(props: {
   // Handle vertical text alignment
   switch (textAlignVertical) {
     case 'CENTER':
-      dominantBaseline = 'text-after-edge';
+      dominantBaseline = 'ideographic';
       translateY = reduceCSSCalc(
-        `calc(${height}px / 2 - ${totalTextHeight} / 2)`
+        `calc((${height}px - ${totalTextHeight}) / 2)`
       );
       break;
     case 'BOTTOM':
-      dominantBaseline = 'text-after-edge';
-      translateY = reduceCSSCalc(
-        `calc(${height}px - (${linesCount} * ${lineHeight}))`
-      );
+      dominantBaseline = 'ideographic';
+      translateY = reduceCSSCalc(`calc(${height}px - ${totalTextHeight})`);
       break;
     case 'TOP':
-      dominantBaseline = 'text-before-edge';
-      translateY = reduceCSSCalc(`calc(-${lineHeight})`);
+      dominantBaseline = 'ideographic';
+      translateY = '0px';
       break;
     default:
       dominantBaseline = 'text-before-edge';
       translateY = '0px';
       break;
   }
+
+  logger.info({ props, translateY, totalTextHeight });
 
   return {
     textAnchor,

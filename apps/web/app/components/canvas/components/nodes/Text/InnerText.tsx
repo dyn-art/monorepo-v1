@@ -11,7 +11,6 @@ const InnerText: React.FC<TProps> = (props) => {
     textAlignHorizontal = 'LEFT',
     textAlignVertical = 'BOTTOM',
     angle = 0,
-    lineHeight = '1em',
     capHeight,
     width,
     height,
@@ -23,7 +22,6 @@ const InnerText: React.FC<TProps> = (props) => {
     textAlignHorizontal,
     textAlignVertical,
     angle,
-    lineHeight,
     capHeight,
     width,
     height,
@@ -62,7 +60,7 @@ const InnerText: React.FC<TProps> = (props) => {
               <tspan
                 key={index}
                 x={0}
-                dy={lineHeight}
+                dy={style?.lineHeight}
                 visibility={isEnter ? 'hidden' : undefined}
               >
                 {isEnter ? '&nbsp' : line.words.join(' ')}
@@ -91,8 +89,6 @@ type TProps = {
   width: number;
   // Height of text box
   height: number;
-  // Desired "line height" of the text, implemented as y offsets
-  lineHeight?: SVGTSpanProps['dy'];
   // Cap height of the text
   capHeight?: SVGTSpanProps['capHeight'];
   // String (or number coercible to one) to be styled and positioned

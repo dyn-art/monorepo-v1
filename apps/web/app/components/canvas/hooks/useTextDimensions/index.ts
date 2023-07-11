@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFontLoading } from '../useFontLoading';
-import getStringWidth from './get-string-width';
+import getStringDimensions from './get-string-dimensions';
 
 export function useTextDimensions(
   characters: string | number,
@@ -30,19 +30,26 @@ export function useTextDimensions(
 
       // Calculate words width
       wordsWithWidthPerLine.push(
-        words.map((word) => ({
-          word,
-          width: getStringWidth(word, style) as number,
-        }))
+        words
+          .filter((word) => word !== '')
+          .map((word) => {
+            const wordDimensions = getStringDimensions(word, style);
+            return {
+              word,
+              width: wordDimensions.width ?? 0,
+              height: wordDimensions.height ?? 0,
+            };
+          })
       );
     }
 
     // Calculate space width
-    const spaceWidth = getStringWidth('\u00A0', style);
+    const spaceDimensions = getStringDimensions('\u00A0', style);
 
     return {
       hasLoaded: true,
-      spaceWidth,
+      spaceWidth: spaceDimensions.width ?? 0,
+      spaceHeight: spaceDimensions.height ?? 0,
       lines: wordsWithWidthPerLine,
     };
   }, [characters, style, font.hasLoaded]);
@@ -51,6 +58,7 @@ export function useTextDimensions(
 type TWordWithWidth = {
   word: string;
   width: number;
+  height: number;
 };
 
 export type TUseTextDimensionsResponse =
@@ -58,5 +66,6 @@ export type TUseTextDimensionsResponse =
       hasLoaded: true;
       lines: TWordWithWidth[][];
       spaceWidth: number;
+      spaceHeight: number;
     }
   | { hasLoaded: false };

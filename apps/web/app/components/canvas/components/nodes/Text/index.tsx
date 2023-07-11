@@ -56,13 +56,6 @@ const Text: React.FC<TProps> = (props) => {
             fillGeometry={node.fillGeometry}
             width={node.width}
             height={node.height}
-            lineHeight={
-              node.lineHeight.unit !== 'AUTO'
-                ? `${node.lineHeight.value}${
-                    node.lineHeight.unit === 'PIXELS' ? 'px' : '%'
-                  }`
-                : undefined
-            }
             textAlignHorizontal={node.textAlignHorizontal}
             textAlignVertical={node.textAlignVertical}
             style={{
@@ -77,6 +70,12 @@ const Text: React.FC<TProps> = (props) => {
                   : node.letterSpacing.value
               }px`,
               direction: 'ltr',
+              lineHeight:
+                node.lineHeight.unit !== 'AUTO'
+                  ? `${node.lineHeight.value}${
+                      node.lineHeight.unit === 'PIXELS' ? 'px' : '%'
+                    }`
+                  : undefined,
             }}
           >
             {node.characters}

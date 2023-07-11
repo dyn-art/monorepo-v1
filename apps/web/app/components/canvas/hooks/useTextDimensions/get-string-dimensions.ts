@@ -2,7 +2,10 @@ import memoize from 'lodash.memoize';
 
 const MEASUREMENT_ELEMENT_ID = '__pda_svg_text_measurement_id';
 
-function getStringWidth(str: string, style: Record<string, any> = {}): number {
+function getStringDimensions(
+  str: string,
+  style: Record<string, any> = {}
+): { width: number; height: number } | null {
   try {
     // Get text element from DOM, if it doesn't exist yet create it
     let textElement = document.getElementById(
@@ -29,14 +32,17 @@ function getStringWidth(str: string, style: Record<string, any> = {}): number {
     Object.assign(textElement.style, style);
     textElement.textContent = str;
 
-    return textElement.getComputedTextLength();
+    return {
+      width: textElement.getComputedTextLength(),
+      height: textElement.getBBox().height,
+    };
   } catch (error) {
-    return 0;
+    return null;
   }
 }
 
 const memoized: any = memoize(
-  getStringWidth,
+  getStringDimensions,
   (str, style) => `${str}_${JSON.stringify(style)}`
 );
 
