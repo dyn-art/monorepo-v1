@@ -2,8 +2,7 @@ import { TTextNode } from '@pda/types/dtif';
 import React from 'react';
 import { TUseTextDimensionsResponse } from '../useTextDimensions';
 import { applyTextAlignment } from './apply-text-alignment';
-import { createNewLine } from './create-new-line';
-import { updateLine } from './update-line';
+import { constructLines } from './construct-lines';
 
 export function useLines(options: TUseLinesOptions): TLine[] | null {
   const {
@@ -23,40 +22,11 @@ export function useLines(options: TUseLinesOptions): TLine[] | null {
       return null;
     }
 
-    const { spaceWidth, lines } = textDimensions;
-    const wordsByLines: TLine[] = [];
-
-    let lineIndex = 0;
-    for (const line of lines) {
-      let currentLine: TLine | null = null;
-
-      for (let i = 0; i < line.length; i++) {
-        const { word, width: wordWidth, height: wordHeight } = line[i];
-        const finalSpace = i === line.length - 1 ? 0 : spaceWidth;
-
-        // If there's no current line or if word doesn't fit in the current line, create a new line
-        if (
-          currentLine == null ||
-          currentLine.width + wordWidth + finalSpace > width
-        ) {
-          currentLine = createNewLine(word, wordWidth, wordHeight, lineIndex++);
-          wordsByLines.push(currentLine);
-        }
-        // If the word fits in the current line, add it
-        else {
-          updateLine(
-            currentLine,
-            word,
-            wordWidth,
-            wordHeight,
-            spaceWidth,
-            i === line.length - 1
-          );
-        }
-      }
-    }
-
-    return wordsByLines;
+    return constructLines({
+      spaceWidth: textDimensions.spaceWidth,
+      lines: textDimensions.lines,
+      width,
+    });
   }, [width, textDimensions]);
 
   // Apply text alignment

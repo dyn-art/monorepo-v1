@@ -1,6 +1,5 @@
 import { TTextNode } from '@pda/types/dtif';
 import { TLine } from '.';
-import { logger } from '../../../../core/logger';
 
 export function applyTextAlignment(props: {
   textAlignHorizontal: TTextNode['textAlignHorizontal'];
@@ -18,17 +17,12 @@ export function applyTextAlignment(props: {
     lineHeight,
     lines,
   } = props;
-  const totalTextHeight = lineHeight * lines.length;
+  const totalTextHeight = lines[0].height + lineHeight * (lines.length - 1);
+
   let startX = 0;
   let startY = 0;
 
-  // TODO: REMOVE
-  logger.info(
-    lines.reduce((chars, current) => (chars += current.words.join(' ')), ''),
-    { props }
-  );
-
-  // Handle horizontal text alignment
+  // Determine horizontal text alignment start position
   switch (textAlignHorizontal) {
     case 'CENTER':
       startX = width / 2;
@@ -43,7 +37,7 @@ export function applyTextAlignment(props: {
       break;
   }
 
-  // Handle vertical text alignment
+  // Determine vertical text alignment start position
   switch (textAlignVertical) {
     case 'CENTER':
       startY = (height - totalTextHeight) / 2 + totalTextHeight;
@@ -57,6 +51,7 @@ export function applyTextAlignment(props: {
       break;
   }
 
+  // Determine offset created by text dimensions
   for (let i = lines.length - 1; i >= 0; i--) {
     const line = lines[i];
     let offset = 0;

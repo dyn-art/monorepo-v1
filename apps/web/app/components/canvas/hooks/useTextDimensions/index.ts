@@ -1,5 +1,4 @@
 import React from 'react';
-import { logger } from '../../../../core/logger';
 import { useFontLoading } from '../useFontLoading';
 import getStringDimensions from './get-string-dimensions';
 
@@ -47,9 +46,6 @@ export function useTextDimensions(
     // Calculate space width
     const spaceDimensions = getStringDimensions('\u00A0', style);
 
-    // TODO: REMOVE
-    logger.info(characters, { spaceDimensions, wordsWithWidthPerLine });
-
     return {
       hasLoaded: true,
       spaceWidth: spaceDimensions.width ?? 0,
@@ -59,7 +55,7 @@ export function useTextDimensions(
   }, [characters, style, font.hasLoaded]);
 }
 
-type TWordWithWidth = {
+export type TWordWithWidth = {
   word: string;
   width: number;
   height: number;
