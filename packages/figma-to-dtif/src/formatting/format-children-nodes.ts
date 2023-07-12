@@ -12,7 +12,7 @@ export async function formatChildrenNodes(
     await Promise.all(
       children.map(async (node) => {
         try {
-          const formattedNode = await formatNode(node, options, false);
+          const formattedNode = await formatNode(node, options);
           return formattedNode;
         } catch (error) {
           if (error instanceof InvisibleNodeException) {

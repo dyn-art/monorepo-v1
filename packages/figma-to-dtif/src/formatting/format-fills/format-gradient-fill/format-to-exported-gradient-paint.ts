@@ -11,12 +11,14 @@ import { getGradientFillBaseProperties } from './get-gradient-fill-base-properti
 export async function formatToExportedGradientPaint(
   node: TNodeWithFills,
   fill: GradientPaint,
-  options: TFormatGradientFillOptions['exportOptions'] = {}
+  options: TFormatGradientFillOptions['exportOptions'] & {
+    tempFrameNode?: FrameNode;
+  } = {}
 ): Promise<TGradientPaintExported> {
-  const { uploadStaticData } = options;
+  const { uploadStaticData, tempFrameNode } = options;
   let format = options.format ?? 'JPG';
   let gradient: TGradientPaintExported;
-  const fillNode = createFillNode(node, [fill]);
+  const fillNode = createFillNode(node, [fill], { tempFrameNode });
 
   // Change format if it can't be applied to gradient
   if (
@@ -57,18 +59,32 @@ export async function formatToExportedGradientPaint(
 
 export function createFillNode(
   node: TNodeWithFills,
-  fills: Paint[]
+  fills: Paint[],
+  config: {
+    tempFrameNode?: FrameNode;
+  } = {}
 ): TNodeWithFills {
-  // TODO: add clone to specific clone group so that its organized
+  const { tempFrameNode } = config;
+
   const clone = isTextNode(node)
     ? createRectangleNodeFromTextNode(node)
     : node.clone();
+  try {
+    // Add clone to context frame node so in case of error
+    // there are no random temporary nodes flying around in the scene
+    if (tempFrameNode != null) {
+      tempFrameNode.appendChild(clone);
+    }
 
-  // Apply fills to clone
-  clone.fills = fills;
+    // Apply fills to clone
+    clone.fills = fills;
 
-  // Reset transform before upload so that the transform is not embedded into the SVG
-  resetNodeTransform(clone);
+    // Reset transform before upload so that the transform is not embedded into the SVG
+    resetNodeTransform(clone);
+  } catch (error) {
+    clone.remove();
+    throw error;
+  }
 
   return clone;
 }

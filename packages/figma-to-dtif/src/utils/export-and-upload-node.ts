@@ -10,19 +10,23 @@ export async function exportAndUploadNode(
   config: {
     exportSettings: ExportSettings;
     uploadStaticData?: TUploadStaticData;
-    clone?: boolean;
+    clone?:
+      | {
+          tempFrameNode?: FrameNode;
+        }
+      | boolean;
   }
 ): Promise<{ hash: string; data: Uint8Array; uploaded: boolean }> {
-  const {
-    clone: shouldClone = true,
-    uploadStaticData,
-    exportSettings,
-  } = config;
+  const { clone = true, uploadStaticData, exportSettings } = config;
   let uploaded = false;
 
   // Export node
-  const data = shouldClone
-    ? await exportNodeCloned(node, exportSettings)
+  const data = clone
+    ? await exportNodeCloned(node, {
+        ...exportSettings,
+        tempFrameNode:
+          typeof clone === 'object' ? clone.tempFrameNode : undefined,
+      })
     : await exportNode(node, exportSettings);
 
   // Upload exported SVG data

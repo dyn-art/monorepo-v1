@@ -8,25 +8,40 @@ import { formatToInlineRadialGradientPaint } from './format-to-inline-radial-gra
 export async function formatGradientFill(
   node: SceneNode,
   fill: GradientPaint,
-  options: TFormatGradientFillOptions = {}
+  options: TFormatGradientFillOptions & {
+    tempFrameNode?: FrameNode;
+  } = {}
 ): Promise<TGradientPaint | null> {
   if (!isNodeWithFills(node) || node.fills === figma.mixed) {
     return null;
   }
+  const { exportOptions, tempFrameNode, inline } = options;
 
   switch (fill.type) {
     case 'GRADIENT_LINEAR':
-      return options.inline
+      return inline
         ? formatToInlineLinearGradientPaint(fill)
-        : formatToExportedGradientPaint(node, fill, options.exportOptions);
+        : formatToExportedGradientPaint(node, fill, {
+            ...exportOptions,
+            tempFrameNode,
+          });
     case 'GRADIENT_RADIAL':
-      return options.inline
+      return inline
         ? formatToInlineRadialGradientPaint(fill)
-        : formatToExportedGradientPaint(node, fill, options.exportOptions);
+        : formatToExportedGradientPaint(node, fill, {
+            ...exportOptions,
+            tempFrameNode,
+          });
     case 'GRADIENT_ANGULAR':
-      return formatToExportedGradientPaint(node, fill, options.exportOptions);
+      return formatToExportedGradientPaint(node, fill, {
+        ...exportOptions,
+        tempFrameNode,
+      });
     case 'GRADIENT_DIAMOND':
-      return formatToExportedGradientPaint(node, fill, options.exportOptions);
+      return formatToExportedGradientPaint(node, fill, {
+        ...exportOptions,
+        tempFrameNode,
+      });
     default:
     // do nothing
   }

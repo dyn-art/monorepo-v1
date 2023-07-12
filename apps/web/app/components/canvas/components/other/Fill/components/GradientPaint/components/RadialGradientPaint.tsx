@@ -49,7 +49,7 @@ const RadialGradientPaint: React.FC<TProps> = (props) => {
           gradientUnits="userSpaceOnUse"
           cx={center.x}
           cy={center.y}
-          r={Math.max(radius.x, radius.y)}
+          r={Math.max(radius.x, radius.y)} // Ellipse radius not supported yet
           gradientTransform={`rotate(${rotation} ${center.x} ${center.y})`}
         >
           {paint.gradientStops.map((stop, i) => (
