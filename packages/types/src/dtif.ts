@@ -456,8 +456,6 @@ export type TGradientPaintInline =
 export type TLinearGradientPaintInline = {
   type: 'GRADIENT_LINEAR';
   isExported: false;
-  start: TVector;
-  end: TVector;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
 } & TGradientPaintBase;
@@ -465,7 +463,6 @@ export type TLinearGradientPaintInline = {
 export type TRadialGradientPaintInline = {
   type: 'GRADIENT_RADIAL';
   isExported: false;
-  radius: number;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
 } & TGradientPaintBase;

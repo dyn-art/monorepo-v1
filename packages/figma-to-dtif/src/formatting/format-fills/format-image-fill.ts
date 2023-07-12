@@ -12,7 +12,7 @@ export async function formatImageFill(
   node: SceneNode,
   fill: ImagePaint,
   options: TFormatImageFillOptions = {}
-): Promise<TImagePaint> {
+): Promise<TImagePaint | null> {
   const { hash, inline, size } = await exportAndUploadImage(
     node,
     fill.imageHash,
@@ -29,6 +29,7 @@ export async function formatImageFill(
     width: size.width,
     height: size.height,
   };
+
   switch (fill.scaleMode) {
     case 'CROP':
       return {
@@ -63,7 +64,8 @@ export async function formatImageFill(
     default:
     // do nothing
   }
-  return fill as unknown as TImagePaint;
+
+  return null;
 }
 
 async function exportAndUploadImage(

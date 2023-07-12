@@ -1,6 +1,6 @@
 import { TGradientPaint, TNode } from '@pda/types/dtif';
 import React from 'react';
-import { LinearGradientPaint } from './components';
+import { LinearGradientPaint, RadialGradientPaint } from './components';
 
 const GradientPaint: React.FC<TProps> = (props) => {
   const { paint, node, index } = props;
@@ -14,6 +14,8 @@ const GradientPaint: React.FC<TProps> = (props) => {
   switch (paint.type) {
     case 'GRADIENT_LINEAR':
       return <LinearGradientPaint paint={paint} node={node} index={index} />;
+    case 'GRADIENT_RADIAL':
+      return <RadialGradientPaint paint={paint} node={node} index={index} />;
     default:
       return null;
   }

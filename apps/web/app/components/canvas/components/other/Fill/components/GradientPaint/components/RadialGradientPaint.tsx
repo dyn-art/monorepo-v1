@@ -1,12 +1,12 @@
 import {
-  extractLinearGradientParamsFromTransform,
+  extractRadialOrDiamondGradientParams,
   getIdentifier,
   rgbToCSS,
 } from '@/components/canvas/utils';
-import { TLinearGradientPaintInline, TNode } from '@pda/types/dtif';
+import { TNode, TRadialGradientPaintInline } from '@pda/types/dtif';
 import React from 'react';
 
-const LinearGradientPaint: React.FC<TProps> = (props) => {
+const RadialGradientPaint: React.FC<TProps> = (props) => {
   const { paint, node, index } = props;
   const gradientDefinitionId = React.useMemo(
     () =>
@@ -14,14 +14,14 @@ const LinearGradientPaint: React.FC<TProps> = (props) => {
         id: node.id,
         index,
         type: 'paint',
-        category: 'gradient-linear',
+        category: 'gradient-radial',
         isDefinition: true,
       }),
     [node.id]
   );
-  const { start, end } = React.useMemo(
+  const { center, radius, rotation } = React.useMemo(
     () =>
-      extractLinearGradientParamsFromTransform(
+      extractRadialOrDiamondGradientParams(
         node.width,
         node.height,
         paint.transform
@@ -35,7 +35,7 @@ const LinearGradientPaint: React.FC<TProps> = (props) => {
         id: node.id,
         index,
         type: 'paint',
-        category: 'gradient-linear',
+        category: 'gradient-radial',
       })}
     >
       <rect
@@ -44,13 +44,13 @@ const LinearGradientPaint: React.FC<TProps> = (props) => {
         fill={`url(#${gradientDefinitionId})`}
       />
       <defs>
-        <linearGradient
+        <radialGradient
           id={gradientDefinitionId}
           gradientUnits="userSpaceOnUse"
-          x1={start.x}
-          y1={start.y}
-          x2={end.x}
-          y2={end.y}
+          cx={center.x}
+          cy={center.y}
+          r={Math.max(radius.x, radius.y)}
+          gradientTransform={`rotate(${rotation} ${center.x} ${center.y})`}
         >
           {paint.gradientStops.map((stop, i) => (
             <stop
@@ -59,16 +59,16 @@ const LinearGradientPaint: React.FC<TProps> = (props) => {
               stopColor={rgbToCSS(stop.color)}
             />
           ))}
-        </linearGradient>
+        </radialGradient>
       </defs>
     </g>
   );
 };
 
-export default LinearGradientPaint;
+export default RadialGradientPaint;
 
 type TProps = {
   node: TNode;
   index: number;
-  paint: TLinearGradientPaintInline;
+  paint: TRadialGradientPaintInline;
 };

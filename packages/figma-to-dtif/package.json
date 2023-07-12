@@ -27,8 +27,8 @@
   "devDependencies": {
     "@figma/plugin-typings": "^1.64.0",
     "@pda/jest-presets": "workspace:*",
-    "@pda/types": "workspace:*",
     "@pda/tsconfig": "workspace:*",
+    "@pda/types": "workspace:*",
     "@types/jest": "^29.5.1",
     "@types/node": "^18.15.13",
     "eslint": "^8.38.0",
