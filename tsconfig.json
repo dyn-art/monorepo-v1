@@ -29,6 +29,9 @@
             "path": "packages/dtif-to-react"
         },
         {
+            "path": "packages/dtif-to-svg"
+        },
+        {
             "path": "packages/etsy-client"
         },
         {
