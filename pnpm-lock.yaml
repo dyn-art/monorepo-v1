@@ -37,12 +37,21 @@ importers:
       rollup-plugin-bundle-size:
         specifier: ^1.0.3
         version: 1.0.3
+      rollup-plugin-copy:
+        specifier: ^3.4.0
+        version: 3.4.0
       rollup-plugin-esbuild:
         specifier: ^5.0.0
         version: 5.0.0(esbuild@0.17.19)(rollup@3.21.7)
+      rollup-plugin-import-css:
+        specifier: ^3.2.1
+        version: 3.2.1(rollup@3.21.7)
       rollup-plugin-node-externals:
         specifier: ^6.0.1
         version: 6.0.1(rollup@3.21.7)
+      rollup-plugin-postcss:
+        specifier: ^4.0.2
+        version: 4.0.2(postcss@8.4.23)(ts-node@10.9.1)
       rollup-plugin-visualizer:
         specifier: ^5.9.0
         version: 5.9.0(rollup@3.21.7)

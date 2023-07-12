@@ -664,7 +664,7 @@ export type TEmbedMetaData = {
   provider?: string;
 };
 
-type TSVGElement = {
+export type TSVGElement = {
   /**
    * The name of the SVG element.
    *

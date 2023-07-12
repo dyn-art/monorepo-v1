@@ -7,5 +7,7 @@ export * from './create-star-path';
 export * from './extract-matrix-data';
 export * from './get-bucket-url-from-hash';
 export * from './get-identifier';
+export * from './has-fill';
 export * from './rgb-to-css';
+export * from './to-camel-case';
 export * from './transform-to-css';

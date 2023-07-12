@@ -1,13 +1,14 @@
-import { getIdentifier } from '@/components/canvas/utils';
+import { getIdentifier, hasFill } from '@/components/canvas/utils';
 import { TNode } from '@pda/types/dtif';
 import React from 'react';
 import { GradientPaint, ImagePaint, SolidPaint } from './components';
 
 const Fill: React.FC<TProps> = (props) => {
   const { node, clipPathId } = props;
-  if (!('fills' in node)) {
+  if (!hasFill(node)) {
     return null;
   }
+
   return (
     <g
       id={getIdentifier({

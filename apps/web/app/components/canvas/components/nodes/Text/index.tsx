@@ -53,7 +53,7 @@ const Text: React.FC<TProps> = (props) => {
       }}
     >
       {/* TODO: REMOVE LATER - Its just for reference */}
-      {(node.fillGeometry ?? []).map((fillGeometry, i) => {
+      {/* {(node.fillGeometry ?? []).map((fillGeometry, i) => {
         return (
           <path
             key={getIdentifier({
@@ -66,7 +66,7 @@ const Text: React.FC<TProps> = (props) => {
             fill={'red'}
           />
         );
-      })}
+      })} */}
 
       <defs>
         <clipPath id={fillClipPathId}>

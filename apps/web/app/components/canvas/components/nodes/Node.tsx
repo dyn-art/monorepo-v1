@@ -5,6 +5,7 @@ import Frame from './Frame';
 import Group from './Group';
 import Polygon from './Polygon';
 import Rectangle from './Rectangle';
+import SVG from './SVG';
 import Star from './Star';
 import Text from './Text';
 
@@ -27,7 +28,7 @@ const Node: React.FC<TProps> = (props) => {
     case 'TEXT':
       return <Text node={node} index={index} />;
     case 'SVG':
-    // TODO:
+      return <SVG node={node} index={index} />;
     default:
       return null;
   }

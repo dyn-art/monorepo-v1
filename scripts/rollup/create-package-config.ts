@@ -13,7 +13,7 @@ import {
 import bundleSize from 'rollup-plugin-bundle-size';
 import esbuild from 'rollup-plugin-esbuild';
 import nodeExternals from 'rollup-plugin-node-externals';
-import visualizer from 'rollup-plugin-visualizer';
+import { visualizer } from 'rollup-plugin-visualizer';
 import { Logger } from '../utils';
 
 const logger = new Logger('create-package-config');
