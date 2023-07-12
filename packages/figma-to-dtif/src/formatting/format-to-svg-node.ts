@@ -14,13 +14,14 @@ import {
   exportNodeCloned,
 } from '../utils';
 
-export async function formatToSvgNode(
+export async function formatToSVGNode(
   node: TSVGCompatibleNode,
-  options: TSVGOptions = {}
+  options: TSVGOptions & { tempFrameNode?: FrameNode } = {}
 ): Promise<TSVGNode> {
   const {
     inline = true,
-    exportOptions: { svgToRaster = false, uploadStaticData } = {},
+    exportOptions: { format = 'SVG', uploadStaticData } = {},
+    tempFrameNode,
   } = options;
 
   const baseNodeProperties: Partial<TSVGNode> = {
@@ -39,13 +40,17 @@ export async function formatToSvgNode(
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
+    // Effect mixin
     effects: node.effects as TEffect[],
   };
   let svgNode: TSVGNode;
 
   // Handle inline SVG
   if (inline) {
-    const rawUint8Array = await exportNodeCloned(node, { format: 'SVG' });
+    const rawUint8Array = await exportNodeCloned(node, {
+      format: 'SVG',
+      tempFrameNode,
+    });
     const raw = decodeUint8Array(rawUint8Array);
     const svgObject = svgParser.parse(raw);
     svgNode = {
@@ -59,13 +64,14 @@ export async function formatToSvgNode(
   else {
     const { hash, data, uploaded } = await exportAndUploadNode(node, {
       uploadStaticData,
-      exportSettings: { format: svgToRaster ? 'JPG' : 'SVG' },
+      exportSettings: { format },
+      clone: { tempFrameNode },
     });
     svgNode = {
       isExported: true,
       format: 'SVG',
       hash,
-      inline: uploaded ? undefined : data,
+      content: uploaded ? undefined : data,
       ...baseNodeProperties,
     } as TSVGNodeExported;
   }

@@ -9,7 +9,9 @@ export interface TIntermediateFormatExportEvent extends TBaseFigmaMessageEvent {
       FrameNode | ComponentNode | InstanceNode,
       'name' | 'id'
     >[];
-    options: Omit<TFormatNodeOptions, 'uploadStaticData'>;
+    options: Omit<TFormatNodeOptions, 'uploadStaticData'> & {
+      nameAsBucketId?: boolean;
+    };
   };
 }
 

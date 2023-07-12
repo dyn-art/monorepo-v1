@@ -25,6 +25,5 @@ export async function formatGroupNode(
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
-    effects: node.effects as Effect[],
   };
 }

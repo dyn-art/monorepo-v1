@@ -23,6 +23,7 @@ export async function formatRectangleNode(
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
+    // Effect mixin
     effects: node.effects as TEffect[],
     // RectangleCorner mixin
     bottomLeftRadius: node.bottomLeftRadius,
@@ -31,5 +32,8 @@ export async function formatRectangleNode(
     topRightRadius: node.topRightRadius,
     // Fills mixin
     fills: await formatFills(node, node.fills as Paint[], options),
+    // Geometry mixin
+    fillGeometry: [],
+    strokeGeometry: [],
   };
 }

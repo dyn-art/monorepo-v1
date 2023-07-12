@@ -27,6 +27,7 @@ export async function formatFrameNode(
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
+    // Effect mixin
     effects: node.effects,
     // RectangleCorner mixin
     bottomLeftRadius: node.bottomLeftRadius,

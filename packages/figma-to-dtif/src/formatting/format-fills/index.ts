@@ -1,4 +1,5 @@
 import { TPaint } from '@pda/types/dtif';
+import { notEmpty } from '@pda/utils';
 import {
   TFormatGradientFillOptions,
   TFormatImageFillOptions,
@@ -12,24 +13,30 @@ export async function formatFills(
   options: {
     gradientFill?: TFormatGradientFillOptions;
     imageFill?: TFormatImageFillOptions;
+    tempFrameNode?: FrameNode;
   } = {}
 ): Promise<TPaint[]> {
-  const fillPromises = inputFills.map((fill) => {
-    if (!fill.visible) return Promise.resolve(null);
-    switch (fill.type) {
-      case 'GRADIENT_ANGULAR':
-      case 'GRADIENT_DIAMOND':
-      case 'GRADIENT_LINEAR':
-      case 'GRADIENT_RADIAL':
-        return formatGradientFill(node, fill, options.gradientFill);
-      case 'IMAGE':
-        return formatImageFill(node, fill, options.imageFill);
-      case 'SOLID':
-        return Promise.resolve(fill);
-      default:
-        return Promise.resolve(null);
-    }
-  });
-  const fills = await Promise.all(fillPromises);
-  return fills.filter((fill) => fill != null) as TPaint[];
+  const { gradientFill, imageFill, tempFrameNode } = options;
+  const fills = await Promise.all(
+    inputFills.map((fill) => {
+      if (!fill.visible) return Promise.resolve(null);
+      switch (fill.type) {
+        case 'GRADIENT_ANGULAR':
+        case 'GRADIENT_DIAMOND':
+        case 'GRADIENT_LINEAR':
+        case 'GRADIENT_RADIAL':
+          return formatGradientFill(node, fill, {
+            ...gradientFill,
+            tempFrameNode,
+          });
+        case 'IMAGE':
+          return formatImageFill(node, fill, imageFill);
+        case 'SOLID':
+          return Promise.resolve(fill);
+        default:
+          return Promise.resolve(null);
+      }
+    })
+  );
+  return fills.filter(notEmpty) as TPaint[];
 }

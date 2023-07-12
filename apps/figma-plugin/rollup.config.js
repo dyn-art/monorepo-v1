@@ -11,6 +11,7 @@ import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
 import json from '@rollup/plugin-json';
 import bundleSize from 'rollup-plugin-bundle-size';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://github.com/egoist/rollup-plugin-esbuild/issues/361
 import _esbuild from 'rollup-plugin-esbuild';
@@ -76,7 +77,16 @@ const sharedPlugins = {
     ),
     'process.env.PREVIEW_MODE': isPreview,
   }),
+  // Determine bundle size
   bundleSize: bundleSize(),
+  // Visualize bundle
+  visualize: (appName) =>
+    visualizer({
+      title: appName,
+      filename: path.resolve(process.cwd(), `./.compile/${appName}.html`),
+      sourcemap: true,
+      gzipSize: true,
+    }),
 };
 
 // ============================================================================
@@ -105,6 +115,7 @@ export default [
         ...parseDotenv('./.env.background'),
       }),
       sharedPlugins.bundleSize,
+      sharedPlugins.visualize('background'),
     ],
     external: ['react', 'react-dom'],
   },
@@ -115,6 +126,7 @@ export default [
       file: './dist/ui.js',
       format: 'es',
       sourcemap: !isProduction,
+      inlineDynamicImports: true,
     },
     plugins: [
       sharedPlugins.nodeResolve,
@@ -165,6 +177,7 @@ export default [
         ],
       }),
       sharedPlugins.bundleSize,
+      sharedPlugins.visualize('ui'),
     ],
   },
 ];

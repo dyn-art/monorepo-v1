@@ -71,16 +71,19 @@ const DTIFExport: React.FC = () => {
 
       // Send export event to sandbox
       if (selectedFrame != null) {
+        // TODO: make config accessible from UI
         uiHandler.postMessage('intermediate-format-export', {
           selectedElements: [selectedFrame],
           options: {
             svg: {
               inline: true,
               exportIdentifierRegex: '_svg$',
+              frameToSVG: false,
             },
             gradientFill: {
               inline: true,
             },
+            nameAsBucketId: true,
           },
         });
       } else {

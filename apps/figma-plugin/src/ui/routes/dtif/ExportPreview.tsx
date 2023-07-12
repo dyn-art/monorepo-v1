@@ -36,25 +36,29 @@ const ExportPreview: React.FC<TProps> = (props) => {
   // Render node as JSXs
   React.useEffect(() => {
     const renderNodeAsJSX = async () => {
-      if (node != null) {
-        const jsxNode = await (isFrameNode(node)
-          ? renderRelativeParent(node, 0.2)
-          : renderNode(node, { isLocked: false, isVisible: true }));
-        setNodeAsJSX(jsxNode);
-        setNodeAsJSXString(toJSXString(jsxNode as React.ReactElement));
+      if (node != null && activeTab === EPreviewTabs.PREVIEW) {
+        setTimeout(async () => {
+          const jsxNode = await (isFrameNode(node)
+            ? renderRelativeParent(node, 0.2)
+            : renderNode(node, { isLocked: false, isVisible: true }));
+          setNodeAsJSX(jsxNode);
+          setNodeAsJSXString(toJSXString(jsxNode as React.ReactElement));
+        });
       }
     };
     renderNodeAsJSX();
-  }, [node]);
+  }, [node, activeTab === EPreviewTabs.PREVIEW]);
 
   // Find an highlight all code snippets in the page
   React.useEffect(() => {
     // setIsLoadingHighlight(true); // Directly set in callback to avoid waiting for next render cycle
     // Wrapped in timeout to avoid UI lag and instead highlight after switch
-    setTimeout(() => {
-      Prism.highlightAll();
-      setIsLoadingHighlight(false);
-    });
+    if (activeTab === EPreviewTabs.JSX) {
+      setTimeout(() => {
+        Prism.highlightAll();
+        setIsLoadingHighlight(false);
+      });
+    }
   }, [nodeAsJSXString, activeTab === EPreviewTabs.JSX]);
 
   // ============================================================================

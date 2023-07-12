@@ -31,8 +31,12 @@ export async function formatTextNode(
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
+    // Effect mixin
     effects: node.effects,
     // Fills mixin
     fills: await formatFills(node, node.fills as Paint[], options),
+    // Geometry mixin
+    fillGeometry: node.fillGeometry,
+    strokeGeometry: node.strokeGeometry,
   } as TTextNode;
 }
