@@ -19,7 +19,11 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "d3-selection": "^3.0.0"
+    "@pda/openapi-fetch": "workspace:^",
+    "@remotion/paths": "^4.0.6",
+    "d3-selection": "^3.0.0",
+    "opentype.js": "^1.3.4",
+    "webfontloader": "^1.6.28"
   },
   "peerDependencies": {
     "jsdom": "^22.1.0"
@@ -31,6 +35,7 @@
     "@types/d3-selection": "^3.0.5",
     "@types/jest": "^29.5.1",
     "@types/node": "^18.15.13",
+    "@types/opentype.js": "^1.3.4",
     "eslint": "^8.38.0",
     "eslint-config-pda-base": "workspace:*",
     "jest": "^29.5.0",

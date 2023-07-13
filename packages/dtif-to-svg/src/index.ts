@@ -1,35 +1,29 @@
+import { RawFetchClientThrow } from '@pda/openapi-fetch';
 import { d3 } from './d3';
 
-export async function dtifToSVG() {
-  const svg = (await d3())
-    .select('body')
-    .append('svg')
-    .attr('width', 500)
-    .attr('height', 500);
+import * as opentype from 'opentype.js';
 
-  const defs = svg.append('defs');
+const fetchClient = new RawFetchClientThrow();
 
-  const gradient = defs
-    .append('linearGradient')
-    .attr('id', 'gradient')
-    .attr('x1', '0%')
-    .attr('y1', '0%')
-    .attr('x2', '100%')
-    .attr('y2', '100%');
+async function loadFont(url: string): Promise<opentype.Font> {
+  const buffer = await fetchClient.getThrow<ArrayBuffer>(url, {
+    parseAs: 'arrayBuffer',
+  });
+  return opentype.parse(buffer);
+}
 
-  gradient.append('stop').attr('offset', '0%').attr('stop-color', 'blue');
+export async function renderText(url: string, input: string, fontSize = 72) {
+  const font = await loadFont(url);
 
-  gradient.append('stop').attr('offset', '100%').attr('stop-color', 'red');
+  const textSvg = font.getPath(input, 0, 150, fontSize);
+  const path = textSvg.toPathData(2);
+  const textBB = textSvg.getBoundingBox();
+  const width = textBB.x2 - textBB.x1;
+  const height = textBB.y2 - textBB.y1;
 
-  for (let i = 0; i < 100; i++) {
-    svg
-      .append('rect')
-      .attr('x', i * 5)
-      .attr('y', i * 5)
-      .attr('width', 50)
-      .attr('height', 50)
-      .attr('fill', 'url(#gradient)');
-  }
+  const svg = (await d3()).create('svg').attr('viewBox', [0, 0, width, height]);
 
-  return (await d3()).select('body').html();
+  svg.append('path').attr('d', path);
+
+  return svg.node()?.outerHTML;
 }
