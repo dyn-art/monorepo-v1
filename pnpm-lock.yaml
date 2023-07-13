@@ -25,6 +25,9 @@ importers:
       esbuild:
         specifier: ^0.17.19
         version: 0.17.19
+      esno:
+        specifier: ^0.17.0
+        version: 0.17.0
       execa:
         specifier: ^7.1.1
         version: 7.1.1
@@ -52,6 +55,9 @@ importers:
       rollup-plugin-postcss:
         specifier: ^4.0.2
         version: 4.0.2(postcss@8.4.23)
+      rollup-plugin-typescript-paths:
+        specifier: ^1.4.0
+        version: 1.4.0(typescript@5.0.4)
       rollup-plugin-visualizer:
         specifier: ^5.9.0
         version: 5.9.0(rollup@3.21.7)
@@ -748,9 +754,9 @@ importers:
       '@pda/openapi-fetch':
         specifier: workspace:^
         version: link:../openapi-fetch
-      '@remotion/paths':
-        specifier: ^4.0.6
-        version: 4.0.6
+      '@pda/utils':
+        specifier: workspace:^
+        version: link:../utils
       d3-selection:
         specifier: ^3.0.0
         version: 3.0.0
@@ -767,6 +773,9 @@ importers:
       '@pda/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@pda/types':
+        specifier: workspace:^
+        version: link:../types
       '@types/d3':
         specifier: ^7.4.0
         version: 7.4.0
@@ -782,6 +791,9 @@ importers:
       '@types/opentype.js':
         specifier: ^1.3.4
         version: 1.3.4
+      '@types/react':
+        specifier: ^18.2.14
+        version: 18.2.14
       eslint:
         specifier: ^8.38.0
         version: 8.38.0
@@ -4461,6 +4473,27 @@ packages:
       react: 18.2.0
     dev: true
 
+  /@esbuild-kit/cjs-loader@2.4.2:
+    resolution: {integrity: sha512-BDXFbYOJzT/NBEtp71cvsrGPwGAMGRB/349rwKuoxNSiKjPraNNnlK6MIIabViCjqZugu6j+xeMDlEkWdHHJSg==}
+    dependencies:
+      '@esbuild-kit/core-utils': 3.1.0
+      get-tsconfig: 4.6.0
+    dev: true
+
+  /@esbuild-kit/core-utils@3.1.0:
+    resolution: {integrity: sha512-Uuk8RpCg/7fdHSceR1M6XbSZFSuMrxcePFuGgyvsBn+u339dk5OeL4jv2EojwTN2st/unJGsVm4qHWjWNmJ/tw==}
+    dependencies:
+      esbuild: 0.17.19
+      source-map-support: 0.5.21
+    dev: true
+
+  /@esbuild-kit/esm-loader@2.5.5:
+    resolution: {integrity: sha512-Qwfvj/qoPbClxCRNuac1Du01r9gvNOT+pMYtJDapfB1eoGN1YlJ1BixLyL9WVENRx5RXgNLdfYdx/CuswlGhMw==}
+    dependencies:
+      '@esbuild-kit/core-utils': 3.1.0
+      get-tsconfig: 4.6.0
+    dev: true
+
   /@esbuild/android-arm64@0.16.12:
     resolution: {integrity: sha512-0LacmiIW+X0/LOLMZqYtZ7d4uY9fxYABAYhSSOu+OGQVBqH4N5eIYgkT7bBFnR4Nm3qo6qS3RpHKVrDASqj/uQ==}
     engines: {node: '>=12'}
@@ -5440,7 +5473,7 @@ packages:
       react: '>=16'
     dependencies:
       '@types/mdx': 2.0.5
-      '@types/react': 18.0.37
+      '@types/react': 18.2.14
       react: 18.2.0
     dev: true
 
@@ -5904,10 +5937,6 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       remotion: 3.3.83(react-dom@18.2.0)(react@18.2.0)
     dev: true
-
-  /@remotion/paths@4.0.6:
-    resolution: {integrity: sha512-bgdnzsI4R8DyyanLzkn6w8kW7WmyEIOxsSvVKrfjkmFCbsuvjICDGVf09i+14CyIQDL27969MbuaYehfxvYMdw==}
-    dev: false
 
   /@remotion/player@3.3.83(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-Een+tMSmZ0+LgrJu8dKIQkPywoYA7iUUJQSxV3mLxHdHa25kPInURNo9OCsV3QzXaK02y9Bhf/8p7C+yVdwHmg==}
@@ -7597,7 +7626,7 @@ packages:
   /@types/react-dom@18.0.11:
     resolution: {integrity: sha512-O38bPbI2CWtgw/OoQoY+BRelw7uysmXbWvw3nLWO21H1HSh+GOlqPuXshJfjmpNlKiiSDG9cc1JZAaMmVdcTlw==}
     dependencies:
-      '@types/react': 18.0.37
+      '@types/react': 18.2.14
     dev: true
 
   /@types/react@18.0.37:
@@ -7606,6 +7635,14 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.3
       csstype: 3.1.2
+
+  /@types/react@18.2.14:
+    resolution: {integrity: sha512-A0zjq+QN/O0Kpe30hA1GidzyFjatVvrpIvWLxD+xv67Vt91TWWgco9IvrJBkeyHm1trGaFS/FSGqPlhyeZRm0g==}
+    dependencies:
+      '@types/prop-types': 15.7.5
+      '@types/scheduler': 0.16.3
+      csstype: 3.1.2
+    dev: true
 
   /@types/resolve@1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -11370,6 +11407,13 @@ packages:
       text-table: 0.2.0
     transitivePeerDependencies:
       - supports-color
+
+  /esno@0.17.0:
+    resolution: {integrity: sha512-w78cQGlptQfsBYfootUCitsKS+MD74uR5L6kNsvwVkJsfzEepIafbvWsx2xK4rcFP4IUftt4F6J8EhagUxX+Bg==}
+    hasBin: true
+    dependencies:
+      tsx: 3.12.7
+    dev: true
 
   /espree@9.5.1:
     resolution: {integrity: sha512-5yxtHSZXRSW5pvv3hAlXM5+/Oswi1AUFqBmbibKb5s6bp3rGIDkyXU6xCoyuuLhijr4SFwPrXRoZjz0AZDN9tg==}
@@ -16922,6 +16966,14 @@ packages:
       - ts-node
     dev: true
 
+  /rollup-plugin-typescript-paths@1.4.0(typescript@5.0.4):
+    resolution: {integrity: sha512-6EgeLRjTVmymftEyCuYu91XzY5XMB5lR0YrJkeT0D7OG2RGSdbNL+C/hfPIdc/sjMa9Sl5NLsxIr6C/+/5EUpA==}
+    peerDependencies:
+      typescript: '>=3.4'
+    dependencies:
+      typescript: 5.0.4
+    dev: true
+
   /rollup-plugin-visualizer@5.9.0(rollup@3.21.7):
     resolution: {integrity: sha512-bbDOv47+Bw4C/cgs0czZqfm8L82xOZssk4ayZjG40y9zbXclNk7YikrZTDao6p7+HDiGxrN0b65SgZiVm9k1Cg==}
     engines: {node: '>=14'}
@@ -18128,6 +18180,17 @@ packages:
     dependencies:
       tslib: 1.14.1
       typescript: 5.0.4
+    dev: true
+
+  /tsx@3.12.7:
+    resolution: {integrity: sha512-C2Ip+jPmqKd1GWVQDvz/Eyc6QJbGfE7NrR3fx5BpEHMZsEHoIxHL1j+lKdGobr8ovEyqeNkPLSKp6SCSOt7gmw==}
+    hasBin: true
+    dependencies:
+      '@esbuild-kit/cjs-loader': 2.4.2
+      '@esbuild-kit/core-utils': 3.1.0
+      '@esbuild-kit/esm-loader': 2.5.5
+    optionalDependencies:
+      fsevents: 2.3.2
     dev: true
 
   /turbo-darwin-64@1.9.3:

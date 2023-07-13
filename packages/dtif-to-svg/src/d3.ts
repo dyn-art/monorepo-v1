@@ -23,4 +23,4 @@ const d3 = (() => {
   return getD3;
 })();
 
-export { d3 };
+export default d3;

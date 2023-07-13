@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+      "@/*": ["./src/*"],
+    },
   },
   "extends": "@pda/tsconfig/shared-library.json",
   "include": ["src"],

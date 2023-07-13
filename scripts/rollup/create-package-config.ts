@@ -13,6 +13,7 @@ import {
 import bundleSize from 'rollup-plugin-bundle-size';
 import esbuild from 'rollup-plugin-esbuild';
 import nodeExternals from 'rollup-plugin-node-externals';
+import { typescriptPaths } from 'rollup-plugin-typescript-paths';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { Logger } from '../utils';
 
@@ -82,6 +83,10 @@ export function createPackageConfig(options: TCreatePackageOptions = {}) {
         json(),
         // Convert CommonJS modules (from node_modules) into ES modules targeted by this app
         commonjs(),
+        // Automatically resolve path aliases set in the compilerOptions section of tsconfig.json
+        typescriptPaths({
+          tsConfigPath: tsconfig,
+        }),
         // Transpile TypeScript code to JavaScript (ES6), and minify in production
         esbuild({
           tsconfig,
