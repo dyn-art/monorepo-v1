@@ -419,6 +419,9 @@ importers:
       '@pda/core-client':
         specifier: workspace:*
         version: link:../../packages/core-client
+      '@pda/dtif-to-svg':
+        specifier: workspace:^
+        version: link:../../packages/dtif-to-svg
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger

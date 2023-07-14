@@ -24,3 +24,5 @@ const d3 = (() => {
 })();
 
 export default d3;
+
+export type TD3 = typeof import('d3-selection');

@@ -6,6 +6,7 @@ import {
 } from '../../types';
 import { formatGradientFill } from './format-gradient-fill';
 import { formatImageFill } from './format-image-fill';
+import { formatSoldFill } from './format-solid-fill';
 
 export async function formatFills(
   node: SceneNode,
@@ -32,7 +33,7 @@ export async function formatFills(
         case 'IMAGE':
           return formatImageFill(node, fill, imageFill);
         case 'SOLID':
-          return Promise.resolve(fill);
+          return Promise.resolve(formatSoldFill(fill));
         default:
           return Promise.resolve(null);
       }

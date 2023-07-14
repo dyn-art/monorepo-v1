@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@pda/core-client": "workspace:*",
+    "@pda/dtif-to-svg": "workspace:*",
     "@pda/logger": "workspace:*",
     "@pda/openapi-fetch": "workspace:*",
     "@pda/utils": "workspace:*",

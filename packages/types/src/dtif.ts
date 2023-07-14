@@ -70,72 +70,73 @@ export type TFrameNode = {
    * A boolean indicating whether the frame clips its content to its bounding box.
    */
   clipsContent: boolean;
-} & TDefaultShapeMixin &
+} & TBaseShapeMixin &
   TChildrenMixin &
-  TRectangleCornerMixin &
-  TFillsMixin;
+  TRectangleCornerMixin;
+
+/**
+ * The group node is a container used to semantically group related nodes. You can think of them as a folder in the layers panel.
+ * It is different from FrameNode,
+ * which defines layout and is closer to a <div> in HTML.
+ *
+ * Groups are always positioned and sized to fit their content.
+ * As such, while you can move or resize a group,
+ * you should also expect that a group's position and size will change
+ * if you change its content.
+ */
+export type TGroupNode = {
+  type: 'GROUP';
+} & TBaseSceneNodeMixin &
+  TChildrenMixin;
 
 /**
  * The rectangle node is a basic shape node representing a rectangle.
  */
 export type TRectangleNode = {
   type: 'RECTANGLE';
-} & TDefaultShapeMixin &
-  TRectangleCornerMixin &
-  TFillsMixin;
+} & TBaseShapeMixin &
+  TRectangleCornerMixin;
 
 /**
- * The SVG node is the most general representation of shape,
- * allowing you to specify individual vertices, segments, and regions.
- *
- * As the name suggest it contains SVG data following the SVG 1.1 standard
- * in either exported or inline form.
+ * The ellipse node is a basic shape node representing an ellipse.
+ * Note that a circle is an ellipse where width == height.
  */
-export type TSVGNode = TSVGNodeExported | TSVGNodeInline;
+export type TEllipseNode = {
+  type: 'ELLIPSE';
+  /**
+   * Exposes the values of the sweep
+   * and ratio handles used in our UI to create arcs and donuts.
+   */
+  arcData: TEllipseArcData;
+} & TBaseShapeMixin;
 
 /**
- * The SVG node exported represents the SVG node
- * where the SVG content has been exported to an external file.
+ * The star node is a basic shape node representing
+ * a star with a set number of points.
  */
-export type TSVGNodeExported = {
-  type: 'SVG';
+export type TStarNode = {
+  type: 'STAR';
   /**
-   * A boolean flag indicating that the SVG node's content is exported to an external file.
+   * Number of "spikes", or outer points of the star. Must be an integer >= 3.
    */
-  isExported: true;
+  pointCount: number;
   /**
-   * The format of the exported file, which can be 'JPG', 'PNG', or 'SVG'.
+   * Ratio of the inner radius to the outer radius.
    */
-  format: 'JPG' | 'PNG' | 'SVG';
-  /**
-   * The hash of the exported file. Used to identifies the file.
-   */
-  hash: string;
-  /**
-   * Optional content of the exported file.
-   * It can be either an array of bytes that contains the exported file's data inline,
-   * or a URL string pointing to the file location.
-   *
-   * If not set the content can to be searched by the hash.
-   */
-  content?: Uint8Array | string;
-} & TDefaultShapeMixin;
+  innerRadiusRation: number;
+} & TBaseShapeMixin;
 
 /**
- * The SVG node exported represents the SVG node
- * where the SVG content is inline in form of an array of SVG element children.
+ * The polygon node is a basic shape node representing
+ * a regular convex polygon with three or more sides.
  */
-export type TSVGNodeInline = {
-  type: 'SVG';
+export type TPolygonNode = {
+  type: 'POLYGON';
   /**
-   * A boolean flag indicating that the SVG node's content is inline in the node.
+   * Number of sides of the polygon. Must be an integer >= 3.
    */
-  isExported: false;
-  /**
-   * An array of SVG element children that define the SVG content.
-   */
-  children: TSVGElement['children'];
-} & TDefaultShapeMixin;
+  pointCount: number;
+} & TBaseShapeMixin;
 
 /**
  * The text node represents text where both the whole node
@@ -176,91 +177,85 @@ export type TTextNode = {
    * The raw characters in the text node.
    */
   characters: string;
-} & TDefaultShapeMixin &
-  TFillsMixin;
+} & TBaseShapeMixin;
 
 /**
- * The group node is a container used to semantically group related nodes. You can think of them as a folder in the layers panel.
- * It is different from FrameNode,
- * which defines layout and is closer to a <div> in HTML.
+ * The SVG node is the most general representation of shape,
+ * allowing you to specify individual vertices, segments, and regions.
  *
- * Groups are always positioned and sized to fit their content.
- * As such, while you can move or resize a group,
- * you should also expect that a group's position and size will change
- * if you change its content.
+ * As the name suggest it contains SVG data following the SVG 1.1 standard
+ * in either exported or inline form.
  */
-export type TGroupNode = {
-  type: 'GROUP';
-} & TBaseNodeMixin &
-  TSceneNodeMixin &
-  TChildrenMixin &
-  TBlendMixin &
-  TLayoutMixin;
+export type TSVGNode = TSVGNodeExported | TSVGNodeInline;
 
 /**
- * The ellipse node is a basic shape node representing an ellipse.
- * Note that a circle is an ellipse where width == height.
+ * The SVG node exported represents the SVG node
+ * where the SVG content has been exported to an external file.
  */
-export type TEllipseNode = {
-  type: 'ELLIPSE';
+export type TSVGNodeExported = {
+  type: 'SVG';
   /**
-   * Exposes the values of the sweep
-   * and ratio handles used in our UI to create arcs and donuts.
+   * A boolean flag indicating that the SVG node's content is exported to an external file.
    */
-  arcData: TEllipseArcData;
-} & TDefaultShapeMixin &
-  TFillsMixin;
+  isExported: true;
+  /**
+   * The format of the exported file, which can be 'JPG', 'PNG', or 'SVG'.
+   */
+  format: 'JPG' | 'PNG' | 'SVG';
+  /**
+   * The hash of the exported file. Used to identifies the file.
+   */
+  hash: string;
+  /**
+   * Optional content of the exported file.
+   * It can be either an array of bytes that contains the exported file's data inline,
+   * or a URL string pointing to the file location.
+   *
+   * If not set the content can to be searched by the hash.
+   */
+  content?: Uint8Array | string;
+} & TBaseSceneNodeMixin;
 
 /**
- * The star node is a basic shape node representing
- * a star with a set number of points.
+ * The SVG node exported represents the SVG node
+ * where the SVG content is inline in form of an array of SVG element children.
  */
-export type TStarNode = {
-  type: 'STAR';
+export type TSVGNodeInline = {
+  type: 'SVG';
   /**
-   * Number of "spikes", or outer points of the star. Must be an integer >= 3.
+   * A boolean flag indicating that the SVG node's content is inline in the node.
    */
-  pointCount: number;
+  isExported: false;
   /**
-   * Ratio of the inner radius to the outer radius.
+   * An array of SVG element children that define the SVG content.
    */
-  innerRadiusRation: number;
-} & TDefaultShapeMixin &
-  TFillsMixin;
-
-/**
- * The polygon node is a basic shape node representing
- * a regular convex polygon with three or more sides.
- */
-export type TPolygonNode = {
-  type: 'POLYGON';
-  /**
-   * Number of sides of the polygon. Must be an integer >= 3.
-   */
-  pointCount: number;
-} & TDefaultShapeMixin &
-  TFillsMixin;
+  children: TSVGElement['children'];
+} & TBaseShapeMixin &
+  TEffectsMixin;
 
 export type TNode =
   | TFrameNode
-  | TRectangleNode
-  | TTextNode
   | TGroupNode
+  | TRectangleNode
   | TEllipseNode
   | TStarNode
   | TPolygonNode
+  | TTextNode
   | TSVGNode;
 
 // ============================================================================
 // Mixins
 // ============================================================================
 
-export type TDefaultShapeMixin = TBaseNodeMixin &
+export type TBaseSceneNodeMixin = TBaseNodeMixin &
+  TSceneNodeMixin &
   TLayoutMixin &
-  TBlendMixin &
+  TBlendMixin;
+
+export type TBaseShapeMixin = TBaseSceneNodeMixin &
   TEffectsMixin &
   TGeometryMixin &
-  TSceneNodeMixin;
+  TFillsMixin;
 
 export type TRectangleCornerMixin = {
   /**
