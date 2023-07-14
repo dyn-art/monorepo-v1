@@ -1,3 +1,4 @@
+import { appendAttributes } from '@/helpers/d3';
 import { getElementId, hasFill } from '@/helpers/other';
 import { TD3SVGElementSelection } from '@/types';
 import { TNode } from '@pda/types/dtif';
@@ -12,22 +13,23 @@ export async function appendFill(
     return null;
   }
 
-  // Create wrapper g element
-  const gElement = parent
-    .append('g')
-    .attr('id', getElementId({ id: node.id, type: 'fill' }))
-    .attr('clip-path', `url(#${clipPathId})`);
+  // Create element
+  const element = parent.append('g');
+  appendAttributes(element, {
+    id: getElementId({ id: node.id, type: 'fill' }),
+    clipPath: `url(#${clipPathId})`,
+  });
 
-  // Append fills to wrapper g element
+  // Append fills  element
   node.fills.map((fill, i) => {
     switch (fill.type) {
       case 'SOLID':
-        appendSolidFill(gElement, { node, paint: fill, index: i });
+        appendSolidFill(element, { node, paint: fill, index: i });
         return;
       default:
       // do nothing
     }
   });
 
-  return gElement;
+  return element;
 }

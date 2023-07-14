@@ -1,4 +1,4 @@
-import { appendBasicShapeNodeElement } from '@/helpers/d3';
+import { appendAttributes, appendBasicShapeNode } from '@/helpers/d3';
 import { createRectanglePath } from '@/helpers/paths';
 import { TD3SVGElementSelection } from '@/types';
 import { TRectangleNode } from '@pda/types/dtif';
@@ -11,21 +11,27 @@ export async function appendRectangleNode(
   }
 ) {
   const { node, index = 0 } = props;
-  return appendBasicShapeNodeElement(parent, {
+  return appendBasicShapeNode(parent, {
     node,
     index,
-    shapeAppend: async (parent) => {
-      return parent.append('path').attr(
-        'd',
-        createRectanglePath({
-          width: node.width,
-          height: node.height,
-          topLeftRadius: node.topLeftRadius,
-          topRightRadius: node.topRightRadius,
-          bottomRightRadius: node.bottomRightRadius,
-          bottomLeftRadius: node.bottomLeftRadius,
-        })
-      );
+    clipElement: {
+      props: {
+        node,
+      },
+      callback: async (parent, { node }) => {
+        const element = parent.append('path');
+        appendAttributes(element, {
+          p: createRectanglePath({
+            width: node.width,
+            height: node.height,
+            topLeftRadius: node.topLeftRadius,
+            topRightRadius: node.topRightRadius,
+            bottomRightRadius: node.bottomRightRadius,
+            bottomLeftRadius: node.bottomLeftRadius,
+          }),
+        });
+        return element;
+      },
     },
   });
 }
