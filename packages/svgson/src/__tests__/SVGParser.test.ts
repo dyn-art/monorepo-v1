@@ -10,15 +10,17 @@ describe('SVGParser class tests', () => {
   });
 
   it.each(['test1'])(
-    `should correctly parse '%s.svg' and match expected result`,
-    async (testName) => {
+    `should correctly parse '%s.svg' to json and match expected result`,
+    async (testCaseName) => {
       // Arrange
       const svgString = fs
-        .readFileSync(path.resolve(__dirname, `./assets/${testName}.svg`))
+        .readFileSync(
+          path.resolve(__dirname, `./resources/${testCaseName}/input.svg`)
+        )
         .toString();
       const expectedResult = fs
         .readFileSync(
-          path.resolve(__dirname, `./assets/${testName}-result.json`)
+          path.resolve(__dirname, `./resources/${testCaseName}/expected.json`)
         )
         .toString();
 

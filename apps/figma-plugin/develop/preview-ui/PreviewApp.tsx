@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePreview } from './usePreview';
+import { usePreview } from '../shared/usePreview';
 
 const PreviewApp: React.FC = () => {
   const { isConnected } = usePreview(true);

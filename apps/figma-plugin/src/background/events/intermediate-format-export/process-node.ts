@@ -5,7 +5,7 @@ import {
   formatFrameToScene,
   sha256,
 } from '@pda/figma-to-dtif';
-import { TNode } from '@pda/types/dtif';
+import { TScene } from '@pda/types/dtif';
 import { TIntermediateFormatExportEvent, logger } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
 import { uploadDataToBucket } from '../../core/bucket';
@@ -64,7 +64,7 @@ export async function processNode(
     await uploadDataToBucket(key, stringToUint8Array(json), 'application/json');
 
     // Post success message and notify the user
-    handleSuccess(instance, node, toExportNode.root, key);
+    handleSuccess(instance, node, toExportNode, key);
   } catch (error) {
     handleError(error, instance, node);
   }
@@ -73,7 +73,7 @@ export async function processNode(
 function handleSuccess(
   instance: TBackgroundHandler,
   node: SceneNode,
-  toExportNode: TNode,
+  toExportNode: TScene,
   key: string
 ) {
   instance.postMessage('intermediate-format-export-result', {

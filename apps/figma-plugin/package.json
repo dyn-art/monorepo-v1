@@ -8,7 +8,7 @@
     "build:dev": "shx rm -rf dist && rollup --config rollup.config.js --bundleConfigAsCjs",
     "preview": "concurrently \"pnpm run watch:dev:preview\" \"pnpm run start:preview-server\" \"pnpm run storybook\"",
     "watch:dev:preview": "shx rm -rf dist && rollup --config rollup.config.js --bundleConfigAsCjs --watch --preview",
-    "start:preview-server": "npx esno ./src/preview-server/index.ts",
+    "start:preview-server": "npx esno ./develop/preview-server/index.ts",
     "storybook": "storybook dev -p 6006",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
