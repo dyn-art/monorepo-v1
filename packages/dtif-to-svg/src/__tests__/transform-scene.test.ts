@@ -20,9 +20,10 @@ describe('transformScene() method tests', () => {
 
       // Act
       const result = await transformScene(dtif);
+      const resultString = result.node().outerHTML;
 
       // Assert
-      expect(result).toStrictEqual(expectedResult);
+      expect(resultString).toStrictEqual(expectedResult);
     }
   );
 });
