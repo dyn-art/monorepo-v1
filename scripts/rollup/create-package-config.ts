@@ -13,9 +13,9 @@ import {
 import bundleSize from 'rollup-plugin-bundle-size';
 import esbuild from 'rollup-plugin-esbuild';
 import nodeExternals from 'rollup-plugin-node-externals';
-import { typescriptPaths } from 'rollup-plugin-typescript-paths';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { Logger } from '../utils';
+import { typescriptPaths } from './plugins/rollup-plugin-typescript-paths';
 
 const logger = new Logger('create-package-config');
 
@@ -86,6 +86,7 @@ export function createPackageConfig(options: TCreatePackageOptions = {}) {
         // Automatically resolve path aliases set in the compilerOptions section of tsconfig.json
         typescriptPaths({
           tsConfigPath: tsconfig,
+          preserveExtensions: true,
         }),
         // Transpile TypeScript code to JavaScript (ES6), and minify in production
         esbuild({
