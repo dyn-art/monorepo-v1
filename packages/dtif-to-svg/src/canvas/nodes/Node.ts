@@ -92,23 +92,27 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
   // D3
   // ============================================================================
 
+  protected getD3NodeId(category?: string, isDefinition = false) {
+    return getElementId({
+      id: this._id,
+      type: this._type,
+      category,
+      isDefinition,
+    });
+  }
+
   public static createRootD3Node(
     parent: TD3SVGElementSelection,
-    props: { node: TNode; type: string }
+    props: { node: TNode; id: string }
   ) {
     const {
-      type,
       node: { opacity, relativeTransform, isVisible, id },
     } = props;
-    const elementId = getElementId({
-      id,
-      type,
-    });
 
     // Create root element
     const element = parent.append('g');
     appendAttributes(element, {
-      id: elementId,
+      id,
     });
     appendCSS(element, {
       display: isVisible ? 'block' : 'none',
@@ -117,7 +121,7 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
     });
 
     // Create root node
-    return new D3Node('g', element, { id: elementId });
+    return new D3Node('g', element, { id });
   }
 }
 

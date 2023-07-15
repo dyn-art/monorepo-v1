@@ -7,14 +7,7 @@ import { notEmpty } from '@pda/utils';
  * @param {Object} props - An object contains the parameters needed.
  * @returns {string} SVG path string.
  */
-export function createRectanglePath(props: {
-  width: number;
-  height: number;
-  topLeftRadius: number;
-  topRightRadius: number;
-  bottomRightRadius: number;
-  bottomLeftRadius: number;
-}): string {
+export function createRectanglePath(props: TCreateRectanglePathProps): string {
   const {
     width,
     height,
@@ -72,3 +65,12 @@ export function createRectanglePath(props: {
     .filter(notEmpty)
     .join(' ');
 }
+
+export type TCreateRectanglePathProps = {
+  width: number;
+  height: number;
+  topLeftRadius: number;
+  topRightRadius: number;
+  bottomRightRadius: number;
+  bottomLeftRadius: number;
+};
