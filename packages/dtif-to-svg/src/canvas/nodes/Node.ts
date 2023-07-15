@@ -58,6 +58,10 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
   // Setter & Getter
   // ============================================================================
 
+  public get id() {
+    return this._id;
+  }
+
   public get name() {
     return this._name;
   }
@@ -101,7 +105,7 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
     });
   }
 
-  public static createRootD3Node(
+  public static async createRootD3Node(
     parent: TD3SVGElementSelection,
     props: { node: TNode; id: string }
   ) {

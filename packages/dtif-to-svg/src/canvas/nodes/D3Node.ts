@@ -8,7 +8,10 @@ export class D3Node<GElement extends BaseType = SVGElement> {
   private readonly _id: string;
   private readonly _type: string;
   private readonly _element: TD3Selection<GElement>;
-  private readonly _children: Record<string, D3Node> = {};
+  // If '_children' is set to null later on,
+  // it means that the current node might have multiple children which are not
+  // within the context of the current D3Node anymore
+  private readonly _children: Record<string, D3Node> | null = {};
 
   constructor(
     type: string,
@@ -38,8 +41,14 @@ export class D3Node<GElement extends BaseType = SVGElement> {
     return this.children;
   }
 
-  public append(type: string, options: TD3NodeAppendOptions = {}) {
+  public append(
+    type: string,
+    options: TD3NodeAppendOptions = {}
+  ): D3Node | null {
     const { id = shortId(), children, styles = {}, attributes = {} } = options;
+    if (this._children == null) {
+      return null;
+    }
 
     // Create element
     const element = this._element.append(type);
@@ -66,15 +75,17 @@ export class D3Node<GElement extends BaseType = SVGElement> {
     return node;
   }
 
-  public getChildNodeById(id: string) {
+  public getChildNodeById(id: string): D3Node | null {
     const findNodeRecursively = (node: D3Node): D3Node | null => {
       if (node.id === id) {
         return node;
       } else {
         for (const childName in node.children) {
-          const result = findNodeRecursively(node.children[childName]);
-          if (result) {
-            return result;
+          if (node.children != null) {
+            const result = findNodeRecursively(node.children[childName]);
+            if (result) {
+              return result;
+            }
           }
         }
       }
@@ -94,7 +105,7 @@ export class D3Node<GElement extends BaseType = SVGElement> {
 
 type TD3NodeOptions = {
   id?: string;
-  children?: Record<string, D3Node>;
+  children?: Record<string, D3Node> | null;
 };
 
 type TD3NodeAppendOptions = TD3NodeOptions & {

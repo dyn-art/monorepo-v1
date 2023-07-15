@@ -7,6 +7,7 @@ import {
   TRectangleCornerMixin,
 } from '@pda/types/dtif';
 import { Scene } from '../Scene';
+import { appendNode } from '../append-node';
 import { Node } from './Node';
 
 export class Frame extends Node<Frame> {
@@ -26,8 +27,8 @@ export class Frame extends Node<Frame> {
   private readonly _d3FillClipPathId: string;
   private readonly _d3FillClipPathDefsNodeId: string;
   private readonly _d3FillClippedShapeNodeId: string;
-  private readonly _d3ContentNodeId: string;
-  private readonly _d3ChildrenNodeId: string;
+  private readonly _d3ContentWrapperNodeId: string;
+  private readonly _d3ChildrenWrapperNodeId: string;
 
   constructor(parent: TD3SVGElementSelection, node: TFrameNode, scene: Scene) {
     super(node, scene, { type: 'frame' });
@@ -60,11 +61,15 @@ export class Frame extends Node<Frame> {
     this._d3FillClipPathId = this.getD3NodeId('fill-clip', true);
     this._d3FillClipPathDefsNodeId = this.getD3NodeId('fill-defs');
     this._d3FillClippedShapeNodeId = this.getD3NodeId('fill-clipped-shape');
-    this._d3ContentNodeId = this.getD3NodeId('content');
-    this._d3ChildrenNodeId = this.getD3NodeId('children');
+    this._d3ContentWrapperNodeId = this.getD3NodeId('content');
+    this._d3ChildrenWrapperNodeId = this.getD3NodeId('children');
 
+    this.init(parent, node);
+  }
+
+  private async init(parent: TD3SVGElementSelection, node: TFrameNode) {
     // Create D3 node
-    Frame.createD3Node(parent, {
+    const d3Node = await Frame.createD3Node(parent, {
       node,
       ids: {
         rootNodeId: this._d3RootNodeId,
@@ -74,15 +79,42 @@ export class Frame extends Node<Frame> {
         fillClipPathId: this._d3FillClipPathId,
         fillClipPathDefsNodeId: this._d3FillClipPathDefsNodeId,
         fillClippedShapeNodeId: this._d3FillClippedShapeNodeId,
-        contentNodeId: this._d3ContentNodeId,
-        childrenNodeId: this._d3ChildrenNodeId,
+        contentWrapperNodeId: this._d3ContentWrapperNodeId,
+        childrenWrapperNodeId: this._d3ChildrenWrapperNodeId,
       },
     });
+
+    // Retrieve children wrapper node
+    const childWrapperNode = this._d3Node?.getChildNodeById(
+      this._d3ChildrenWrapperNodeId
+    );
+    if (childWrapperNode == null) {
+      return;
+    }
+
+    node.children.map(async (child) => {
+      // Create node
+      const node = await appendNode(childWrapperNode.element, {
+        node: child,
+        scene: this._scene,
+      });
+      if (node != null) {
+        // Add node to scene
+        this._scene.addNode(node);
+
+        // Add id to this nodes children ids
+        this._childrenIds.push(node.id);
+      }
+    });
+
+    this._d3Node = d3Node;
   }
 
   // ============================================================================
   // Getter & Setter
   // ============================================================================
+
+  // TODO:
 
   // ============================================================================
   // D3
@@ -100,8 +132,8 @@ export class Frame extends Node<Frame> {
         fillClipPathId: string;
         fillClipPathDefsNodeId: string;
         fillClippedShapeNodeId: string;
-        contentNodeId: string;
-        childrenNodeId: string;
+        contentWrapperNodeId: string;
+        childrenWrapperNodeId: string;
       };
     }
   ) {
@@ -114,34 +146,34 @@ export class Frame extends Node<Frame> {
         fillClipPathId,
         fillClipPathDefsNodeId,
         fillClippedShapeNodeId,
-        contentNodeId,
-        childrenNodeId,
+        contentWrapperNodeId,
+        childrenWrapperNodeId,
       },
       node,
     } = props;
 
     // Create root element
-    const root = Node.createRootD3Node(parent, {
+    const root = await Node.createRootD3Node(parent, {
       node: props.node,
       id: rootNodeId,
     });
 
     // Create content element
-    const contentNode = root.append('g', {
-      id: contentNodeId,
+    const contentWrapperNode = root.append('g', {
+      id: contentWrapperNodeId,
       attributes: {
         clipPath: node.clipsContent ? `url(#${contentClipPathId})` : undefined,
       },
     });
 
     // Create fill clip path element
-    const fillClipPathDefsNode = contentNode.append('defs', {
+    const fillClipPathDefsNode = contentWrapperNode?.append('defs', {
       id: fillClipPathDefsNodeId,
     });
-    const fillClipPathNode = fillClipPathDefsNode.append('clipPath', {
+    const fillClipPathNode = fillClipPathDefsNode?.append('clipPath', {
       id: fillClipPathId,
     });
-    fillClipPathNode.append('rect', {
+    fillClipPathNode?.append('rect', {
       id: fillClippedShapeNodeId,
       attributes: {
         width: node.width,
@@ -152,21 +184,20 @@ export class Frame extends Node<Frame> {
     // Create fill element
     // TODO:
 
-    // Create child elements
-    const childrenNode = root.append('g', { id: childrenNodeId });
-    node.children.map((child) => {
-      // TODO:
-    });
+    // Create a child wrapper element
+    // and set 'children' property to null because any children
+    // appended to this wrapper are not considered in the context of the current node anymore
+    root.append('g', { id: childrenWrapperNodeId, children: null });
 
     // Create content clip path element
     if (node.clipsContent) {
-      const contentClipPathDefsNode = contentNode.append('defs', {
+      const contentClipPathDefsNode = contentWrapperNode?.append('defs', {
         id: contentClipPathDefsNodeId,
       });
-      const contentClipPathNode = contentClipPathDefsNode.append('clipPath', {
+      const contentClipPathNode = contentClipPathDefsNode?.append('clipPath', {
         id: fillClipPathId,
       });
-      contentClipPathNode.append('rect', {
+      contentClipPathNode?.append('rect', {
         id: contentClippedShapeNodeId,
         attributes: {
           width: node.width,
@@ -174,5 +205,7 @@ export class Frame extends Node<Frame> {
         },
       });
     }
+
+    return root;
   }
 }
