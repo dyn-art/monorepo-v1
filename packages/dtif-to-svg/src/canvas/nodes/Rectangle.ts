@@ -26,12 +26,22 @@ export class Rectangle extends Node<Rectangle> {
   private readonly _d3FillClipPathDefsNodeId: string;
   private readonly _d3FillClippedShapeNodeId: string;
 
+  // Init
+  private _forInit: {
+    parent: TD3SVGElementSelection;
+    node: TRectangleNode;
+  } | null;
+
   constructor(
     parent: TD3SVGElementSelection,
     node: TRectangleNode,
     scene: Scene
   ) {
     super(node, scene, { type: 'rectangle' });
+    this._forInit = {
+      parent,
+      node,
+    };
 
     // Apply mixins
     this._cornerMixin = {
@@ -56,11 +66,14 @@ export class Rectangle extends Node<Rectangle> {
     this._d3FillClipPathId = this.getD3NodeId('fill-clip', true);
     this._d3FillClipPathDefsNodeId = this.getD3NodeId('fill-defs');
     this._d3FillClippedShapeNodeId = this.getD3NodeId('fill-clipped-shape');
-
-    this.init(parent, node);
   }
 
-  private async init(parent: TD3SVGElementSelection, node: TRectangleNode) {
+  public async init() {
+    if (this._forInit == null) {
+      return this;
+    }
+    const { node, parent } = this._forInit;
+
     // Create D3 node
     this._d3Node = await Rectangle.createD3Node(parent, {
       node,
@@ -71,6 +84,9 @@ export class Rectangle extends Node<Rectangle> {
         fillClippedShapeNodeId: this._d3FillClippedShapeNodeId,
       },
     });
+
+    this._forInit = null;
+    return this;
   }
 
   // ============================================================================

@@ -8,7 +8,7 @@ import { D3Node, Node } from './nodes';
 export class Scene {
   private readonly _nodes: Record<string, Node>;
   private readonly _selectedNodeIds: string[];
-  private _root: Node | null;
+  private _rootNodeId: string | null;
 
   private _name: string;
   private _width: number;
@@ -24,8 +24,9 @@ export class Scene {
     this._width = scene.width;
     this._height = scene.height;
     this._selectedNodeIds = [];
+    this._nodes = {};
     this._d3Node = null; // Set by init()
-    this._root = null; // Set by init()
+    this._rootNodeId = null; // Set by init()
 
     this.init(scene);
   }
@@ -39,20 +40,24 @@ export class Scene {
       node: scene.root,
       scene: this,
     });
-    this._root = root;
+    if (root != null) {
+      this.addNode(root);
+      this._rootNodeId = root.id;
+    }
 
     this._d3Node = svgNode;
+    return this;
   }
 
   // ============================================================================
   // Other
   // ============================================================================
 
-  public ready(timeout: number): Promise<boolean> {
+  public ready(timeout = 5000): Promise<boolean> {
     return new Promise((resolve) => {
       let elapsed = 0;
       const checkReady = () => {
-        if (this._d3Node && this._root) {
+        if (this._d3Node != null) {
           resolve(true);
         } else if (elapsed >= timeout) {
           // If timeout has elapsed and the scene is not ready yet, resolve with false

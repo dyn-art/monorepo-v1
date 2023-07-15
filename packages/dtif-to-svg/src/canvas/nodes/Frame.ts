@@ -30,8 +30,19 @@ export class Frame extends Node<Frame> {
   private readonly _d3ContentWrapperNodeId: string;
   private readonly _d3ChildrenWrapperNodeId: string;
 
+  // Init
+  private _forInit: {
+    parent: TD3SVGElementSelection;
+    node: TFrameNode;
+  } | null;
+
   constructor(parent: TD3SVGElementSelection, node: TFrameNode, scene: Scene) {
     super(node, scene, { type: 'frame' });
+    this._forInit = {
+      parent,
+      node,
+    };
+    this._childrenIds = [];
 
     // Apply mixins
     this._cornerMixin = {
@@ -63,13 +74,16 @@ export class Frame extends Node<Frame> {
     this._d3FillClippedShapeNodeId = this.getD3NodeId('fill-clipped-shape');
     this._d3ContentWrapperNodeId = this.getD3NodeId('content');
     this._d3ChildrenWrapperNodeId = this.getD3NodeId('children');
-
-    this.init(parent, node);
   }
 
-  private async init(parent: TD3SVGElementSelection, node: TFrameNode) {
+  public async init() {
+    if (this._forInit == null) {
+      return this;
+    }
+    const { node, parent } = this._forInit;
+
     // Create D3 node
-    const d3Node = await Frame.createD3Node(parent, {
+    this._d3Node = await Frame.createD3Node(parent, {
       node,
       ids: {
         rootNodeId: this._d3RootNodeId,
@@ -89,25 +103,28 @@ export class Frame extends Node<Frame> {
       this._d3ChildrenWrapperNodeId
     );
     if (childWrapperNode == null) {
-      return;
+      return this;
     }
 
-    node.children.map(async (child) => {
-      // Create node
-      const node = await appendNode(childWrapperNode.element, {
-        node: child,
-        scene: this._scene,
-      });
-      if (node != null) {
-        // Add node to scene
-        this._scene.addNode(node);
+    await Promise.all(
+      node.children.map(async (child) => {
+        // Create node
+        const node = await appendNode(childWrapperNode.element, {
+          node: child,
+          scene: this._scene,
+        });
+        if (node != null) {
+          // Add node to scene
+          this._scene.addNode(node);
 
-        // Add id to this nodes children ids
-        this._childrenIds.push(node.id);
-      }
-    });
+          // Add id to this nodes children ids
+          this._childrenIds.push(node.id);
+        }
+      })
+    );
 
-    this._d3Node = d3Node;
+    this._forInit = null;
+    return this;
   }
 
   // ============================================================================

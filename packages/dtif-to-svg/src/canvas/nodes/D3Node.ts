@@ -80,9 +80,9 @@ export class D3Node<GElement extends BaseType = SVGElement> {
       if (node.id === id) {
         return node;
       } else {
-        for (const childName in node.children) {
-          if (node.children != null) {
-            const result = findNodeRecursively(node.children[childName]);
+        if (node._children != null) {
+          for (const childName in node._children) {
+            const result = findNodeRecursively(node._children[childName]);
             if (result) {
               return result;
             }

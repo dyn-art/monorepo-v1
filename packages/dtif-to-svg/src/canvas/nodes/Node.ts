@@ -10,6 +10,7 @@ import {
   TTransform,
 } from '@pda/types/dtif';
 import { Scene } from '../Scene';
+import { Watcher } from '../Watcher';
 import { D3Node } from './D3Node';
 
 export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {

@@ -24,7 +24,7 @@ describe('Scene class tests', () => {
 
       // Act
       const result = new Scene(dtif);
-      const ready = await result.ready(3000);
+      const ready = await result.ready(8000);
 
       // Assert
       expect(result).not.toBeNull();

@@ -1,7 +1,11 @@
-class Watcher<GWatchedObj> {
+export class Watcher<GWatchedObj> {
   private callbacks: {
     [K in keyof GWatchedObj]?: Array<(value: GWatchedObj[K]) => void>;
   } = {};
+
+  constructor() {
+    // do nothing
+  }
 
   watch<K extends keyof GWatchedObj>(
     property: K,
