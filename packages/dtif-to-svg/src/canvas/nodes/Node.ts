@@ -1,25 +1,37 @@
+import { transformToCSS } from '@/helpers/css';
+import { appendAttributes, appendCSS } from '@/helpers/d3';
+import { getElementId } from '@/helpers/other';
+import { TD3SVGElementSelection } from '@/types';
 import {
   TBlendMixin,
   TLayoutMixin,
   TNode,
   TSceneNodeMixin,
+  TTransform,
 } from '@pda/types/dtif';
-import { TD3SVGElementSelection } from '../../types';
+import { Scene } from '../Scene';
+import { D3Node } from './D3Node';
 
-export class Node {
+export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
+  protected readonly _type;
+
   // Base node mixin
-  private readonly _id: string;
-  private readonly _name: string;
+  protected readonly _id: string;
+  protected _name: string;
 
   // Other mixin's
-  private readonly _sceneMixin: TSceneNodeMixin;
-  private readonly _layoutMixin: TLayoutMixin;
-  private readonly _blendMixin: TBlendMixin;
+  protected readonly _sceneMixin: TSceneNodeMixin;
+  protected readonly _layoutMixin: TLayoutMixin;
+  protected readonly _blendMixin: TBlendMixin;
 
   // D3
-  private readonly _d3Node: TD3SVGElementSelection;
+  protected _d3Node: D3Node | null;
 
-  constructor(parent: TD3SVGElementSelection, node: TNode) {
+  protected readonly _watcher: Watcher<GWatchedObj>;
+  protected readonly _scene: Scene;
+
+  constructor(node: TNode, scene: Scene, options: TNodeOptions = {}) {
+    const { type = 'node' } = options;
     this._id = node.id;
     this._name = node.name;
     this._sceneMixin = {
@@ -36,8 +48,79 @@ export class Node {
       isMask: node.isMask,
       opacity: node.opacity,
     };
-    // TODO should be set by child I guess or I wrap each node in g as
-    // all nodes have transform
-    this._d3Node = parent.append('g');
+    this._d3Node = null; // Set by sub class
+    this._watcher = new Watcher();
+    this._scene = scene;
+    this._type = type;
+  }
+
+  // ============================================================================
+  // Setter & Getter
+  // ============================================================================
+
+  public get name() {
+    return this._name;
+  }
+
+  public set name(value: string) {
+    this._name = value;
+    this._watcher.notify('name', value);
+  }
+
+  public get relativeTransform() {
+    return this._layoutMixin.relativeTransform;
+  }
+
+  public set relativeTransform(value: TTransform) {
+    this._layoutMixin.relativeTransform = value;
+    this._d3Node?.updateStyles(transformToCSS(value));
+    this._watcher.notify('relativeTransform', this.relativeTransform);
+  }
+
+  // ============================================================================
+  // Other
+  // ============================================================================
+
+  public watch<K extends keyof GWatchedObj>(
+    property: K,
+    callback: (value: GWatchedObj[K]) => void
+  ) {
+    this._watcher.watch(property, callback);
+  }
+
+  // ============================================================================
+  // D3
+  // ============================================================================
+
+  public static createRootD3Node(
+    parent: TD3SVGElementSelection,
+    props: { node: TNode; type: string }
+  ) {
+    const {
+      type,
+      node: { opacity, relativeTransform, isVisible, id },
+    } = props;
+    const elementId = getElementId({
+      id,
+      type,
+    });
+
+    // Create root element
+    const element = parent.append('g');
+    appendAttributes(element, {
+      id: elementId,
+    });
+    appendCSS(element, {
+      display: isVisible ? 'block' : 'none',
+      opacity: opacity,
+      ...transformToCSS(relativeTransform),
+    });
+
+    // Create root node
+    return new D3Node('g', element, { id: elementId });
   }
 }
+
+export type TNodeOptions = {
+  type?: string;
+};
