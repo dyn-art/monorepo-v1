@@ -18,7 +18,13 @@ export class Scene {
   // D3
   private _d3Node: D3Node | null;
 
+  // Init
+  private _forInit: {
+    scene: TScene;
+  } | null;
+
   constructor(scene: TScene) {
+    this._forInit = { scene };
     this._version = scene.version;
     this._name = scene.name;
     this._width = scene.width;
@@ -27,11 +33,14 @@ export class Scene {
     this._nodes = {};
     this._d3Node = null; // Set by init()
     this._rootNodeId = null; // Set by init()
-
-    this.init(scene);
   }
 
-  private async init(scene: TScene) {
+  public async init() {
+    if (this._forInit == null) {
+      return this;
+    }
+    const { scene } = this._forInit;
+
     // Create D3 node
     const svgNode = await Scene.createSvg(scene);
 
@@ -46,6 +55,7 @@ export class Scene {
     }
 
     this._d3Node = svgNode;
+    this._forInit = null;
     return this;
   }
 
@@ -53,27 +63,13 @@ export class Scene {
   // Other
   // ============================================================================
 
-  public ready(timeout = 5000): Promise<boolean> {
-    return new Promise((resolve) => {
-      let elapsed = 0;
-      const checkReady = () => {
-        if (this._d3Node != null) {
-          resolve(true);
-        } else if (elapsed >= timeout) {
-          // If timeout has elapsed and the scene is not ready yet, resolve with false
-          resolve(false);
-        } else {
-          elapsed += 100;
-          // If not ready, check again in 100ms
-          setTimeout(checkReady, 100);
-        }
-      };
-      checkReady();
-    });
-  }
-
   public addNode(node: Node) {
     this._nodes[node.id] = node;
+  }
+
+  public toSVG(): string | null {
+    const domNode: any = this._d3Node?.element.node();
+    return domNode?.outerHTML ?? null;
   }
 
   // ============================================================================

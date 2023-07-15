@@ -23,12 +23,12 @@ describe('Scene class tests', () => {
       );
 
       // Act
-      const result = new Scene(dtif);
-      const ready = await result.ready(8000);
+      const result = await new Scene(dtif).init();
+      const svgResult = result.toSVG() ?? '';
 
       // Assert
       expect(result).not.toBeNull();
-      expect(ready).toBeTruthy();
+      expect(cleanStr(svgResult)).toStrictEqual(cleanStr(expectedResult));
     }
   );
 });
