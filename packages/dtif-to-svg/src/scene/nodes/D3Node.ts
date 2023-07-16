@@ -1,8 +1,8 @@
+import { appendAttributes, appendCSS } from '@/helpers/d3';
 import { TD3Selection } from '@/types';
 import { shortId } from '@pda/utils';
 import { BaseType } from 'd3-selection';
 import { CSSProperties } from 'react';
-import { appendAttributes, appendCSS } from '../../helpers/d3';
 
 export class D3Node<GElement extends BaseType = SVGElement> {
   private readonly _id: string;

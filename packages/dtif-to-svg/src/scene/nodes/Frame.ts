@@ -7,8 +7,7 @@ import {
 } from '@pda/types/dtif';
 import { notEmpty } from '@pda/utils';
 import { Scene } from '../Scene';
-import { appendNode } from '../append';
-import { appendFill } from '../append/append-fill';
+import { appendFill, appendNode } from '../append';
 import { D3Node } from './D3Node';
 import { Node } from './Node';
 

@@ -1,4 +1,5 @@
 import { transformToCSS } from '@/helpers/css';
+import { copyMatrix } from '@/helpers/math';
 import { getElementId } from '@/helpers/other';
 import {
   TBlendMixin,
@@ -90,7 +91,7 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
   }
 
   // ============================================================================
-  // Other
+  // Interaction
   // ============================================================================
 
   public move(mx: number, my: number) {
@@ -99,12 +100,17 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
       [0, 1, my],
       [0, 0, 1],
     ]);
-
-    // Multiply translate by relativeTransform to apply the translation
     this.relativeTransform = multiply(
       translateMatrix,
       this.relativeTransform
     ).toArray() as TTransform;
+  }
+
+  public moveTo(mx: number, my: number) {
+    const copiedTransform = copyMatrix(this.relativeTransform);
+    copiedTransform[0][2] = mx;
+    copiedTransform[1][2] = my;
+    this.relativeTransform = copiedTransform;
   }
 
   public rotate(angleInDegrees: number) {
@@ -149,11 +155,21 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
     return angleInDegrees;
   }
 
+  // ============================================================================
+  // Callbacks
+  // ============================================================================
+
   public watch<K extends keyof GWatchedObj>(
     property: K,
     callback: (value: GWatchedObj[K]) => void
   ) {
     this._watcher.watch(property, callback);
+  }
+
+  public onClickRoot(callback: (event: any, node: Node) => void) {
+    this._d3Node?.element.on('click', (e) => {
+      callback(e, this);
+    });
   }
 
   // ============================================================================
@@ -176,7 +192,7 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
     const { id, node } = props;
 
     // Create root element
-    const element = parent.append('g', {
+    const rootWrapperNode = parent.append('g', {
       id,
       styles: {
         display: node.isVisible ? 'block' : 'none',
@@ -185,7 +201,7 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
       },
     });
 
-    return element;
+    return rootWrapperNode;
   }
 }
 

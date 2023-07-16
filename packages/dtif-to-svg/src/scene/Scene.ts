@@ -6,17 +6,16 @@ import { appendNode } from './append';
 import { D3Node, Node } from './nodes';
 
 export class Scene {
-  private readonly _nodes: Record<string, Node>;
-  private readonly _selectedNodeIds: string[];
-  private _rootNodeId: string | null;
+  protected readonly _nodes: Record<string, Node>;
+  protected _rootNodeId: string | null;
 
-  private _name: string;
-  private _width: number;
-  private _height: number;
-  private _version: string;
+  public name: string;
+  public readonly width: number;
+  public readonly height: number;
+  public readonly version: string;
 
   // D3
-  private _d3Node: D3Node | null;
+  protected _d3Node: D3Node | null;
 
   // Init
   private _forInit: {
@@ -25,11 +24,10 @@ export class Scene {
 
   constructor(scene: TScene) {
     this._forInit = { scene };
-    this._version = scene.version;
-    this._name = scene.name;
-    this._width = scene.width;
-    this._height = scene.height;
-    this._selectedNodeIds = [];
+    this.version = scene.version;
+    this.name = scene.name;
+    this.width = scene.width;
+    this.height = scene.height;
     this._nodes = {};
     this._d3Node = null; // Set by init()
     this._rootNodeId = null; // Set by init()
