@@ -1,3 +1,5 @@
+export * from './canvas';
+export * from './d3';
 export * from './helpers/css';
 export * from './helpers/d3';
 export * from './helpers/math';

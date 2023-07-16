@@ -2,7 +2,6 @@ import {
   TCreateRectanglePathProps,
   createRectanglePath,
 } from '@/helpers/paths';
-import { TD3SVGElementSelection } from '@/types';
 import {
   TEffectsMixin,
   TFillsMixin,
@@ -11,6 +10,8 @@ import {
   TRectangleNode,
 } from '@pda/types/dtif';
 import { Scene } from '../Scene';
+import { appendFill } from '../append';
+import { D3Node } from './D3Node';
 import { Node } from './Node';
 
 export class Rectangle extends Node<Rectangle> {
@@ -25,18 +26,15 @@ export class Rectangle extends Node<Rectangle> {
   private readonly _d3FillClipPathId: string;
   private readonly _d3FillClipPathDefsNodeId: string;
   private readonly _d3FillClippedShapeNodeId: string;
+  private readonly _d3FillNodeId: string;
 
   // Init
   private _forInit: {
-    parent: TD3SVGElementSelection;
+    parent: D3Node;
     node: TRectangleNode;
   } | null;
 
-  constructor(
-    parent: TD3SVGElementSelection,
-    node: TRectangleNode,
-    scene: Scene
-  ) {
+  constructor(parent: D3Node, node: TRectangleNode, scene: Scene) {
     super(node, scene, { type: 'rectangle' });
     this._forInit = {
       parent,
@@ -66,6 +64,7 @@ export class Rectangle extends Node<Rectangle> {
     this._d3FillClipPathId = this.getD3NodeId('fill-clip', true);
     this._d3FillClipPathDefsNodeId = this.getD3NodeId('fill-defs');
     this._d3FillClippedShapeNodeId = this.getD3NodeId('fill-clipped-shape');
+    this._d3FillNodeId = this.getD3NodeId('fill');
   }
 
   public async init() {
@@ -82,6 +81,7 @@ export class Rectangle extends Node<Rectangle> {
         fillClipPathId: this._d3FillClipPathId,
         fillClipPathDefsNodeId: this._d3FillClipPathDefsNodeId,
         fillClippedShapeNodeId: this._d3FillClippedShapeNodeId,
+        fillNodeId: this._d3FillNodeId,
       },
     });
 
@@ -128,7 +128,7 @@ export class Rectangle extends Node<Rectangle> {
   // ============================================================================
 
   public static async createD3Node(
-    parent: TD3SVGElementSelection,
+    parent: D3Node,
     props: {
       node: TRectangleNode;
       ids: {
@@ -136,6 +136,7 @@ export class Rectangle extends Node<Rectangle> {
         fillClipPathId: string;
         fillClipPathDefsNodeId: string;
         fillClippedShapeNodeId: string;
+        fillNodeId: string;
       };
     }
   ) {
@@ -145,6 +146,7 @@ export class Rectangle extends Node<Rectangle> {
         fillClipPathId,
         fillClipPathDefsNodeId,
         fillClippedShapeNodeId,
+        fillNodeId,
       },
       node,
     } = props;
@@ -159,10 +161,10 @@ export class Rectangle extends Node<Rectangle> {
     const fillClipPathDefsNode = root.append('defs', {
       id: fillClipPathDefsNodeId,
     });
-    const fillClipPathNode = fillClipPathDefsNode?.append('clipPath', {
+    const fillClipPathNode = fillClipPathDefsNode.append('clipPath', {
       id: fillClipPathId,
     });
-    fillClipPathNode?.append('path', {
+    fillClipPathNode.append('path', {
       id: fillClippedShapeNodeId,
       attributes: {
         p: createRectanglePath({
@@ -177,7 +179,11 @@ export class Rectangle extends Node<Rectangle> {
     });
 
     // Create fill element
-    // TODO:
+    await appendFill(root, {
+      node,
+      clipPathId: fillClipPathId,
+      id: fillNodeId,
+    });
 
     return root;
   }

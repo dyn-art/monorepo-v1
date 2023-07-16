@@ -2,7 +2,7 @@ import d3 from '@/d3';
 import { appendAttributes, appendCSS } from '@/helpers/d3';
 import { TScene } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
-import { appendNode } from './append-node';
+import { appendNode } from './append';
 import { D3Node, Node } from './nodes';
 
 export class Scene {
@@ -45,7 +45,7 @@ export class Scene {
     const svgNode = await Scene.createSvg(scene);
 
     // Create root element
-    const root = await appendNode(svgNode.element, {
+    const root = await appendNode(svgNode, {
       node: scene.root,
       scene: this,
     });
@@ -60,16 +60,32 @@ export class Scene {
   }
 
   // ============================================================================
-  // Other
+  // Getter & Setter
   // ============================================================================
+
+  public get root(): Node | null {
+    return this.getNode(this._rootNodeId);
+  }
 
   public addNode(node: Node) {
     this._nodes[node.id] = node;
   }
 
+  public getNode(id: string | null | undefined): Node | null {
+    return id != null ? this._nodes[id] ?? null : null;
+  }
+
+  // ============================================================================
+  // Other
+  // ============================================================================
+
   public toSVG(): string | null {
-    const domNode: any = this._d3Node?.element.node();
+    const domNode: any = this.toDOMNode();
     return domNode?.outerHTML ?? null;
+  }
+
+  public toDOMNode(): SVGElement | null {
+    return this._d3Node?.element.node() ?? null;
   }
 
   // ============================================================================

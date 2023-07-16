@@ -41,14 +41,8 @@ export class D3Node<GElement extends BaseType = SVGElement> {
     return this.children;
   }
 
-  public append(
-    type: string,
-    options: TD3NodeAppendOptions = {}
-  ): D3Node | null {
+  public append(type: string, options: TD3NodeAppendOptions = {}): D3Node {
     const { id = shortId(), children, styles = {}, attributes = {} } = options;
-    if (this._children == null) {
-      return null;
-    }
 
     // Create element
     const element = this._element.append(type);
@@ -57,7 +51,11 @@ export class D3Node<GElement extends BaseType = SVGElement> {
 
     // Create node
     const node = new D3Node<SVGElement>(type, element, { id, children });
-    this._children[id] = node;
+    if (this._children != null) {
+      this._children[id] = node;
+    } else {
+      // TODO: log warning
+    }
 
     return node;
   }

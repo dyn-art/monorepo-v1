@@ -1,7 +1,5 @@
 import { transformToCSS } from '@/helpers/css';
-import { appendAttributes, appendCSS } from '@/helpers/d3';
 import { getElementId } from '@/helpers/other';
-import { TD3SVGElementSelection } from '@/types';
 import {
   TBlendMixin,
   TLayoutMixin,
@@ -9,6 +7,7 @@ import {
   TSceneNodeMixin,
   TTransform,
 } from '@pda/types/dtif';
+import { matrix, multiply } from 'mathjs';
 import { Scene } from '../Scene';
 import { Watcher } from '../Watcher';
 import { D3Node } from './D3Node';
@@ -72,6 +71,14 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
     this._watcher.notify('name', value);
   }
 
+  public get width() {
+    return this._layoutMixin.width;
+  }
+
+  public get height() {
+    return this._layoutMixin.height;
+  }
+
   public get relativeTransform() {
     return this._layoutMixin.relativeTransform;
   }
@@ -85,6 +92,62 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
   // ============================================================================
   // Other
   // ============================================================================
+
+  public move(mx: number, my: number) {
+    const translateMatrix = matrix([
+      [1, 0, mx],
+      [0, 1, my],
+      [0, 0, 1],
+    ]);
+
+    // Multiply translate by relativeTransform to apply the translation
+    this.relativeTransform = multiply(
+      translateMatrix,
+      this.relativeTransform
+    ).toArray() as TTransform;
+  }
+
+  public rotate(angleInDegrees: number) {
+    // Convert the angle from degrees to radians
+    const angleInRadians = (angleInDegrees * Math.PI) / 180;
+
+    // Calculate the center of the object
+    const centerX = this.width / 2;
+    const centerY = this.height / 2;
+
+    // Calculate the new coordinates of the top-left corner after rotation
+    const cos = Math.cos(angleInRadians);
+    const sin = Math.sin(angleInRadians);
+    const nx = centerX * (1 - cos) + centerY * sin;
+    const ny = centerY * (1 - cos) - centerX * sin;
+
+    // Create the rotation matrix
+    const rotationMatrix: TTransform = [
+      [cos, -sin, nx],
+      [sin, cos, ny],
+      [0, 0, 1],
+    ];
+
+    // Update the relative transform of the object
+    this.relativeTransform = multiply(this.relativeTransform, rotationMatrix);
+  }
+
+  public getAngleInDegrees(): number {
+    // Extract rotation from transformation matrix
+    const angleInRadians = Math.atan2(
+      -this.relativeTransform[1][0],
+      this.relativeTransform[0][0]
+    );
+
+    // Convert the angle from radians to degrees
+    let angleInDegrees = (angleInRadians * 180) / Math.PI;
+
+    // Normalize the angle to the range [-180, 180]
+    while (angleInDegrees < -180) angleInDegrees += 360;
+    while (angleInDegrees > 180) angleInDegrees -= 360;
+
+    return angleInDegrees;
+  }
 
   public watch<K extends keyof GWatchedObj>(
     property: K,
@@ -107,26 +170,22 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
   }
 
   public static async createRootD3Node(
-    parent: TD3SVGElementSelection,
+    parent: D3Node,
     props: { node: TNode; id: string }
   ) {
-    const {
-      node: { opacity, relativeTransform, isVisible, id },
-    } = props;
+    const { id, node } = props;
 
     // Create root element
-    const element = parent.append('g');
-    appendAttributes(element, {
+    const element = parent.append('g', {
       id,
-    });
-    appendCSS(element, {
-      display: isVisible ? 'block' : 'none',
-      opacity: opacity,
-      ...transformToCSS(relativeTransform),
+      styles: {
+        display: node.isVisible ? 'block' : 'none',
+        opacity: node.opacity,
+        ...transformToCSS(node.relativeTransform),
+      },
     });
 
-    // Create root node
-    return new D3Node('g', element, { id });
+    return element;
   }
 }
 

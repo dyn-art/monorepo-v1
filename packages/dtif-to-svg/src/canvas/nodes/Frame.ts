@@ -1,4 +1,3 @@
-import { TD3SVGElementSelection } from '@/types';
 import {
   TEffectsMixin,
   TFillsMixin,
@@ -6,8 +5,11 @@ import {
   TGeometryMixin,
   TRectangleCornerMixin,
 } from '@pda/types/dtif';
+import { notEmpty } from '@pda/utils';
 import { Scene } from '../Scene';
-import { appendNode } from '../append-node';
+import { appendNode } from '../append';
+import { appendFill } from '../append/append-fill';
+import { D3Node } from './D3Node';
 import { Node } from './Node';
 
 export class Frame extends Node<Frame> {
@@ -27,16 +29,17 @@ export class Frame extends Node<Frame> {
   private readonly _d3FillClipPathId: string;
   private readonly _d3FillClipPathDefsNodeId: string;
   private readonly _d3FillClippedShapeNodeId: string;
+  private readonly _d3FillNodeId: string;
   private readonly _d3ContentWrapperNodeId: string;
   private readonly _d3ChildrenWrapperNodeId: string;
 
   // Init
   private _forInit: {
-    parent: TD3SVGElementSelection;
+    parent: D3Node;
     node: TFrameNode;
   } | null;
 
-  constructor(parent: TD3SVGElementSelection, node: TFrameNode, scene: Scene) {
+  constructor(parent: D3Node, node: TFrameNode, scene: Scene) {
     super(node, scene, { type: 'frame' });
     this._forInit = {
       parent,
@@ -72,6 +75,7 @@ export class Frame extends Node<Frame> {
     this._d3FillClipPathId = this.getD3NodeId('fill-clip', true);
     this._d3FillClipPathDefsNodeId = this.getD3NodeId('fill-defs');
     this._d3FillClippedShapeNodeId = this.getD3NodeId('fill-clipped-shape');
+    this._d3FillNodeId = this.getD3NodeId('fill');
     this._d3ContentWrapperNodeId = this.getD3NodeId('content');
     this._d3ChildrenWrapperNodeId = this.getD3NodeId('children');
   }
@@ -93,6 +97,7 @@ export class Frame extends Node<Frame> {
         fillClipPathId: this._d3FillClipPathId,
         fillClipPathDefsNodeId: this._d3FillClipPathDefsNodeId,
         fillClippedShapeNodeId: this._d3FillClippedShapeNodeId,
+        fillNodeId: this._d3FillNodeId,
         contentWrapperNodeId: this._d3ContentWrapperNodeId,
         childrenWrapperNodeId: this._d3ChildrenWrapperNodeId,
       },
@@ -109,7 +114,7 @@ export class Frame extends Node<Frame> {
     await Promise.all(
       node.children.map(async (child) => {
         // Create node
-        const node = await appendNode(childWrapperNode.element, {
+        const node = await appendNode(childWrapperNode, {
           node: child,
           scene: this._scene,
         });
@@ -131,14 +136,18 @@ export class Frame extends Node<Frame> {
   // Getter & Setter
   // ============================================================================
 
-  // TODO:
+  public get children(): Node[] {
+    return this._childrenIds
+      .map((id) => this._scene.getNode(id))
+      .filter(notEmpty);
+  }
 
   // ============================================================================
   // D3
   // ============================================================================
 
   public static async createD3Node(
-    parent: TD3SVGElementSelection,
+    parent: D3Node,
     props: {
       node: TFrameNode;
       ids: {
@@ -149,6 +158,7 @@ export class Frame extends Node<Frame> {
         fillClipPathId: string;
         fillClipPathDefsNodeId: string;
         fillClippedShapeNodeId: string;
+        fillNodeId: string;
         contentWrapperNodeId: string;
         childrenWrapperNodeId: string;
       };
@@ -163,6 +173,7 @@ export class Frame extends Node<Frame> {
         fillClipPathId,
         fillClipPathDefsNodeId,
         fillClippedShapeNodeId,
+        fillNodeId,
         contentWrapperNodeId,
         childrenWrapperNodeId,
       },
@@ -184,13 +195,13 @@ export class Frame extends Node<Frame> {
     });
 
     // Create fill clip path element
-    const fillClipPathDefsNode = contentWrapperNode?.append('defs', {
+    const fillClipPathDefsNode = contentWrapperNode.append('defs', {
       id: fillClipPathDefsNodeId,
     });
-    const fillClipPathNode = fillClipPathDefsNode?.append('clipPath', {
+    const fillClipPathNode = fillClipPathDefsNode.append('clipPath', {
       id: fillClipPathId,
     });
-    fillClipPathNode?.append('rect', {
+    fillClipPathNode.append('rect', {
       id: fillClippedShapeNodeId,
       attributes: {
         width: node.width,
@@ -199,22 +210,29 @@ export class Frame extends Node<Frame> {
     });
 
     // Create fill element
-    // TODO:
+    await appendFill(contentWrapperNode, {
+      node,
+      clipPathId: fillClipPathId,
+      id: fillNodeId,
+    });
 
     // Create a child wrapper element
     // and set 'children' property to null because any children
     // appended to this wrapper are not considered in the context of the current node anymore
-    root.append('g', { id: childrenWrapperNodeId, children: null });
+    contentWrapperNode.append('g', {
+      id: childrenWrapperNodeId,
+      children: null,
+    });
 
     // Create content clip path element
     if (node.clipsContent) {
-      const contentClipPathDefsNode = contentWrapperNode?.append('defs', {
+      const contentClipPathDefsNode = root.append('defs', {
         id: contentClipPathDefsNodeId,
       });
-      const contentClipPathNode = contentClipPathDefsNode?.append('clipPath', {
-        id: fillClipPathId,
+      const contentClipPathNode = contentClipPathDefsNode.append('clipPath', {
+        id: contentClipPathId,
       });
-      contentClipPathNode?.append('rect', {
+      contentClipPathNode.append('rect', {
         id: contentClippedShapeNodeId,
         attributes: {
           width: node.width,

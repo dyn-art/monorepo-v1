@@ -1,11 +1,9 @@
 import { TNode } from '@pda/types/dtif';
-import { TD3SVGElementSelection } from '../types';
-import { Scene } from './Scene';
-import { Node, Rectangle } from './nodes';
-import { Frame } from './nodes/Frame';
+import { Scene } from '../Scene';
+import { D3Node, Frame, Node, Rectangle } from '../nodes';
 
 export async function appendNode(
-  parent: TD3SVGElementSelection,
+  parent: D3Node,
   props: { node: TNode; scene: Scene }
 ): Promise<Node | null> {
   const { node, scene } = props;

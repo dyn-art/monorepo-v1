@@ -26,6 +26,8 @@ describe('Scene class tests', () => {
       const result = await new Scene(dtif).init();
       const svgResult = result.toSVG() ?? '';
 
+      console.log('\n\n---\n\n', svgResult, '\n\n---\n\n');
+
       // Assert
       expect(result).not.toBeNull();
       expect(cleanStr(svgResult)).toStrictEqual(cleanStr(expectedResult));
