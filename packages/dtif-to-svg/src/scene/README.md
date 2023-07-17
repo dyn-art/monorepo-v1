@@ -27,3 +27,8 @@ On the other hand, we use React's diffing and re-rendering algorithms for updati
 ### Performance
 
 Our architecture is designed to efficiently handle between 1 and 500 nodes. It avoids unnecessary loops and expensive operations by having a central source of truth in the `Scene` and only updating the nodes when necessary. It also ensures that only the parts of the UI that need to be updated get re-rendered.
+
+## TODO
+- [] Outsource Fill into a separate class so that I can add event listener later on.. add _fills array to Basic Shape Node and remove FillsMixin
+- [] Make Node more basic and create Basic Shape Node which has fill and can transform because e.g. a Group can't transform but should be of the type Node
+- [] Or should group have own transform and width & height and change if children change: https://www.figma.com/plugin-docs/api/GroupNode

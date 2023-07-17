@@ -2,24 +2,14 @@ import {
   TCreateRectanglePathProps,
   createRectanglePath,
 } from '@/helpers/paths';
-import {
-  TEffectsMixin,
-  TFillsMixin,
-  TGeometryMixin,
-  TRectangleCornerMixin,
-  TRectangleNode,
-} from '@pda/types/dtif';
+import { TRectangleCornerMixin, TRectangleNode } from '@pda/types/dtif';
 import { Scene } from '../Scene';
 import { appendFill } from '../append';
-import { D3Node } from './D3Node';
-import { Node } from './Node';
+import { D3Node, SceneNode, ShapeNode } from './base';
 
-export class Rectangle extends Node<Rectangle> {
+export class Rectangle extends ShapeNode<Rectangle> {
   // Mixins
   private readonly _cornerMixin: TRectangleCornerMixin;
-  private readonly _fillsMixin: TFillsMixin;
-  private readonly _effectsMixin: TEffectsMixin;
-  private readonly _geometryMixin: TGeometryMixin;
 
   // D3 ids
   private readonly _d3RootNodeId: string;
@@ -47,16 +37,6 @@ export class Rectangle extends Node<Rectangle> {
       bottomRightRadius: node.bottomRightRadius,
       topLeftRadius: node.topLeftRadius,
       topRightRadius: node.topRightRadius,
-    };
-    this._fillsMixin = {
-      fills: node.fills,
-    };
-    this._effectsMixin = {
-      effects: node.effects,
-    };
-    this._geometryMixin = {
-      fillGeometry: node.fillGeometry,
-      strokeGeometry: node.strokeGeometry,
     };
 
     // Define D3 node ids
@@ -152,7 +132,7 @@ export class Rectangle extends Node<Rectangle> {
     } = props;
 
     // Create root element
-    const root = await Node.createRootD3Node(parent, {
+    const root = await SceneNode.createRootD3Node(parent, {
       node,
       id: rootNodeId,
     });
@@ -179,6 +159,8 @@ export class Rectangle extends Node<Rectangle> {
     });
 
     // Create fill element
+    // TODO: don't append Fill here and instead make it dead end like children,
+    // as Fill will be handled by Fill class
     await appendFill(root, {
       node,
       clipPathId: fillClipPathId,

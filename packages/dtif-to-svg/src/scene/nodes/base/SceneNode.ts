@@ -9,18 +9,14 @@ import {
   TTransform,
 } from '@pda/types/dtif';
 import { matrix, multiply } from 'mathjs';
-import { Scene } from '../Scene';
-import { Watcher } from '../Watcher';
+import { Scene } from '../../Scene';
 import { D3Node } from './D3Node';
+import { Node, TNodeOptions } from './Node';
 
-export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
-  protected readonly _type;
-
-  // Base node mixin
-  protected readonly _id: string;
-  protected _name: string;
-
-  // Other mixin's
+export class SceneNode<
+  GWatchedObj extends SceneNode<any> = SceneNode<any>
+> extends Node<GWatchedObj> {
+  // Mixins
   protected readonly _sceneMixin: TSceneNodeMixin;
   protected readonly _layoutMixin: TLayoutMixin;
   protected readonly _blendMixin: TBlendMixin;
@@ -28,13 +24,10 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
   // D3
   protected _d3Node: D3Node | null;
 
-  protected readonly _watcher: Watcher<GWatchedObj>;
-  protected readonly _scene: Scene;
-
   constructor(node: TNode, scene: Scene, options: TNodeOptions = {}) {
-    const { type = 'node' } = options;
-    this._id = node.id;
-    this._name = node.name;
+    super(node, scene, options);
+
+    // Apply mixins
     this._sceneMixin = {
       isLocked: node.isLocked,
       isVisible: node.isVisible,
@@ -49,28 +42,13 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
       isMask: node.isMask,
       opacity: node.opacity,
     };
+
     this._d3Node = null; // Set by sub class
-    this._watcher = new Watcher();
-    this._scene = scene;
-    this._type = type;
   }
 
   // ============================================================================
   // Setter & Getter
   // ============================================================================
-
-  public get id() {
-    return this._id;
-  }
-
-  public get name() {
-    return this._name;
-  }
-
-  public set name(value: string) {
-    this._name = value;
-    this._watcher.notify('name', value);
-  }
 
   public get width() {
     return this._layoutMixin.width;
@@ -156,25 +134,14 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
   }
 
   // ============================================================================
-  // Callbacks
+  // D3
   // ============================================================================
-
-  public watch<K extends keyof GWatchedObj>(
-    property: K,
-    callback: (value: GWatchedObj[K]) => void
-  ) {
-    this._watcher.watch(property, callback);
-  }
 
   public onClickRoot(callback: (event: any, node: Node) => void) {
     this._d3Node?.element.on('click', (e) => {
       callback(e, this);
     });
   }
-
-  // ============================================================================
-  // D3
-  // ============================================================================
 
   protected getD3NodeId(category?: string, isDefinition = false) {
     return getElementId({
@@ -204,7 +171,3 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
     return rootWrapperNode;
   }
 }
-
-export type TNodeOptions = {
-  type?: string;
-};
