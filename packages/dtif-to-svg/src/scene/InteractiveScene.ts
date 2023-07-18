@@ -1,6 +1,7 @@
 import { TScene } from '@pda/types/dtif';
 import { notEmpty } from '@pda/utils';
 import { Scene } from './Scene';
+import { SceneNode } from './nodes';
 
 export class InteractiveScene extends Scene {
   private _selectedNodeIds: string[];
@@ -21,22 +22,24 @@ export class InteractiveScene extends Scene {
 
       // Register onClick event listener
       // to determine selected nodes
-      node.onClickRoot((event) => {
-        this.clickedElements.add(id);
+      if (node instanceof SceneNode) {
+        node.onClickRoot((event) => {
+          this.clickedElements.add(id);
 
-        // If this is the first element that was clicked (i.e. the most deeply nested element),
-        // set a property on the event to indicate this
-        if (!event.alreadyProcessed) {
-          event.alreadyProcessed = true;
+          // If this is the first element that was clicked (i.e. the most deeply nested element),
+          // set a property on the event to indicate this
+          if (!event.alreadyProcessed) {
+            event.alreadyProcessed = true;
 
-          // Then use a setTimeout to process the clicked elements
-          // after all the event listeners have fired
-          setTimeout(() => {
-            this.processClickedElements(Array.from(this.clickedElements));
-            this.clickedElements.clear();
-          }, 0);
-        }
-      });
+            // Then use a setTimeout to process the clicked elements
+            // after all the event listeners have fired
+            setTimeout(() => {
+              this.processClickedElements(Array.from(this.clickedElements));
+              this.clickedElements.clear();
+            }, 0);
+          }
+        });
+      }
     }
 
     return this;

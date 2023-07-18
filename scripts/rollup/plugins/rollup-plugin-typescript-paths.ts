@@ -1,22 +1,14 @@
-import path from 'path';
 import { Plugin } from 'rollup';
-import {
-  CompilerOptions,
-  findConfigFile,
-  nodeModuleNameResolver,
-  parseConfigFileTextToJson,
-  sys,
-} from 'typescript';
+import * as ts from 'typescript';
 
 export const typescriptPaths = ({
   absolute = true,
   nonRelative = false,
   preserveExtensions = false,
-  tsConfigPath = findConfigFile('./', sys.fileExists),
+  tsConfigPath = ts.findConfigFile('./', ts.sys.fileExists),
   transform,
 }: Options = {}): Plugin => {
-  const { compilerOptions } = getTsConfig(tsConfigPath);
-  const outDir = compilerOptions.outDir ?? '.';
+  const compilerOptions = getTsConfig(tsConfigPath);
 
   return {
     name: 'resolve-typescript-paths',
@@ -47,11 +39,11 @@ export const typescriptPaths = ({
         return null; // never resolve relative modules, only non-relative
       }
 
-      const { resolvedModule } = nodeModuleNameResolver(
+      const { resolvedModule } = ts.nodeModuleNameResolver(
         importee,
         importer,
         compilerOptions,
-        sys
+        ts.sys
       );
 
       if (!resolvedModule) {
@@ -64,15 +56,12 @@ export const typescriptPaths = ({
         return null;
       }
 
-      const targetFileName = path.join(
-        outDir,
-        preserveExtensions
-          ? resolvedFileName
-          : resolvedFileName.replace(/\.tsx?$/i, '.js')
-      );
+      const targetFileName = preserveExtensions
+        ? resolvedFileName
+        : resolvedFileName.replace(/\.tsx?$/i, '.js');
 
       const resolved = absolute
-        ? sys.resolvePath(targetFileName)
+        ? ts.sys.resolvePath(targetFileName)
         : targetFileName;
 
       return transform ? transform(resolved) : resolved;
@@ -81,80 +70,45 @@ export const typescriptPaths = ({
 };
 
 const getTsConfig = (configPath?: string): TsConfig => {
-  const defaults: TsConfig = { compilerOptions: { outDir: '.' } };
+  const defaults: TsConfig = { outDir: '.' };
   if (typeof configPath !== 'string') {
     return defaults;
   }
 
+  // Define a host object that implements ParseConfigFileHost.
+  // The host provides file system operations and error handling for parsing the configuration file.
+  const host: ts.ParseConfigFileHost = {
+    fileExists: ts.sys.fileExists,
+    readFile: ts.sys.readFile,
+    readDirectory: ts.sys.readDirectory,
+    useCaseSensitiveFileNames: ts.sys.useCaseSensitiveFileNames,
+    getCurrentDirectory: ts.sys.getCurrentDirectory,
+    onUnRecoverableConfigFileDiagnostic: (diagnostic) => {
+      console.error(
+        'Unrecoverable error in config file:',
+        diagnostic.messageText
+      );
+      process.exit(1);
+    },
+  };
+
   // Read in tsconfig.json
-  const configJson = sys.readFile(configPath);
-  if (configJson == null) {
-    return defaults;
-  }
-
-  const { config: rootConfig } = parseConfigFileTextToJson(
+  const parsedCommandLine = ts.getParsedCommandLineOfConfigFile(
     configPath,
-    configJson
-  );
-  const rootConfigWithDefaults = {
-    ...rootConfig,
-    ...defaults,
-    compilerOptions: {
-      ...defaults.compilerOptions,
-      ...(rootConfig.compilerOptions ?? {}),
-    },
-  };
-  const resolvedConfig = handleTsConfigExtends(
-    rootConfigWithDefaults,
-    configPath
+    {},
+    host
   );
 
-  return resolvedConfig;
-};
-
-const handleTsConfigExtends = (
-  config: TsConfig,
-  rootConfigPath: string
-): TsConfig => {
-  if (!('extends' in config) || typeof config.extends !== 'string') {
-    return config;
+  // Access the parsed tsconfig.json file options
+  let resolvedConfig = {};
+  if (parsedCommandLine != null) {
+    resolvedConfig = parsedCommandLine.options;
+  } else {
+    console.error('Failed to parse TypeScript configuration file:', configPath);
+    process.exit(1);
   }
 
-  let extendedConfigPath;
-  try {
-    // Try to resolve as a module (npm)
-    extendedConfigPath = require.resolve(config.extends);
-  } catch (e) {
-    // Try to resolve as a file relative to the current config
-    extendedConfigPath = path.join(
-      path.dirname(rootConfigPath),
-      config.extends
-    );
-  }
-
-  // Read in extended tsconfig.json
-  const extendedConfig = getTsConfig(extendedConfigPath);
-
-  // Merge base config and current config.
-  // This does not handle array concatenation or nested objects,
-  // besides 'compilerOptions' paths as the other options are not relevant
-  config = {
-    ...extendedConfig,
-    ...config,
-    compilerOptions: {
-      ...extendedConfig.compilerOptions,
-      ...config.compilerOptions,
-      paths: {
-        ...(extendedConfig.compilerOptions.paths ?? {}),
-        ...(config.compilerOptions.paths ?? {}),
-      },
-    },
-  };
-
-  // Remove the "extends" field
-  delete config.extends;
-
-  return config;
+  return { ...defaults, ...resolvedConfig };
 };
 
 export interface Options {
@@ -191,10 +145,7 @@ export interface Options {
   transform?(path: string): string;
 }
 
-interface TsConfig {
-  compilerOptions: CompilerOptions;
-  extends?: string;
-}
+type TsConfig = ts.CompilerOptions;
 
 /**
  * For backwards compatibility.

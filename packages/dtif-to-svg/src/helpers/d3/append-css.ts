@@ -1,6 +1,6 @@
+import { TD3Selection } from '@/types';
 import { camelToKebabCase } from '@pda/utils';
 import type { CSSProperties } from 'react';
-import { TD3Selection } from '../../types';
 
 export function appendCSS<GSelection extends TD3Selection<any>>(
   selection: GSelection,
