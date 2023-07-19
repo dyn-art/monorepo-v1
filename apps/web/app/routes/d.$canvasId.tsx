@@ -1,10 +1,17 @@
 import { coreService } from '@/core/api';
-import { InteractiveScene, Scene, d3 } from '@pda/dtif-to-svg';
+import {
+  Frame,
+  InteractiveScene,
+  Scene,
+  ShapeNode,
+  d3,
+} from '@pda/dtif-to-svg';
 import { TScene } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
 import { LoaderArgs, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';
+import { logger } from '../core/logger';
 
 export async function loader(args: LoaderArgs) {
   const {
@@ -58,19 +65,23 @@ const D3CanvasId: React.FC = () => {
   }, [scene, d3CanvasRef.current]);
 
   // TODO: REMOVE
-  // React.useEffect(() => {
-  //   setInterval(() => {
-  //     if (d3Scene?.root instanceof Frame) {
-  //       d3Scene.root.children.map((child) => {
-  //         child.rotate(Math.random() * 180);
-  //         // child.moveTo(
-  //         //   Math.random() * (scene?.width ?? 0 - child.width),
-  //         //   Math.random() * (scene?.height ?? 0 - child.height)
-  //         // );
-  //       });
-  //     }
-  //   }, 1000);
-  // }, [d3Scene]);
+  React.useEffect(() => {
+    logger.info(d3Scene);
+    setInterval(() => {
+      if (d3Scene?.root instanceof Frame) {
+        d3Scene.root.children.map((child) => {
+          if (child instanceof ShapeNode) {
+            child.rotate(Math.random() * 180);
+            // child.moveTo(
+            //   Math.random() * (scene?.width ?? 0 - child.width),
+            //   Math.random() * (scene?.height ?? 0 - child.height)
+            // );
+            child.fill.paints[0].setHex('#313cae');
+          }
+        });
+      }
+    }, 10000);
+  }, [d3Scene]);
 
   // ============================================================================
   // Render

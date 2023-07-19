@@ -9,9 +9,9 @@ export async function appendNode(
   const { node, scene } = props;
   switch (node.type) {
     case 'FRAME':
-      return new Frame(parent, node, scene).init();
+      return new Frame(node, scene).init(parent);
     case 'RECTANGLE':
-      return new Rectangle(parent, node, scene).init();
+      return new Rectangle(node, scene).init(parent);
     default:
       return null;
   }

@@ -757,12 +757,18 @@ importers:
 
   packages/dtif-to-svg:
     dependencies:
+      '@pda/logger':
+        specifier: workspace:^
+        version: link:../logger
       '@pda/openapi-fetch':
         specifier: workspace:^
         version: link:../openapi-fetch
       '@pda/utils':
         specifier: workspace:^
         version: link:../utils
+      color-convert:
+        specifier: ^2.0.1
+        version: 2.0.1
       d3-selection:
         specifier: ^3.0.0
         version: 3.0.0
@@ -785,6 +791,9 @@ importers:
       '@pda/types':
         specifier: workspace:^
         version: link:../types
+      '@types/color-convert':
+        specifier: ^2.0.0
+        version: 2.0.0
       '@types/d3':
         specifier: ^7.4.0
         version: 7.4.0
@@ -7183,6 +7192,16 @@ packages:
       '@types/keyv': 3.1.4
       '@types/node': 18.15.13
       '@types/responselike': 1.0.0
+    dev: true
+
+  /@types/color-convert@2.0.0:
+    resolution: {integrity: sha512-m7GG7IKKGuJUXvkZ1qqG3ChccdIM/qBBo913z+Xft0nKCX4hAU/IxKwZBU4cpRZ7GS5kV4vOblUkILtSShCPXQ==}
+    dependencies:
+      '@types/color-name': 1.1.1
+    dev: true
+
+  /@types/color-name@1.1.1:
+    resolution: {integrity: sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ==}
     dev: true
 
   /@types/connect@3.4.35:

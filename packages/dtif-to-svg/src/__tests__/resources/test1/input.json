@@ -33,15 +33,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.8509804010391235,
               "g": 0.8509804010391235,
               "b": 0.8509804010391235
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -71,15 +70,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.8509804010391235,
               "g": 0.8509804010391235,
               "b": 0.8509804010391235
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -109,15 +107,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.3921600580215454,
               "g": 0.3102000653743744,
               "b": 0.7200000286102295
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -147,15 +144,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.8509804010391235,
               "g": 0.8509804010391235,
               "b": 0.8509804010391235
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -185,15 +181,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.8509804010391235,
               "g": 0.8509804010391235,
               "b": 0.8509804010391235
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -223,15 +218,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.8509804010391235,
               "g": 0.8509804010391235,
               "b": 0.8509804010391235
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -261,15 +255,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.8509804010391235,
               "g": 0.8509804010391235,
               "b": 0.8509804010391235
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -299,15 +292,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.8509804010391235,
               "g": 0.8509804010391235,
               "b": 0.8509804010391235
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -337,15 +329,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.8509804010391235,
               "g": 0.8509804010391235,
               "b": 0.8509804010391235
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -375,11 +366,10 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": { "r": 1, "g": 0, "b": 0 },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -409,15 +399,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.8509804010391235,
               "g": 0.8509804010391235,
               "b": 0.8509804010391235
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -447,11 +436,10 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": { "r": 1, "g": 0, "b": 0 },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -481,15 +469,14 @@
         "fills": [
           {
             "type": "SOLID",
-            "visible": true,
-            "opacity": 1,
             "blendMode": "NORMAL",
             "color": {
               "r": 0.8509804010391235,
               "g": 0.8509804010391235,
               "b": 0.8509804010391235
             },
-            "boundVariables": {}
+            "opacity": 1,
+            "isVisible": true
           }
         ],
         "fillGeometry": [],
@@ -514,11 +501,10 @@
     "fills": [
       {
         "type": "SOLID",
-        "visible": true,
-        "opacity": 1,
         "blendMode": "NORMAL",
         "color": { "r": 1, "g": 0.6550521850585938, "b": 0.6550521850585938 },
-        "boundVariables": {}
+        "opacity": 1,
+        "isVisible": true
       }
     ]
   },

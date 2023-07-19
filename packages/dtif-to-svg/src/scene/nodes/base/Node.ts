@@ -3,22 +3,21 @@ import { Scene } from '../../Scene';
 import { Watcher } from '../../Watcher';
 
 export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
-  protected readonly _type;
+  protected readonly _type: string;
 
   // Base node mixin
   protected readonly _id: string;
   protected _name: string;
 
   protected readonly _watcher: Watcher<GWatchedObj>;
-  protected readonly _scene: Scene;
+  protected readonly _scene: () => Scene;
 
   constructor(node: TNode, scene: Scene, options: TNodeOptions = {}) {
     const { type = 'node' } = options;
     this._id = node.id;
     this._name = node.name;
-
     this._watcher = new Watcher();
-    this._scene = scene;
+    this._scene = () => scene;
     this._type = type;
   }
 
@@ -37,6 +36,10 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
   public set name(value: string) {
     this._name = value;
     this._watcher.notify('name', value);
+  }
+
+  public get scene() {
+    return this._scene();
   }
 
   // ============================================================================

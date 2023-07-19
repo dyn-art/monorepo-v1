@@ -1,4 +1,5 @@
 import { appendAttributes, appendCSS } from '@/helpers/d3';
+import { logger } from '@/logger';
 import { TD3Selection } from '@/types';
 import { shortId } from '@pda/utils';
 import { BaseType } from 'd3-selection';
@@ -54,7 +55,7 @@ export class D3Node<GElement extends BaseType = SVGElement> {
     if (this._children != null) {
       this._children[id] = node;
     } else {
-      // TODO: log warning
+      logger.warn('Children are out of context for this D3Node!');
     }
 
     return node;

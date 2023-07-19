@@ -1,2 +1,3 @@
-export * from './append-fill';
+export * from './append-effect';
 export * from './append-node';
+export * from './append-paint';

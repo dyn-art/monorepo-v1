@@ -427,20 +427,18 @@ export type TEffect = TDropShadowEffect | TInnerShadowEffect | TBlurEffect;
 // Paints
 // ============================================================================
 
+export type TBasePaintMixin = {
+  opacity: number;
+  blendMode: TBlendMode;
+  isVisible: boolean;
+};
+
 export type TSolidPaint = {
   type: 'SOLID';
   color: TRGB;
-  opacity: number;
-  blendMode: TBlendMode;
-};
+} & TBasePaintMixin;
 
 export type TGradientPaint = TGradientPaintExported | TGradientPaintInline;
-
-export type TGradientPaintBase = {
-  visible: boolean;
-  opacity: number;
-  blendMode: TBlendMode;
-};
 
 export type TGradientPaintInline =
   | TLinearGradientPaintInline
@@ -453,28 +451,28 @@ export type TLinearGradientPaintInline = {
   isExported: false;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
-} & TGradientPaintBase;
+} & TBasePaintMixin;
 
 export type TRadialGradientPaintInline = {
   type: 'GRADIENT_RADIAL';
   isExported: false;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
-} & TGradientPaintBase;
+} & TBasePaintMixin;
 
 export type TAngularGradientPaintInline = {
   type: 'GRADIENT_ANGULAR';
   isExported: false;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
-} & TGradientPaintBase;
+} & TBasePaintMixin;
 
 export type TDiamondGradientPaintInline = {
   type: 'GRADIENT_DIAMOND';
   isExported: false;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
-} & TGradientPaintBase;
+} & TBasePaintMixin;
 
 export type TGradientPaintExported = {
   type:
@@ -486,7 +484,7 @@ export type TGradientPaintExported = {
   format: 'JPG' | 'SVG';
   hash: string;
   inline?: Uint8Array;
-} & TGradientPaintBase;
+} & TBasePaintMixin;
 
 export type TImagePaint =
   | TImagePaintFill
@@ -498,37 +496,34 @@ export type TImagePaintFill = {
   type: 'IMAGE';
   scaleMode: 'FILL';
   rotation: number;
-} & TImagePaintMixin;
+} & TBaseImagePaintMixin;
 
 export type TImagePaintFit = {
   type: 'IMAGE';
   scaleMode: 'FIT';
   rotation: number;
-} & TImagePaintMixin;
+} & TBaseImagePaintMixin;
 
 export type TImagePaintCrop = {
   type: 'IMAGE';
   scaleMode: 'CROP';
   transform: TTransform;
-} & TImagePaintMixin;
+} & TBaseImagePaintMixin;
 
 export type TImagePaintTile = {
   type: 'IMAGE';
   scaleMode: 'TILE';
   rotation: number;
   scalingFactor: number;
-} & TImagePaintMixin;
+} & TBaseImagePaintMixin;
 
-export type TImagePaintMixin = {
+export type TBaseImagePaintMixin = {
   hash: string;
   inline?: Uint8Array;
   filters?: TImageFilters;
-  opacity: number;
-  blendMode: TBlendMode;
-  visible: boolean;
   width: number;
   height: number;
-};
+} & TBasePaintMixin;
 
 export type TImageFilters = {
   exposure?: number;
@@ -548,7 +543,7 @@ export type TColorStop = {
 export type TEmbedPaint = {
   type: 'EMBED';
   embedData: TEmbedMetaData;
-};
+} & TBasePaintMixin;
 
 export type TPaint = TSolidPaint | TGradientPaint | TImagePaint | TEmbedPaint;
 

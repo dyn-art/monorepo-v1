@@ -1,7 +1,8 @@
 import { TFrameNode, TRectangleCornerMixin } from '@pda/types/dtif';
 import { notEmpty } from '@pda/utils';
 import { Scene } from '../Scene';
-import { appendFill, appendNode } from '../append';
+import { appendNode } from '../append';
+import { Fill } from '../fill';
 import { D3Node, Node, SceneNode, ShapeNode } from './base';
 
 export class Frame extends ShapeNode<Frame> {
@@ -24,14 +25,12 @@ export class Frame extends ShapeNode<Frame> {
 
   // Init
   private _forInit: {
-    parent: D3Node;
     node: TFrameNode;
   } | null;
 
-  constructor(parent: D3Node, node: TFrameNode, scene: Scene) {
+  constructor(node: TFrameNode, scene: Scene) {
     super(node, scene, { type: 'frame' });
     this._forInit = {
-      parent,
       node,
     };
     this._childrenIds = [];
@@ -59,11 +58,11 @@ export class Frame extends ShapeNode<Frame> {
     this._d3ChildrenWrapperNodeId = this.getD3NodeId('children');
   }
 
-  public async init() {
+  public async init(parent: D3Node) {
     if (this._forInit == null) {
       return this;
     }
-    const { node, parent } = this._forInit;
+    const { node } = this._forInit;
 
     // Create D3 node
     this._d3Node = await Frame.createD3Node(parent, {
@@ -83,29 +82,37 @@ export class Frame extends ShapeNode<Frame> {
     });
 
     // Retrieve children wrapper node
-    const childWrapperNode = this._d3Node?.getChildNodeById(
+    const childWrapperNode = this._d3Node.getChildNodeById(
       this._d3ChildrenWrapperNodeId
     );
     if (childWrapperNode == null) {
       return this;
     }
-
+    // and append children
     await Promise.all(
       node.children.map(async (child) => {
         // Create node
         const node = await appendNode(childWrapperNode, {
           node: child,
-          scene: this._scene,
+          scene: this.scene,
         });
         if (node != null) {
           // Add node to scene
-          this._scene.addNode(node);
+          this.scene.addNode(node);
 
           // Add id to this nodes children ids
           this._childrenIds.push(node.id);
         }
       })
     );
+
+    // Retrieve fill wrapper node
+    const fillWrapperNode = this._d3Node.getChildNodeById(this._d3FillNodeId);
+    if (fillWrapperNode == null) {
+      return this;
+    }
+    // and append fill paints
+    this._fill.init(fillWrapperNode);
 
     this._forInit = null;
     return this;
@@ -117,7 +124,7 @@ export class Frame extends ShapeNode<Frame> {
 
   public get children(): Node[] {
     return this._childrenIds
-      .map((id) => this._scene.getNode(id))
+      .map((id) => this.scene.getNode(id))
       .filter(notEmpty);
   }
 
@@ -160,9 +167,9 @@ export class Frame extends ShapeNode<Frame> {
     } = props;
 
     // Create root element
-    const root = await SceneNode.createRootD3Node(parent, {
-      node: props.node,
+    const root = await SceneNode.createSceneNodeWrapperD3Node(parent, {
       id: rootNodeId,
+      node: props.node,
     });
 
     // Create content element
@@ -188,21 +195,15 @@ export class Frame extends ShapeNode<Frame> {
       },
     });
 
-    // Create fill element
-    // TODO: don't append Fill here and instead make it dead end like children,
-    // as Fill will be handled by Fill class
-    await appendFill(contentWrapperNode, {
-      node,
-      clipPathId: fillClipPathId,
+    // Create fill wrapper element
+    await Fill.createFillWrapperD3Node(contentWrapperNode, {
       id: fillNodeId,
+      clipPathId: fillClipPathId,
     });
 
-    // Create a child wrapper element
-    // and set 'children' property to null because any children
-    // appended to this wrapper are not considered in the context of the current node anymore
-    contentWrapperNode.append('g', {
+    // Create children wrapper element
+    await Frame.createChildrenWrapperD3Node(contentWrapperNode, {
       id: childrenWrapperNodeId,
-      children: null,
     });
 
     // Create content clip path element
@@ -223,5 +224,22 @@ export class Frame extends ShapeNode<Frame> {
     }
 
     return root;
+  }
+
+  public static async createChildrenWrapperD3Node(
+    parent: D3Node,
+    props: { id: string }
+  ) {
+    const { id } = props;
+
+    // Create child wrapper element
+    // and set 'children' property to null because any children
+    // appended to this wrapper are not considered in the context of the current node anymore
+    const childWrapperNode = parent.append('g', {
+      id,
+      children: null,
+    });
+
+    return childWrapperNode;
   }
 }

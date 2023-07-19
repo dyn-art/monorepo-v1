@@ -1,7 +1,7 @@
 import { TScene } from '@pda/types/dtif';
 import fs from 'fs';
 import path from 'path';
-import { Scene } from '../canvas';
+import { Scene } from '../scene';
 
 function cleanStr(str: string) {
   return str.replace(/[\s\n]/g, '');

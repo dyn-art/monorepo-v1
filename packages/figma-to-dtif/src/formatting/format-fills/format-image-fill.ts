@@ -24,7 +24,7 @@ export async function formatImageFill(
     inline,
     opacity: fill.opacity ?? 1,
     blendMode: fill.blendMode ?? 'PASS_THROUGH',
-    visible: fill.visible ?? true,
+    isVisible: fill.visible ?? true,
     filters: fill.filters,
     width: size.width,
     height: size.height,

@@ -1,6 +1,7 @@
 import { transformToCSS } from '@/helpers/css';
 import { copyMatrix } from '@/helpers/math';
 import { getElementId } from '@/helpers/other';
+import { Scene } from '@/scene/Scene';
 import {
   TBlendMixin,
   TLayoutMixin,
@@ -9,7 +10,6 @@ import {
   TTransform,
 } from '@pda/types/dtif';
 import { matrix, multiply } from 'mathjs';
-import { Scene } from '../../Scene';
 import { D3Node } from './D3Node';
 import { Node, TNodeOptions } from './Node';
 
@@ -152,13 +152,13 @@ export class SceneNode<
     });
   }
 
-  public static async createRootD3Node(
+  public static async createSceneNodeWrapperD3Node(
     parent: D3Node,
     props: { node: TNode; id: string }
   ) {
     const { id, node } = props;
 
-    // Create root element
+    // Create node root element
     const rootWrapperNode = parent.append('g', {
       id,
       styles: {

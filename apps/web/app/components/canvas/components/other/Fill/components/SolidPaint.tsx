@@ -1,5 +1,5 @@
 import { getIdentifier, rgbToCSS } from '@/components/canvas/utils';
-import { TNode, TSolidPaint } from '@pda/types/dtif';
+import { TNode, TPaintMixin } from '@pda/types/dtif';
 import React from 'react';
 
 const SolidPaint: React.FC<TProps> = (props) => {
@@ -27,5 +27,5 @@ export default SolidPaint;
 type TProps = {
   node: TNode;
   index: number;
-  paint: TSolidPaint;
+  paint: TPaintMixin;
 };

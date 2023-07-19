@@ -7,6 +7,6 @@ export function getGradientFillBaseProperties(
     type: fill.type,
     blendMode: fill.blendMode ?? 'PASS_THROUGH',
     opacity: fill.opacity ?? 1,
-    visible: fill.visible ?? true,
+    isVisible: fill.visible ?? true,
   };
 }

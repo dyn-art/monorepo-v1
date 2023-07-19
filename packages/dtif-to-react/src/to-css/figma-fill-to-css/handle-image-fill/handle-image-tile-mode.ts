@@ -6,6 +6,6 @@ export function handleImageTileMode(imageUrl: string, fill: TImagePaintTile) {
     backgroundSize: `${fill.scalingFactor * 100}%`,
     backgroundImage: `url(${imageUrl})`,
     backgroundRepeat: 'repeat',
-    transform: `rotate(${fill.rotation}deg)`,
+    transform: `rotate(${fill.TBaseImagePaintMixin}deg)`,
   };
 }

@@ -47,7 +47,7 @@ const ImageTilePaint: React.FC<TProps> = (props) => {
           height={tileHeight}
           style={{
             transformOrigin: 'center center',
-            transform: `rotate(${paint.rotation}deg)`,
+            transform: `rotate(${paint.TBaseImagePaintMixin}deg)`,
           }}
         >
           <image

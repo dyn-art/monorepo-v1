@@ -4,7 +4,7 @@ import {
 } from '@/helpers/paths';
 import { TRectangleCornerMixin, TRectangleNode } from '@pda/types/dtif';
 import { Scene } from '../Scene';
-import { appendFill } from '../append';
+import { Fill } from '../fill';
 import { D3Node, SceneNode, ShapeNode } from './base';
 
 export class Rectangle extends ShapeNode<Rectangle> {
@@ -20,14 +20,12 @@ export class Rectangle extends ShapeNode<Rectangle> {
 
   // Init
   private _forInit: {
-    parent: D3Node;
     node: TRectangleNode;
   } | null;
 
-  constructor(parent: D3Node, node: TRectangleNode, scene: Scene) {
+  constructor(node: TRectangleNode, scene: Scene) {
     super(node, scene, { type: 'rectangle' });
     this._forInit = {
-      parent,
       node,
     };
 
@@ -47,11 +45,11 @@ export class Rectangle extends ShapeNode<Rectangle> {
     this._d3FillNodeId = this.getD3NodeId('fill');
   }
 
-  public async init() {
+  public async init(parent: D3Node) {
     if (this._forInit == null) {
       return this;
     }
-    const { node, parent } = this._forInit;
+    const { node } = this._forInit;
 
     // Create D3 node
     this._d3Node = await Rectangle.createD3Node(parent, {
@@ -64,6 +62,14 @@ export class Rectangle extends ShapeNode<Rectangle> {
         fillNodeId: this._d3FillNodeId,
       },
     });
+
+    // Retrieve fill wrapper node
+    const fillWrapperNode = this._d3Node.getChildNodeById(this._d3FillNodeId);
+    if (fillWrapperNode == null) {
+      return this;
+    }
+    // and append fill paints
+    this._fill.init(fillWrapperNode);
 
     this._forInit = null;
     return this;
@@ -132,9 +138,9 @@ export class Rectangle extends ShapeNode<Rectangle> {
     } = props;
 
     // Create root element
-    const root = await SceneNode.createRootD3Node(parent, {
-      node,
+    const root = await SceneNode.createSceneNodeWrapperD3Node(parent, {
       id: rootNodeId,
+      node,
     });
 
     // Create fill clip path element
@@ -158,13 +164,10 @@ export class Rectangle extends ShapeNode<Rectangle> {
       },
     });
 
-    // Create fill element
-    // TODO: don't append Fill here and instead make it dead end like children,
-    // as Fill will be handled by Fill class
-    await appendFill(root, {
-      node,
-      clipPathId: fillClipPathId,
+    // Create fill wrapper element
+    await Fill.createFillWrapperD3Node(root, {
       id: fillNodeId,
+      clipPathId: fillClipPathId,
     });
 
     return root;
