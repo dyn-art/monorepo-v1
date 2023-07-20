@@ -28,6 +28,10 @@ const CanvasId: React.FC = () => {
   const scene: TScene | null = _scene as any;
   const canvasRef = React.useRef(null);
 
+  // ============================================================================
+  // Callbacks
+  // ============================================================================
+
   const downloadImage = React.useCallback(async () => {
     logger.info({ current: canvasRef.current });
     if (canvasRef.current != null) {

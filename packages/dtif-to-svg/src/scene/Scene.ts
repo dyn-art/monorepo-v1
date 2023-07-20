@@ -70,7 +70,7 @@ export class Scene {
   }
 
   public getNode(id: string | null | undefined): Node | null {
-    return id != null ? this._nodes[id] ?? null : null;
+    return id != null && id in this._nodes ? this._nodes[id] : null;
   }
 
   // ============================================================================

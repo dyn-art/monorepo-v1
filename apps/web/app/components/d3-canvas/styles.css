@@ -1,0 +1,4 @@
+.viewport-container {
+  @apply overflow-hidden relative cursor-move;
+  // TODO: custom cursor
+}
