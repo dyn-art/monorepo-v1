@@ -1,18 +1,20 @@
-import { logger } from '@/logger';
 import { TScene } from '@pda/types/dtif';
 import { Scene } from './Scene';
+import { RemoveFunctions, Watcher } from './Watcher';
 import { Frame, SceneNode } from './nodes';
 
 export class InteractiveScene extends Scene {
   private _raycastNodeIds: string[];
   private _selectedNodeId: string | null;
 
-  private readonly clickedElements = new Set<string>();
+  private readonly _clickedElements: Set<string>;
+  protected readonly _watcher: Watcher<TWatchedInteractiveScene>;
 
   constructor(scene: TScene) {
     super(scene);
     this._raycastNodeIds = [];
     this._selectedNodeId = null;
+    this._clickedElements = new Set();
   }
 
   public async init() {
@@ -26,7 +28,7 @@ export class InteractiveScene extends Scene {
       // to determine selected nodes
       if (node instanceof SceneNode) {
         node.onClickRoot((event) => {
-          this.clickedElements.add(id);
+          this._clickedElements.add(id);
 
           // If this is the first element that was clicked (i.e. the most deeply nested element),
           // set a property on the event to indicate this
@@ -36,8 +38,8 @@ export class InteractiveScene extends Scene {
             // Then use a setTimeout to process the clicked elements
             // after all the event listeners have fired
             setTimeout(() => {
-              this.processClickedElements(Array.from(this.clickedElements));
-              this.clickedElements.clear();
+              this.processClickedElements(Array.from(this._clickedElements));
+              this._clickedElements.clear();
             }, 0);
           }
         });
@@ -51,6 +53,10 @@ export class InteractiveScene extends Scene {
   // Getter & Setter
   // ============================================================================
 
+  public watcher() {
+    return this._watcher;
+  }
+
   public get selectedNode() {
     return this.getNode(this._selectedNodeId);
   }
@@ -62,6 +68,7 @@ export class InteractiveScene extends Scene {
   private processClickedElements(nodeIds: string[]): void {
     this._raycastNodeIds = [...nodeIds];
     let selectedNodeId: string | null = this._selectedNodeId;
+    const prevSelectedNodeId: string | null = selectedNodeId;
 
     // If a node is already selected and there are nodes in the raycast array,
     // including the selected node id,
@@ -110,11 +117,9 @@ export class InteractiveScene extends Scene {
     }
 
     this._selectedNodeId = selectedNodeId;
-
-    logger.info('Selected Element', {
-      raycast: this._raycastNodeIds,
-      selected: this._selectedNodeId,
-    });
+    if (prevSelectedNodeId !== selectedNodeId) {
+      this._watcher.notify('selectedNode', this.selectedNode);
+    }
   }
 
   private selectTopLevelNode(): string | null {
@@ -171,3 +176,5 @@ export class InteractiveScene extends Scene {
     }
   }
 }
+
+type TWatchedInteractiveScene = RemoveFunctions<InteractiveScene>;

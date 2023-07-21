@@ -1,15 +1,14 @@
 import { TFrameNode, TRectangleCornerMixin } from '@pda/types/dtif';
 import { notEmpty } from '@pda/utils';
 import { Scene } from '../Scene';
+import { RemoveFunctions, Watcher } from '../Watcher';
 import { appendNode } from '../append';
 import { Fill } from '../fill';
 import { D3Node, Node, SceneNode, ShapeNode } from './base';
 
-export class Frame extends ShapeNode<Frame> {
+export class Frame extends ShapeNode {
   // Mixins
   private readonly _cornerMixin: TRectangleCornerMixin;
-
-  private readonly _childrenIds: string[];
 
   // D3 ids
   private readonly _d3RootNodeId: string;
@@ -22,6 +21,9 @@ export class Frame extends ShapeNode<Frame> {
   private readonly _d3FillNodeId: string;
   private readonly _d3ContentWrapperNodeId: string;
   private readonly _d3ChildrenWrapperNodeId: string;
+
+  private readonly _childrenIds: string[];
+  protected readonly _watcher: Watcher<TWatchedFrameNode>;
 
   // Init
   private _forInit: {
@@ -121,6 +123,10 @@ export class Frame extends ShapeNode<Frame> {
   // ============================================================================
   // Getter & Setter
   // ============================================================================
+
+  public watcher() {
+    return this._watcher;
+  }
 
   public get children(): Node[] {
     return this._childrenIds
@@ -243,3 +249,5 @@ export class Frame extends ShapeNode<Frame> {
     return childWrapperNode;
   }
 }
+
+type TWatchedFrameNode = RemoveFunctions<Frame>;

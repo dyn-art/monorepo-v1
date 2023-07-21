@@ -4,10 +4,11 @@ import {
 } from '@/helpers/paths';
 import { TRectangleCornerMixin, TRectangleNode } from '@pda/types/dtif';
 import { Scene } from '../Scene';
+import { RemoveFunctions, Watcher } from '../Watcher';
 import { Fill } from '../fill';
 import { D3Node, SceneNode, ShapeNode } from './base';
 
-export class Rectangle extends ShapeNode<Rectangle> {
+export class Rectangle extends ShapeNode {
   // Mixins
   private readonly _cornerMixin: TRectangleCornerMixin;
 
@@ -17,6 +18,8 @@ export class Rectangle extends ShapeNode<Rectangle> {
   private readonly _d3FillClipPathDefsNodeId: string;
   private readonly _d3FillClippedShapeNodeId: string;
   private readonly _d3FillNodeId: string;
+
+  protected readonly _watcher: Watcher<TWatchedRectangleNode>;
 
   // Init
   private _forInit: {
@@ -78,6 +81,10 @@ export class Rectangle extends ShapeNode<Rectangle> {
   // ============================================================================
   // Getter & Setter
   // ============================================================================
+
+  public watcher() {
+    return this._watcher;
+  }
 
   public get bottomLeftRadius() {
     return this._cornerMixin.bottomLeftRadius;
@@ -173,3 +180,5 @@ export class Rectangle extends ShapeNode<Rectangle> {
     return root;
   }
 }
+
+type TWatchedRectangleNode = RemoveFunctions<Rectangle>;

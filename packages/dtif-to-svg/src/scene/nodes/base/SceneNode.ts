@@ -2,6 +2,7 @@ import { transformToCSS } from '@/helpers/css';
 import { copyMatrix } from '@/helpers/math';
 import { getElementId } from '@/helpers/other';
 import { Scene } from '@/scene/Scene';
+import { RemoveFunctions, Watcher } from '@/scene/Watcher';
 import {
   TBlendMixin,
   TLayoutMixin,
@@ -13,9 +14,7 @@ import { matrix, multiply } from 'mathjs';
 import { D3Node } from './D3Node';
 import { Node, TNodeOptions } from './Node';
 
-export class SceneNode<
-  GWatchedObj extends SceneNode<any> = SceneNode<any>
-> extends Node<GWatchedObj> {
+export abstract class SceneNode extends Node {
   // Mixins
   protected readonly _sceneMixin: TSceneNodeMixin;
   protected readonly _layoutMixin: TLayoutMixin;
@@ -23,6 +22,8 @@ export class SceneNode<
 
   // D3
   protected _d3Node: D3Node | null;
+
+  protected readonly _watcher: Watcher<TWatchedSceneNode>;
 
   constructor(node: TNode, scene: Scene, options: TNodeOptions = {}) {
     super(node, scene, options);
@@ -49,6 +50,10 @@ export class SceneNode<
   // ============================================================================
   // Setter & Getter
   // ============================================================================
+
+  public watcher() {
+    return this._watcher;
+  }
 
   public get width() {
     return this._layoutMixin.width;
@@ -171,3 +176,5 @@ export class SceneNode<
     return rootWrapperNode;
   }
 }
+
+type TWatchedSceneNode = RemoveFunctions<SceneNode>;

@@ -2,6 +2,7 @@ import d3 from '@/d3';
 import { appendAttributes, appendCSS } from '@/helpers/d3';
 import { TScene } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
+import { RemoveFunctions, Watcher } from './Watcher';
 import { appendNode } from './append';
 import { D3Node, Node } from './nodes';
 
@@ -9,10 +10,12 @@ export class Scene {
   protected readonly _nodes: Record<string, Node>;
   protected _rootNodeId: string | null;
 
-  public name: string;
-  public readonly width: number;
-  public readonly height: number;
-  public readonly version: string;
+  private readonly _name: string;
+  private readonly _width: number;
+  private readonly _height: number;
+  private readonly _version: string;
+
+  protected readonly _watcher: Watcher<TWatchedScene>;
 
   // D3
   protected _d3Node: D3Node | null;
@@ -24,13 +27,14 @@ export class Scene {
 
   constructor(scene: TScene) {
     this._forInit = { scene };
-    this.version = scene.version;
-    this.name = scene.name;
-    this.width = scene.width;
-    this.height = scene.height;
+    this._version = scene.version;
+    this._name = scene.name;
+    this._width = scene.width;
+    this._height = scene.height;
     this._nodes = {};
     this._d3Node = null; // Set by init()
     this._rootNodeId = null; // Set by init()
+    this._watcher = new Watcher();
   }
 
   public async init() {
@@ -60,6 +64,10 @@ export class Scene {
   // ============================================================================
   // Getter & Setter
   // ============================================================================
+
+  public watcher() {
+    return this._watcher;
+  }
 
   public get root(): Node | null {
     return this.getNode(this._rootNodeId);
@@ -118,3 +126,5 @@ export class Scene {
     return svgNode;
   }
 }
+
+type TWatchedScene = RemoveFunctions<Scene>;

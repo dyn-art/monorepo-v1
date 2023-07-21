@@ -1,29 +1,33 @@
+import { Scene } from '@/scene/Scene';
+import { RemoveFunctions, Watcher } from '@/scene/Watcher';
 import { TNode } from '@pda/types/dtif';
-import { Scene } from '../../Scene';
-import { Watcher } from '../../Watcher';
 
-export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
+export abstract class Node {
   protected readonly _type: string;
 
   // Base node mixin
   protected readonly _id: string;
   protected _name: string;
 
-  protected readonly _watcher: Watcher<GWatchedObj>;
   protected readonly _scene: () => Scene;
+  protected readonly _watcher: Watcher<TWatchedNode>;
 
   constructor(node: TNode, scene: Scene, options: TNodeOptions = {}) {
     const { type = 'node' } = options;
     this._id = node.id;
+    this._type = type;
     this._name = node.name;
     this._watcher = new Watcher();
     this._scene = () => scene;
-    this._type = type;
   }
 
   // ============================================================================
   // Setter & Getter
   // ============================================================================
+
+  public watcher() {
+    return this._watcher;
+  }
 
   public get id() {
     return this._id;
@@ -41,18 +45,9 @@ export abstract class Node<GWatchedObj extends Node<any> = Node<any>> {
   public get scene() {
     return this._scene();
   }
-
-  // ============================================================================
-  // Callbacks
-  // ============================================================================
-
-  public watch<K extends keyof GWatchedObj>(
-    property: K,
-    callback: (value: GWatchedObj[K]) => void
-  ) {
-    this._watcher.watch(property, callback);
-  }
 }
+
+type TWatchedNode = RemoveFunctions<Node>;
 
 export type TNodeOptions = {
   type?: string;

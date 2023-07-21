@@ -1,4 +1,5 @@
 import { Scene } from '@/scene/Scene';
+import { RemoveFunctions, Watcher } from '@/scene/Watcher';
 import { Fill } from '@/scene/fill';
 import {
   TEffectsMixin,
@@ -13,14 +14,13 @@ import {
 import { TNodeOptions } from './Node';
 import { SceneNode } from './SceneNode';
 
-export class ShapeNode<
-  GWatchedObj extends ShapeNode<any> = ShapeNode<any>
-> extends SceneNode<GWatchedObj> {
+export abstract class ShapeNode extends SceneNode {
   // Mixins
   protected readonly _effectsMixin: TEffectsMixin; // TODO: do like fill
   protected readonly _geometryMixin: TGeometryMixin;
 
   protected _fill: Fill;
+  protected readonly _watcher: Watcher<TWatchedShapeNode>;
 
   constructor(node: TShapeNode, scene: Scene, options: TNodeOptions = {}) {
     super(node, scene, options);
@@ -40,10 +40,16 @@ export class ShapeNode<
   // Getter & Setter
   // ============================================================================
 
+  public watcher() {
+    return this._watcher;
+  }
+
   public get fill() {
     return this._fill;
   }
 }
+
+type TWatchedShapeNode = RemoveFunctions<ShapeNode>;
 
 type TShapeNode =
   | TRectangleNode

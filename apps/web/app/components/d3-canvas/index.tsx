@@ -1,6 +1,7 @@
-import { InteractiveScene, Scene, d3 } from '@pda/dtif-to-svg';
+import { InteractiveScene, d3 } from '@pda/dtif-to-svg';
 import { TScene } from '@pda/types/dtif';
 import React from 'react';
+import { SelectedNodeDisplay } from './components';
 import styles from './styles.css';
 
 // https://remix.run/docs/en/main/guides/styling#shared-stylesheet
@@ -9,7 +10,7 @@ export const links = () => [{ rel: 'stylesheet', href: styles }];
 const D3Canvas: React.FC<TProps> = (props) => {
   const { scene } = props;
   const d3CanvasRef = React.useRef();
-  const [d3Scene, setD3Scene] = React.useState<Scene | null>(null);
+  const [d3Scene, setD3Scene] = React.useState<InteractiveScene | null>(null);
   const [isLoadingD3Scene, setIsLoadingD3Scene] = React.useState(false);
 
   // ============================================================================
@@ -43,29 +44,32 @@ const D3Canvas: React.FC<TProps> = (props) => {
   }, [scene, d3CanvasRef.current]);
 
   return (
-    <div
-      id={'viewport'}
-      className="viewport-container"
-      style={{ width: scene.width, height: scene.height }}
-    >
+    <div>
+      {d3Scene && <SelectedNodeDisplay scene={d3Scene} />}
       <div
-        id={'canvas'}
-        ref={d3CanvasRef as any}
-        className="absolute h-full w-full pointer-events-auto"
-      />
-      <svg
-        id={'viewport-controls'}
-        className="absolute w-full h-full pointer-events-none"
+        id={'viewport'}
+        className="viewport-container"
+        style={{ width: scene.width, height: scene.height }}
       >
-        {/* TODO */}
-        <circle
-          cx={50}
-          cy={50}
-          r={50}
-          style={{ pointerEvents: 'auto' }}
-          fill="red"
+        <div
+          id={'canvas'}
+          ref={d3CanvasRef as any}
+          className="absolute h-full w-full pointer-events-auto"
         />
-      </svg>
+        <svg
+          id={'viewport-controls'}
+          className="absolute w-full h-full pointer-events-none"
+        >
+          {/* TODO */}
+          <circle
+            cx={50}
+            cy={50}
+            r={50}
+            style={{ pointerEvents: 'auto' }}
+            fill="red"
+          />
+        </svg>
+      </div>
     </div>
   );
 };
