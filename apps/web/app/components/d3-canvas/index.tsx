@@ -1,7 +1,8 @@
-import { InteractiveScene, d3 } from '@pda/dtif-to-svg';
 import { TScene } from '@pda/types/dtif';
 import React from 'react';
-import { SelectedNodeDisplay } from './components';
+import { logger } from '../../core/logger';
+import { SceneCanvas, SceneControls } from './components';
+import { useD3Scene } from './hooks';
 import styles from './styles.css';
 
 // https://remix.run/docs/en/main/guides/styling#shared-stylesheet
@@ -9,66 +10,47 @@ export const links = () => [{ rel: 'stylesheet', href: styles }];
 
 const D3Canvas: React.FC<TProps> = (props) => {
   const { scene } = props;
-  const d3CanvasRef = React.useRef();
-  const [d3Scene, setD3Scene] = React.useState<InteractiveScene | null>(null);
-  const [isLoadingD3Scene, setIsLoadingD3Scene] = React.useState(false);
+  const {
+    d3Scene,
+    isLoading: isD3SceneLoading,
+    canvasRef: d3SceneRef,
+  } = useD3Scene(scene);
 
   // ============================================================================
   // Lifecycle
   // ============================================================================
 
   React.useEffect(() => {
-    if (!isLoadingD3Scene && d3CanvasRef.current != null && scene != null) {
-      (async () => {
-        setIsLoadingD3Scene(true);
-        const canvasContainerNode = (await d3())
-          .select(d3CanvasRef.current as any)
-          .node();
-
-        // Init D3 scene if not already done
-        if (!canvasContainerNode.firstChild) {
-          // Init D3 scene
-          const d3Scene = await new InteractiveScene(scene).init();
-          setD3Scene(d3Scene);
-
-          // Append D3 scene to DOM node
-          const d3SceneDOMNode = d3Scene.toDOMNode();
-          if (d3SceneDOMNode != null) {
-            canvasContainerNode.appendChild(d3SceneDOMNode);
-          }
-        }
-
-        setIsLoadingD3Scene(false);
-      })();
+    if (d3Scene != null) {
+      d3Scene.onPointerDown((e, scene) => {
+        logger.info('onPointerDown', { e, scene });
+      });
+      d3Scene.onPointerUp((e, scene) => {
+        logger.info('onPointerUp', { e, scene });
+      });
+      d3Scene.onPointerMove((e, scene) => {
+        logger.info('onPointerMove', { e, scene });
+      });
+      d3Scene.onPointerLeave((e, scene) => {
+        logger.info('onPointerLeave', { e, scene });
+      });
+      d3Scene.onWheel((e, scene) => {
+        logger.info('onWheel', { e, scene });
+      });
     }
-  }, [scene, d3CanvasRef.current]);
+  }, [d3Scene]);
 
   return (
-    <div>
-      {d3Scene && <SelectedNodeDisplay scene={d3Scene} />}
+    <div className="flex items-center justify-center">
       <div
-        id={'viewport'}
-        className="viewport-container"
+        id={'scene'}
+        className="scene-container"
         style={{ width: scene.width, height: scene.height }}
       >
-        <div
-          id={'canvas'}
-          ref={d3CanvasRef as any}
-          className="absolute h-full w-full pointer-events-auto"
+        <SceneCanvas
+          d3SceneRef={d3SceneRef as unknown as React.LegacyRef<HTMLDivElement>}
         />
-        <svg
-          id={'viewport-controls'}
-          className="absolute w-full h-full pointer-events-none"
-        >
-          {/* TODO */}
-          <circle
-            cx={50}
-            cy={50}
-            r={50}
-            style={{ pointerEvents: 'auto' }}
-            fill="red"
-          />
-        </svg>
+        {d3Scene != null ? <SceneControls scene={d3Scene} /> : null}
       </div>
     </div>
   );

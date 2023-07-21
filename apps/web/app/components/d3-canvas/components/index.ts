@@ -1,3 +1,2 @@
-import SelectedNodeDisplay from './SelectedNodeDisplay';
-
-export { SelectedNodeDisplay };
+export * from './SceneCanvas';
+export * from './SceneControls';

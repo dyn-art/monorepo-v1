@@ -139,14 +139,18 @@ export abstract class SceneNode extends Node {
   }
 
   // ============================================================================
-  // D3
+  // Events
   // ============================================================================
 
-  public onClickRoot(callback: (event: any, node: Node) => void) {
+  public onClick(callback: (event: any, node: Node) => void) {
     this._d3Node?.element.on('click', (e) => {
       callback(e, this);
     });
   }
+
+  // ============================================================================
+  // D3
+  // ============================================================================
 
   protected getD3NodeId(category?: string, isDefinition = false) {
     return getElementId({

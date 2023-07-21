@@ -20,14 +20,14 @@ export class InteractiveScene extends Scene {
   public async init() {
     await super.init();
 
-    // Add event listener
+    // Add node event listener
     for (const id of Object.keys(this._nodes)) {
       const node = this._nodes[id];
 
       // Register onClick event listener
       // to determine selected nodes
       if (node instanceof SceneNode) {
-        node.onClickRoot((event) => {
+        node.onClick((event) => {
           this._clickedElements.add(id);
 
           // If this is the first element that was clicked (i.e. the most deeply nested element),
@@ -174,6 +174,65 @@ export class InteractiveScene extends Scene {
         return null;
       }
     }
+  }
+
+  // ============================================================================
+  // Events
+  // ============================================================================
+
+  public onWheel(
+    callback: (
+      event: React.WheelEvent<SVGElement>,
+      scene: InteractiveScene
+    ) => void
+  ) {
+    this._d3Node?.element.on('wheel', (e) => {
+      callback(e, this);
+    });
+  }
+
+  public onPointerDown(
+    callback: (
+      event: React.PointerEvent<SVGElement>,
+      scene: InteractiveScene
+    ) => void
+  ) {
+    this._d3Node?.element.on('pointerdown', (e) => {
+      callback(e, this);
+    });
+  }
+
+  public onPointerMove(
+    callback: (
+      event: React.PointerEvent<SVGElement>,
+      scene: InteractiveScene
+    ) => void
+  ) {
+    this._d3Node?.element.on('pointermove', (e) => {
+      callback(e, this);
+    });
+  }
+
+  public onPointerLeave(
+    callback: (
+      event: React.PointerEvent<SVGElement>,
+      scene: InteractiveScene
+    ) => void
+  ) {
+    this._d3Node?.element.on('pointerleave', (e) => {
+      callback(e, this);
+    });
+  }
+
+  public onPointerUp(
+    callback: (
+      event: React.PointerEvent<SVGElement>,
+      scene: InteractiveScene
+    ) => void
+  ) {
+    this._d3Node?.element.on('pointerup', (e) => {
+      callback(e, this);
+    });
   }
 }
 
