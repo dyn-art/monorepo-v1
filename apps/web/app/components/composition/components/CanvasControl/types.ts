@@ -12,7 +12,7 @@ export enum EHandleSide {
   Right = 8,
 }
 
-export type SceneState =
+export type TCanvasState =
   | {
       mode: ECanvasMode.NONE;
     }

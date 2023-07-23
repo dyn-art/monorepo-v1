@@ -3,6 +3,10 @@ import { Composition } from './Composition';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { Frame } from './nodes';
 
+// TODO: outsource interactivity like 'move()', event listener, .. from Node
+// and put it into an 'InteractiveNode' like here with Composition
+// Edit: This won't work as you can't extend two classes (e.g. InteractiveShapeNode extends ShapeNode, InteractiveNode)
+
 export class InteractiveComposition extends Composition {
   private _raycastNodeIds: string[];
   private _selectedNodeId: string | null;
@@ -10,8 +14,8 @@ export class InteractiveComposition extends Composition {
   private readonly _clickedElements: Set<string>;
   protected readonly _watcher: Watcher<TWatchedInteractiveScene>;
 
-  constructor(scene: TComposition) {
-    super(scene);
+  constructor(composition: TComposition) {
+    super(composition);
     this._raycastNodeIds = [];
     this._selectedNodeId = null;
     this._clickedElements = new Set();
@@ -26,13 +30,13 @@ export class InteractiveComposition extends Composition {
 
       // Register onClick event listener
       // to determine selected nodes
-      node.onClick((event) => {
+      node.onPointerDown((event) => {
         this._clickedElements.add(id);
 
         // If this is the first element that was clicked (i.e. the most deeply nested element),
         // set a property on the event to indicate this
-        if (!event.alreadyProcessed) {
-          event.alreadyProcessed = true;
+        if (!('alreadyProcessed' in event) || !event.alreadyProcessed) {
+          event['alreadyProcessed'] = true;
 
           // Then use a setTimeout to process the clicked elements
           // after all the event listeners have fired
@@ -181,7 +185,7 @@ export class InteractiveComposition extends Composition {
   public onWheel(
     callback: (
       event: React.WheelEvent<SVGElement>,
-      scene: InteractiveComposition
+      composition: InteractiveComposition
     ) => void
   ) {
     this._d3Node?.element.on('wheel', (e) => {
@@ -192,7 +196,7 @@ export class InteractiveComposition extends Composition {
   public onPointerDown(
     callback: (
       event: React.PointerEvent<SVGElement>,
-      scene: InteractiveComposition
+      composition: InteractiveComposition
     ) => void
   ) {
     this._d3Node?.element.on('pointerdown', (e) => {
@@ -203,7 +207,7 @@ export class InteractiveComposition extends Composition {
   public onPointerMove(
     callback: (
       event: React.PointerEvent<SVGElement>,
-      scene: InteractiveComposition
+      composition: InteractiveComposition
     ) => void
   ) {
     this._d3Node?.element.on('pointermove', (e) => {
@@ -214,7 +218,7 @@ export class InteractiveComposition extends Composition {
   public onPointerLeave(
     callback: (
       event: React.PointerEvent<SVGElement>,
-      scene: InteractiveComposition
+      composition: InteractiveComposition
     ) => void
   ) {
     this._d3Node?.element.on('pointerleave', (e) => {
@@ -225,7 +229,7 @@ export class InteractiveComposition extends Composition {
   public onPointerUp(
     callback: (
       event: React.PointerEvent<SVGElement>,
-      scene: InteractiveComposition
+      composition: InteractiveComposition
     ) => void
   ) {
     this._d3Node?.element.on('pointerup', (e) => {

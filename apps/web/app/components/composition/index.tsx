@@ -1,6 +1,6 @@
 import { TComposition } from '@pda/types/dtif';
 import React from 'react';
-import { Canvas, SceneControls } from './components';
+import { Canvas, CanvasControl } from './components';
 import { useComposition } from './hooks';
 import styles from './styles.css';
 
@@ -26,7 +26,7 @@ export const Composition: React.FC<TProps> = (props) => {
         }}
       >
         <Canvas canvasRef={compositionCanvasRef} />
-        {d3Scene != null ? <SceneControls composition={d3Scene} /> : null}
+        {d3Scene != null ? <CanvasControl composition={d3Scene} /> : null}
       </div>
     </div>
   );

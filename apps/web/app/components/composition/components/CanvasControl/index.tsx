@@ -1,35 +1,110 @@
 import { logger } from '@/core/logger';
 import { InteractiveComposition } from '@pda/dtif-to-svg';
 import React from 'react';
+import { pointerEventToCompositionPoint } from '../../utils';
 import { SelectionBox } from './components';
+import { ECanvasMode, EHandleSide, TCanvasState, TXYWH } from './types';
 
-export const SceneControls: React.FC<TProps> = (props) => {
-  const { composition: d3Scene } = props;
-  // Calculate handleRotation here, similar to previous examples...
+export const CanvasControl: React.FC<TProps> = (props) => {
+  const { composition: composition } = props;
+  const [canvasState, setCanvasState] = React.useState<TCanvasState>({
+    mode: ECanvasMode.NONE,
+  });
 
   // ============================================================================
   // Lifecycle
   // ============================================================================
 
+  /**
+   * Register onPointerMove event
+   */
   React.useEffect(() => {
-    if (d3Scene != null) {
-      d3Scene.onPointerDown((e, scene) => {
-        logger.info('onPointerDown', { e, scene });
+    composition.onPointerMove((e, composition) => {
+      e.preventDefault();
+      const current = pointerEventToCompositionPoint(e);
+
+      // Multi selection
+      if (canvasState.mode === ECanvasMode.PRESSING) {
+        // TODO: multi selection
+      }
+
+      // Selection Net
+      else if (canvasState.mode === ECanvasMode.SELECTION_NET) {
+        // TODO: selection net
+      }
+
+      // Translate
+      else if (canvasState.mode === ECanvasMode.TRANSLATING) {
+        // TODO: translate
+        logger.info('Translate', { current });
+      }
+
+      // Resize
+      else if (canvasState.mode === ECanvasMode.RESIZING) {
+        // TODO resize
+      }
+    });
+  }, [canvasState]);
+
+  /**
+   * Register onPointerDown event
+   */
+  React.useEffect(() => {
+    composition.onPointerDown((e, composition) => {
+      logger.info('onPointerDown', { e, composition });
+      const current = pointerEventToCompositionPoint(e);
+      setCanvasState({ mode: ECanvasMode.PRESSING, origin: current });
+    });
+  }, [canvasState]);
+
+  /**
+   * Register onPointerUp event
+   */
+  React.useEffect(() => {
+    composition.onPointerUp((e, composition) => {
+      logger.info('onPointerUp', { e, composition });
+      if (
+        canvasState.mode === ECanvasMode.NONE ||
+        canvasState.mode === ECanvasMode.PRESSING
+      ) {
+        setCanvasState({ mode: ECanvasMode.NONE });
+      }
+    });
+  }, [canvasState]);
+
+  // TODO:
+  React.useEffect(() => {
+    if (composition != null) {
+      composition.onPointerLeave((e, composition) => {
+        logger.info('onPointerLeave', { e, composition });
       });
-      d3Scene.onPointerUp((e, scene) => {
-        logger.info('onPointerUp', { e, scene });
-      });
-      d3Scene.onPointerMove((e, scene) => {
-        logger.info('onPointerMove', { e, scene });
-      });
-      d3Scene.onPointerLeave((e, scene) => {
-        logger.info('onPointerLeave', { e, scene });
-      });
-      d3Scene.onWheel((e, scene) => {
-        logger.info('onWheel', { e, scene });
+      composition.onWheel((e, composition) => {
+        logger.info('onWheel', { e, composition });
       });
     }
-  }, [d3Scene]);
+  }, [composition]);
+
+  // ============================================================================
+  // Callbacks
+  // ============================================================================
+
+  /**
+   * Start resizing the layer
+   */
+  const onResizeHandlePointerDown = React.useCallback(
+    (corner: EHandleSide, initialBounds: TXYWH) => {
+      setCanvasState({
+        mode: ECanvasMode.RESIZING,
+        initialBounds,
+        corner,
+      });
+    },
+    []
+  );
+
+  // ============================================================================
+  // Render
+  // ============================================================================
 
   return (
     <svg
@@ -37,7 +112,10 @@ export const SceneControls: React.FC<TProps> = (props) => {
       className="absolute w-full h-full pointer-events-none"
       overflow={'visible'}
     >
-      <SelectionBox composition={d3Scene} />
+      <SelectionBox
+        composition={composition}
+        onResizeHandlePointerDown={onResizeHandlePointerDown}
+      />
     </svg>
   );
 };
