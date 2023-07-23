@@ -28,7 +28,73 @@ On the other hand, we use React's diffing and re-rendering algorithms for updati
 
 Our architecture is designed to efficiently handle between 1 and 500 nodes. It avoids unnecessary loops and expensive operations by having a central source of truth in the `Scene` and only updating the nodes when necessary. It also ensures that only the parts of the UI that need to be updated get re-rendered.
 
-## TODO
-- [] Outsource Fill into a separate class so that I can add event listener later on.. add _fills array to Basic Shape Node and remove FillsMixin
-- [] Make Node more basic and create Basic Shape Node which has fill and can transform because e.g. a Group can't transform but should be of the type Node
-- [] Or should group have own transform and width & height and change if children change: https://www.figma.com/plugin-docs/api/GroupNode
+### Node interactivity inherence with Mixins
+The rendering works with a hierarchy of nodes, where each node has some common functionalities, and some functionalities are specific to certain types of nodes. This is a classic case where inheritance comes into play. However, the requirement to add interactivity to some node types, but not the base ones, makes this a potential case for the use of the mixin pattern.
+
+#### What are Mixins?
+A mixin is a class whose methods can be reused in multiple classes without causing a tangled web of inheritance. In this package mixins could be used to add interactivity to certain node types without affecting those that do not need this feature and thus allow tree shaking.
+
+#### Code Complexity
+While mixins provide a way to share behavior across classes, they can make the code more complex to understand. This is because you need to follow the mixin chain to understand all the functionalities that a class has. 
+
+#### Collision and Overwriting
+Another issue that could arise is the potential for method collision. If two mixins provide a method with the same name, one will overwrite the other.
+
+#### Identity of Instance
+TypeScript does not support multiple inheritance, and it doesn't consider an instance of a class using a mixin as an instance of the mixin itself. If you try using the `instanceof`` operator, it will not recognize an object as being an instance of a mixin. 
+
+#### Wrap Up
+In conclusion, while the mixin pattern provides a powerful way to share and reuse behavior across classes in TypeScript, it introduces too much complexity that isn't worth while for supporting tree shaking.
+
+Example implementation:
+```
+function BaseNodeMixin<TBase extends Constructor>(Base: TBase) {
+  return class extends Base {
+    greetFromBaseNode() {
+      console.log("Hello from BaseNode");
+    }
+  };
+}
+
+function InteractiveBaseNodeMixin<TBase extends Constructor>(Base: TBase) {
+  return class extends Base {
+    greetFromInteractiveBaseNode() {
+      console.log("Hello from InteractiveBaseNode");
+    }
+  };
+}
+
+class BaseNode extends BaseNodeMixin(class {}) { }
+
+class InteractiveBaseNode extends InteractiveBaseNodeMixin(BaseNode) { }
+
+function ShapeNodeMixin<TBase extends Constructor>(Base: TBase) {
+  return class extends Base {
+    greetFromShapeNode() {
+      console.log("Hello from ShapeNode");
+    }
+  };
+}
+
+function InteractiveShapeNodeMixin<TBase extends Constructor>(Base: TBase) {
+  return class extends Base {
+    greetFromInteractiveShapeNode() {
+      console.log("Hello from InteractiveShapeNode");
+    }
+  };
+}
+
+class ShapeNode extends ShapeNodeMixin(BaseNode) { }
+
+class InteractiveShapeNode extends InteractiveBaseNodeMixin(InteractiveShapeNodeMixin(ShapeNode)) {}
+
+const shapeNode = new ShapeNode();
+shapeNode.greetFromShapeNode(); // Outputs: "Hello from ShapeNode"
+shapeNode.greetFromBaseNode(); // Outputs: "Hello from BaseNode"
+
+const interactiveShapeNode = new InteractiveShapeNode();
+interactiveShapeNode.greetFromInteractiveShapeNode(); // Outputs: "Hello from InteractiveShapeNode"
+interactiveShapeNode.greetFromShapeNode(); // Outputs: "Hello from ShapeNode"
+interactiveShapeNode.greetFromInteractiveBaseNode(); // Outputs: "Hello from InteractiveBaseNode"
+interactiveShapeNode.greetFromBaseNode(); // Outputs: "Hello from BaseNode"
+```

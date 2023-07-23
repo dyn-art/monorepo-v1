@@ -174,8 +174,42 @@ export abstract class Node {
   // Events
   // ============================================================================
 
-  public onClick(callback: (event: any, node: Node) => void) {
-    this._d3Node?.element.on('click', (e) => {
+  public onWheel(
+    callback: (event: React.WheelEvent<SVGElement>, node: Node) => void
+  ) {
+    this._d3Node?.element.on('wheel', (e) => {
+      callback(e, this);
+    });
+  }
+
+  public onPointerDown(
+    callback: (event: React.PointerEvent<SVGElement>, node: Node) => void
+  ) {
+    this._d3Node?.element.on('pointerdown', (e) => {
+      callback(e, this);
+    });
+  }
+
+  public onPointerMove(
+    callback: (event: React.PointerEvent<SVGElement>, node: Node) => void
+  ) {
+    this._d3Node?.element.on('pointermove', (e) => {
+      callback(e, this);
+    });
+  }
+
+  public onPointerLeave(
+    callback: (event: React.PointerEvent<SVGElement>, node: Node) => void
+  ) {
+    this._d3Node?.element.on('pointerleave', (e) => {
+      callback(e, this);
+    });
+  }
+
+  public onPointerUp(
+    callback: (event: React.PointerEvent<SVGElement>, node: Node) => void
+  ) {
+    this._d3Node?.element.on('pointerup', (e) => {
       callback(e, this);
     });
   }

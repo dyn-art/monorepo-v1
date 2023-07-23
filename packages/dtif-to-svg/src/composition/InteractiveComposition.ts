@@ -3,10 +3,6 @@ import { Composition } from './Composition';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { Frame } from './nodes';
 
-// TODO: outsource interactivity like 'move()', event listener, .. from Node
-// and put it into an 'InteractiveNode' like here with Composition
-// Edit: This won't work as you can't extend two classes (e.g. InteractiveShapeNode extends ShapeNode, InteractiveNode)
-
 export class InteractiveComposition extends Composition {
   private _raycastNodeIds: string[];
   private _selectedNodeId: string | null;
