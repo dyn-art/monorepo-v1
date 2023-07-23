@@ -1,7 +1,7 @@
-import { TScene } from '@pda/types/dtif';
+import { TComposition } from '@pda/types/dtif';
 import fs from 'fs';
 import path from 'path';
-import { Scene } from '../scene';
+import { Composition } from '../scene';
 
 function cleanStr(str: string) {
   return str.replace(/[\s\n]/g, '');
@@ -16,14 +16,14 @@ describe('Scene class tests', () => {
         path.resolve(__dirname, `./resources/${testCaseName}/input.json`),
         'utf-8'
       );
-      const dtif: TScene = JSON.parse(dtifJson);
+      const dtif: TComposition = JSON.parse(dtifJson);
       const expectedResult = fs.readFileSync(
         path.resolve(__dirname, `./resources/${testCaseName}/expected.svg`),
         'utf-8'
       );
 
       // Act
-      const result = await new Scene(dtif).init();
+      const result = await new Composition(dtif).init();
       const svgResult = result.toSVG() ?? '';
 
       console.log('\n\n---\n\n', svgResult, '\n\n---\n\n');

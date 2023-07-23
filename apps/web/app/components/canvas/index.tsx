@@ -1,4 +1,4 @@
-import { TScene } from '@pda/types/dtif';
+import { TComposition } from '@pda/types/dtif';
 import React from 'react';
 import { Node } from './components';
 
@@ -28,6 +28,6 @@ const Canvas: React.FC<TProps> = (props) => {
 export default Canvas;
 
 type TProps = {
-  scene: TScene;
+  scene: TComposition;
   canvasRef?: React.LegacyRef<SVGSVGElement>;
 };

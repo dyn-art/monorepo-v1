@@ -2,7 +2,7 @@ import Canvas from '@/components/canvas';
 import { Button } from '@/components/primitive/button';
 import { coreService } from '@/core/api';
 import { logger } from '@/core/logger';
-import { TScene } from '@pda/types/dtif';
+import { TComposition } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
 import { LoaderArgs, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
@@ -13,7 +13,7 @@ export async function loader(args: LoaderArgs) {
   const {
     params: { canvasId },
   } = args;
-  let scene: TScene | null = null;
+  let scene: TComposition | null = null;
   if (canvasId != null) {
     scene = await coreService.downloadJsonFromS3(canvasId);
   }
@@ -25,7 +25,7 @@ export async function loader(args: LoaderArgs) {
 
 const CanvasId: React.FC = () => {
   const { id, scene: _scene } = useLoaderData<typeof loader>();
-  const scene: TScene | null = _scene as any;
+  const scene: TComposition | null = _scene as any;
   const canvasRef = React.useRef(null);
 
   // ============================================================================
@@ -68,5 +68,5 @@ export default CanvasId;
 
 type TLoader = {
   id: string;
-  scene: TScene | null;
+  scene: TComposition | null;
 };

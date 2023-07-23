@@ -2,10 +2,10 @@ import {
   NodeException,
   TUploadStaticData,
   UploadStaticDataException,
-  formatFrameToScene,
+  formatFrameToComposition,
   sha256,
 } from '@pda/figma-to-dtif';
-import { TScene } from '@pda/types/dtif';
+import { TComposition } from '@pda/types/dtif';
 import { TIntermediateFormatExportEvent, logger } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
 import { uploadDataToBucket } from '../../core/bucket';
@@ -32,7 +32,7 @@ export async function processNode(
     };
 
     // Format the node for export
-    const toExportNode = await formatFrameToScene(node, {
+    const toExportNode = await formatFrameToComposition(node, {
       ...options,
       gradientFill: {
         ...(options.gradientFill ?? {}),
@@ -73,7 +73,7 @@ export async function processNode(
 function handleSuccess(
   instance: TBackgroundHandler,
   node: SceneNode,
-  toExportNode: TScene,
+  toExportNode: TComposition,
   key: string
 ) {
   instance.postMessage('intermediate-format-export-result', {

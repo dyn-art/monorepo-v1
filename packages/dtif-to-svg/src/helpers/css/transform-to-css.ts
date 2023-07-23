@@ -1,6 +1,9 @@
 import { TTransform } from '@pda/types/dtif';
 import type { CSSProperties } from 'react';
-import { T2DMatrixData, extractMatrixData } from '../math/extract-matrix-data';
+import {
+  T2DMatrixData,
+  extractTransformMatrixData,
+} from '../math/extract-transform-matrix-data';
 
 export function transformToCSS(
   transform: TTransform | T2DMatrixData
@@ -11,7 +14,9 @@ export function transformToCSS(
     scaleY,
     tx: x,
     ty: y,
-  } = Array.isArray(transform) ? extractMatrixData(transform) : transform;
+  } = Array.isArray(transform)
+    ? extractTransformMatrixData(transform)
+    : transform;
 
   return {
     transform: `translate(${x}px, ${y}px) rotate(${

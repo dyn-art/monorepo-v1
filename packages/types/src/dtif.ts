@@ -31,9 +31,9 @@ export type TNodeTypes =
 // ============================================================================
 
 /**
- * Represents the scene or workspace in which all nodes exist.
+ * Represents the composition in which all nodes exist.
  */
-export type TScene = {
+export type TComposition = {
   version: '1.0';
   /**
    * The name of the scene.
@@ -70,7 +70,7 @@ export type TFrameNode = {
    * A boolean indicating whether the frame clips its content to its bounding box.
    */
   clipsContent: boolean;
-} & TBaseShapeMixin &
+} & TShapeNodeMixin &
   TChildrenMixin &
   TRectangleCornerMixin;
 
@@ -86,7 +86,7 @@ export type TFrameNode = {
  */
 export type TGroupNode = {
   type: 'GROUP';
-} & TBaseSceneNodeMixin &
+} & TCompositionNodeMixin &
   TChildrenMixin;
 
 /**
@@ -94,7 +94,7 @@ export type TGroupNode = {
  */
 export type TRectangleNode = {
   type: 'RECTANGLE';
-} & TBaseShapeMixin &
+} & TShapeNodeMixin &
   TRectangleCornerMixin;
 
 /**
@@ -108,7 +108,7 @@ export type TEllipseNode = {
    * and ratio handles used in our UI to create arcs and donuts.
    */
   arcData: TEllipseArcData;
-} & TBaseShapeMixin;
+} & TShapeNodeMixin;
 
 /**
  * The star node is a basic shape node representing
@@ -124,7 +124,7 @@ export type TStarNode = {
    * Ratio of the inner radius to the outer radius.
    */
   innerRadiusRation: number;
-} & TBaseShapeMixin;
+} & TShapeNodeMixin;
 
 /**
  * The polygon node is a basic shape node representing
@@ -136,7 +136,7 @@ export type TPolygonNode = {
    * Number of sides of the polygon. Must be an integer >= 3.
    */
   pointCount: number;
-} & TBaseShapeMixin;
+} & TShapeNodeMixin;
 
 /**
  * The text node represents text where both the whole node
@@ -177,7 +177,7 @@ export type TTextNode = {
    * The raw characters in the text node.
    */
   characters: string;
-} & TBaseShapeMixin;
+} & TShapeNodeMixin;
 
 /**
  * The SVG node is the most general representation of shape,
@@ -214,7 +214,7 @@ export type TSVGNodeExported = {
    * If not set the content can to be searched by the hash.
    */
   content?: Uint8Array | string;
-} & TBaseSceneNodeMixin;
+} & TCompositionNodeMixin;
 
 /**
  * The SVG node exported represents the SVG node
@@ -230,7 +230,7 @@ export type TSVGNodeInline = {
    * An array of SVG element children that define the SVG content.
    */
   children: TSVGElement['children'];
-} & TBaseShapeMixin &
+} & TShapeNodeMixin &
   TEffectsMixin;
 
 export type TNode =
@@ -247,12 +247,12 @@ export type TNode =
 // Mixins
 // ============================================================================
 
-export type TBaseSceneNodeMixin = TBaseNodeMixin &
-  TSceneNodeMixin &
+export type TCompositionNodeMixin = TBaseNodeMixin &
+  TCompositionMixin &
   TLayoutMixin &
   TBlendMixin;
 
-export type TBaseShapeMixin = TBaseSceneNodeMixin &
+export type TShapeNodeMixin = TCompositionNodeMixin &
   TEffectsMixin &
   TGeometryMixin &
   TFillsMixin;
@@ -323,7 +323,7 @@ export type TFillsMixin = {
   fills: Array<TPaint>;
 };
 
-export type TSceneNodeMixin = {
+export type TCompositionMixin = {
   /**
    * Whether the node is visible or not.
    */

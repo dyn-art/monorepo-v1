@@ -1,5 +1,5 @@
 import { TBaseFigmaMessageEvent } from '@pda/figma-handler';
-import { TScene } from '@pda/types/dtif';
+import { TComposition } from '@pda/types/dtif';
 
 export interface TOnSelectFrameEvent extends TBaseFigmaMessageEvent {
   key: 'on-select-frame';
@@ -34,7 +34,7 @@ export interface TIntermediateFormatExportResultEvent
       }
     | {
         type: 'success';
-        content: TScene;
+        content: TComposition;
       };
 }
 
