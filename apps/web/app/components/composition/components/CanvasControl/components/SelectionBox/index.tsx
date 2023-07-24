@@ -12,6 +12,7 @@ export const SelectionBox: React.FC<TProps> = React.memo((props) => {
     <>
       {selectedNodes.map((selectedNode) => (
         <InnerSelectionBox
+          key={selectedNode.id}
           node={selectedNode}
           showHandles={true}
           onResizeHandlePointerDown={onResizeHandlePointerDown}

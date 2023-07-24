@@ -168,9 +168,9 @@ export class InteractiveComposition extends Composition {
     // Notify subscribers
     if (prevSelectedNodeIdsIdentifier !== this._selectedNodeIds.join('-')) {
       this._watcher.notify('selectedNodes', this.selectedNodes);
-      if (this.onUpdateSelectedNodesCallback != null) {
-        this.onUpdateSelectedNodesCallback(this.selectedNodes, event);
-      }
+    }
+    if (this.onUpdateSelectedNodesCallback != null) {
+      this.onUpdateSelectedNodesCallback(this.selectedNodes, event);
     }
   }
 

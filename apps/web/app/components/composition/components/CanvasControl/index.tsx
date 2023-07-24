@@ -62,9 +62,9 @@ export const CanvasControl: React.FC<TProps> = (props) => {
 
     // TODO: think about how to get selected which is called after onPointerDown
     composition.onSelectNode((selected, e) => {
-      logger.info('onSelectNode', { selected, e });
       if (selected.length > 0) {
         const current = pointerEventToCompositionPoint(e);
+        logger.info('Start translating', { current: { ...current } });
         setCanvasState({
           mode: ECanvasMode.TRANSLATING,
           current,
@@ -78,7 +78,15 @@ export const CanvasControl: React.FC<TProps> = (props) => {
    */
   React.useEffect(() => {
     composition.onPointerUp((e, composition) => {
-      logger.info('onPointerUp', { e, composition });
+      setCanvasState({ mode: ECanvasMode.NONE });
+    });
+  }, [canvasState]);
+
+  /**
+   * Register onLeave event
+   */
+  React.useEffect(() => {
+    composition.onPointerLeave((e, composition) => {
       setCanvasState({ mode: ECanvasMode.NONE });
     });
   }, [canvasState]);
@@ -86,9 +94,6 @@ export const CanvasControl: React.FC<TProps> = (props) => {
   // TODO:
   React.useEffect(() => {
     if (composition != null) {
-      composition.onPointerLeave((e, composition) => {
-        logger.info('onPointerLeave', { e, composition });
-      });
       composition.onWheel((e, composition) => {
         logger.info('onWheel', { e, composition });
       });
@@ -148,10 +153,14 @@ export const CanvasControl: React.FC<TProps> = (props) => {
         const transform = extractTransformMatrixData(
           selected.relativeTransform
         );
-        selected.moveTo(offset.x + transform.tx, offset.y + transform.ty);
+        logger.info({
+          current: { ...current },
+          canvasState: { ...canvasState.current },
+          offset: { ...offset },
+          transform: { ...transform },
+        });
+        selected.move(offset.x, offset.y);
       }
-
-      setCanvasState({ mode: ECanvasMode.TRANSLATING, current });
     },
     [canvasState]
   );
