@@ -13,7 +13,7 @@ import { Composition } from '../../Composition';
 import { RemoveFunctions, Watcher } from '../../Watcher';
 import { D3Node } from './D3Node';
 
-export abstract class Node {
+export abstract class CompositionNode {
   protected readonly _type: string;
 
   // Base node mixin
@@ -66,7 +66,7 @@ export abstract class Node {
   // Setter & Getter
   // ============================================================================
 
-  public watcher() {
+  public getWatcher() {
     return this._watcher;
   }
 
@@ -81,6 +81,10 @@ export abstract class Node {
   public set name(value: string) {
     this._name = value;
     this._watcher.notify('name', value);
+  }
+
+  public get isLocked() {
+    return this._compositionMixin.isLocked;
   }
 
   public get composition() {
@@ -102,7 +106,7 @@ export abstract class Node {
   public set relativeTransform(value: TTransform) {
     this._layoutMixin.relativeTransform = value;
     this._d3Node?.updateStyles(transformToCSS(value));
-    this._watcher.notify('relativeTransform', this.relativeTransform);
+    this._watcher.notify('relativeTransform', value);
   }
 
   // ============================================================================
@@ -175,7 +179,10 @@ export abstract class Node {
   // ============================================================================
 
   public onWheel(
-    callback: (event: React.WheelEvent<SVGElement>, node: Node) => void
+    callback: (
+      event: React.WheelEvent<SVGElement>,
+      node: CompositionNode
+    ) => void
   ) {
     this._d3Node?.element.on('wheel', (e) => {
       callback(e, this);
@@ -183,7 +190,10 @@ export abstract class Node {
   }
 
   public onPointerDown(
-    callback: (event: React.PointerEvent<SVGElement>, node: Node) => void
+    callback: (
+      event: React.PointerEvent<SVGElement>,
+      node: CompositionNode
+    ) => void
   ) {
     this._d3Node?.element.on('pointerdown', (e) => {
       callback(e, this);
@@ -191,7 +201,10 @@ export abstract class Node {
   }
 
   public onPointerMove(
-    callback: (event: React.PointerEvent<SVGElement>, node: Node) => void
+    callback: (
+      event: React.PointerEvent<SVGElement>,
+      node: CompositionNode
+    ) => void
   ) {
     this._d3Node?.element.on('pointermove', (e) => {
       callback(e, this);
@@ -199,7 +212,10 @@ export abstract class Node {
   }
 
   public onPointerLeave(
-    callback: (event: React.PointerEvent<SVGElement>, node: Node) => void
+    callback: (
+      event: React.PointerEvent<SVGElement>,
+      node: CompositionNode
+    ) => void
   ) {
     this._d3Node?.element.on('pointerleave', (e) => {
       callback(e, this);
@@ -207,7 +223,10 @@ export abstract class Node {
   }
 
   public onPointerUp(
-    callback: (event: React.PointerEvent<SVGElement>, node: Node) => void
+    callback: (
+      event: React.PointerEvent<SVGElement>,
+      node: CompositionNode
+    ) => void
   ) {
     this._d3Node?.element.on('pointerup', (e) => {
       callback(e, this);
@@ -247,7 +266,7 @@ export abstract class Node {
   }
 }
 
-type TWatchedNode = RemoveFunctions<Node>;
+type TWatchedNode = RemoveFunctions<CompositionNode>;
 
 export type TNodeOptions = {
   type?: string;

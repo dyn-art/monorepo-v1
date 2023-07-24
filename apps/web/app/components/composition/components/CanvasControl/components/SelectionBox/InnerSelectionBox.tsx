@@ -1,4 +1,4 @@
-import { Node } from '@pda/dtif-to-svg';
+import { CompositionNode } from '@pda/dtif-to-svg';
 import React from 'react';
 import { useMatrixTransform, useWatcher } from '../../../../hooks';
 import { EHandleSide, TXYWH } from '../../types';
@@ -142,7 +142,7 @@ export const InnerSelectionBox: React.FC<TProps> = (props) => {
 };
 
 type TProps = {
-  node: Node;
+  node: CompositionNode;
   showHandles: boolean;
   onResizeHandlePointerDown: (
     corner: EHandleSide,

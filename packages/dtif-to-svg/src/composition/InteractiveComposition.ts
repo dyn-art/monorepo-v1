@@ -1,19 +1,26 @@
 import { TComposition } from '@pda/types/dtif';
+import { notEmpty } from '@pda/utils';
 import { Composition } from './Composition';
 import { RemoveFunctions, Watcher } from './Watcher';
-import { Frame } from './nodes';
+import { CompositionNode, Frame } from './nodes';
 
 export class InteractiveComposition extends Composition {
   private _raycastNodeIds: string[];
-  private _selectedNodeId: string | null;
+  private _lastSelectedNodeId: string | null;
+  private _selectedNodeIds: string[];
+  private _multiselect: boolean;
 
   private readonly _clickedElements: Set<string>;
   protected readonly _watcher: Watcher<TWatchedInteractiveScene>;
 
+  private onUpdateSelectedNodesCallback: TOnUpdateSelectedNodesCallback | null;
+
   constructor(composition: TComposition) {
     super(composition);
     this._raycastNodeIds = [];
-    this._selectedNodeId = null;
+    this._lastSelectedNodeId = null;
+    this._selectedNodeIds = [];
+    this._multiselect = false;
     this._clickedElements = new Set();
   }
 
@@ -37,7 +44,10 @@ export class InteractiveComposition extends Composition {
           // Then use a setTimeout to process the clicked elements
           // after all the event listeners have fired
           setTimeout(() => {
-            this.processClickedElements(Array.from(this._clickedElements));
+            this.processClickedElements(
+              Array.from(this._clickedElements),
+              event
+            );
             this._clickedElements.clear();
           }, 0);
         }
@@ -51,22 +61,43 @@ export class InteractiveComposition extends Composition {
   // Getter & Setter
   // ============================================================================
 
-  public watcher() {
+  public getWatcher() {
     return this._watcher;
   }
 
-  public get selectedNode() {
-    return this.getNode(this._selectedNodeId);
+  public get multiselect() {
+    return this._multiselect;
+  }
+
+  public set multiselect(value: boolean) {
+    this._multiselect = value;
+    this._watcher.notify('multiselect', value);
+  }
+
+  public get selectedNodes() {
+    return this._selectedNodeIds.map((id) => this.getNode(id)).filter(notEmpty);
+  }
+
+  // ============================================================================
+  // Other
+  // ============================================================================
+
+  public onSelectNode(callback: TOnUpdateSelectedNodesCallback) {
+    this.onUpdateSelectedNodesCallback = callback;
   }
 
   // ============================================================================
   // Helper
   // ============================================================================
 
-  private processClickedElements(nodeIds: string[]): void {
+  private processClickedElements(
+    nodeIds: string[],
+    event: React.PointerEvent<SVGElement>
+  ): void {
     this._raycastNodeIds = [...nodeIds];
-    let selectedNodeId: string | null = this._selectedNodeId;
-    const prevSelectedNodeId: string | null = selectedNodeId;
+    let selectedNodeId: string | null = this._lastSelectedNodeId;
+    const prevSelectedNodeIdsIdentifier: string =
+      this._selectedNodeIds.join('-');
 
     // If a node is already selected and there are nodes in the raycast array,
     // including the selected node id,
@@ -88,7 +119,7 @@ export class InteractiveComposition extends Composition {
     }
 
     // If no node is currently selected or the selected node is not in the raycast array
-    //  and there are nodes in the raycast array,
+    // and there are nodes in the raycast array,
     // attempt to select the top-level node
     else if (this._raycastNodeIds.length > 0) {
       selectedNodeId = this.selectTopLevelNode();
@@ -105,7 +136,8 @@ export class InteractiveComposition extends Composition {
       // If we still haven't selected a node (because it's either unsuitable or non-existent),
       // select the top-level node regardless of its suitability
       else if (selectedNodeId == null) {
-        selectedNodeId = this._raycastNodeIds[this._raycastNodeIds.length - 1];
+        // selectedNodeId = this._raycastNodeIds[this._raycastNodeIds.length - 1];
+        selectedNodeId = null;
       }
     }
 
@@ -114,9 +146,31 @@ export class InteractiveComposition extends Composition {
       selectedNodeId = null;
     }
 
-    this._selectedNodeId = selectedNodeId;
-    if (prevSelectedNodeId !== selectedNodeId) {
-      this._watcher.notify('selectedNode', this.selectedNode);
+    // Update last selected node id
+    this._lastSelectedNodeId = selectedNodeId;
+
+    // Update selected node ids
+    if (this._multiselect) {
+      if (selectedNodeId != null) {
+        const index = this._selectedNodeIds.indexOf(selectedNodeId);
+        if (index !== -1) {
+          this._selectedNodeIds.splice(index, 1);
+        } else {
+          this._selectedNodeIds.push(selectedNodeId);
+        }
+      } else {
+        // do nothing
+      }
+    } else {
+      this._selectedNodeIds = selectedNodeId != null ? [selectedNodeId] : [];
+    }
+
+    // Notify subscribers
+    if (prevSelectedNodeIdsIdentifier !== this._selectedNodeIds.join('-')) {
+      this._watcher.notify('selectedNodes', this.selectedNodes);
+      if (this.onUpdateSelectedNodesCallback != null) {
+        this.onUpdateSelectedNodesCallback(this.selectedNodes, event);
+      }
     }
   }
 
@@ -131,7 +185,11 @@ export class InteractiveComposition extends Composition {
     const nextSelectedNode = this.getNode(nextSelectedNodeId);
 
     // If the top-level node is not a frame and does exist, select it
-    if (!(nextSelectedNode instanceof Frame) && nextSelectedNode != null) {
+    if (
+      !(nextSelectedNode instanceof Frame) &&
+      nextSelectedNode != null &&
+      !nextSelectedNode.isLocked
+    ) {
       return nextSelectedNodeId;
     }
 
@@ -158,7 +216,11 @@ export class InteractiveComposition extends Composition {
         const nextNode = this.getNode(nextNodeId);
 
         // If the node is valid, return it
-        if (nextNode != null) {
+        if (
+          nextNode != null &&
+          !nextNode.isLocked &&
+          !(nextNode instanceof Frame)
+        ) {
           return nextNodeId;
         }
         // Else, keep going deeper
@@ -235,3 +297,8 @@ export class InteractiveComposition extends Composition {
 }
 
 type TWatchedInteractiveScene = RemoveFunctions<InteractiveComposition>;
+
+type TOnUpdateSelectedNodesCallback = (
+  node: CompositionNode[],
+  event: React.PointerEvent<SVGElement>
+) => void;

@@ -1,5 +1,9 @@
 import { logger } from '@/core/logger';
-import { InteractiveComposition } from '@pda/dtif-to-svg';
+import {
+  InteractiveComposition,
+  extractTransformMatrixData,
+} from '@pda/dtif-to-svg';
+import { TVector } from '@pda/types/dtif';
 import React from 'react';
 import { pointerEventToCompositionPoint } from '../../utils';
 import { SelectionBox } from './components';
@@ -23,7 +27,9 @@ export const CanvasControl: React.FC<TProps> = (props) => {
       e.preventDefault();
       const current = pointerEventToCompositionPoint(e);
 
-      // Multi selection
+      // logger.info('onPointerMove', { mode: canvasState.mode, e, composition });
+
+      // Start multi selection net
       if (canvasState.mode === ECanvasMode.PRESSING) {
         // TODO: multi selection
       }
@@ -35,8 +41,7 @@ export const CanvasControl: React.FC<TProps> = (props) => {
 
       // Translate
       else if (canvasState.mode === ECanvasMode.TRANSLATING) {
-        // TODO: translate
-        logger.info('Translate', { current });
+        translateSelectedLayers(current);
       }
 
       // Resize
@@ -51,9 +56,20 @@ export const CanvasControl: React.FC<TProps> = (props) => {
    */
   React.useEffect(() => {
     composition.onPointerDown((e, composition) => {
-      logger.info('onPointerDown', { e, composition });
       const current = pointerEventToCompositionPoint(e);
       setCanvasState({ mode: ECanvasMode.PRESSING, origin: current });
+    });
+
+    // TODO: think about how to get selected which is called after onPointerDown
+    composition.onSelectNode((selected, e) => {
+      logger.info('onSelectNode', { selected, e });
+      if (selected.length > 0) {
+        const current = pointerEventToCompositionPoint(e);
+        setCanvasState({
+          mode: ECanvasMode.TRANSLATING,
+          current,
+        });
+      }
     });
   }, [canvasState]);
 
@@ -63,12 +79,7 @@ export const CanvasControl: React.FC<TProps> = (props) => {
   React.useEffect(() => {
     composition.onPointerUp((e, composition) => {
       logger.info('onPointerUp', { e, composition });
-      if (
-        canvasState.mode === ECanvasMode.NONE ||
-        canvasState.mode === ECanvasMode.PRESSING
-      ) {
-        setCanvasState({ mode: ECanvasMode.NONE });
-      }
+      setCanvasState({ mode: ECanvasMode.NONE });
     });
   }, [canvasState]);
 
@@ -87,6 +98,63 @@ export const CanvasControl: React.FC<TProps> = (props) => {
   // ============================================================================
   // Callbacks
   // ============================================================================
+  /**
+   * Hook used to listen to Undo / Redo and delete selected layers
+   */
+  React.useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      switch (e.key) {
+        case 'Shift': {
+          composition.multiselect = true;
+          break;
+        }
+      }
+    }
+
+    function onKeyUp(e: KeyboardEvent) {
+      switch (e.key) {
+        case 'Shift': {
+          composition.multiselect = false;
+          break;
+        }
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keyup', onKeyUp);
+    };
+  }, []);
+
+  /**
+   * Move selected layers on the canvas
+   */
+  const translateSelectedLayers = React.useCallback(
+    (current: TVector) => {
+      if (canvasState.mode !== ECanvasMode.TRANSLATING) {
+        return;
+      }
+
+      const offset = {
+        x: current.x - canvasState.current.x,
+        y: current.y - canvasState.current.y,
+      };
+      const selectedNodes = composition.selectedNodes;
+
+      for (const selected of selectedNodes) {
+        const transform = extractTransformMatrixData(
+          selected.relativeTransform
+        );
+        selected.moveTo(offset.x + transform.tx, offset.y + transform.ty);
+      }
+
+      setCanvasState({ mode: ECanvasMode.TRANSLATING, current });
+    },
+    [canvasState]
+  );
 
   /**
    * Start resizing the layer

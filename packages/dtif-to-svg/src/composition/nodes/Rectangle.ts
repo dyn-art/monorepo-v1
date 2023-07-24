@@ -6,7 +6,7 @@ import { TRectangleCornerMixin, TRectangleNode } from '@pda/types/dtif';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
 import { Fill } from '../fill';
-import { D3Node, Node, ShapeNode } from './base';
+import { CompositionNode, D3Node, ShapeNode } from './base';
 
 export class Rectangle extends ShapeNode {
   // Mixins
@@ -82,7 +82,7 @@ export class Rectangle extends ShapeNode {
   // Getter & Setter
   // ============================================================================
 
-  public watcher() {
+  public getWatcher() {
     return this._watcher;
   }
 
@@ -145,7 +145,7 @@ export class Rectangle extends ShapeNode {
     } = props;
 
     // Create root element
-    const root = await Node.createWrapperD3Node(parent, {
+    const root = await CompositionNode.createWrapperD3Node(parent, {
       id: rootNodeId,
       node,
     });

@@ -14,7 +14,7 @@ export function useWatcher<
   React.useLayoutEffect(() => {
     const watcherKeys: string[] = [];
     for (const property of properties) {
-      const key = obj.watcher().watch(property, () => {
+      const key = obj.getWatcher().watch(property, () => {
         forceRender();
       });
       watcherKeys.push(key);
@@ -23,7 +23,7 @@ export function useWatcher<
     return () => {
       for (const property of properties) {
         for (const key of watcherKeys) {
-          obj.watcher().unwatch(property, key);
+          obj.getWatcher().unwatch(property, key);
         }
       }
     };
@@ -36,5 +36,5 @@ export function useWatcher<
 }
 
 type TWatchable = {
-  watcher(): Watcher<any>;
+  getWatcher(): Watcher<any>;
 };

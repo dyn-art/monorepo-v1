@@ -4,10 +4,10 @@ import { TComposition } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { appendNode } from './append';
-import { D3Node, Node } from './nodes';
+import { CompositionNode, D3Node } from './nodes';
 
 export class Composition {
-  protected readonly _nodes: Record<string, Node>;
+  protected readonly _nodes: Record<string, CompositionNode>;
   protected _rootNodeId: string | null;
 
   private readonly _name: string;
@@ -65,19 +65,19 @@ export class Composition {
   // Getter & Setter
   // ============================================================================
 
-  public watcher() {
+  public getWatcher() {
     return this._watcher;
   }
 
-  public get root(): Node | null {
+  public get root(): CompositionNode | null {
     return this.getNode(this._rootNodeId);
   }
 
-  public addNode(node: Node) {
+  public addNode(node: CompositionNode) {
     this._nodes[node.id] = node;
   }
 
-  public getNode(id: string | null | undefined): Node | null {
+  public getNode(id: string | null | undefined): CompositionNode | null {
     return id != null && id in this._nodes ? this._nodes[id] : null;
   }
 

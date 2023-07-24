@@ -1,11 +1,11 @@
 import { TNode } from '@pda/types/dtif';
 import { Composition } from '../Composition';
-import { D3Node, Frame, Node, Rectangle } from '../nodes';
+import { CompositionNode, D3Node, Frame, Rectangle } from '../nodes';
 
 export async function appendNode(
   parent: D3Node,
   props: { node: TNode; scene: Composition }
-): Promise<Node | null> {
+): Promise<CompositionNode | null> {
   const { node, scene } = props;
   switch (node.type) {
     case 'FRAME':

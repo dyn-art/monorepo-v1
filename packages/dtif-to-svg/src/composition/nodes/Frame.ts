@@ -4,7 +4,7 @@ import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
 import { appendNode } from '../append';
 import { Fill } from '../fill';
-import { D3Node, Node, ShapeNode } from './base';
+import { CompositionNode, D3Node, ShapeNode } from './base';
 
 export class Frame extends ShapeNode {
   // Mixins
@@ -124,11 +124,11 @@ export class Frame extends ShapeNode {
   // Getter & Setter
   // ============================================================================
 
-  public watcher() {
+  public getWatcher() {
     return this._watcher;
   }
 
-  public get children(): Node[] {
+  public get children(): CompositionNode[] {
     return this._childrenIds
       .map((id) => this.composition.getNode(id))
       .filter(notEmpty);
@@ -173,7 +173,7 @@ export class Frame extends ShapeNode {
     } = props;
 
     // Create root element
-    const root = await Node.createWrapperD3Node(parent, {
+    const root = await CompositionNode.createWrapperD3Node(parent, {
       id: rootNodeId,
       node: props.node,
     });

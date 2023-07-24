@@ -11,9 +11,9 @@ import {
 import { Composition } from '../../Composition';
 import { RemoveFunctions, Watcher } from '../../Watcher';
 import { Fill } from '../../fill';
-import { Node, TNodeOptions } from './Node';
+import { CompositionNode, TNodeOptions } from './CompositionNode';
 
-export abstract class ShapeNode extends Node {
+export abstract class ShapeNode extends CompositionNode {
   // Mixins
   protected readonly _effectsMixin: TEffectsMixin; // TODO: do like fill
   protected readonly _geometryMixin: TGeometryMixin;
@@ -43,7 +43,7 @@ export abstract class ShapeNode extends Node {
   // Getter & Setter
   // ============================================================================
 
-  public watcher() {
+  public getWatcher() {
     return this._watcher;
   }
 
