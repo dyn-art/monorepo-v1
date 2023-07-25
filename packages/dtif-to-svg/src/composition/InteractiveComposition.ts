@@ -65,6 +65,10 @@ export class InteractiveComposition extends Composition {
     return this._watcher;
   }
 
+  public getD3Node() {
+    return this._d3Node;
+  }
+
   public get multiselect() {
     return this._multiselect;
   }

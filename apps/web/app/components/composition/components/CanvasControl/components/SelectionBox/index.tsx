@@ -5,8 +5,11 @@ import { EHandleSide, TXYWH } from '../../types';
 import { InnerSelectionBox } from './InnerSelectionBox';
 
 export const SelectionBox: React.FC<TProps> = React.memo((props) => {
-  const { composition, onResizeHandlePointerDown } = props;
+  const { composition, onResizeHandlePointerDown, isTranslating } = props;
   const { selectedNodes } = useWatcher(composition, ['selectedNodes']);
+  if (isTranslating) {
+    return null;
+  }
 
   return (
     <>
@@ -28,4 +31,5 @@ type TProps = {
     corner: EHandleSide,
     initialBounds: TXYWH
   ) => void;
+  isTranslating: boolean;
 };

@@ -24,6 +24,7 @@ export type TCanvasState =
   | {
       mode: ECanvasMode.TRANSLATING;
       current: TVector;
+      isTranslating: boolean;
     }
   | {
       mode: ECanvasMode.PRESSING;

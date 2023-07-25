@@ -1,8 +1,5 @@
 import { logger } from '@/core/logger';
-import {
-  InteractiveComposition,
-  extractTransformMatrixData,
-} from '@pda/dtif-to-svg';
+import { InteractiveComposition } from '@pda/dtif-to-svg';
 import { TVector } from '@pda/types/dtif';
 import React from 'react';
 import { pointerEventToCompositionPoint } from '../../utils';
@@ -25,7 +22,7 @@ export const CanvasControl: React.FC<TProps> = (props) => {
   React.useEffect(() => {
     composition.onPointerMove((e, composition) => {
       e.preventDefault();
-      const current = pointerEventToCompositionPoint(e);
+      const current = pointerEventToCompositionPoint(e, composition);
 
       // logger.info('onPointerMove', { mode: canvasState.mode, e, composition });
 
@@ -56,18 +53,18 @@ export const CanvasControl: React.FC<TProps> = (props) => {
    */
   React.useEffect(() => {
     composition.onPointerDown((e, composition) => {
-      const current = pointerEventToCompositionPoint(e);
+      const current = pointerEventToCompositionPoint(e, composition);
       setCanvasState({ mode: ECanvasMode.PRESSING, origin: current });
     });
 
     // TODO: think about how to get selected which is called after onPointerDown
     composition.onSelectNode((selected, e) => {
       if (selected.length > 0) {
-        const current = pointerEventToCompositionPoint(e);
-        logger.info('Start translating', { current: { ...current } });
+        const current = pointerEventToCompositionPoint(e, composition);
         setCanvasState({
           mode: ECanvasMode.TRANSLATING,
           current,
+          isTranslating: false,
         });
       }
     });
@@ -150,17 +147,15 @@ export const CanvasControl: React.FC<TProps> = (props) => {
       const selectedNodes = composition.selectedNodes;
 
       for (const selected of selectedNodes) {
-        const transform = extractTransformMatrixData(
-          selected.relativeTransform
-        );
-        logger.info({
-          current: { ...current },
-          canvasState: { ...canvasState.current },
-          offset: { ...offset },
-          transform: { ...transform },
-        });
         selected.move(offset.x, offset.y);
       }
+
+      // TODO: solve that without re-render
+      setCanvasState({
+        mode: ECanvasMode.TRANSLATING,
+        current,
+        isTranslating: true,
+      });
     },
     [canvasState]
   );
@@ -192,6 +187,10 @@ export const CanvasControl: React.FC<TProps> = (props) => {
       <SelectionBox
         composition={composition}
         onResizeHandlePointerDown={onResizeHandlePointerDown}
+        isTranslating={
+          canvasState.mode === ECanvasMode.TRANSLATING &&
+          canvasState.isTranslating
+        }
       />
     </svg>
   );

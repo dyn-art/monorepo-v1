@@ -70,6 +70,10 @@ export abstract class CompositionNode {
     return this._watcher;
   }
 
+  public getD3Node() {
+    return this._d3Node;
+  }
+
   public get id() {
     return this._id;
   }
