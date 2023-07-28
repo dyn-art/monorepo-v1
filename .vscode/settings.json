@@ -28,6 +28,7 @@
         "./packages/etsy-client",
         "./packages/figma-handler",
         "./packages/figma-to-dtif",
+        "./packages/google-client",
         "./packages/logger",
         "./packages/map",
         "./packages/music",

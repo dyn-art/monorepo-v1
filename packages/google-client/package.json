@@ -1,7 +1,7 @@
 {
-  "name": "@pda/dtif-to-svg",
+  "name": "@pda/google-client",
   "version": "0.0.0",
-  "description": "Provides utilities to convert the Design Tree Interchange Format (DTIF) into SVG.",
+  "description": "Client library to communicate with the Google API",
   "private": true,
   "source": "./src/index.ts",
   "main": "./dist/cjs/index.js",
@@ -10,6 +10,7 @@
   "scripts": {
     "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod",
     "start:dev": "tsc -w",
+    "generate:openapi": "npx openapi-typescript ./resources/openapi-v1.json -o ./src/gen/v1.ts",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",
@@ -19,33 +20,18 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/logger": "workspace:^",
-    "@pda/openapi-fetch": "workspace:^",
-    "@pda/utils": "workspace:^",
-    "color-convert": "^2.0.1",
-    "d3-selection": "^3.0.0",
-    "mathjs": "^11.8.0",
-    "opentype.js": "^1.3.4",
-    "webfontloader": "^1.6.28"
-  },
-  "peerDependencies": {
-    "jsdom": "^22.1.0"
+    "@pda/openapi-fetch": "workspace:*",
+    "@pda/logger": "workspace:*"
   },
   "devDependencies": {
     "@pda/jest-presets": "workspace:^",
-    "@pda/tsconfig": "workspace:^",
-    "@pda/types": "workspace:^",
-    "@types/color-convert": "^2.0.0",
-    "@types/d3": "^7.4.0",
-    "@types/d3-selection": "^3.0.5",
+    "@pda/tsconfig": "workspace:*",
     "@types/jest": "^29.5.1",
-    "@types/node": "^18.15.13",
-    "@types/opentype.js": "^1.3.4",
-    "@types/react": "^18.2.14",
+    "dotenv": "^16.0.3",
     "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:^",
+    "eslint-config-pda-base": "workspace:*",
     "jest": "^29.5.0",
-    "jsdom": "^22.1.0",
+    "openapi-typescript": "^6.2.8",
     "typescript": "^4.9.5"
   },
   "files": [

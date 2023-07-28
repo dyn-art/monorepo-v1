@@ -208,9 +208,21 @@ export type TBodySerializer<T> = (
 // ============================================================================
 
 export type TRequestMiddleware = (
-  init: RequestInit,
-  props: Record<string, any>
-) => Promise<RequestInit>;
+  data: {
+    props: Record<string, any>;
+  } & TRequestMiddlewareData
+) => Promise<Partial<TRequestMiddlewareData>>;
+
+export type TRequestMiddlewareData = {
+  requestInit: RequestInit;
+  queryParams: TURLParams['query'];
+  pathParams: TURLParams['path'];
+};
+
+export type TURLParams = {
+  query?: Record<string, unknown> | null;
+  path?: Record<string, unknown> | null;
+};
 
 // ============================================================================
 // Fetch options

@@ -15,8 +15,6 @@ import { D3Node } from './D3Node';
 
 export abstract class CompositionNode {
   protected readonly _type: string;
-
-  // Base node mixin
   protected readonly _id: string;
   protected _name: string;
 
@@ -38,12 +36,12 @@ export abstract class CompositionNode {
   ) {
     const { type = 'node' } = options;
     this._type = type;
+    this._id = node.id;
+    this._name = node.name;
     this._watcher = new Watcher();
     this._composition = () => composition;
 
     // Apply mixins
-    this._id = node.id;
-    this._name = node.name;
     this._compositionMixin = {
       isLocked: node.isLocked,
       isVisible: node.isVisible,

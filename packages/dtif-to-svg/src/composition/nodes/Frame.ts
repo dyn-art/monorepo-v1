@@ -7,6 +7,8 @@ import { Fill } from '../fill';
 import { CompositionNode, D3Node, ShapeNode } from './base';
 
 export class Frame extends ShapeNode {
+  private _childrenIds: string[];
+
   // Mixins
   private readonly _cornerMixin: TRectangleCornerMixin;
 
@@ -22,7 +24,6 @@ export class Frame extends ShapeNode {
   private readonly _d3ContentWrapperNodeId: string;
   private readonly _d3ChildrenWrapperNodeId: string;
 
-  private readonly _childrenIds: string[];
   protected readonly _watcher: Watcher<TWatchedFrameNode>;
 
   // Init
@@ -30,11 +31,12 @@ export class Frame extends ShapeNode {
     node: TFrameNode;
   } | null;
 
-  constructor(node: TFrameNode, scene: Composition) {
-    super(node, scene, { type: 'frame' });
+  constructor(node: TFrameNode, composition: Composition) {
+    super(node, composition, { type: 'frame' });
     this._forInit = {
       node,
     };
+
     this._childrenIds = [];
 
     // Apply mixins

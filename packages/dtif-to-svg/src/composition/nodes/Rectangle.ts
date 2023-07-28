@@ -26,8 +26,8 @@ export class Rectangle extends ShapeNode {
     node: TRectangleNode;
   } | null;
 
-  constructor(node: TRectangleNode, scene: Composition) {
-    super(node, scene, { type: 'rectangle' });
+  constructor(node: TRectangleNode, composition: Composition) {
+    super(node, composition, { type: 'rectangle' });
     this._forInit = {
       node,
     };

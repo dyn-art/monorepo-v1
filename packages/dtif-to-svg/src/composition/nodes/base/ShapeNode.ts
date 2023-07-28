@@ -14,11 +14,12 @@ import { Fill } from '../../fill';
 import { CompositionNode, TNodeOptions } from './CompositionNode';
 
 export abstract class ShapeNode extends CompositionNode {
+  protected _fill: Fill;
+
   // Mixins
   protected readonly _effectsMixin: TEffectsMixin; // TODO: do like fill
   protected readonly _geometryMixin: TGeometryMixin;
 
-  protected _fill: Fill;
   protected readonly _watcher: Watcher<TWatchedShapeNode>;
 
   constructor(

@@ -1,4 +1,4 @@
-import { TQuerySerializer } from '../types';
+import { TQuerySerializer, TURLParams } from '../types';
 import { serializeQueryParams } from './serialize-query-params';
 
 /**
@@ -63,11 +63,6 @@ function appendQueryParams(
 
 type TBuildURIOptions = {
   path?: `/${string}`;
-  params?: TBuildURLParams;
+  params?: TURLParams;
   querySerializer?: TQuerySerializer<unknown>;
-};
-
-type TBuildURLParams = {
-  query?: Record<string, unknown> | null;
-  path?: Record<string, unknown> | null;
 };

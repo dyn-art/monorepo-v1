@@ -41,6 +41,9 @@
             "path": "packages/figma-to-dtif"
         },
         {
+            "path": "packages/google-client"
+        },
+        {
             "path": "packages/logger"
         },
         {
