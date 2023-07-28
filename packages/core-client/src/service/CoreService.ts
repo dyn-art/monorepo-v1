@@ -1,6 +1,6 @@
 import {
   OpenAPIFetchClientThrow,
-  RawFetchClientThrow,
+  RawFetchClient,
   isStatusCode,
 } from '@pda/openapi-fetch';
 import { paths } from '@pda/types/core';
@@ -8,11 +8,11 @@ import { logger } from '../logger';
 
 export class CoreService {
   public readonly coreClient: OpenAPIFetchClientThrow<paths>;
-  private readonly _rawClient: RawFetchClientThrow;
+  private readonly _rawClient: RawFetchClient;
 
   constructor(coreClient: OpenAPIFetchClientThrow<paths>) {
     this.coreClient = coreClient;
-    this._rawClient = new RawFetchClientThrow();
+    this._rawClient = new RawFetchClient();
   }
 
   public async ping() {
@@ -57,33 +57,46 @@ export class CoreService {
     return { objectExists: false, uploadUrl: data.upload_url, key: data.key };
   }
 
+  public async getPreSignedDownloadUrl(key: string): Promise<string | null> {
+    // Send request
+    const response = await this.coreClient.get(
+      '/v1/media/pre-signed-download-url/{key}',
+      {
+        pathParams: {
+          key,
+        },
+      }
+    );
+
+    // Handle request response
+    if (response.isError && isStatusCode(response.error, 404)) {
+      return null;
+    } else if (response.isError) {
+      throw response.error;
+    } else {
+      return response.data.download_url ?? null;
+    }
+  }
+
   public async downloadJsonFromS3<
     TResponse extends Record<string, any> = Record<string, any>
   >(key: string): Promise<TResponse | null> {
-    try {
-      const presignedDownloadUrlResponse = await this.coreClient.getThrow(
-        '/v1/media/pre-signed-download-url/{key}',
-        {
-          pathParams: {
-            key,
-          },
-        }
-      );
-      const downloadUrl = presignedDownloadUrlResponse.download_url;
-      if (downloadUrl != null) {
-        const downloadResponse = await this._rawClient.getThrow<TResponse>(
-          downloadUrl
-        );
-        return downloadResponse;
-      } else {
-        return null;
-      }
-    } catch (error) {
-      if (isStatusCode(error, 404)) {
-        return null;
-      } else {
-        throw error;
-      }
+    // Get pre signed download url
+    const downloadUrl = await this.getPreSignedDownloadUrl(key);
+    if (downloadUrl == null) {
+      return null;
+    }
+
+    // Download data from pre signed download url
+    const response = await this._rawClient.get<TResponse>(downloadUrl);
+
+    // Handle download request response
+    if (response.isError && isStatusCode(response.error, 404)) {
+      return null;
+    } else if (response.isError) {
+      throw response.error;
+    } else {
+      return response.data;
     }
   }
 }

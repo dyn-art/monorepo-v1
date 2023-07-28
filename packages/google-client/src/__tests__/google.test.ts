@@ -6,10 +6,13 @@ describe('google tests', () => {
       apiKey: process.env.GOOGLE_API_KEY || 'not-set',
     });
 
-    const response = await googleService.getWebFontWOFF2File('Roboto Serif', {
-      fontWeight: 100,
-      variant: 'italic',
-    });
+    const response = await googleService.getWebFontWOFF2FileURL(
+      'Roboto Serif',
+      {
+        fontWeight: 100,
+        style: 'italic',
+      }
+    );
 
     expect(response).not.toBeNull();
   });

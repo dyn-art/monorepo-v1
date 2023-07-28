@@ -1,21 +1,32 @@
-import { OpenAPIFetchClient, isStatusCode } from '@pda/openapi-fetch';
+import {
+  OpenAPIFetchClient,
+  RawFetchClient,
+  isStatusCode,
+} from '@pda/openapi-fetch';
 import { paths } from '../gen/webfonts-v1';
 import { logger } from '../logger';
 
 export class GoogleService {
   public readonly googleClient: OpenAPIFetchClient<paths>;
+  private readonly _rawClient: RawFetchClient;
 
   constructor(googleClient: OpenAPIFetchClient<paths>) {
     this.googleClient = googleClient;
+    this._rawClient = new RawFetchClient();
   }
 
-  public async getWebFonts() {
+  public async getWebFonts(
+    options: Omit<paths['/webfonts']['get']['parameters']['query'], 'key'> = {}
+  ) {
     const response = await this.googleClient.get('/webfonts', {
       queryParams: {
         key: '', // Set by middleware
+        ...options,
       },
     });
-    if (response.isError) {
+    if (response.isError && isStatusCode(response.error, 500)) {
+      return null;
+    } else if (response.isError) {
       logger.error(response.error.message);
       throw response.error;
     } else {
@@ -23,54 +34,69 @@ export class GoogleService {
     }
   }
 
-  public async getWebFontWOFF2File(
+  public async getWebFontWOFF2FileURL(
     family: string,
-    options: { fontWeight?: number; variant?: 'italic' | 'regular' } = {}
+    options: {
+      fontWeight?: number;
+      style?: 'italic' | 'regular';
+    } = {}
   ): Promise<string | null> {
-    const { fontWeight = 400, variant = 'regular' } = options;
+    const { fontWeight = 400, style = 'regular' } = options;
+    let fileUrl: string | null = null;
 
-    // Send request
-    const response = await this.googleClient.get('/webfonts', {
-      queryParams: {
-        key: '', // Set by middleware
-        family,
-        capability: 'WOFF2',
-      },
+    // Fetch matching fonts to font family
+    const searchResult = await this.getWebFonts({
+      capability: 'WOFF2',
+      family,
+    });
+    const fonts = searchResult?.items;
+    if (!Array.isArray(fonts)) {
+      return null;
+    }
+
+    // Build font variant identifier
+    let variant: string;
+    if (fontWeight === 400) {
+      variant = style;
+    } else {
+      variant = `${fontWeight}${style === 'regular' ? '' : style}`;
+    }
+
+    // Check whether found fonts matches searched font variant
+    for (const item of fonts) {
+      if (item.files != null && variant in item.files) {
+        fileUrl = item.files[variant] ?? null;
+        if (fileUrl != null) {
+          break;
+        }
+      }
+    }
+
+    return fileUrl;
+  }
+
+  public async downloadWebFontWOFF2File(
+    family: string,
+    options: { fontWeight?: number; style?: 'italic' | 'regular' } = {}
+  ): Promise<ArrayBuffer | null> {
+    // Get font download url
+    const downloadUrl = await this.getWebFontWOFF2FileURL(family, options);
+    if (downloadUrl == null) {
+      return null;
+    }
+
+    // Download data from font download url
+    const response = await this._rawClient.get(downloadUrl, {
+      parseAs: 'arrayBuffer',
     });
 
-    // Handle request response
+    // Handle download request response
     if (response.isError && isStatusCode(response.error, 404)) {
       return null;
     } else if (response.isError) {
-      logger.error(response.error.message);
       throw response.error;
     } else {
-      const data = response.data;
-      let fileUrl: string | null = null;
-
-      // Build variant identifier
-      let variantIdentifier: string;
-      if (fontWeight === 400) {
-        variantIdentifier = variant;
-      } else {
-        variantIdentifier = `${fontWeight}${
-          variant === 'regular' ? '' : variant
-        }`;
-      }
-
-      // Check whether response data includes searched variant
-      if (data.items != null && data.items.length > 0) {
-        for (const item of data.items) {
-          if (item.files != null && variantIdentifier in item.files) {
-            fileUrl = item.files[variantIdentifier] ?? null;
-            if (fileUrl != null) {
-              break;
-            }
-          }
-        }
-      }
-
-      return fileUrl;
+      return response.data;
     }
   }
 }
