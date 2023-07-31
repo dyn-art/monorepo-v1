@@ -1,10 +1,3 @@
-import { TSVGNode } from '@pda/types/dtif';
-import { TNodeWithFills, TSVGCompatibleNode } from '../types';
-
-// ============================================================================
-// Figma
-// ============================================================================
-
 export function isFrameNode(node: any): node is FrameNode {
   return node?.type === 'FRAME';
 }
@@ -57,43 +50,4 @@ export function isComponentNode(node: any): node is ComponentNode {
 
 export function isRemovedNode(node: any): node is RemovedNode {
   return typeof node?.removed === 'boolean' && node.removed;
-}
-
-// ============================================================================
-// DTIF
-// ============================================================================
-
-export function isSVGNode(node: any): node is TSVGNode {
-  return node?.type === 'SVG';
-}
-
-// ============================================================================
-// Other
-// ============================================================================
-
-export function isSVGCompatibleNode(node: unknown): node is TSVGCompatibleNode {
-  return (
-    isLineNode(node) ||
-    isEllipseNode(node) ||
-    isPolygonNode(node) ||
-    isStarNode(node) ||
-    isVectorNode(node) ||
-    isBooleanOperationNode(node) ||
-    isGroupNode(node) ||
-    isFrameNode(node) ||
-    isRectangleNode(node) ||
-    isInstanceNode(node) ||
-    isComponentNode(node) ||
-    isTextNode(node)
-  );
-}
-
-export function isNodeWithFills(node: unknown): node is TNodeWithFills {
-  return (
-    isRectangleNode(node) ||
-    isFrameNode(node) ||
-    isComponentNode(node) ||
-    isInstanceNode(node) ||
-    isTextNode(node)
-  );
 }

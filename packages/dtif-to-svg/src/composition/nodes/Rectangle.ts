@@ -5,7 +5,7 @@ import {
 import { TRectangleCornerMixin, TRectangleNode } from '@pda/types/dtif';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
-import { Fill } from '../fill';
+import { Fill } from '../fills';
 import { CompositionNode, D3Node, ShapeNode } from './base';
 
 export class Rectangle extends ShapeNode {

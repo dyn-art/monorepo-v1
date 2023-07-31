@@ -5,12 +5,11 @@
     "typeRoots": [
       "./node_modules/@types",
       "./node_modules/@figma"
-    ]
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+    },
   },
   "extends": "@pda/tsconfig/shared-library.json",
   "include": ["src"],
-  "exclude": [
-    "**/__tests__/*",
-    "**/*.test.ts"
-  ]
 }

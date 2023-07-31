@@ -3,7 +3,7 @@ import { notEmpty } from '@pda/utils';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
 import { appendNode } from '../append';
-import { Fill } from '../fill';
+import { Fill } from '../fills';
 import { CompositionNode, D3Node, ShapeNode } from './base';
 
 export class Frame extends ShapeNode {

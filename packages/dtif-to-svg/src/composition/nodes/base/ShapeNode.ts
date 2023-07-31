@@ -10,7 +10,7 @@ import {
 } from '@pda/types/dtif';
 import { Composition } from '../../Composition';
 import { RemoveFunctions, Watcher } from '../../Watcher';
-import { Fill } from '../../fill';
+import { Fill } from '../../fills';
 import { CompositionNode, TNodeOptions } from './CompositionNode';
 
 export abstract class ShapeNode extends CompositionNode {

@@ -1,24 +1,20 @@
+import { convert2DMatrixTo3DMatrix } from '@/helpers';
 import { TFrameNode } from '@pda/types/dtif';
-import { TFormatNodeOptions } from '../types';
-import { convert2DMatrixTo3DMatrix } from '../utils';
-import { formatChildrenNodes } from './format-children-nodes';
-import { formatFills } from './format-fills';
 
-export async function formatFrameNode(
-  node: FrameNode | ComponentNode | InstanceNode,
-  options: TFormatNodeOptions
+export async function transformFrameNode(
+  node: FrameNode | ComponentNode | InstanceNode
 ): Promise<TFrameNode> {
   return {
     type: 'FRAME',
     clipsContent: node.clipsContent,
-    // BaseNode mixin
+    // Base node mixin
     id: node.id,
     name: node.name,
-    // SceneNode mixin
+    // Scene node mixin
     isLocked: node.locked,
     isVisible: node.visible,
     // Children mixin
-    children: await formatChildrenNodes(node.children as SceneNode[], options),
+    children: [] as string[], // Will be set by Composition class
     // Layout mixin
     height: node.height,
     width: node.width,
@@ -29,12 +25,12 @@ export async function formatFrameNode(
     isMask: node.isMask,
     // Effect mixin
     effects: node.effects,
-    // RectangleCorner mixin
+    // Rectangle corner mixin
     bottomLeftRadius: node.bottomLeftRadius,
     bottomRightRadius: node.bottomRightRadius,
     topLeftRadius: node.topLeftRadius,
     topRightRadius: node.topRightRadius,
     // Fills mixin
-    fills: await formatFills(node, node.fills as Paint[], options),
+    fills: [] as string[], // Will be set by Composition class
   } as TFrameNode;
 }

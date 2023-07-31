@@ -34,25 +34,36 @@ export type TNodeTypes =
  * Represents the composition in which all nodes exist.
  */
 export type TComposition = {
+  /**
+   * Version of the composition type declaration (for internal use).
+   */
   version: '1.0';
   /**
-   * The name of the scene.
+   * The name of the composition.
    *
-   * e.g. 'My super cool scene'
+   * e.g. 'My super cool composition'
    */
   name: string;
   /**
-   * The width of the scene.
+   * The width of the composition.
    */
   width: number;
   /**
-   * The height of the scene.
+   * The height of the composition.
    */
   height: number;
   /**
-   * The root node of the scene.
+   * The root node id of the composition.
    */
-  root: TFrameNode;
+  root: string;
+  /**
+   * Nodes of the composition.
+   */
+  nodes: Record<string, TNode>;
+  /**
+   * Paints of the composition.
+   */
+  paints: Record<string, TPaint>;
 };
 
 // ============================================================================
@@ -158,13 +169,9 @@ export type TTextNode = {
    */
   fontSize: number;
   /**
-   * The font family (e.g. "Inter"), and font style (e.g. "Regular").
+   * The font of the text.
    */
-  fontName: TFontName;
-  /**
-   * The weight of the font (e.g. 400 for "Regular", 700 for "Bold").
-   */
-  fontWeight: number;
+  font: TTypeFace;
   /**
    * The spacing between the individual characters.
    */
@@ -230,8 +237,7 @@ export type TSVGNodeInline = {
    * An array of SVG element children that define the SVG content.
    */
   children: TSVGElement['children'];
-} & TShapeNodeMixin &
-  TEffectsMixin;
+} & TCompositionNodeMixin;
 
 export type TNode =
   | TFrameNode
@@ -293,11 +299,11 @@ export type TBaseNodeMixin = {
 
 export type TChildrenMixin = {
   /**
-   * The list of children, sorted back-to-front.
+   * The list of children node ids, sorted back-to-front.
    * That is, the first child in the array is the bottommost layer in the scene,
    * and the last child in the array is the topmost layer.
    */
-  children: Array<TNode>;
+  children: Array<string>;
 };
 
 export type TLayoutMixin = {
@@ -310,17 +316,21 @@ export type TLayoutMixin = {
    */
   height: number;
   /**
-   * The position of a node relative to its containing parent as a Transform matrix.
+   * The position of the node relative to its containing parent as a Transform matrix.
    * Not used for scaling, see width and height instead.
    */
   relativeTransform: TTransform;
+  /**
+   * Constraints of the node relative to its containing parent.
+   */
+  constraints?: TConstraintType;
 };
 
 export type TFillsMixin = {
   /**
    * The paints used to fill the area of the shape.
    */
-  fills: Array<TPaint>;
+  fills: Array<string>;
 };
 
 export type TCompositionMixin = {
@@ -592,9 +602,29 @@ export type TTransform = [
 // Font
 // ============================================================================
 
-export type TFontName = {
+export type TTypeFace = {
+  /**
+   * The family of the font (e.g. "Roboto").
+   */
   family: string;
-  style: string;
+  /**
+   * The name of the style displayed in UI.
+   */
+  styleName: string;
+  /**
+   * The style of the font.
+   */
+  style: 'regular' | 'italic';
+  /**
+   * The weight of the font (e.g. 400 for "Regular", 700 for "Bold").
+   */
+  fontWeight: number;
+  /**
+   * Optional content of the font file.
+   * It can be either an array of bytes that contains the exported file's data inline,
+   * or a URL string pointing to the file location.
+   */
+  content?: Uint8Array | string;
 };
 
 export type TLetterSpacing =
@@ -677,3 +707,5 @@ export type TSVGElement = {
    */
   children: TSVGElement[];
 };
+
+type TConstraintType = 'MIN' | 'CENTER' | 'MAX' | 'STRETCH' | 'SCALE';

@@ -1,5 +1,5 @@
 import { TPaint } from '@pda/types/dtif';
-import { Fill, Paint, SolidPaint } from '../fill';
+import { Fill, Paint, SolidPaint } from '../fills';
 import { D3Node } from '../nodes';
 
 export async function appendPaint(
