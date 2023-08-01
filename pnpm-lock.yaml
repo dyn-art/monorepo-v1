@@ -930,6 +930,9 @@ importers:
 
   packages/figma-to-dtif:
     dependencies:
+      '@pda/google-client':
+        specifier: workspace:^
+        version: link:../google-client
       '@pda/logger':
         specifier: workspace:*
         version: link:../logger

@@ -210,11 +210,11 @@ export type TSVGNodeExported = {
    */
   format: 'JPG' | 'PNG' | 'SVG';
   /**
-   * The hash of the exported file. Used to identifies the file.
+   * The hash of the exported SVG file. Used to identify the file.
    */
   hash: string;
   /**
-   * Optional content of the exported file.
+   * Optional content of the exported SVG file.
    * It can be either an array of bytes that contains the exported file's data inline,
    * or a URL string pointing to the file location.
    *
@@ -323,7 +323,10 @@ export type TLayoutMixin = {
   /**
    * Constraints of the node relative to its containing parent.
    */
-  constraints?: TConstraintType;
+  constraints?: {
+    horizontal: TConstraintType;
+    vertical: TConstraintType;
+  };
 };
 
 export type TFillsMixin = {
@@ -491,9 +494,19 @@ export type TGradientPaintExported = {
     | 'GRADIENT_ANGULAR'
     | 'GRADIENT_DIAMOND';
   isExported: true;
-  format: 'JPG' | 'SVG';
+  format: 'JPG' | 'PNG' | 'SVG';
+  /**
+   * The hash of the exported gradient file. Used to identify the file.
+   */
   hash: string;
-  inline?: Uint8Array;
+  /**
+   * Optional content of the exported gradient file.
+   * It can be either an array of bytes that contains the exported file's data inline,
+   * or a URL string pointing to the file location.
+   *
+   * If not set the content can to be searched by the hash.
+   */
+  content?: Uint8Array | string;
 } & TBasePaintMixin;
 
 export type TImagePaint =
@@ -528,8 +541,18 @@ export type TImagePaintTile = {
 } & TBaseImagePaintMixin;
 
 export type TBaseImagePaintMixin = {
+  /**
+   * The hash of the image file. Used to identify the file.
+   */
   hash: string;
-  inline?: Uint8Array;
+  /**
+   * Optional content of the image file.
+   * It can be either an array of bytes that contains the exported file's data inline,
+   * or a URL string pointing to the file location.
+   *
+   * If not set the content can to be searched by the hash.
+   */
+  content?: Uint8Array | string;
   filters?: TImageFilters;
   width: number;
   height: number;
@@ -620,9 +643,15 @@ export type TTypeFace = {
    */
   fontWeight: number;
   /**
+   * The hash of the font file. Used to identify the file.
+   */
+  hash?: string;
+  /**
    * Optional content of the font file.
    * It can be either an array of bytes that contains the exported file's data inline,
    * or a URL string pointing to the file location.
+   *
+   * If not set the content can to be searched by the hash.
    */
   content?: Uint8Array | string;
 };

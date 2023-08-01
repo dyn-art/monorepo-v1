@@ -8,6 +8,7 @@ import { isSVGCompatibleNode } from '@/helpers';
 import { TTransformNodeOptions } from '@/types';
 import { TNode, TSVGNode } from '@pda/types/dtif';
 import { transformFrameNode } from './transform-frame-node';
+import { transformTextNode } from './transform-text-node';
 import { transformToSVGNode } from './transform-to-svg-node';
 
 export async function transformNode(
@@ -22,19 +23,13 @@ export async function transformNode(
 
   // Check whether Figma node is supported by DTIF
   if (!Composition.isSupportedNodeType(node.type)) {
-    throw new UnsupportedFigmaNodeException(
-      `The Figma node '${node.name}' of the type '${node.type}' is not supported yet!`,
-      node
-    );
+    throw new UnsupportedFigmaNodeException(node);
   }
 
   // Check whether node is visible
   const isVisible = node.visible;
   if (!isVisible && ignoreInvisible) {
-    throw new InvisibleNodeException(
-      `Node '${node.name}' couldn't be exported because it is invisible.`,
-      node
-    );
+    throw new InvisibleNodeException(node);
   }
   // If invisible node to be transformed,
   // make it visible during transform to avoid potential errors (e.g. SVG export)
@@ -73,19 +68,23 @@ async function transformFigmaNode(
     case 'INSTANCE':
       return transformFrameNode(node);
     case 'GROUP':
+      return null as any;
     case 'TEXT':
+      return transformTextNode(node, options);
     case 'RECTANGLE':
+      return null as any;
     case 'ELLIPSE':
+      return null as any;
     case 'POLYGON':
+      return null as any;
     case 'STAR':
+      return null as any;
     case 'LINE':
     case 'VECTOR':
     case 'BOOLEAN_OPERATION':
+      return transformToSVGNode(node, options);
     default:
-      throw new UnsupportedFigmaNodeException(
-        `The Figma node '${node.type}' is not yet supported!`,
-        node
-      );
+      throw new UnsupportedFigmaNodeException(node);
   }
 }
 

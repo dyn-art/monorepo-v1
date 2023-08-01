@@ -19,6 +19,11 @@ export async function transformFrameNode(
     height: node.height,
     width: node.width,
     relativeTransform: convert2DMatrixTo3DMatrix(node.relativeTransform),
+    // Constraints mixin
+    constraints: node.constraints,
+    // Geometry mixin
+    fillGeometry: node.fillGeometry,
+    strokeGeometry: node.strokeGeometry,
     // Blend mixin
     blendMode: node.blendMode,
     opacity: node.opacity,

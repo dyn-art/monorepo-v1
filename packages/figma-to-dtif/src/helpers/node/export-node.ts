@@ -17,16 +17,6 @@ export async function exportNode(
   try {
     return await node.exportAsync(config as ExportSettings);
   } catch (error) {
-    let errorMessage: string;
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    } else {
-      errorMessage = JSON.stringify(error);
-    }
-    throw new ExportNodeException(
-      `Failed to export node '${node.name}' as ${config.format}: ${errorMessage}`,
-      node,
-      error instanceof Error ? error : undefined
-    );
+    throw new ExportNodeException(config.format, node, error);
   }
 }

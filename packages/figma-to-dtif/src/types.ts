@@ -1,3 +1,5 @@
+import { TTypeFace } from '@pda/types/dtif';
+
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
@@ -68,8 +70,16 @@ export type TTransformImageFillOptions = {
 };
 
 export type TTransformFontOptions = {
-  exportOptions?: TExportOptions;
+  exportOptions?: {
+    inline: boolean;
+    uploadStaticData?: TUploadStaticData;
+  };
+  resolveFontContent?: (
+    typeFace: TTypeFaceWithoutContent
+  ) => Promise<Uint8Array | null>;
 };
+
+export type TTypeFaceWithoutContent = Omit<TTypeFace, 'content'>;
 
 export type TContentType = {
   name: string;
@@ -81,7 +91,12 @@ export type TUploadStaticData = (
   key: string,
   data: Uint8Array,
   contentType?: TContentType
-) => Promise<string>;
+) => Promise<TUploadStaticDataResponse>;
+
+export type TUploadStaticDataResponse = {
+  key: string;
+  url?: string;
+};
 
 export type TExportOptions = {
   inline: boolean;

@@ -3,8 +3,17 @@ import { NodeException } from './NodeException';
 export class ExportNodeException extends NodeException {
   public readonly error?: Error;
 
-  constructor(message: string, node: SceneNode, error?: Error) {
-    super(message, node);
-    this.error = error;
+  constructor(format: string, node: SceneNode, error?: any) {
+    let errorMessage: string;
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    } else {
+      errorMessage = JSON.stringify(error);
+    }
+    super(
+      `Failed to export node '${node.name}' as ${format} by error: ${errorMessage}`,
+      node
+    );
+    this.error = error instanceof Error ? error : undefined;
   }
 }

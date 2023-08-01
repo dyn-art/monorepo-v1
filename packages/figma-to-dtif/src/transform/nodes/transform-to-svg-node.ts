@@ -46,7 +46,7 @@ async function transformToInlineSVGNode(
 ): Promise<TSVGNode> {
   const { containerNode } = options;
 
-  // Export node as inline SVG
+  // Export node as inline SVG string
   const svgString = await exportNodeCloned(node, {
     format: 'SVG_STRING',
     containerNode,
@@ -83,19 +83,24 @@ async function transformToExportedSVGNode(
     containerNode?: FrameNode;
   }
 ): Promise<TSVGNode> {
-  const { uploadStaticData, inline, exportSettings, containerNode } = config;
+  const {
+    uploadStaticData: uploadStaticDataCallback,
+    inline,
+    exportSettings,
+    containerNode,
+  } = config;
   let hash: string;
-  let content: Uint8Array | string | undefined;
+  let content: Uint8Array | string | null;
 
   // Export and upload node
-  if (uploadStaticData != null && !inline) {
+  if (uploadStaticDataCallback != null && !inline) {
     const uploadResponse = await exportAndUploadNode(node, {
-      uploadStaticData,
+      uploadStaticData: uploadStaticDataCallback,
       clone: containerNode != null ? { containerNode } : true,
       exportSettings,
     });
     hash = uploadResponse.key;
-    content = undefined;
+    content = uploadResponse.url ?? null;
   }
 
   // Export node and put it inline
@@ -109,7 +114,7 @@ async function transformToExportedSVGNode(
     isExported: true,
     format: config.exportSettings.format as any,
     hash,
-    content,
+    content: content ?? undefined,
     // BaseNode mixin
     id: node.id,
     name: node.name,
@@ -125,7 +130,4 @@ async function transformToExportedSVGNode(
     opacity: node.opacity,
     isMask: node.isMask,
   };
-
-  // TODO:
-  return null as any;
 }
