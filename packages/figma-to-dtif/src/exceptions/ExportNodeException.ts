@@ -1,19 +1,15 @@
+import { extractErrorData } from '@/helpers';
 import { NodeException } from './NodeException';
 
 export class ExportNodeException extends NodeException {
   public readonly error?: Error;
 
   constructor(format: string, node: SceneNode, error?: any) {
-    let errorMessage: string;
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    } else {
-      errorMessage = JSON.stringify(error);
-    }
+    const errorData = extractErrorData(error);
     super(
-      `Failed to export node '${node.name}' as ${format} by error: ${errorMessage}`,
+      `Failed to export node '${node.name}' as ${format} by error: ${errorData.message}`,
       node
     );
-    this.error = error instanceof Error ? error : undefined;
+    this.error = errorData.error ?? undefined;
   }
 }

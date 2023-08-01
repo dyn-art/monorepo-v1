@@ -1,9 +1,8 @@
 import {
   NodeException,
   TUploadStaticData,
-  UploadStaticDataException,
-  formatFrameToComposition,
   sha256,
+  toComposition,
 } from '@pda/figma-to-dtif';
 import { TComposition } from '@pda/types/dtif';
 import { TIntermediateFormatExportEvent, logger } from '../../../shared';
@@ -13,49 +12,62 @@ import { stringToUint8Array } from '../../core/utils/json-to-uint8array';
 
 export async function processNode(
   instance: TBackgroundHandler,
-  node: FrameNode | InstanceNode | ComponentNode,
+  node: FrameNode,
   options: TIntermediateFormatExportEvent['args']['options']
 ) {
-  try {
-    const uploadStaticData: TUploadStaticData = async (
+  const uploadStaticData: TUploadStaticData = async (
+    key,
+    data,
+    contentType
+  ) => {
+    const finalKey = await uploadDataToBucket(
       key,
       data,
-      contentType
-    ) => {
-      if (contentType == null) {
-        throw new UploadStaticDataException(
-          `Can't upload data for '${key}' as no content type could be resolved!`,
-          node
-        );
-      }
-      return uploadDataToBucket(key, data, contentType?.mimeType);
-    };
+      contentType?.mimeType ?? 'application/octet-stream'
+    );
+    return { key: finalKey };
+  };
 
+  try {
     // Format the node for export
-    const toExportNode = await formatFrameToComposition(node, {
+    const toExportNode = await toComposition(node, {
       ...options,
       gradientFill: {
         ...(options.gradientFill ?? {}),
         exportOptions: {
-          uploadStaticData,
           ...(options.gradientFill?.exportOptions ?? {}),
+          inline: options.gradientFill?.exportOptions?.inline ?? true,
+          uploadStaticData,
         },
       },
       imageFill: {
-        uploadStaticData,
         ...(options.imageFill ?? {}),
+        exportOptions: {
+          ...(options.imageFill?.exportOptions ?? {}),
+          inline: options.imageFill?.exportOptions?.inline ?? true,
+          uploadStaticData,
+        },
       },
       svg: {
         ...(options.svg ?? {}),
         exportOptions: {
-          uploadStaticData,
           ...(options.svg?.exportOptions ?? {}),
+          inline: options.svg?.exportOptions?.inline ?? true,
+          uploadStaticData,
+        },
+      },
+      font: {
+        ...(options.font ?? {}),
+        exportOptions: {
+          ...(options.font?.exportOptions ?? {}),
+          inline: options.font?.exportOptions?.inline ?? true,
+          uploadStaticData,
         },
       },
     });
 
     if (toExportNode == null) {
-      throw Error('To export node is null!');
+      throw new NodeException('To export node is null!', node);
     }
 
     // Upload the node as JSON string to bucket

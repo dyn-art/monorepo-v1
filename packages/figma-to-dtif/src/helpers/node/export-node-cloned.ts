@@ -1,5 +1,5 @@
 import { exportNode } from './export-node';
-import { resetNodeTransform } from './reset-node-transform';
+import { resetFigmaNodeTransform } from './reset-node-transform';
 
 export async function exportNodeCloned(
   node: SceneNode,
@@ -34,7 +34,7 @@ export async function exportNodeCloned(
 
     // Reset transformation of node
     // so that it is not embedded into the exported format
-    resetNodeTransform(clone);
+    resetFigmaNodeTransform(clone);
 
     // Export node
     const data = await exportNode(clone, exportNodeSettings as ExportSettings);

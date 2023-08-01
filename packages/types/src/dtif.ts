@@ -83,7 +83,8 @@ export type TFrameNode = {
   clipsContent: boolean;
 } & TShapeNodeMixin &
   TChildrenMixin &
-  TRectangleCornerMixin;
+  TRectangleCornerMixin &
+  TConstraintsMixin;
 
 /**
  * The group node is a container used to semantically group related nodes. You can think of them as a folder in the layers panel.
@@ -261,7 +262,8 @@ export type TCompositionNodeMixin = TBaseNodeMixin &
 export type TShapeNodeMixin = TCompositionNodeMixin &
   TEffectsMixin &
   TGeometryMixin &
-  TFillsMixin;
+  TFillsMixin &
+  TConstraintsMixin;
 
 export type TRectangleCornerMixin = {
   /**
@@ -320,6 +322,9 @@ export type TLayoutMixin = {
    * Not used for scaling, see width and height instead.
    */
   relativeTransform: TTransform;
+};
+
+export type TConstraintsMixin = {
   /**
    * Constraints of the node relative to its containing parent.
    */

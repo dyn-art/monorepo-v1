@@ -7,7 +7,12 @@ import {
 import { isSVGCompatibleNode } from '@/helpers';
 import { TTransformNodeOptions } from '@/types';
 import { TNode, TSVGNode } from '@pda/types/dtif';
+import { transformEllipseNode } from './transform-ellipse-node';
 import { transformFrameNode } from './transform-frame-node';
+import { transformGroupNode } from './transform-group-node';
+import { transformPolygonNode } from './transform-polygon-node';
+import { transformRectangleNode } from './transform-rectangle-node';
+import { transformStarNode } from './transform-star-node';
 import { transformTextNode } from './transform-text-node';
 import { transformToSVGNode } from './transform-to-svg-node';
 
@@ -68,17 +73,17 @@ async function transformFigmaNode(
     case 'INSTANCE':
       return transformFrameNode(node);
     case 'GROUP':
-      return null as any;
+      return transformGroupNode(node);
     case 'TEXT':
       return transformTextNode(node, options);
     case 'RECTANGLE':
-      return null as any;
+      return transformRectangleNode(node);
     case 'ELLIPSE':
-      return null as any;
+      return transformEllipseNode(node);
     case 'POLYGON':
-      return null as any;
+      return transformPolygonNode(node);
     case 'STAR':
-      return null as any;
+      return transformStarNode(node);
     case 'LINE':
     case 'VECTOR':
     case 'BOOLEAN_OPERATION':
@@ -93,10 +98,7 @@ async function transformFigmaNodeToSVG(
   options: TTransformNodeOptions
 ): Promise<TSVGNode> {
   if (!isSVGCompatibleNode(node)) {
-    throw new IncompatibleSVGNodeException(
-      `Node '${node.name}' can not be transformed to SVG!`,
-      node
-    );
+    throw new IncompatibleSVGNodeException(node);
   }
   const { svg, ...rest } = options;
   return transformToSVGNode(node, {
