@@ -1,2 +1,2 @@
-export * from './fills';
 export * from './nodes';
+export * from './paints';

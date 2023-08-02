@@ -4,11 +4,7 @@ import {
   exportNodeCloned,
   sha256,
 } from '@/helpers';
-import {
-  TSVGCompatibleNode,
-  TTransformNodeOptions,
-  TUploadStaticData,
-} from '@/types';
+import { TSVGCompatibleNode, TTransformNodeOptions } from '@/types';
 import { svgParser } from '@pda/svgson';
 import { TSVGNode } from '@pda/types/dtif';
 
@@ -16,8 +12,7 @@ export async function transformToSVGNode(
   node: TSVGCompatibleNode,
   options: TTransformNodeOptions
 ): Promise<TSVGNode> {
-  const { svg: { inline = true, exportOptions } = {}, exportContainerNode } =
-    options;
+  const { svg: { inline = true } = {}, exportContainerNode } = options;
   let svgNode: TSVGNode;
 
   // Export node as inline SVG
@@ -29,12 +24,7 @@ export async function transformToSVGNode(
 
   // Export node as byte array
   else {
-    svgNode = await transformToExportedSVGNode(node, {
-      inline: exportOptions?.inline ?? true,
-      containerNode: exportContainerNode,
-      exportSettings: { format: exportOptions?.format ?? 'SVG' },
-      uploadStaticData: exportOptions?.uploadStaticData,
-    });
+    svgNode = await transformToExportedSVGNode(node, options);
   }
 
   return svgNode;
@@ -76,19 +66,18 @@ async function transformToInlineSVGNode(
 
 async function transformToExportedSVGNode(
   node: TSVGCompatibleNode,
-  config: {
-    inline: boolean;
-    exportSettings: ExportSettings;
-    uploadStaticData?: TUploadStaticData;
-    containerNode?: FrameNode;
-  }
+  options: TTransformNodeOptions
 ): Promise<TSVGNode> {
   const {
-    uploadStaticData: uploadStaticDataCallback,
-    inline,
-    exportSettings,
-    containerNode,
-  } = config;
+    gradientPaint: {
+      exportOptions: {
+        inline = true,
+        uploadStaticData: uploadStaticDataCallback = undefined,
+        format = 'SVG',
+      } = {},
+    } = {},
+    exportContainerNode,
+  } = options;
   let hash: string;
   let content: Uint8Array | string | null;
 
@@ -96,8 +85,11 @@ async function transformToExportedSVGNode(
   if (uploadStaticDataCallback != null && !inline) {
     const uploadResponse = await exportAndUploadNode(node, {
       uploadStaticData: uploadStaticDataCallback,
-      clone: containerNode != null ? { containerNode } : true,
-      exportSettings,
+      clone:
+        exportContainerNode != null
+          ? { containerNode: exportContainerNode }
+          : true,
+      exportSettings: { format },
     });
     hash = uploadResponse.key;
     content = uploadResponse.url ?? null;
@@ -105,20 +97,20 @@ async function transformToExportedSVGNode(
 
   // Export node and put it inline
   else {
-    content = await exportNodeCloned(node, exportSettings);
+    content = await exportNodeCloned(node, { format });
     hash = sha256(content);
   }
 
   return {
     type: 'SVG',
     isExported: true,
-    format: config.exportSettings.format as any,
+    format,
     hash,
     content: content ?? undefined,
-    // BaseNode mixin
+    // Base node mixin
     id: node.id,
     name: node.name,
-    // SceneNode mixin
+    // Scene node mixin
     isLocked: node.locked,
     isVisible: node.visible,
     // Layout mixin

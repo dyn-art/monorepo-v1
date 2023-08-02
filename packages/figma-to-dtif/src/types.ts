@@ -36,11 +36,11 @@ export type TTransformNodeOptions = {
   /**
    * Transform gradient fill options.
    */
-  gradientFill?: TTransformGradientFillOptions;
+  gradientPaint?: TTransformGradientFillOptions;
   /**
    * Transform image fill options.
    */
-  imageFill?: TTransformImageFillOptions;
+  imagePaint?: TTransformImageFillOptions;
   /**
    * Transform font options.
    */
@@ -62,6 +62,7 @@ export type TSVGOptions = {
 };
 
 export type TTransformGradientFillOptions = {
+  inline?: boolean;
   exportOptions?: TExportOptions;
 };
 
@@ -100,6 +101,6 @@ export type TUploadStaticDataResponse = {
 
 export type TExportOptions = {
   inline: boolean;
-  format?: ExportSettings['format'];
+  format?: 'SVG' | 'JPG' | 'PNG';
   uploadStaticData?: TUploadStaticData;
 };

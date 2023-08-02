@@ -1,7 +1,9 @@
 import { MixedNotSupportedException } from '@/exceptions';
 import { convert2DMatrixTo3DMatrix, sha256, uploadStaticData } from '@/helpers';
+import { logger } from '@/logger';
 import { TTransformNodeOptions, TTypeFaceWithoutContent } from '@/types';
 import { TTextNode } from '@pda/types/dtif';
+import { extractErrorData } from '@pda/utils';
 
 export async function transformTextNode(
   node: TextNode,
@@ -23,7 +25,7 @@ export async function transformTextNode(
       : 'regular',
   };
 
-  // Try to resolve font based on type face
+  // Try to resolve font content based on type face
   const { hash, content } = await resolveFontContent(
     node,
     typeFace,
@@ -40,8 +42,8 @@ export async function transformTextNode(
     characters: node.characters,
     font: {
       ...typeFace,
-      hash,
-      content,
+      hash: hash ?? undefined,
+      content: content ?? undefined,
     },
     // Base node mixin
     id: node.id,
@@ -74,7 +76,7 @@ async function resolveFontContent(
   typeFace: TTypeFaceWithoutContent,
   options: TTransformNodeOptions['font'] = {}
 ): Promise<{
-  hash?: string;
+  hash: string | null;
   content: Uint8Array | string | null;
 }> {
   const {
@@ -84,14 +86,22 @@ async function resolveFontContent(
     } = {},
     resolveFontContent: resolveFontContentCallback,
   } = options;
+  let content: Uint8Array | string | null = null;
+  let hash: string | null = null;
+
   if (typeof resolveFontContentCallback !== 'function') {
-    return { content: null };
+    return { content, hash };
   }
 
   // Try to resolve font as Uint8Array
-  let content: Uint8Array | string | null =
-    (await resolveFontContentCallback(typeFace)) ?? null;
-  let hash: string | null = null;
+  try {
+    content = (await resolveFontContentCallback(typeFace)) ?? null;
+  } catch (error) {
+    const errorData = extractErrorData(error);
+    logger.error(
+      `Failed to resolve font content by error: ${errorData.message}`
+    );
+  }
 
   if (content != null) {
     hash = sha256(content);
@@ -112,7 +122,7 @@ async function resolveFontContent(
     }
   }
 
-  return { content, hash: hash ?? undefined };
+  return { content, hash };
 }
 
 function excludeMixed<T extends keyof TextNode>(

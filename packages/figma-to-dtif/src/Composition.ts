@@ -1,5 +1,5 @@
+import { FailedToResolveRootNodeException } from '@/exceptions';
 import {
-  extractErrorData,
   hasChildrenDTIF,
   hasChildrenFigma,
   hasFillsDTIF,
@@ -7,10 +7,10 @@ import {
   resetDTIFNodeTransform,
 } from '@/helpers';
 import { logger } from '@/logger';
-import { transformNode } from '@/transform';
+import { transformNode, transformPaint } from '@/transform';
 import { TTransformNodeOptions } from '@/types';
 import { TComposition, TNode, TPaint } from '@pda/types/dtif';
-import { shortId } from '@pda/utils';
+import { extractErrorData, shortId } from '@pda/utils';
 
 // 1. Go through node tree and extract to transform nodes (only traversing the ree plays a role here)
 // 2. Go through to transform nodes and transform them while extracting to transform paints (children don't play any role here)
@@ -71,7 +71,12 @@ export class Composition {
       );
 
     // Lookup nodes to be transformed
-    this.lookupNodes();
+    const rootId = this.lookupNodes();
+    if (rootId != null) {
+      this._rootId = rootId;
+    } else {
+      throw new FailedToResolveRootNodeException();
+    }
 
     // Transform nodes
     await this.transformNodes(options);
@@ -106,6 +111,8 @@ export class Composition {
     // as its now in a different context as it was in Figma scene
     if (this.root != null) {
       resetDTIFNodeTransform(this.root);
+    } else {
+      throw new FailedToResolveRootNodeException();
     }
 
     // Construct composition
@@ -191,7 +198,11 @@ export class Composition {
     // Transform nodes
     for (const toTransformPaint of toTransformPaints) {
       try {
-        const paint = null as any; // TODO:
+        const paint = await transformPaint(
+          toTransformPaint.paint,
+          toTransformPaint.node,
+          options
+        );
         this.paints[toTransformPaint.id] = paint;
       } catch (error) {
         const errorData = extractErrorData(error);
@@ -203,9 +214,10 @@ export class Composition {
     }
   }
 
-  public lookupNodes() {
+  public lookupNodes(): string | null {
     let paintCount = 0;
     let nodeCount = 0;
+    let rootId: string | null = null;
 
     this._toTransformNodes = [];
     this._toTransformPaints = [];
@@ -213,9 +225,9 @@ export class Composition {
     const walk = (node: SceneNode, isRoot = false) => {
       const childrenIds: string[] = [];
       const paintIds: string[] = [];
-      const id = `${shortId()}-${nodeCount++}`;
+      const nodeId = `${shortId()}-${nodeCount++}`;
       if (isRoot) {
-        this._rootId = id;
+        rootId = nodeId;
       }
 
       // Discover children
@@ -230,22 +242,24 @@ export class Composition {
       if (hasFillsFigma(node) && Array.isArray(node.fills)) {
         node.fills.forEach((paint) => {
           const paintId = `${shortId()}-${paintCount++}`;
-          this._toTransformPaints.push({ id: paintId, paint });
+          this._toTransformPaints.push({ id: paintId, paint, node });
           paintIds.push(paintId);
         });
       }
 
       this._toTransformNodes.push({
-        id,
+        id: nodeId,
         node,
         childrenIds,
         paintIds,
       });
 
-      return id;
+      return nodeId;
     };
 
     walk(this._toTransformRootNode, true);
+
+    return rootId;
   }
 
   private createExportContainerNode(name: string) {
@@ -266,5 +280,6 @@ type TToTransformNode = {
 
 type TToTransformPaint = {
   id: string;
+  node: SceneNode;
   paint: Paint;
 };

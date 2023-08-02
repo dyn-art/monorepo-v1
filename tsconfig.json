@@ -17,9 +17,6 @@
             "path": "apps/web"
         },
         {
-            "path": "packages/ads-renderer"
-        },
-        {
             "path": "packages/core-client"
         },
         {
@@ -47,13 +44,7 @@
             "path": "packages/logger"
         },
         {
-            "path": "packages/music"
-        },
-        {
             "path": "packages/openapi-fetch"
-        },
-        {
-            "path": "packages/product-renderer"
         },
         {
             "path": "packages/s3"
