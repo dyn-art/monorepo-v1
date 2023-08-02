@@ -3,9 +3,10 @@ import { googleConfig } from '../environment';
 import { paths } from '../gen/webfonts-v1';
 
 export function createGoogleClient(
-  config: TGoogleClientOptions
+  options: TGoogleClientOptions = {}
 ): OpenAPIFetchClient<paths> {
-  const { baseUrl = googleConfig.baseUrl, apiKey } = config;
+  const { baseUrl = googleConfig.baseUrl, apiKey = googleConfig.auth.apiKey } =
+    options;
   return new OpenAPIFetchClient<paths>(baseUrl, {
     requestMiddleware: [
       async (data) => {
@@ -20,5 +21,5 @@ export function createGoogleClient(
 
 export type TGoogleClientOptions = {
   baseUrl?: string;
-  apiKey: string;
+  apiKey?: string;
 };

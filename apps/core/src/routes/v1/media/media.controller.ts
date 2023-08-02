@@ -12,7 +12,7 @@ export const getPreSignedUploadUrl: TExpressController<
 
     // Check whether object already exists
     if (key != null && !overwrite) {
-      const exists = await s3.doesObjectExist(key);
+      const exists = await s3.pdaBucket.doesObjectExist(key);
       if (exists) {
         res.sendStatus(200);
         return;
@@ -21,7 +21,7 @@ export const getPreSignedUploadUrl: TExpressController<
 
     // Generate presigned upload URL
     const finalKey = typeof key === 'string' ? key : randomUUID();
-    const uploadUrl = await s3.getPreSignedUploadUrl(finalKey, {
+    const uploadUrl = await s3.pdaBucket.getPreSignedUploadUrl(finalKey, {
       contentType: content_type,
       expiresIn: 5 * 60,
       scope,
@@ -48,14 +48,14 @@ export const getPreSignedDownloadUrl: TExpressController<
     const { key } = req.params;
 
     // Check whether object exists
-    const exists = await s3.doesObjectExist(key);
+    const exists = await s3.pdaBucket.doesObjectExist(key);
     if (!exists) {
       res.sendStatus(404);
       return;
     }
 
     // Generate presigned download URL
-    const downloadUrl = await s3.getPreSignedDownloadUrl(key);
+    const downloadUrl = await s3.pdaBucket.getPreSignedDownloadUrl(key);
     if (downloadUrl == null) {
       res.sendStatus(404);
       return;

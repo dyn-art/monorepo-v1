@@ -20,7 +20,7 @@ export async function transformToExportedGradientPaint(
   let hash: string;
   let content: Uint8Array | string | null;
 
-  // Create node that only contains the paint for export
+  // Create temporary node that only contains the paint for export
   const paintNode = createPaintNode([paint], {
     containerNode: exportContainerNode,
     width: node.width,
@@ -43,6 +43,9 @@ export async function transformToExportedGradientPaint(
     content = await exportNode(paintNode, { format });
     hash = sha256(content);
   }
+
+  // Remove temporary paint node
+  paintNode.remove();
 
   return {
     type: paint.type,

@@ -75,12 +75,10 @@ export type TTransformFontOptions = {
     inline: boolean;
     uploadStaticData?: TUploadStaticData;
   };
-  resolveFontContent?: (
-    typeFace: TTypeFaceWithoutContent
-  ) => Promise<Uint8Array | null>;
+  resolveFontContent?: TResolveFontContent;
 };
 
-export type TTypeFaceWithoutContent = Omit<TTypeFace, 'content'>;
+export type TTypeFaceWithoutContent = Omit<Omit<TTypeFace, 'content'>, 'hash'>;
 
 export type TContentType = {
   name: string;
@@ -93,6 +91,10 @@ export type TUploadStaticData = (
   data: Uint8Array,
   contentType?: TContentType
 ) => Promise<TUploadStaticDataResponse>;
+
+export type TResolveFontContent = (
+  typeFace: TTypeFaceWithoutContent
+) => Promise<Uint8Array | null>;
 
 export type TUploadStaticDataResponse = {
   key: string;

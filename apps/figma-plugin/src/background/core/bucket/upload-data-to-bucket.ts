@@ -31,7 +31,7 @@ export async function uploadDataToBucket(
       });
     }
   } catch (error) {
-    throw new UploadToBucketException(`Failed to upload file to S3 bucket!`);
+    throw new UploadToBucketException(error);
   }
 
   return fileKey;

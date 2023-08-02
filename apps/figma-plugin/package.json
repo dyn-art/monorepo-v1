@@ -23,6 +23,7 @@
     "@pda/core-client": "workspace:*",
     "@pda/figma-handler": "workspace:*",
     "@pda/figma-to-dtif": "workspace:*",
+    "@pda/google-client": "workspace:^",
     "@pda/logger": "workspace:*",
     "@pda/openapi-fetch": "workspace:*",
     "@pda/utils": "workspace:*",

@@ -1,4 +1,4 @@
-export function extractErrorData(error: any) {
+export function extractErrorData(error: unknown) {
   let extractedErrorMessage: string;
   let extractedError: Error | null = null;
   if (error instanceof Error) {

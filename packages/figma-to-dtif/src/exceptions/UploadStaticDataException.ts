@@ -2,16 +2,16 @@ import { extractErrorData } from '@pda/utils';
 import { NodeException } from './NodeException';
 
 export class UploadStaticDataException extends NodeException {
-  public readonly error?: Error;
+  public readonly throwable?: Error;
 
-  constructor(key: string, node: SceneNode, error?: any) {
-    const errorData = error != null ? extractErrorData(error) : null;
+  constructor(key: string, node: SceneNode, throwable?: unknown) {
+    const errorData = throwable != null ? extractErrorData(throwable) : null;
     super(
       `Failed to upload node data at the key '${key}'${
         errorData != null ? ` by error: ${errorData.message}` : '!'
       }`,
       node
     );
-    this.error = errorData?.error ?? undefined;
+    this.throwable = errorData?.error ?? undefined;
   }
 }

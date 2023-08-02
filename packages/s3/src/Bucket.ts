@@ -16,23 +16,22 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3ServiceException } from './exceptions';
 import { mapS3Error } from './utils';
 
-export default class S3 {
-  private client: S3Client;
-  private bucket: string;
+export default class Bucket {
+  private readonly _client: S3Client;
+  private readonly _name: string;
 
-  constructor(config: TS3Config) {
-    this.client = new S3Client({
-      ...config.client,
-    });
-    this.bucket = config.bucket;
+  constructor(config: TBucketConfig) {
+    const { client, name } = config;
+    this._client = client instanceof S3Client ? client : new S3Client(client);
+    this._name = name;
   }
 
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/headobjectcommand.html
   async doesObjectExist(key: string): Promise<boolean> {
     try {
-      await this.client.send(
+      await this._client.send(
         new HeadObjectCommand({
-          Bucket: this.bucket,
+          Bucket: this._name,
           Key: key,
         })
       );
@@ -41,7 +40,7 @@ export default class S3 {
       if (error instanceof NotFound) {
         return false;
       } else {
-        throw mapS3Error(error, S3ServiceException, `${this.bucket}/${key}`);
+        throw mapS3Error(error, S3ServiceException, `${this._name}/${key}`);
       }
     }
   }
@@ -52,29 +51,29 @@ export default class S3 {
     data: PutObjectCommandInputType['Body']
   ): Promise<PutObjectCommandOutput> {
     try {
-      return await this.client.send(
+      return await this._client.send(
         new PutObjectCommand({
-          Bucket: this.bucket,
+          Bucket: this._name,
           Key: key,
           Body: data,
         })
       );
     } catch (error) {
-      throw mapS3Error(error, S3ServiceException, `${this.bucket}/${key}`);
+      throw mapS3Error(error, S3ServiceException, `${this._name}/${key}`);
     }
   }
 
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/deleteobjectcommand.html
   async deleteObject(key: string): Promise<DeleteObjectCommandOutput> {
     try {
-      return await this.client.send(
+      return await this._client.send(
         new DeleteObjectCommand({
-          Bucket: this.bucket,
+          Bucket: this._name,
           Key: key,
         })
       );
     } catch (error) {
-      throw mapS3Error(error, S3ServiceException, `${this.bucket}/${key}`);
+      throw mapS3Error(error, S3ServiceException, `${this._name}/${key}`);
     }
   }
 
@@ -87,9 +86,9 @@ export default class S3 {
   ): Promise<TDownloadResponseType<TOutputType> | null> {
     const { outputType = 'string' } = options;
     try {
-      const response = await this.client.send(
+      const response = await this._client.send(
         new GetObjectCommand({
-          Bucket: this.bucket,
+          Bucket: this._name,
           Key: key,
         })
       );
@@ -112,9 +111,21 @@ export default class S3 {
       if (error instanceof NoSuchKey) {
         return null;
       } else {
-        throw mapS3Error(error, S3ServiceException, `${this.bucket}/${key}`);
+        throw mapS3Error(error, S3ServiceException, `${this._name}/${key}`);
       }
     }
+  }
+
+  async getDownloadUrl(key: string): Promise<string | null> {
+    if (typeof this._client.config.endpoint !== 'function') {
+      return null;
+    }
+    const endpoint = await this._client.config.endpoint();
+    const protocol = endpoint.protocol;
+    const hostname = endpoint.hostname;
+    const port = endpoint.port ? `:${endpoint.port}` : '';
+    const path = `${endpoint.path}/${this._name}/${key}`;
+    return `${protocol}//${hostname}${port}${path}`;
   }
 
   // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/classes/getobjectcommand.html
@@ -125,9 +136,9 @@ export default class S3 {
     const { expiresIn = 15 * 60 } = options;
     try {
       const url = await getSignedUrl(
-        this.client,
+        this._client,
         new GetObjectCommand({
-          Bucket: this.bucket,
+          Bucket: this._name,
           Key: key,
         }),
         { expiresIn }
@@ -137,7 +148,7 @@ export default class S3 {
       if (error instanceof NoSuchKey || error instanceof InvalidObjectState) {
         return null;
       } else {
-        throw mapS3Error(error, S3ServiceException, `${this.bucket}/${key}`);
+        throw mapS3Error(error, S3ServiceException, `${this._name}/${key}`);
       }
     }
   }
@@ -154,9 +165,9 @@ export default class S3 {
     } = options;
     try {
       const url = await getSignedUrl(
-        this.client,
+        this._client,
         new PutObjectCommand({
-          Bucket: this.bucket,
+          Bucket: this._name,
           Key: key,
           ContentType: contentType,
           ACL: scope,
@@ -165,12 +176,12 @@ export default class S3 {
       );
       return url;
     } catch (error) {
-      throw mapS3Error(error, S3ServiceException, `${this.bucket}/${key}`);
+      throw mapS3Error(error, S3ServiceException, `${this._name}/${key}`);
     }
   }
 }
 
-export type TS3Config = { client: S3ClientConfig; bucket: string };
+export type TBucketConfig = { client: S3ClientConfig | S3Client; name: string };
 
 type TDownloadOutputType = 'string' | 'byteArray' | 'stream';
 type TDownloadResponseType<TOutputType extends TDownloadOutputType> =

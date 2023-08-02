@@ -1,10 +1,7 @@
-import {
-  TGoogleClientOptions as TGoogleClientConfig,
-  createGoogleClient,
-} from '../api';
+import { TGoogleClientOptions, createGoogleClient } from '../api';
 import { GoogleService } from './GoogleService';
 
-export function createGoogleService(config: TGoogleClientConfig) {
-  const client = createGoogleClient(config);
+export function createGoogleService(options: TGoogleClientOptions = {}) {
+  const client = createGoogleClient(options);
   return new GoogleService(client);
 }
