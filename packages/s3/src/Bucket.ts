@@ -124,7 +124,10 @@ export default class Bucket {
     const protocol = endpoint.protocol;
     const hostname = endpoint.hostname;
     const port = endpoint.port ? `:${endpoint.port}` : '';
-    const path = `${endpoint.path}/${this._name}/${key}`;
+    const trimmedPath = endpoint.path.endsWith('/')
+      ? endpoint.path.slice(0, -1)
+      : endpoint.path;
+    const path = `${trimmedPath}/${this._name}/${key}`;
     return `${protocol}//${hostname}${port}${path}`;
   }
 

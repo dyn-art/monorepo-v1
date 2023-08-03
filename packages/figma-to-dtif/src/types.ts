@@ -88,13 +88,13 @@ export type TContentType = {
 
 export type TUploadStaticData = (
   key: string,
-  data: Uint8Array,
+  content: Uint8Array,
   contentType?: TContentType
 ) => Promise<TUploadStaticDataResponse>;
 
 export type TResolveFontContent = (
   typeFace: TTypeFaceWithoutContent
-) => Promise<Uint8Array | null>;
+) => Promise<{ content: Uint8Array | null; contentType: TContentType }>;
 
 export type TUploadStaticDataResponse = {
   key: string;

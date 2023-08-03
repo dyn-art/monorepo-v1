@@ -7,12 +7,16 @@ export async function transformToExportedGradientPaint(
   node: SceneNode,
   options: TTransformNodeOptions = {}
 ): Promise<TGradientPaintExported> {
+  const defaultFormat =
+    paint.type === 'GRADIENT_DIAMOND' || paint.type === 'GRADIENT_ANGULAR'
+      ? 'JPG' // Diamond and angular gradient can't be represented by SVG yet
+      : 'SVG';
   const {
     gradientPaint: {
       exportOptions: {
         inline = true,
         uploadStaticData: uploadStaticDataCallback = undefined,
-        format = 'SVG',
+        format = defaultFormat,
       } = {},
     } = {},
     exportContainerNode,

@@ -1,7 +1,11 @@
 import { MixedNotSupportedException } from '@/exceptions';
 import { convert2DMatrixTo3DMatrix, sha256, uploadStaticData } from '@/helpers';
 import { logger } from '@/logger';
-import { TTransformNodeOptions, TTypeFaceWithoutContent } from '@/types';
+import {
+  TContentType,
+  TTransformNodeOptions,
+  TTypeFaceWithoutContent,
+} from '@/types';
 import { TTextNode } from '@pda/types/dtif';
 import { extractErrorData } from '@pda/utils';
 
@@ -87,6 +91,7 @@ async function resolveFontContent(
     resolveFontContent: resolveFontContentCallback,
   } = options;
   let content: Uint8Array | string | null = null;
+  let contentType: TContentType | null = null;
   let hash: string | null = null;
 
   if (typeof resolveFontContentCallback !== 'function') {
@@ -95,7 +100,9 @@ async function resolveFontContent(
 
   // Try to resolve font as Uint8Array
   try {
-    content = (await resolveFontContentCallback(typeFace)) ?? null;
+    const font = await resolveFontContentCallback(typeFace);
+    content = font.content;
+    contentType = font.contentType;
   } catch (error) {
     const errorData = extractErrorData(error);
     logger.error(
@@ -115,6 +122,7 @@ async function resolveFontContent(
         {
           node,
           key: hash,
+          contentType: contentType ?? undefined,
         }
       );
       hash = uploadResponse.key;

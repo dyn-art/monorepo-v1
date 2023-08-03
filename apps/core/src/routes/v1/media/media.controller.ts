@@ -67,6 +67,32 @@ export const getPreSignedDownloadUrl: TExpressController<
   [param('key').notEmpty().isString()],
 ];
 
+export const getDownloadUrl: TExpressController<
+  '/v1/media/download-url/{key}',
+  'get'
+> = [
+  async (req, res) => {
+    const { key } = req.params;
+
+    // Check whether object exists
+    const exists = await s3.pdaBucket.doesObjectExist(key);
+    if (!exists) {
+      res.sendStatus(404);
+      return;
+    }
+
+    // Generate presigned download URL
+    const downloadUrl = await s3.pdaBucket.getDownloadUrl(key);
+    if (downloadUrl == null) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.status(200).send({ download_url: downloadUrl, key });
+  },
+  [param('key').notEmpty().isString()],
+];
+
 export const getFontSource: TExpressController<'/v1/media/font/source', 'get'> =
   [
     async (req, res) => {

@@ -7,38 +7,45 @@
 export interface paths {
   "/v1/auth/etsy/ping": {
     /**
-     * Etsy Ping 
+     * Etsy ping 
      * @description Ping Etsy API.
      */
     get: operations["getPing"];
   };
   "/v1/auth/etsy/oauth/challenge": {
     /**
-     * Get OAuth Challenge 
+     * Get OAuth challenge 
      * @description Retrieve a PKCE Code Challenge.
      */
     get: operations["getOAuthChallenge"];
   };
   "/v1/auth/etsy/oauth/redirect": {
     /**
-     * Handle OAuth Redirect 
+     * Handle OAuth redirect 
      * @description Handle the redirect from Etsy after user authorization, and retrieve the access token.
      */
     get: operations["handleOAuthRedirect"];
   };
   "/v1/media/pre-signed-upload-url": {
     /**
-     * Get Pre-Signed Upload URL 
+     * Get pre-signed upload URL 
      * @description Get a pre-signed URL for uploading files.
      */
     get: operations["getPreSignedUploadUrl"];
   };
   "/v1/media/pre-signed-download-url/{key}": {
     /**
-     * Get Pre-Signed Download URL 
+     * Get pre-signed download URL 
      * @description Get a pre-signed URL for downloading files.
      */
     get: operations["getPreSignedDownloadUrl"];
+  };
+  "/v1/media/download-url/{key}": {
+    /**
+     * Get download URL 
+     * @description Get URL for downloading files.
+     */
+    get: operations["getDownloadUrl"];
   };
   "/v1/media/font/source": {
     /**
@@ -115,7 +122,7 @@ export type external = Record<string, never>;
 export interface operations {
 
   /**
-   * Etsy Ping 
+   * Etsy ping 
    * @description Ping Etsy API.
    */
   getPing: {
@@ -129,7 +136,7 @@ export interface operations {
     };
   };
   /**
-   * Get OAuth Challenge 
+   * Get OAuth challenge 
    * @description Retrieve a PKCE Code Challenge.
    */
   getOAuthChallenge: {
@@ -146,7 +153,7 @@ export interface operations {
     };
   };
   /**
-   * Handle OAuth Redirect 
+   * Handle OAuth redirect 
    * @description Handle the redirect from Etsy after user authorization, and retrieve the access token.
    */
   handleOAuthRedirect: {
@@ -174,7 +181,7 @@ export interface operations {
     };
   };
   /**
-   * Get Pre-Signed Upload URL 
+   * Get pre-signed upload URL 
    * @description Get a pre-signed URL for uploading files.
    */
   getPreSignedUploadUrl: {
@@ -199,10 +206,33 @@ export interface operations {
     };
   };
   /**
-   * Get Pre-Signed Download URL 
+   * Get pre-signed download URL 
    * @description Get a pre-signed URL for downloading files.
    */
   getPreSignedDownloadUrl: {
+    parameters: {
+      path: {
+        key: string;
+      };
+    };
+    responses: {
+      /** @description Success */
+      200: {
+        content: {
+          "application/json": {
+            download_url?: string;
+            key?: string;
+          };
+        };
+      };
+      404: components["responses"]["NotFound"];
+    };
+  };
+  /**
+   * Get download URL 
+   * @description Get URL for downloading files.
+   */
+  getDownloadUrl: {
     parameters: {
       path: {
         key: string;

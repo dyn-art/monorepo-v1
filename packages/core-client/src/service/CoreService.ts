@@ -78,6 +78,24 @@ export class CoreService {
     }
   }
 
+  public async getDownloadUrl(key: string): Promise<string | null> {
+    // Send request
+    const response = await this.coreClient.get('/v1/media/download-url/{key}', {
+      pathParams: {
+        key,
+      },
+    });
+
+    // Handle request response
+    if (response.isError && isStatusCode(response.error, 404)) {
+      return null;
+    } else if (response.isError) {
+      throw response.error;
+    } else {
+      return response.data.download_url ?? null;
+    }
+  }
+
   public async downloadJsonFromS3<
     TResponse extends Record<string, any> = Record<string, any>
   >(key: string): Promise<TResponse | null> {
@@ -103,7 +121,7 @@ export class CoreService {
   public async downloadWebFontWOFF2File(
     family: string,
     options: { fontWeight?: number; style?: 'italic' | 'regular' } = {}
-  ): Promise<ArrayBuffer | null> {
+  ): Promise<Uint8Array | null> {
     const { fontWeight, style } = options;
 
     // Download data from font download url

@@ -10,7 +10,7 @@ import { TComposition } from '@pda/types/dtif';
 import { extractErrorData } from '@pda/utils';
 import { TIntermediateFormatExportEvent, logger } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
-import { uploadDataToBucket } from '../../core/services';
+import { coreService, uploadDataToBucket } from '../../core/services';
 import { stringToUint8Array } from '../../core/utils/json-to-uint8array';
 
 export async function processNode(
@@ -51,7 +51,7 @@ export async function processNode(
         resolveFontContent,
         exportOptions: {
           ...(options.font?.exportOptions ?? {}),
-          inline: options.font?.exportOptions?.inline ?? true,
+          inline: options.font?.exportOptions?.inline ?? false,
           uploadStaticData,
         },
       },
@@ -75,22 +75,23 @@ const uploadStaticData: TUploadStaticData = async (key, data, contentType) => {
     data,
     contentType?.mimeType ?? 'application/octet-stream'
   );
-  return { key: finalKey };
+  const downloadUrl = await coreService.getDownloadUrl(finalKey);
+  return { key: finalKey, url: downloadUrl ?? undefined };
 };
 
 const resolveFontContent: TResolveFontContent = async (typeFace) => {
   const { family, fontWeight, style } = typeFace;
-  // TODO:
-  // const content = await googleService.downloadWebFontWOFF2File(family, {
-  //   fontWeight,
-  //   style,
-  // });
-  // if (content != null) {
-  //   return new Uint8Array(content);
-  // } else {
-  //   return null;
-  // }
-  return null;
+  return {
+    content: await coreService.downloadWebFontWOFF2File(family, {
+      fontWeight,
+      style,
+    }),
+    contentType: {
+      mimeType: 'font/woff2',
+      ending: 'woff2',
+      name: 'WOFF2',
+    },
+  };
 };
 
 function handleSuccess(
