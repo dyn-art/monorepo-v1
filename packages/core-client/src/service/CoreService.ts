@@ -99,4 +99,30 @@ export class CoreService {
       return response.data;
     }
   }
+
+  public async downloadWebFontWOFF2File(
+    family: string,
+    options: { fontWeight?: number; style?: 'italic' | 'regular' } = {}
+  ): Promise<ArrayBuffer | null> {
+    const { fontWeight, style } = options;
+
+    // Download data from font download url
+    const response = await this.coreClient.get('/v1/media/font/source', {
+      queryParams: {
+        family,
+        font_weight: fontWeight,
+        style,
+      },
+      parseAs: 'arrayBuffer',
+    });
+
+    // Handle download request response
+    if (response.isError && isStatusCode(response.error, 404)) {
+      return null;
+    } else if (response.isError) {
+      throw response.error;
+    } else {
+      return new Uint8Array(response.data);
+    }
+  }
 }

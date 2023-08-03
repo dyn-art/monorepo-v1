@@ -7,6 +7,8 @@ import {
   TFetchOptions,
   TFetchOptionsWithBody,
   TOpenAPIFetchClientOptions,
+  TParseAs,
+  TResponseBodyWithParseAs,
 } from '../../types';
 import { OpenAPIFetchClientBase } from '../openapi/OpenAPIFetchClientBase';
 
@@ -21,51 +23,67 @@ export class RawFetchClient extends OpenAPIFetchClientBase<any> {
   // Requests
   // ============================================================================
 
-  public async get<TResponseBody = any, TResponseErrorBody = any>(
-    pathOrUrl: string,
-    options: TFetchOptions<any> = {}
-  ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
-    return this.rawFetch<TResponseBody, TResponseErrorBody>(
+  public async get<
+    TResponseBody = any,
+    TResponseErrorBody = any,
+    GParseAs extends TParseAs = 'json'
+  >(pathOrUrl: string, options: TFetchOptions<any, GParseAs> = {}) {
+    return this.rawFetch<TResponseBody, TResponseErrorBody, GParseAs>(
       pathOrUrl,
       'GET',
-      options as TFetchOptions<any>
+      options
     );
   }
 
   public async put<
     TResponseBody = any,
     TRequestBody = any,
-    TResponseErrorBody = any
+    TResponseErrorBody = any,
+    GParseAs extends TParseAs = 'json'
   >(
     pathOrUrl: string,
     body: TRequestBody,
-    options: TFetchOptions<any> = {}
-  ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
-    return this.rawFetch<TResponseBody, TResponseErrorBody>(pathOrUrl, 'PUT', {
-      ...options,
-      body: body as any,
-    });
+    options: TFetchOptions<any, GParseAs> = {}
+  ) {
+    return this.rawFetch<TResponseBody, TResponseErrorBody, GParseAs>(
+      pathOrUrl,
+      'PUT',
+      {
+        ...options,
+        body: body as any,
+      }
+    );
   }
 
-  public async post<TResponseBody = any, TBody = any, TResponseErrorBody = any>(
+  public async post<
+    TResponseBody = any,
+    TBody = any,
+    TResponseErrorBody = any,
+    GParseAs extends TParseAs = 'json'
+  >(
     pathOrUrl: string,
     body: TBody,
-    options: TFetchOptions<any> = {}
-  ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
-    return this.rawFetch<TResponseBody, TResponseErrorBody>(pathOrUrl, 'POST', {
-      ...options,
-      body: body as any,
-    });
+    options: TFetchOptions<any, GParseAs> = {}
+  ) {
+    return this.rawFetch<TResponseBody, TResponseErrorBody, GParseAs>(
+      pathOrUrl,
+      'POST',
+      {
+        ...options,
+        body: body as any,
+      }
+    );
   }
 
-  public async del<TResponseBody = any, TResponseErrorBody = any>(
-    pathOrUrl: string,
-    options: TFetchOptions<any> = {}
-  ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
-    return this.rawFetch<TResponseBody, TResponseErrorBody>(
+  public async del<
+    TResponseBody = any,
+    TResponseErrorBody = any,
+    GParseAs extends TParseAs = 'json'
+  >(pathOrUrl: string, options: TFetchOptions<any, GParseAs> = {}) {
+    return this.rawFetch<TResponseBody, TResponseErrorBody, GParseAs>(
       pathOrUrl,
       'DELETE',
-      options as TFetchOptions<any>
+      options
     );
   }
 
@@ -73,31 +91,49 @@ export class RawFetchClient extends OpenAPIFetchClientBase<any> {
   // Helper
   // ============================================================================
 
-  public async rawFetch<TResponseBody = any, TResponseErrorBody = any>(
+  public async rawFetch<
+    TResponseBody = any,
+    TResponseErrorBody = any,
+    GParseAs extends TParseAs = 'json'
+  >(
     pathOrUrl: string,
     method: RequestInit['method'],
-    options: TFetchOptionsWithBody<any>
-  ): Promise<TRawFetchResponse<TResponseBody, TResponseErrorBody>> {
+    options: TFetchOptionsWithBody<any, GParseAs>
+  ): Promise<
+    TRawFetchResponse<
+      TResponseBodyWithParseAs<TResponseBody>,
+      TResponseErrorBody,
+      GParseAs
+    >
+  > {
     return (await super.fetch(pathOrUrl, method, options)) as TRawFetchResponse<
       TResponseBody,
-      TResponseErrorBody
+      TResponseErrorBody,
+      GParseAs
     >;
   }
 }
 
-export type TRawFetchResponseSuccess<TResponseBody = any> = {
+export type TRawFetchResponseSuccess<
+  GResponseBody,
+  GParseAs extends TParseAs
+> = {
   isError: false;
-  data: TResponseBody;
+  data: TResponseBodyWithParseAs<GResponseBody, GParseAs>;
   raw: Response;
 };
-export type TRawFetchResponseError<TResponseErrorBody = any> = {
+export type TRawFetchResponseError<GResponseErrorBody> = {
   isError: true;
   error:
     | NetworkException
-    | RequestException<TResponseErrorBody>
+    | RequestException<GResponseErrorBody>
     | ServiceException;
   raw: Response | null;
 };
-export type TRawFetchResponse<TResponseBody = any, TResponseErrorBody = any> =
-  | TRawFetchResponseSuccess<TResponseBody>
-  | TRawFetchResponseError<TResponseErrorBody>;
+export type TRawFetchResponse<
+  GResponseBody,
+  GResponseErrorBody,
+  GParseAs extends TParseAs
+> =
+  | TRawFetchResponseSuccess<GResponseBody, GParseAs>
+  | TRawFetchResponseError<GResponseErrorBody>;

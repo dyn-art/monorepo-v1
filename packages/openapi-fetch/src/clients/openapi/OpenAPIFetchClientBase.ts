@@ -6,6 +6,7 @@ import {
   TFetchResponseError,
   THttpMethod,
   TOpenAPIFetchClientOptions,
+  TParseAs,
   TQuerySerializer,
   TRequestMiddleware,
   TRequestMiddlewareData,
@@ -69,6 +70,7 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
   public async fetch<
     GPathKeys extends keyof GPaths,
     GHttpMethod extends THttpMethod,
+    GParseAs extends TParseAs = 'json',
     GPathMethod extends GHttpMethod extends keyof GPaths[GPathKeys]
       ? GPaths[GPathKeys][GHttpMethod]
       : unknown = GHttpMethod extends keyof GPaths[GPathKeys]
@@ -80,9 +82,10 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
     options?: TFetchOptionsWithBody<
       GHttpMethod extends keyof GPaths[GPathKeys]
         ? GPaths[GPathKeys][GHttpMethod]
-        : never
+        : never,
+      GParseAs
     >
-  ): Promise<TFetchResponse<GPathMethod>> {
+  ): Promise<TFetchResponse<GPathMethod, GParseAs>> {
     const {
       headers = {},
       parseAs = 'json',
@@ -164,8 +167,8 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
           typeof response.clone === 'function' ? response.clone() : response;
         try {
           data =
-            typeof cloned[parseAs] === 'function'
-              ? await cloned[parseAs]()
+            typeof cloned[parseAs as TParseAs] === 'function'
+              ? await cloned[parseAs as TParseAs]()
               : await cloned.text();
         } catch (error) {
           data = cloned.text();
