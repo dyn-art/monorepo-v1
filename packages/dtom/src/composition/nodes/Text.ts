@@ -7,8 +7,7 @@ export class Text extends ShapeNode {
   private _textAlignHorizontal: TTextNode['textAlignHorizontal'];
   private _textAlignVertical: TTextNode['textAlignVertical'];
   private _fontSize: TTextNode['fontSize'];
-  private _fontName: TTextNode['fontName'];
-  private _fontWeight: TTextNode['fontWeight'];
+  private _font: TTextNode['font'];
   private _letterSpacing: TTextNode['letterSpacing'];
   private _lineHeight: TTextNode['lineHeight'];
   private _characters: TTextNode['characters'];
@@ -32,7 +31,7 @@ export class Text extends ShapeNode {
     this._textAlignHorizontal = node.textAlignHorizontal;
     this._textAlignVertical = node.textAlignVertical;
     this._fontSize = node.fontSize;
-    this._fontWeight = node.fontWeight;
+    this._font = node.font;
     this._letterSpacing = node.letterSpacing;
     this._lineHeight = node.lineHeight;
     this._characters = node.characters;
