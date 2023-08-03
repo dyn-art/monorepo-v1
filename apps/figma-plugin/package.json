@@ -21,7 +21,6 @@
   "dependencies": {
     "@agile-ts/core": "^0.2.9",
     "@pda/core-client": "workspace:*",
-    "@pda/dtif-to-react": "workspace:*",
     "@pda/figma-handler": "workspace:*",
     "@pda/figma-to-dtif": "workspace:*",
     "@pda/logger": "workspace:*",

@@ -1,3 +1,8 @@
+import { TTypeFace } from '@pda/types/dtif';
+
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+
 // ============================================================================
 // Node
 // ============================================================================
@@ -15,74 +20,89 @@ export type TSVGCompatibleNode =
   | InstanceNode
   | ComponentNode;
 
-export type TNodeWithFills =
-  | RectangleNode
-  | FrameNode
-  | ComponentNode
-  | InstanceNode
-  | TextNode;
-
 // ============================================================================
-// Formatting Options
+// Transform Options
 // ============================================================================
 
-export type TFormatNodeOptions = {
+export type TTransformNodeOptions = {
   /**
    * Whether to disregard nodes that are not visible.
    */
   ignoreInvisible?: boolean;
   /**
-   * Export SVG options.
+   * Transform to SVG options.
    */
   svg?: TSVGOptions;
   /**
-   * Export gradient fill options.
+   * Transform gradient fill options.
    */
-  gradientFill?: TFormatGradientFillOptions;
+  gradientPaint?: TTransformGradientFillOptions;
   /**
-   * Export image fill options.
+   * Transform image fill options.
    */
-  imageFill?: TFormatImageFillOptions;
+  imagePaint?: TTransformImageFillOptions;
   /**
-   * Frame node in which temporarily created nodes are placed.
-   * So in case of an error the user knows where the nodes came frame
-   * and that they can be deleted.
+   * Transform font options.
+   */
+  font?: TTransformFontOptions;
+  /**
+   * Temporary container node to contain nodes that need to be cloned during export temporarily (e.g. SVG).
+   * It servers for the user as context so that no non user created nodes are randomly flying around.
    *
    * If not specified temporary created nodes are placed at the root of the document.
    */
-  tempFrameNode?: FrameNode;
+  exportContainerNode?: FrameNode;
 };
 
 export type TSVGOptions = {
-  inline?: boolean;
-  exportIdentifierRegex?: string | null; // String as no (RegExp) class can be passed to the Javascript Sandbox
+  identifierRegex?: string | null; // String as (RegExp) class can't be passed to the Javascript Sandbox
   frameToSVG?: boolean;
-  exportOptions?: {
-    format?: ExportSettings['format'];
-    uploadStaticData?: TUploadStaticData;
-  };
-};
-
-export type TFormatGradientFillOptions = {
   inline?: boolean;
+  exportOptions?: TExportOptions;
+};
+
+export type TTransformGradientFillOptions = {
+  inline?: boolean;
+  exportOptions?: TExportOptions;
+};
+
+export type TTransformImageFillOptions = {
+  exportOptions?: TExportOptions;
+};
+
+export type TTransformFontOptions = {
   exportOptions?: {
-    format?: ExportSettings['format'];
+    inline: boolean;
     uploadStaticData?: TUploadStaticData;
   };
+  resolveFontContent?: TResolveFontContent;
 };
 
-export type TFormatImageFillOptions = {
-  uploadStaticData?: TUploadStaticData;
-};
-
-export type TUploadStaticData = (
-  key: string,
-  data: Uint8Array,
-  contentType?: TContentType
-) => Promise<string>;
+export type TTypeFaceWithoutContent = Omit<Omit<TTypeFace, 'content'>, 'hash'>;
 
 export type TContentType = {
   name: string;
   mimeType: 'image/jpeg' | 'image/png' | 'image/svg+xml' | 'image/gif' | string;
   ending: string;
+};
+
+export type TUploadStaticData = (
+  key: string,
+  content: Uint8Array,
+  contentType?: TContentType
+) => Promise<TUploadStaticDataResponse>;
+
+export type TResolveFontContent = (
+  typeFace: TTypeFaceWithoutContent
+) => Promise<{ content: Uint8Array | null; contentType: TContentType }>;
+
+export type TUploadStaticDataResponse = {
+  key: string;
+  url?: string;
+};
+
+export type TExportOptions = {
+  inline: boolean;
+  format?: 'SVG' | 'JPG' | 'PNG';
+  uploadStaticData?: TUploadStaticData;
 };

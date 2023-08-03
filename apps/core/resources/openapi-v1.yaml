@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: "@pda/core"
-  description: "API Documentation for @pda/core"
+  description: "API documentation for @pda/core"
   version: 1.0.0
   contact:
     email: dev@physical.art
@@ -21,7 +21,7 @@ paths:
     get:
       tags:
         - auth
-      summary: Etsy Ping
+      summary: Etsy ping
       description: Ping Etsy API.
       operationId: getPing
       responses:
@@ -37,7 +37,7 @@ paths:
     get:
       tags:
         - auth
-      summary: Get OAuth Challenge
+      summary: Get OAuth challenge
       description: Retrieve a PKCE Code Challenge.
       operationId: getOAuthChallenge
       responses:
@@ -61,7 +61,7 @@ paths:
     get:
       tags:
         - auth
-      summary: Handle OAuth Redirect
+      summary: Handle OAuth redirect
       description: Handle the redirect from Etsy after user authorization, and retrieve the access token.
       operationId: handleOAuthRedirect
       parameters:
@@ -116,7 +116,7 @@ paths:
     get:
       tags:
         - media
-      summary: Get Pre-Signed Upload URL
+      summary: Get pre-signed upload URL
       description: Get a pre-signed URL for uploading files.
       operationId: getPreSignedUploadUrl
       parameters:
@@ -163,7 +163,7 @@ paths:
     get:
       tags:
         - media
-      summary: Get Pre-Signed Download URL
+      summary: Get pre-signed download URL
       description: Get a pre-signed URL for downloading files.
       operationId: getPreSignedDownloadUrl
       parameters:
@@ -187,6 +187,78 @@ paths:
               example:
                 download_url: "http://download.url"
                 key: "download123"
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /v1/media/download-url/{key}:
+    get:
+      tags:
+        - media
+      summary: Get download URL
+      description: Get URL for downloading files.
+      operationId: getDownloadUrl
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  download_url:
+                    type: string
+                  key:
+                    type: string
+              example:
+                download_url: "http://download.url"
+                key: "download123"
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /v1/media/font/source:
+    get:
+      tags:
+        - media
+      summary: Get Font file
+      description: Get a specific font source file based on family, fontWeight, and style.
+      operationId: getFontSource
+      parameters:
+        - name: family
+          in: query
+          required: true
+          description: Name of the font family.
+          schema:
+            type: string
+        - name: font_weight
+          in: query
+          required: false
+          description: Name of the font weight.
+          schema:
+            type: integer
+            format: int32
+        - name: style
+          in: query
+          required: false
+          description: Name of the font style.
+          schema:
+            type: string
+            enum:
+              - italic
+              - regular
+      responses:
+        200:
+          description: Success
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: byte
         404:
           $ref: '#/components/responses/NotFound'
 

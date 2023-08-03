@@ -188,6 +188,21 @@ export type TErrorResponseBody<T> = T extends { responses?: any }
 
 export type TResponseBody<T> = TSuccessResponseBody<T>; // No ErrorResponse as errors are handled via Exceptions
 
+export type TResponseBodyWithParseAs<
+  GResponseBody,
+  GParseAs extends TParseAs = 'json'
+> = GParseAs extends 'json'
+  ? GResponseBody
+  : GParseAs extends 'text'
+  ? string
+  : GParseAs extends 'blob'
+  ? Blob
+  : GParseAs extends 'arrayBuffer'
+  ? ArrayBuffer
+  : GParseAs extends 'stream'
+  ? ReadableStream
+  : never;
+
 // ============================================================================
 // Serializer methods
 // ============================================================================
@@ -250,29 +265,35 @@ export type TFetchOptionsBodyPart<T> = undefined extends TRequestBody<T>
   ? { body?: any }
   : { body: TRequestBody<T> };
 
-export type TFetchOptionsBase<T> = {
+export type TFetchOptionsBase<T, GParseAs extends TParseAs> = {
   querySerializer?: TQuerySerializer<T>;
   bodySerializer?: TBodySerializer<T>;
-  parseAs?: TParseAs;
+  parseAs?: GParseAs | TParseAs; // '| TParseAs' to fix VsCode autocomplete
   headers?: Record<string, string>;
   rootFetchProps?: Omit<RequestInit, 'body' | 'headers' | 'method'>;
   middlewareProps?: Record<string, any>;
   baseUrl?: string;
 };
 
-export type TFetchOptions<T> = TFetchOptionsBase<T> &
+export type TFetchOptions<T, GParseAs extends TParseAs> = TFetchOptionsBase<
+  T,
+  GParseAs
+> &
   TFetchOptionsQueryParamsPart<T> &
   TFetchOptionsPathParamsPart<T>;
-export type TFetchOptionsWithBody<T> = TFetchOptions<T> &
+export type TFetchOptionsWithBody<T, GParseAs extends TParseAs> = TFetchOptions<
+  T,
+  GParseAs
+> &
   TFetchOptionsBodyPart<T>;
 
 // ============================================================================
 // Fetch response
 // ============================================================================
 
-export type TFetchResponseSuccess<T> = {
+export type TFetchResponseSuccess<T, GParseAs extends TParseAs> = {
   isError: false;
-  data: TResponseBody<T>;
+  data: TResponseBodyWithParseAs<TResponseBody<T>, GParseAs>;
   raw: Response;
 };
 
@@ -285,8 +306,8 @@ export type TFetchResponseError<T> = {
   raw: Response | null;
 };
 
-export type TFetchResponse<T> =
-  | TFetchResponseSuccess<T>
+export type TFetchResponse<T, GParseAs extends TParseAs> =
+  | TFetchResponseSuccess<T, GParseAs>
   | TFetchResponseError<T>;
 
 // ============================================================================

@@ -24,6 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "@pda/etsy-client": "workspace:*",
+    "@pda/google-client": "workspace:*",
     "@pda/logger": "workspace:*",
     "@pda/openapi-fetch": "workspace:*",
     "@pda/s3": "workspace:*",

@@ -83,6 +83,9 @@ importers:
       '@pda/etsy-client':
         specifier: workspace:*
         version: link:../../packages/etsy-client
+      '@pda/google-client':
+        specifier: workspace:^
+        version: link:../../packages/google-client
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -220,15 +223,15 @@ importers:
       '@pda/core-client':
         specifier: workspace:*
         version: link:../../packages/core-client
-      '@pda/dtif-to-react':
-        specifier: workspace:*
-        version: link:../../packages/dtif-to-react
       '@pda/figma-handler':
         specifier: workspace:*
         version: link:../../packages/figma-handler
       '@pda/figma-to-dtif':
         specifier: workspace:*
         version: link:../../packages/figma-to-dtif
+      '@pda/google-client':
+        specifier: workspace:^
+        version: link:../../packages/google-client
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -386,9 +389,6 @@ importers:
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger
-      '@pda/product-renderer':
-        specifier: workspace:*
-        version: link:../../packages/product-renderer
       dotenv:
         specifier: ^16.0.3
         version: 16.0.3
@@ -8387,14 +8387,6 @@ packages:
     dependencies:
       mime-types: 2.1.35
       negotiator: 0.6.3
-
-  /acorn-import-assertions@1.8.0(acorn@8.8.2):
-    resolution: {integrity: sha512-m7VZ3jwz4eK6A4Vtt8Ew1/mNbP24u0FhdyfA7fSvnJR6LMdfOYnmuIrrJAgrYfYJ10F/otaHTtrtrtmHdMNzEw==}
-    peerDependencies:
-      acorn: ^8
-    dependencies:
-      acorn: 8.8.2
-    dev: true
 
   /acorn-import-assertions@1.8.0(acorn@8.9.0):
     resolution: {integrity: sha512-m7VZ3jwz4eK6A4Vtt8Ew1/mNbP24u0FhdyfA7fSvnJR6LMdfOYnmuIrrJAgrYfYJ10F/otaHTtrtrtmHdMNzEw==}
@@ -19014,8 +19006,8 @@ packages:
       '@webassemblyjs/ast': 1.11.5
       '@webassemblyjs/wasm-edit': 1.11.5
       '@webassemblyjs/wasm-parser': 1.11.5
-      acorn: 8.8.2
-      acorn-import-assertions: 1.8.0(acorn@8.8.2)
+      acorn: 8.9.0
+      acorn-import-assertions: 1.8.0(acorn@8.9.0)
       browserslist: 4.21.5
       chrome-trace-event: 1.0.3
       enhanced-resolve: 5.13.0

@@ -1,62 +1,61 @@
 import {
   NodeException,
+  PaintException,
+  TResolveFontContent,
   TUploadStaticData,
-  UploadStaticDataException,
-  formatFrameToComposition,
   sha256,
+  toComposition,
 } from '@pda/figma-to-dtif';
 import { TComposition } from '@pda/types/dtif';
+import { extractErrorData } from '@pda/utils';
 import { TIntermediateFormatExportEvent, logger } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
-import { uploadDataToBucket } from '../../core/bucket';
+import { coreService, uploadDataToBucket } from '../../core/services';
 import { stringToUint8Array } from '../../core/utils/json-to-uint8array';
 
 export async function processNode(
   instance: TBackgroundHandler,
-  node: FrameNode | InstanceNode | ComponentNode,
+  node: FrameNode,
   options: TIntermediateFormatExportEvent['args']['options']
 ) {
   try {
-    const uploadStaticData: TUploadStaticData = async (
-      key,
-      data,
-      contentType
-    ) => {
-      if (contentType == null) {
-        throw new UploadStaticDataException(
-          `Can't upload data for '${key}' as no content type could be resolved!`,
-          node
-        );
-      }
-      return uploadDataToBucket(key, data, contentType?.mimeType);
-    };
-
-    // Format the node for export
-    const toExportNode = await formatFrameToComposition(node, {
+    // Transform node to DTIF composition
+    const toExportNode = await toComposition(node, {
       ...options,
-      gradientFill: {
-        ...(options.gradientFill ?? {}),
+      gradientPaint: {
+        ...(options.gradientPaint ?? {}),
         exportOptions: {
+          ...(options.gradientPaint?.exportOptions ?? {}),
+          inline: options.gradientPaint?.exportOptions?.inline ?? false,
           uploadStaticData,
-          ...(options.gradientFill?.exportOptions ?? {}),
         },
       },
-      imageFill: {
-        uploadStaticData,
-        ...(options.imageFill ?? {}),
+      imagePaint: {
+        ...(options.imagePaint ?? {}),
+        exportOptions: {
+          ...(options.imagePaint?.exportOptions ?? {}),
+          inline: options.imagePaint?.exportOptions?.inline ?? false,
+          uploadStaticData,
+        },
       },
       svg: {
         ...(options.svg ?? {}),
         exportOptions: {
-          uploadStaticData,
           ...(options.svg?.exportOptions ?? {}),
+          inline: options.svg?.exportOptions?.inline ?? false,
+          uploadStaticData,
+        },
+      },
+      font: {
+        ...(options.font ?? {}),
+        resolveFontContent,
+        exportOptions: {
+          ...(options.font?.exportOptions ?? {}),
+          inline: options.font?.exportOptions?.inline ?? false,
+          uploadStaticData,
         },
       },
     });
-
-    if (toExportNode == null) {
-      throw Error('To export node is null!');
-    }
 
     // Upload the node as JSON string to bucket
     const json = JSON.stringify(toExportNode);
@@ -69,6 +68,31 @@ export async function processNode(
     handleError(error, instance, node);
   }
 }
+
+const uploadStaticData: TUploadStaticData = async (key, data, contentType) => {
+  const finalKey = await uploadDataToBucket(
+    key,
+    data,
+    contentType?.mimeType ?? 'application/octet-stream'
+  );
+  const downloadUrl = await coreService.getDownloadUrl(finalKey);
+  return { key: finalKey, url: downloadUrl ?? undefined };
+};
+
+const resolveFontContent: TResolveFontContent = async (typeFace) => {
+  const { family, fontWeight, style } = typeFace;
+  return {
+    content: await coreService.downloadWebFontWOFF2File(family, {
+      fontWeight,
+      style,
+    }),
+    contentType: {
+      mimeType: 'font/woff2',
+      ending: 'woff2',
+      name: 'WOFF2',
+    },
+  };
+};
 
 function handleSuccess(
   instance: TBackgroundHandler,
@@ -93,18 +117,19 @@ function handleError(
   instance: TBackgroundHandler,
   node: SceneNode
 ) {
-  let errorMessage =
-    error instanceof Error ? error.message : JSON.stringify(error);
+  const { message } = extractErrorData(error);
   instance.postMessage('intermediate-format-export-result', {
     type: 'error',
-    message: errorMessage,
+    message,
   });
-  errorMessage = `Error exporting node '${node.name}': ${errorMessage}`;
-  figma.notify(errorMessage, {
+  const figmaMessage = `Error exporting node '${node.name}': ${message}`;
+  figma.notify(figmaMessage, {
     error: true,
   });
-  logger.error(errorMessage, { error });
+  logger.error(figmaMessage, { error });
   if (error instanceof NodeException) {
+    figma.currentPage.selection = [error.node];
+  } else if (error instanceof PaintException && error.node != null) {
     figma.currentPage.selection = [error.node];
   }
 }

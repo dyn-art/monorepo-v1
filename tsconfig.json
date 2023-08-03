@@ -17,19 +17,13 @@
             "path": "apps/web"
         },
         {
-            "path": "packages/ads-renderer"
-        },
-        {
             "path": "packages/core-client"
         },
         {
             "path": "packages/discord-handler"
         },
         {
-            "path": "packages/dtif-to-react"
-        },
-        {
-            "path": "packages/dtif-to-svg"
+            "path": "packages/dtom"
         },
         {
             "path": "packages/etsy-client"
@@ -47,13 +41,7 @@
             "path": "packages/logger"
         },
         {
-            "path": "packages/music"
-        },
-        {
             "path": "packages/openapi-fetch"
-        },
-        {
-            "path": "packages/product-renderer"
         },
         {
             "path": "packages/s3"

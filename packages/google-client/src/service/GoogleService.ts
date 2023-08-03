@@ -72,13 +72,18 @@ export class GoogleService {
       }
     }
 
+    // Check whether its http url (for figma cors-origin)
+    if (fileUrl?.startsWith('http://')) {
+      fileUrl = fileUrl.replace('http://', 'https://');
+    }
+
     return fileUrl;
   }
 
   public async downloadWebFontWOFF2File(
     family: string,
     options: { fontWeight?: number; style?: 'italic' | 'regular' } = {}
-  ): Promise<ArrayBuffer | null> {
+  ): Promise<Uint8Array | null> {
     // Get font download url
     const downloadUrl = await this.getWebFontWOFF2FileURL(family, options);
     if (downloadUrl == null) {
@@ -96,7 +101,7 @@ export class GoogleService {
     } else if (response.isError) {
       throw response.error;
     } else {
-      return response.data;
+      return new Uint8Array(response.data);
     }
   }
 }

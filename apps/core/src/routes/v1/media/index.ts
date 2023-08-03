@@ -1,6 +1,8 @@
 import { controllerWrapper } from '@/core/utils';
 import { Router } from 'express';
 import {
+  getDownloadUrl,
+  getFontSource,
   getPreSignedDownloadUrl,
   getPreSignedUploadUrl,
 } from './media.controller';
@@ -16,5 +18,9 @@ router.get(
   '/pre-signed-download-url/:key',
   ...controllerWrapper(getPreSignedDownloadUrl)
 );
+
+router.get('/download-url/:key', ...controllerWrapper(getDownloadUrl));
+
+router.get('/font/source', ...controllerWrapper(getFontSource));
 
 export default router;
