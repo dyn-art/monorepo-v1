@@ -12,5 +12,9 @@ export function invalidPathHandlerMiddleware(
   next: express.NextFunction
 ) {
   // Call the next middleware with a 404 AppError (usually the error handling middleware)
-  next(new AppError(404, "Route doesn't exist!"));
+  next(
+    new AppError(404, '#ERR_PATH_NOT_FOUND', {
+      description: `The specified path '${req.path}' does not exist!`,
+    })
+  );
 }

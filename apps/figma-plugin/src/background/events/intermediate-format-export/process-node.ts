@@ -10,8 +10,7 @@ import { TComposition } from '@pda/types/dtif';
 import { extractErrorData } from '@pda/utils';
 import { TIntermediateFormatExportEvent, logger } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
-import { googleService } from '../../core/api';
-import { uploadDataToBucket } from '../../core/bucket';
+import { uploadDataToBucket } from '../../core/services';
 import { stringToUint8Array } from '../../core/utils/json-to-uint8array';
 
 export async function processNode(
@@ -81,15 +80,17 @@ const uploadStaticData: TUploadStaticData = async (key, data, contentType) => {
 
 const resolveFontContent: TResolveFontContent = async (typeFace) => {
   const { family, fontWeight, style } = typeFace;
-  const content = await googleService.downloadWebFontWOFF2File(family, {
-    fontWeight,
-    style,
-  });
-  if (content != null) {
-    return new Uint8Array(content);
-  } else {
-    return null;
-  }
+  // TODO:
+  // const content = await googleService.downloadWebFontWOFF2File(family, {
+  //   fontWeight,
+  //   style,
+  // });
+  // if (content != null) {
+  //   return new Uint8Array(content);
+  // } else {
+  //   return null;
+  // }
+  return null;
 };
 
 function handleSuccess(

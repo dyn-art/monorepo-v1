@@ -2,6 +2,7 @@ import { s3 } from '@/core/aws';
 import { TExpressController } from '@/types';
 import { randomUUID } from 'crypto';
 import { param, query } from 'express-validator';
+import { googleService } from '../../../core/services';
 
 export const getPreSignedUploadUrl: TExpressController<
   '/v1/media/pre-signed-upload-url',
@@ -65,3 +66,31 @@ export const getPreSignedDownloadUrl: TExpressController<
   },
   [param('key').notEmpty().isString()],
 ];
+
+export const getFontSource: TExpressController<'/v1/media/font/source', 'get'> =
+  [
+    async (req, res) => {
+      const { family, font_weight, style } = req.query;
+
+      // Try to fetch font from google api
+      const font = await googleService.downloadWebFontWOFF2File(family, {
+        fontWeight: font_weight,
+        style,
+      });
+      if (font == null) {
+        res.status(404).send();
+        return;
+      }
+
+      const buffer = Buffer.from(font);
+      res.contentType('application/octet-stream');
+      res.status(200).send(buffer as unknown as string);
+    },
+    [
+      query('family').notEmpty().isString(),
+      query('font_weight').optional().isInt(),
+      query('style')
+        .optional()
+        .matches(/^(italic|regular)$/),
+    ],
+  ];

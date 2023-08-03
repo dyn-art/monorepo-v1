@@ -72,6 +72,11 @@ export class GoogleService {
       }
     }
 
+    // Check whether its http url (for figma cors-origin)
+    if (fileUrl?.startsWith('http://')) {
+      fileUrl = fileUrl.replace('http://', 'https://');
+    }
+
     return fileUrl;
   }
 

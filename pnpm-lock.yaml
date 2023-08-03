@@ -83,6 +83,9 @@ importers:
       '@pda/etsy-client':
         specifier: workspace:*
         version: link:../../packages/etsy-client
+      '@pda/google-client':
+        specifier: workspace:^
+        version: link:../../packages/google-client
       '@pda/logger':
         specifier: workspace:*
         version: link:../../packages/logger

@@ -1,4 +1,5 @@
-import { coreService, fetchClient } from '../api';
+import { fetchClient } from '../../../api';
+import { coreService } from '../../core';
 import { UploadToBucketException } from './exceptions';
 
 export async function uploadDataToBucket(

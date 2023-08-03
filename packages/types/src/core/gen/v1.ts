@@ -40,6 +40,13 @@ export interface paths {
      */
     get: operations["getPreSignedDownloadUrl"];
   };
+  "/v1/media/font/source": {
+    /**
+     * Get Font file 
+     * @description Get a specific font source file based on family, fontWeight, and style.
+     */
+    get: operations["getFontSource"];
+  };
   "/v1/ping": {
     /**
      * API Ping 
@@ -209,6 +216,31 @@ export interface operations {
             download_url?: string;
             key?: string;
           };
+        };
+      };
+      404: components["responses"]["NotFound"];
+    };
+  };
+  /**
+   * Get Font file 
+   * @description Get a specific font source file based on family, fontWeight, and style.
+   */
+  getFontSource: {
+    parameters: {
+      query: {
+        /** @description Name of the font family. */
+        family: string;
+        /** @description Name of the font weight. */
+        font_weight?: number;
+        /** @description Name of the font style. */
+        style?: "italic" | "regular";
+      };
+    };
+    responses: {
+      /** @description Success */
+      200: {
+        content: {
+          "application/octet-stream": string;
         };
       };
       404: components["responses"]["NotFound"];

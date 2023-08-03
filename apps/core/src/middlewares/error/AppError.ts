@@ -25,6 +25,7 @@ export class AppError extends Error {
     // Set the prototype explicity
     Object.setPrototypeOf(this, new.target.prototype);
 
+    this.code = code;
     this.name = Error.name;
     this.status = status;
     this.uri = uri;

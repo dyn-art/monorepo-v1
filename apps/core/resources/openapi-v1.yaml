@@ -190,6 +190,47 @@ paths:
         404:
           $ref: '#/components/responses/NotFound'
 
+  /v1/media/font/source:
+    get:
+      tags:
+        - media
+      summary: Get Font file
+      description: Get a specific font source file based on family, fontWeight, and style.
+      operationId: getFontSource
+      parameters:
+        - name: family
+          in: query
+          required: true
+          description: Name of the font family.
+          schema:
+            type: string
+        - name: font_weight
+          in: query
+          required: false
+          description: Name of the font weight.
+          schema:
+            type: integer
+            format: int32
+        - name: style
+          in: query
+          required: false
+          description: Name of the font style.
+          schema:
+            type: string
+            enum:
+              - italic
+              - regular
+      responses:
+        200:
+          description: Success
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: byte
+        404:
+          $ref: '#/components/responses/NotFound'
+
   /v1/ping:
     get:
       summary: API Ping
