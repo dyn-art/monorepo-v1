@@ -13,6 +13,8 @@ export async function transformTextNode(
   node: TextNode,
   options: TTransformNodeOptions
 ): Promise<TTextNode> {
+  const { font: fontOptions, geometry = true } = options;
+
   const fontName = excludeMixed('fontName', node);
   const fontWeight = excludeMixed('fontWeight', node);
   const fontSize = excludeMixed('fontSize', node);
@@ -33,7 +35,7 @@ export async function transformTextNode(
   const { hash, content } = await resolveFontContent(
     node,
     typeFace,
-    options.font
+    fontOptions
   );
 
   return {
@@ -62,8 +64,12 @@ export async function transformTextNode(
     // Constraints mixin
     constraints: node.constraints,
     // Geometry mixin
-    fillGeometry: node.fillGeometry as TVectorPath[],
-    strokeGeometry: node.strokeGeometry as TVectorPath[],
+    geometry: geometry
+      ? {
+          fill: node.fillGeometry as TVectorPath[],
+          stroke: node.strokeGeometry as TVectorPath[],
+        }
+      : undefined,
     // Blend mixin
     blendMode: node.blendMode,
     opacity: node.opacity,

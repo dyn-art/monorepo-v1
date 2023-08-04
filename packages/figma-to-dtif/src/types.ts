@@ -52,6 +52,11 @@ export type TTransformNodeOptions = {
    * If not specified temporary created nodes are placed at the root of the document.
    */
   exportContainerNode?: FrameNode;
+  /**
+   * Whether to include paths representing the objects fill & stroke.
+   * Especially useful for displaying text if the corresponding font hasn't loaded.
+   */
+  geometry?: boolean;
 };
 
 export type TSVGOptions = {

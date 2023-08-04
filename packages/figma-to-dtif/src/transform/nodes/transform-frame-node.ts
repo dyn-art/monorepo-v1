@@ -1,9 +1,14 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
+import { TTransformNodeOptions } from '@/types';
 import { TEffect, TFrameNode, TVectorPath } from '@pda/types/dtif';
 
 export async function transformFrameNode(
-  node: FrameNode | ComponentNode | InstanceNode
+  node: FrameNode | ComponentNode | InstanceNode,
+
+  options: TTransformNodeOptions
 ): Promise<TFrameNode> {
+  const { geometry = true } = options;
+
   return {
     type: 'FRAME',
     clipsContent: node.clipsContent,
@@ -22,8 +27,12 @@ export async function transformFrameNode(
     // Constraints mixin
     constraints: node.constraints,
     // Geometry mixin
-    fillGeometry: node.fillGeometry as TVectorPath[],
-    strokeGeometry: node.strokeGeometry as TVectorPath[],
+    geometry: geometry
+      ? {
+          fill: node.fillGeometry as TVectorPath[],
+          stroke: node.strokeGeometry as TVectorPath[],
+        }
+      : undefined,
     // Rectangle corner mixin
     bottomLeftRadius: node.bottomLeftRadius,
     bottomRightRadius: node.bottomRightRadius,

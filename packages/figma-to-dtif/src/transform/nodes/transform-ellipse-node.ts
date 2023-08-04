@@ -1,9 +1,13 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
+import { TTransformNodeOptions } from '@/types';
 import { TEffect, TEllipseNode, TVectorPath } from '@pda/types/dtif';
 
 export async function transformEllipseNode(
-  node: EllipseNode
+  node: EllipseNode,
+  options: TTransformNodeOptions
 ): Promise<TEllipseNode> {
+  const { geometry = true } = options;
+
   return {
     type: 'ELLIPSE',
     arcData: {
@@ -24,8 +28,12 @@ export async function transformEllipseNode(
     // Constraints mixin
     constraints: node.constraints,
     // Geometry mixin
-    fillGeometry: node.fillGeometry as TVectorPath[],
-    strokeGeometry: node.strokeGeometry as TVectorPath[],
+    geometry: geometry
+      ? {
+          fill: node.fillGeometry as TVectorPath[],
+          stroke: node.strokeGeometry as TVectorPath[],
+        }
+      : undefined,
     // Blend mixin
     blendMode: node.blendMode,
     opacity: node.opacity,

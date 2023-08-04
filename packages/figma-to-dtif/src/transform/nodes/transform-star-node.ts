@@ -1,7 +1,13 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
+import { TTransformNodeOptions } from '@/types';
 import { TEffect, TStarNode, TVectorPath } from '@pda/types/dtif';
 
-export async function transformStarNode(node: StarNode): Promise<TStarNode> {
+export async function transformStarNode(
+  node: StarNode,
+  options: TTransformNodeOptions
+): Promise<TStarNode> {
+  const { geometry = true } = options;
+
   return {
     type: 'STAR',
     pointCount: node.pointCount,
@@ -19,8 +25,12 @@ export async function transformStarNode(node: StarNode): Promise<TStarNode> {
     // Constraints mixin
     constraints: node.constraints,
     // Geometry mixin
-    fillGeometry: node.fillGeometry as TVectorPath[],
-    strokeGeometry: node.strokeGeometry as TVectorPath[],
+    geometry: geometry
+      ? {
+          fill: node.fillGeometry as TVectorPath[],
+          stroke: node.strokeGeometry as TVectorPath[],
+        }
+      : undefined,
     // Blend mixin
     blendMode: node.blendMode,
     opacity: node.opacity,

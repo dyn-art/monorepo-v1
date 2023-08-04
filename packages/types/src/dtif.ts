@@ -379,14 +379,16 @@ export type TEffectsMixin = {
 };
 
 export type TGeometryMixin = {
-  /**
-   * An array of paths representing the object fill relative to the node.
-   */
-  fillGeometry: TVectorPath[];
-  /**
-   * An array of paths representing the object strokes relative to the node.
-   */
-  strokeGeometry: TVectorPath[];
+  geometry?: {
+    /**
+     * An array of paths representing the object fill relative to the node.
+     */
+    fill: TVectorPath[];
+    /**
+     * An array of paths representing the object strokes relative to the node.
+     */
+    stroke: TVectorPath[];
+  };
 };
 
 // ============================================================================

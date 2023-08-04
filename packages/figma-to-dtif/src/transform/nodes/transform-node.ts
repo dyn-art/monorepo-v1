@@ -71,19 +71,19 @@ async function transformFigmaNode(
     case 'FRAME':
     case 'COMPONENT':
     case 'INSTANCE':
-      return transformFrameNode(node);
+      return transformFrameNode(node, options);
     case 'GROUP':
       return transformGroupNode(node);
     case 'TEXT':
       return transformTextNode(node, options);
     case 'RECTANGLE':
-      return transformRectangleNode(node);
+      return transformRectangleNode(node, options);
     case 'ELLIPSE':
-      return transformEllipseNode(node);
+      return transformEllipseNode(node, options);
     case 'POLYGON':
-      return transformPolygonNode(node);
+      return transformPolygonNode(node, options);
     case 'STAR':
-      return transformStarNode(node);
+      return transformStarNode(node, options);
     case 'LINE':
     case 'VECTOR':
     case 'BOOLEAN_OPERATION':

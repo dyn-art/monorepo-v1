@@ -12,10 +12,6 @@ import { TTransformNodeOptions } from '@/types';
 import { TComposition, TNode, TPaint } from '@pda/types/dtif';
 import { extractErrorData, shortId } from '@pda/utils';
 
-// 1. Go through node tree and extract to transform nodes (only traversing the ree plays a role here)
-// 2. Go through to transform nodes and transform them while extracting to transform paints (children don't play any role here)
-// 3. Go through to transform paints and transform them
-
 export class Composition {
   // Nodes
   private _toTransformNodes: TToTransformNode[] = [];
@@ -23,6 +19,9 @@ export class Composition {
   private readonly _toTransformRootNode: FrameNode;
   public readonly nodes: Record<string, TNode> = {};
   private _rootId: string;
+
+  // TODO: cache fonts so not fetched & uploaded twice
+  // TODO: cache images so not exported & uploaded twice
 
   // Paints
   private _toTransformPaints: TToTransformPaint[] = [];

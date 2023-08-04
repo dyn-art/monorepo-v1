@@ -1,9 +1,13 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
+import { TTransformNodeOptions } from '@/types';
 import { TEffect, TPolygonNode, TVectorPath } from '@pda/types/dtif';
 
 export async function transformPolygonNode(
-  node: PolygonNode
+  node: PolygonNode,
+  options: TTransformNodeOptions
 ): Promise<TPolygonNode> {
+  const { geometry = true } = options;
+
   return {
     type: 'POLYGON',
     pointCount: node.pointCount,
@@ -20,8 +24,12 @@ export async function transformPolygonNode(
     // Constraints mixin
     constraints: node.constraints,
     // Geometry mixin
-    fillGeometry: node.fillGeometry as TVectorPath[],
-    strokeGeometry: node.strokeGeometry as TVectorPath[],
+    geometry: geometry
+      ? {
+          fill: node.fillGeometry as TVectorPath[],
+          stroke: node.strokeGeometry as TVectorPath[],
+        }
+      : undefined,
     // Blend mixin
     blendMode: node.blendMode,
     opacity: node.opacity,

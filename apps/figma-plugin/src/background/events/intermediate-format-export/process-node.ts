@@ -21,6 +21,7 @@ export async function processNode(
   try {
     // Transform node to DTIF composition
     const toExportNode = await toComposition(node, {
+      geometry: false,
       ...options,
       gradientPaint: {
         ...(options.gradientPaint ?? {}),

@@ -1,9 +1,13 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
+import { TTransformNodeOptions } from '@/types';
 import { TEffect, TRectangleNode, TVectorPath } from '@pda/types/dtif';
 
 export async function transformRectangleNode(
-  node: RectangleNode
+  node: RectangleNode,
+  options: TTransformNodeOptions
 ): Promise<TRectangleNode> {
+  const { geometry = true } = options;
+
   return {
     type: 'RECTANGLE',
     // Base node mixin
@@ -19,8 +23,12 @@ export async function transformRectangleNode(
     // Constraints mixin
     constraints: node.constraints,
     // Geometry mixin
-    fillGeometry: node.fillGeometry as TVectorPath[],
-    strokeGeometry: node.strokeGeometry as TVectorPath[],
+    geometry: geometry
+      ? {
+          fill: node.fillGeometry as TVectorPath[],
+          stroke: node.strokeGeometry as TVectorPath[],
+        }
+      : undefined,
     // Rectangle corner mixin
     bottomLeftRadius: node.bottomLeftRadius,
     bottomRightRadius: node.bottomRightRadius,
