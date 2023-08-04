@@ -6,13 +6,13 @@ import {
   TTransformNodeOptions,
   TTypeFaceWithoutContent,
 } from '@/types';
-import { TTextNode } from '@pda/types/dtif';
+import { TEffect, TTextNode, TVectorPath } from '@pda/types/dtif';
 import { extractErrorData } from '@pda/utils';
 
 export async function transformTextNode(
   node: TextNode,
   options: TTransformNodeOptions
-) {
+): Promise<TTextNode> {
   const fontName = excludeMixed('fontName', node);
   const fontWeight = excludeMixed('fontWeight', node);
   const fontSize = excludeMixed('fontSize', node);
@@ -62,17 +62,17 @@ export async function transformTextNode(
     // Constraints mixin
     constraints: node.constraints,
     // Geometry mixin
-    fillGeometry: node.fillGeometry,
-    strokeGeometry: node.strokeGeometry,
+    fillGeometry: node.fillGeometry as TVectorPath[],
+    strokeGeometry: node.strokeGeometry as TVectorPath[],
     // Blend mixin
     blendMode: node.blendMode,
     opacity: node.opacity,
     isMask: node.isMask,
     // Effect mixin
-    effects: node.effects,
-    // Fills mixin
-    fills: [] as string[], // Will be set by Composition class
-  } as TTextNode;
+    effects: node.effects as TEffect[],
+    // Fill mixin
+    fill: { paintIds: [] }, // Will be set by Composition class
+  };
 }
 
 async function resolveFontContent(

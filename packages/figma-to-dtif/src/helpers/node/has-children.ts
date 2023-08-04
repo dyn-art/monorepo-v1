@@ -5,5 +5,5 @@ export function hasChildrenFigma(obj: any): obj is ChildrenMixin {
 }
 
 export function hasChildrenDTIF(obj: any): obj is TChildrenMixin {
-  return obj != null && typeof obj === 'object' && 'children' in obj;
+  return obj != null && typeof obj === 'object' && 'childIds' in obj;
 }

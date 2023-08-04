@@ -1,10 +1,10 @@
 import { getElementId } from '@/helpers/other';
 import { TBlendMode, TPaint } from '@pda/types/dtif';
-import { Watcher } from '../../Watcher';
+import { RemoveFunctions, Watcher } from '../../Watcher';
 import { D3Node } from '../../nodes';
 import { Fill } from '../Fill';
 
-export class Paint<GWatchedObj extends Paint<any> = Paint<any>> {
+export class Paint {
   protected readonly _type: string;
 
   // Base paint mixin
@@ -12,7 +12,7 @@ export class Paint<GWatchedObj extends Paint<any> = Paint<any>> {
   protected _blendMode: TBlendMode;
   protected _isVisible: boolean;
 
-  protected readonly _watcher: Watcher<GWatchedObj>;
+  protected readonly _watcher: Watcher<TWatchedPaint>;
   protected readonly _fill: () => Fill;
 
   // D3
@@ -68,6 +68,8 @@ export class Paint<GWatchedObj extends Paint<any> = Paint<any>> {
     return rootWrapperNode;
   }
 }
+
+type TWatchedPaint = RemoveFunctions<Paint>;
 
 export type TPaintOptions = {
   type?: string;

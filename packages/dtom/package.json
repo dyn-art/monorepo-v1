@@ -1,7 +1,7 @@
 {
   "name": "@pda/dtom",
   "version": "0.0.0",
-  "description": "Provides utilities to convert the Design Tree Interchange Format (DTIF) into SVG.",
+  "description": "Construct DTOM (Design Tree Object Model) based on DTIF (Design Tree Interchange Format).",
   "private": true,
   "source": "./src/index.ts",
   "main": "./dist/cjs/index.js",

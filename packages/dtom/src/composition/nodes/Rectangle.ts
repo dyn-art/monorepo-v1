@@ -1,11 +1,12 @@
+import { TCreateRectanglePathProps, createRectanglePath } from '@/helpers';
 import {
-  TCreateRectanglePathProps,
-  createRectanglePath,
-} from '@/helpers/paths';
-import { TRectangleCornerMixin, TRectangleNode } from '@pda/types/dtif';
+  TComposition,
+  TRectangleCornerMixin,
+  TRectangleNode,
+} from '@pda/types/dtif';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
-import { Fill } from '../fills';
+import { Fill } from '../fill';
 import { CompositionNode, D3Node, ShapeNode } from './base';
 
 export class Rectangle extends ShapeNode {
@@ -48,7 +49,7 @@ export class Rectangle extends ShapeNode {
     this._d3FillNodeId = this.getD3NodeId('fill');
   }
 
-  public async init(parent: D3Node) {
+  public async init(parent: D3Node, dtifComposition: TComposition) {
     if (this._forInit == null) {
       return this;
     }
@@ -72,7 +73,7 @@ export class Rectangle extends ShapeNode {
       return this;
     }
     // and append fill paints
-    this._fill.init(fillWrapperNode);
+    this._fill.init(fillWrapperNode, dtifComposition);
 
     this._forInit = null;
     return this;

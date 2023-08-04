@@ -2,8 +2,8 @@ import { FailedToResolveRootNodeException } from '@/exceptions';
 import {
   hasChildrenDTIF,
   hasChildrenFigma,
-  hasFillsDTIF,
-  hasFillsFigma,
+  hasFillDTIF,
+  hasFillFigma,
   resetDTIFNodeTransform,
 } from '@/helpers';
 import { logger } from '@/logger';
@@ -123,7 +123,7 @@ export class Composition {
       height: this._toTransformRootNode.height,
       nodes: this.nodes,
       paints: this.paints,
-      root: this._rootId,
+      rootId: this._rootId,
     };
 
     // Remove temporary export container
@@ -173,10 +173,10 @@ export class Composition {
         const node = await transformNode(toTransformNode.node, options);
         this.nodes[toTransformNode.id] = node;
         if (hasChildrenDTIF(node)) {
-          node.children = toTransformNode.childrenIds;
+          node.childIds = toTransformNode.childrenIds;
         }
-        if (hasFillsDTIF(node)) {
-          node.fills = toTransformNode.paintIds;
+        if (hasFillDTIF(node)) {
+          node.fill = { paintIds: toTransformNode.paintIds };
         }
       } catch (error) {
         const errorData = extractErrorData(error);
@@ -239,7 +239,7 @@ export class Composition {
       }
 
       // Discover fill paints
-      if (hasFillsFigma(node) && Array.isArray(node.fills)) {
+      if (hasFillFigma(node) && Array.isArray(node.fills)) {
         node.fills.forEach((paint) => {
           const paintId = `${shortId()}-${paintCount++}`;
           this._toTransformPaints.push({ id: paintId, paint, node });

@@ -1,9 +1,13 @@
-import { TFrameNode, TRectangleCornerMixin } from '@pda/types/dtif';
+import {
+  TComposition,
+  TFrameNode,
+  TRectangleCornerMixin,
+} from '@pda/types/dtif';
 import { notEmpty } from '@pda/utils';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
 import { appendNode } from '../append';
-import { Fill } from '../fills';
+import { Fill } from '../fill';
 import { CompositionNode, D3Node, ShapeNode } from './base';
 
 export class Frame extends ShapeNode {
@@ -62,7 +66,7 @@ export class Frame extends ShapeNode {
     this._d3ChildrenWrapperNodeId = this.getD3NodeId('children');
   }
 
-  public async init(parent: D3Node) {
+  public async init(parent: D3Node, dtifComposition: TComposition) {
     if (this._forInit == null) {
       return this;
     }
@@ -94,14 +98,15 @@ export class Frame extends ShapeNode {
     }
     // and append children
     await Promise.all(
-      node.children.map(async (child) => {
+      node.childIds.map(async (childId) => {
         // Create node
         const node = await appendNode(childWrapperNode, {
-          node: child,
-          scene: this.composition,
+          node: dtifComposition.nodes[childId],
+          composition: this.composition,
+          dtifComposition,
         });
         if (node != null) {
-          // Add node to scene
+          // Add node to composition
           this.composition.addNode(node);
 
           // Add id to this nodes children ids
@@ -116,7 +121,7 @@ export class Frame extends ShapeNode {
       return this;
     }
     // and append fill paints
-    this._fill.init(fillWrapperNode);
+    this._fill.init(fillWrapperNode, dtifComposition);
 
     this._forInit = null;
     return this;

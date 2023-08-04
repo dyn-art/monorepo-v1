@@ -1,6 +1,5 @@
 import { coreService } from '@/core/api';
 import { TComposition } from '@pda/types/dtif';
-import { shortId } from '@pda/utils';
 import { LoaderArgs, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';
@@ -13,21 +12,21 @@ export const links = () => [...compositionLinks()];
 
 export async function loader(args: LoaderArgs) {
   const {
-    params: { canvasId },
+    params: { compositionId },
   } = args;
-  let scene: TComposition | null = null;
-  if (canvasId != null) {
-    scene = await coreService.downloadJsonFromS3(canvasId);
+  let composition: TComposition | null = null;
+  if (compositionId != null) {
+    composition = await coreService.downloadJsonFromS3(compositionId);
   }
   return json<TLoader>({
-    id: canvasId ?? shortId(),
-    scene,
+    id: compositionId,
+    composition,
   });
 }
 
 const D3CanvasId: React.FC = () => {
-  const { id, scene: _scene } = useLoaderData<typeof loader>();
-  const scene: TComposition | null = _scene as any;
+  const { id, composition: _composition } = useLoaderData<typeof loader>();
+  const composition: TComposition | null = _composition as any;
 
   // ============================================================================
   // Render
@@ -35,8 +34,8 @@ const D3CanvasId: React.FC = () => {
 
   return (
     <div>
-      <h1>{id}</h1>
-      {scene != null && <Composition scene={scene} />}
+      <h1>{id ?? 'Not found'}</h1>
+      {composition != null && <Composition composition={composition} />}
     </div>
   );
 };
@@ -44,6 +43,6 @@ const D3CanvasId: React.FC = () => {
 export default D3CanvasId;
 
 type TLoader = {
-  id: string;
-  scene: TComposition | null;
+  id?: string;
+  composition: TComposition | null;
 };

@@ -1,4 +1,4 @@
-import { InteractiveComposition } from '@pda/dtif-to-svg';
+import { InteractiveComposition } from '@pda/dtom';
 import { TVector } from '@pda/types/dtif';
 import React from 'react';
 

@@ -1,7 +1,7 @@
-import { TFillsMixin } from '@pda/types/dtif';
+import { TComposition, TFillMixin } from '@pda/types/dtif';
 import { appendPaint } from '../append';
 import { D3Node, ShapeNode } from '../nodes';
-import { Paint } from './paint';
+import { Paint } from './paints';
 
 export class Fill {
   private readonly _paints: Paint[] = [];
@@ -9,29 +9,29 @@ export class Fill {
 
   // Init
   private _forInit: {
-    paints: TFillsMixin['fills'];
+    fill: TFillMixin['fill'];
   } | null;
 
-  constructor(paints: TFillsMixin['fills'], node: ShapeNode) {
+  constructor(fill: TFillMixin['fill'], node: ShapeNode) {
     this._forInit = {
-      paints,
+      fill,
     };
     this._node = () => node;
   }
 
-  public async init(parent: D3Node) {
+  public async init(parent: D3Node, dtifComposition: TComposition) {
     if (this._forInit == null) {
       return this;
     }
-    const { paints } = this._forInit;
+    const { fill } = this._forInit;
 
     // Append paints
     await Promise.all(
-      paints.map(async (dtifPaint) => {
+      fill.paintIds.map(async (paintId) => {
         // Create paint
         const paint = await appendPaint(parent, {
           fill: this,
-          paint: dtifPaint,
+          paint: dtifComposition.paints[paintId],
         });
         if (paint != null) {
           // Add paint to fill

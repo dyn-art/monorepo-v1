@@ -55,7 +55,7 @@ export type TComposition = {
   /**
    * The root node id of the composition.
    */
-  root: string;
+  rootId: string;
   /**
    * Nodes of the composition.
    */
@@ -153,7 +153,7 @@ export type TPolygonNode = {
 /**
  * The text node represents text where both the whole node
  * or individual character ranges can have properties
- * such as color (fills), font size, font name, etc.
+ * such as color (paints), font size, font name, etc.
  */
 export type TTextNode = {
   type: 'TEXT';
@@ -262,7 +262,7 @@ export type TCompositionNodeMixin = TBaseNodeMixin &
 export type TShapeNodeMixin = TCompositionNodeMixin &
   TEffectsMixin &
   TGeometryMixin &
-  TFillsMixin &
+  TFillMixin &
   TConstraintsMixin;
 
 export type TRectangleCornerMixin = {
@@ -305,7 +305,7 @@ export type TChildrenMixin = {
    * That is, the first child in the array is the bottommost layer in the scene,
    * and the last child in the array is the topmost layer.
    */
-  children: Array<string>;
+  childIds: string[];
 };
 
 export type TLayoutMixin = {
@@ -334,11 +334,13 @@ export type TConstraintsMixin = {
   };
 };
 
-export type TFillsMixin = {
-  /**
-   * The paints used to fill the area of the shape.
-   */
-  fills: Array<string>;
+export type TFillMixin = {
+  fill: {
+    /**
+     * The paintIds used to fill the area of the shape.
+     */
+    paintIds: string[];
+  };
 };
 
 export type TCompositionMixin = {
@@ -378,7 +380,7 @@ export type TEffectsMixin = {
 
 export type TGeometryMixin = {
   /**
-   * An array of paths representing the object fills relative to the node.
+   * An array of paths representing the object fill relative to the node.
    */
   fillGeometry: TVectorPath[];
   /**

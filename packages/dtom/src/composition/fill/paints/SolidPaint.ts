@@ -1,16 +1,19 @@
 import { rgbToCSS } from '@/helpers/css';
 import { TRGB, TSolidPaint } from '@pda/types/dtif';
 import colorConvert from 'color-convert';
+import { RemoveFunctions, Watcher } from '../../Watcher';
 import { D3Node, ShapeNode } from '../../nodes';
 import { Fill } from '../Fill';
 import { Paint } from './Paint';
 
-export class SolidPaint extends Paint<SolidPaint> {
+export class SolidPaint extends Paint {
   private _color: TRGB;
 
   // D3 ids
   private readonly _d3RootNodeId: string;
   private readonly _d3PaintNodeId: string;
+
+  protected readonly _watcher: Watcher<TWatchedSolidPaint>;
 
   // Init
   private _forInit: {
@@ -124,3 +127,5 @@ export class SolidPaint extends Paint<SolidPaint> {
     return root;
   }
 }
+
+type TWatchedSolidPaint = RemoveFunctions<SolidPaint>;

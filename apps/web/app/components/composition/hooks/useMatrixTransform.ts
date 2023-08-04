@@ -1,4 +1,4 @@
-import { extractTransformMatrixData } from '@pda/dtif-to-svg';
+import { extractTransformMatrixData } from '@pda/dtom';
 import { TTransform } from '@pda/types/dtif';
 import React from 'react';
 

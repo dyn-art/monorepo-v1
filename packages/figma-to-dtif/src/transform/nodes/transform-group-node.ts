@@ -11,7 +11,7 @@ export async function transformGroupNode(node: GroupNode): Promise<TGroupNode> {
     isLocked: node.locked,
     isVisible: node.visible,
     // Children mixin
-    children: [] as string[], // Will be set by Composition class
+    childIds: [] as string[], // Will be set by Composition class
     // Layout mixin
     height: node.height,
     width: node.width,

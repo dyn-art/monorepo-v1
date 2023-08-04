@@ -1,4 +1,4 @@
-import { RemoveFunctions, Watcher } from '@pda/dtif-to-svg';
+import { RemoveFunctions, Watcher } from '@pda/dtom';
 import React from 'react';
 
 export function useWatcher<

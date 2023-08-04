@@ -8,12 +8,12 @@ import styles from './styles.css';
 export const links = () => [{ rel: 'stylesheet', href: styles }];
 
 export const Composition: React.FC<TProps> = (props) => {
-  const { scene } = props;
+  const { composition } = props;
   const {
     d3Scene,
     isLoading,
     canvasRef: compositionCanvasRef,
-  } = useComposition(scene);
+  } = useComposition(composition);
 
   return (
     <div className="flex items-center justify-center">
@@ -21,8 +21,8 @@ export const Composition: React.FC<TProps> = (props) => {
         id={'scene'}
         className={'overflow-visible relative cursor-auto'}
         style={{
-          width: scene.width,
-          height: scene.height,
+          width: composition.width,
+          height: composition.height,
         }}
       >
         <Canvas canvasRef={compositionCanvasRef} />
@@ -33,5 +33,5 @@ export const Composition: React.FC<TProps> = (props) => {
 };
 
 type TProps = {
-  scene: TComposition;
+  composition: TComposition;
 };

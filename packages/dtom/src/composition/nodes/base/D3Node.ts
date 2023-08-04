@@ -1,4 +1,4 @@
-import { appendAttributes, appendCSS } from '@/helpers/d3';
+import { appendAttributes, appendCSS } from '@/helpers';
 import { logger } from '@/logger';
 import { TD3Selection } from '@/types';
 import { shortId } from '@pda/utils';

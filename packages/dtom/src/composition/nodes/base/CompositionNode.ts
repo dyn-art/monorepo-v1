@@ -1,6 +1,4 @@
-import { transformToCSS } from '@/helpers/css';
-import { copyMatrix } from '@/helpers/math';
-import { getElementId } from '@/helpers/other';
+import { copyMatrix, getElementId, transformToCSS } from '@/helpers';
 import {
   TBlendMixin,
   TCompositionMixin,

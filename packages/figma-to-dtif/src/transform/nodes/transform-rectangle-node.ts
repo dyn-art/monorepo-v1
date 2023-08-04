@@ -31,7 +31,7 @@ export async function transformRectangleNode(
     opacity: node.opacity,
     isMask: node.isMask,
     effects: node.effects as TEffect[],
-    // Fills mixin
-    fills: [] as string[], // Will be set by Composition class
+    // Fill mixin
+    fill: { paintIds: [] }, // Will be set by Composition class
   };
 }

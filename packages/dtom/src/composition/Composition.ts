@@ -1,13 +1,15 @@
 import d3 from '@/d3';
-import { appendAttributes, appendCSS } from '@/helpers/d3';
+import { appendAttributes, appendCSS } from '@/helpers';
 import { TComposition } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { appendNode } from './append';
+import { Fill } from './fill';
 import { CompositionNode, D3Node } from './nodes';
 
 export class Composition {
   protected readonly _nodes: Record<string, CompositionNode>;
+  protected readonly _fills: Record<string, Fill>;
   protected _rootNodeId: string | null;
 
   private readonly _name: string;
@@ -22,15 +24,15 @@ export class Composition {
 
   // Init
   private _forInit: {
-    scene: TComposition;
+    dtifComposition: TComposition;
   } | null;
 
-  constructor(composition: TComposition) {
-    this._forInit = { scene: composition };
-    this._version = composition.version;
-    this._name = composition.name;
-    this._width = composition.width;
-    this._height = composition.height;
+  constructor(dtifComposition: TComposition) {
+    this._forInit = { dtifComposition };
+    this._version = dtifComposition.version;
+    this._name = dtifComposition.name;
+    this._width = dtifComposition.width;
+    this._height = dtifComposition.height;
     this._nodes = {};
     this._d3Node = null; // Set by init()
     this._rootNodeId = null; // Set by init()
@@ -41,15 +43,16 @@ export class Composition {
     if (this._forInit == null) {
       return this;
     }
-    const { scene } = this._forInit;
+    const { dtifComposition } = this._forInit;
 
     // Create D3 node
-    const svgNode = await Composition.createSvg(scene);
+    const svgNode = await Composition.createSvg(dtifComposition);
 
     // Create root element
     const root = await appendNode(svgNode, {
-      node: scene.root,
-      scene: this,
+      node: dtifComposition.nodes[dtifComposition.rootId],
+      composition: this,
+      dtifComposition: dtifComposition,
     });
     if (root != null) {
       this.addNode(root);

@@ -1,5 +1,5 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
-import { TFrameNode } from '@pda/types/dtif';
+import { TEffect, TFrameNode, TVectorPath } from '@pda/types/dtif';
 
 export async function transformFrameNode(
   node: FrameNode | ComponentNode | InstanceNode
@@ -14,7 +14,7 @@ export async function transformFrameNode(
     isLocked: node.locked,
     isVisible: node.visible,
     // Children mixin
-    children: [] as string[], // Will be set by Composition class
+    childIds: [], // Will be set by Composition class
     // Layout mixin
     height: node.height,
     width: node.width,
@@ -22,8 +22,8 @@ export async function transformFrameNode(
     // Constraints mixin
     constraints: node.constraints,
     // Geometry mixin
-    fillGeometry: node.fillGeometry,
-    strokeGeometry: node.strokeGeometry,
+    fillGeometry: node.fillGeometry as TVectorPath[],
+    strokeGeometry: node.strokeGeometry as TVectorPath[],
     // Rectangle corner mixin
     bottomLeftRadius: node.bottomLeftRadius,
     bottomRightRadius: node.bottomRightRadius,
@@ -34,8 +34,8 @@ export async function transformFrameNode(
     opacity: node.opacity,
     isMask: node.isMask,
     // Effect mixin
-    effects: node.effects,
-    // Fills mixin
-    fills: [] as string[], // Will be set by Composition class
-  } as TFrameNode;
+    effects: node.effects as TEffect[],
+    // Fill mixin
+    fill: { paintIds: [] }, // Will be set by Composition class
+  };
 }

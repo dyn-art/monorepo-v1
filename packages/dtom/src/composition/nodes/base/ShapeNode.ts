@@ -10,7 +10,7 @@ import {
 } from '@pda/types/dtif';
 import { Composition } from '../../Composition';
 import { RemoveFunctions, Watcher } from '../../Watcher';
-import { Fill } from '../../fills';
+import { Fill } from '../../fill';
 import { CompositionNode, TNodeOptions } from './CompositionNode';
 
 export abstract class ShapeNode extends CompositionNode {
@@ -28,7 +28,7 @@ export abstract class ShapeNode extends CompositionNode {
     options: TNodeOptions = {}
   ) {
     super(node, scene, options);
-    this._fill = new Fill(node.fills, this);
+    this._fill = new Fill(node.fill, this);
 
     // Apply mixins
     this._effectsMixin = {

@@ -1,4 +1,4 @@
-import { InteractiveComposition, d3 } from '@pda/dtif-to-svg';
+import { InteractiveComposition, d3 } from '@pda/dtom';
 import { TComposition } from '@pda/types/dtif';
 import React from 'react';
 
