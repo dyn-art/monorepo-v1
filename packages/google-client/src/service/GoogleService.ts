@@ -10,6 +10,8 @@ export class GoogleService {
   public readonly googleClient: OpenAPIFetchClient<paths>;
   private readonly _rawClient: RawFetchClient;
 
+  public static REGULAR_FONT_WEIGHT = 400;
+
   constructor(googleClient: OpenAPIFetchClient<paths>) {
     this.googleClient = googleClient;
     this._rawClient = new RawFetchClient();
@@ -41,7 +43,10 @@ export class GoogleService {
       style?: 'italic' | 'regular';
     } = {}
   ): Promise<string | null> {
-    const { fontWeight = 400, style = 'regular' } = options;
+    const {
+      fontWeight = GoogleService.REGULAR_FONT_WEIGHT,
+      style = 'regular',
+    } = options;
     let fileUrl: string | null = null;
 
     // Fetch matching fonts to font family
@@ -55,16 +60,22 @@ export class GoogleService {
     }
 
     // Build font variant identifier
+    // e.g. 'regular', '100', '200', '200itlaic'
     let variant: string;
-    if (fontWeight === 400) {
+    if (fontWeight === GoogleService.REGULAR_FONT_WEIGHT) {
       variant = style;
     } else {
       variant = `${fontWeight}${style === 'regular' ? '' : style}`;
     }
 
-    // Check whether found fonts matches searched font variant
+    // Check whether constructed font variant identifier is present
+    // in matched font family variants (returned by google API)
     for (const item of fonts) {
-      if (item.files != null && variant in item.files) {
+      if (
+        item.variants != null &&
+        item.variants.includes(variant) &&
+        item.files != null
+      ) {
         fileUrl = item.files[variant] ?? null;
         if (fileUrl != null) {
           break;

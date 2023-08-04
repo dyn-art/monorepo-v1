@@ -1,7 +1,7 @@
 import { TComposition } from '@pda/types/dtif';
 import fs from 'fs';
 import path from 'path';
-import { Composition } from '../scene';
+import { Composition } from '../composition';
 
 function cleanStr(str: string) {
   return str.replace(/[\s\n]/g, '');
