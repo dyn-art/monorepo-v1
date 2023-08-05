@@ -40,12 +40,12 @@ export class GoogleService {
     family: string,
     options: {
       fontWeight?: number;
-      style?: 'italic' | 'regular';
+      fontStyle?: 'italic' | 'regular';
     } = {}
   ): Promise<string | null> {
     const {
       fontWeight = GoogleService.REGULAR_FONT_WEIGHT,
-      style = 'regular',
+      fontStyle = 'regular',
     } = options;
     let fileUrl: string | null = null;
 
@@ -59,24 +59,16 @@ export class GoogleService {
       return null;
     }
 
-    // Build font variant identifier
-    // e.g. 'regular', '100', '200', '200itlaic'
-    let variant: string;
-    if (fontWeight === GoogleService.REGULAR_FONT_WEIGHT) {
-      variant = style;
-    } else {
-      variant = `${fontWeight}${style === 'regular' ? '' : style}`;
-    }
-
-    // Check whether constructed font variant identifier is present
-    // in matched font family variants (returned by google API)
+    // Check whether searched font variant is present
+    // in googles matched font family variants
+    const fontVariantKey = this.getFontVariantKey(fontWeight, fontStyle);
     for (const item of fonts) {
       if (
         item.variants != null &&
-        item.variants.includes(variant) &&
+        item.variants.includes(fontVariantKey) &&
         item.files != null
       ) {
-        fileUrl = item.files[variant] ?? null;
+        fileUrl = item.files[fontVariantKey] ?? null;
         if (fileUrl != null) {
           break;
         }
@@ -113,6 +105,21 @@ export class GoogleService {
       throw response.error;
     } else {
       return new Uint8Array(response.data);
+    }
+  }
+
+  // Build font variant identifier key
+  // e.g. 'regular', '100', '200', '200itlaic'
+  public getFontVariantKey(
+    fontWeight: number = GoogleService.REGULAR_FONT_WEIGHT,
+    fontStyle: 'regular' | 'italic' = 'regular'
+  ) {
+    if (fontWeight === GoogleService.REGULAR_FONT_WEIGHT) {
+      return fontStyle;
+    } else if (fontStyle === 'regular') {
+      return `${fontWeight}`;
+    } else {
+      return `${fontWeight}${fontStyle}`;
     }
   }
 }

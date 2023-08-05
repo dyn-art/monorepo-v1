@@ -10,7 +10,7 @@ describe('google tests', () => {
       'Roboto Serif',
       {
         fontWeight: 100,
-        style: 'italic',
+        fontStyle: 'italic',
       }
     );
 

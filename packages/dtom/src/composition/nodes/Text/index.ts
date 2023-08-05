@@ -1,7 +1,7 @@
 import { TTextNode } from '@pda/types/dtif';
-import { Composition } from '../Composition';
-import { RemoveFunctions, Watcher } from '../Watcher';
-import { CompositionNode, D3Node, ShapeNode } from './base';
+import { Composition } from '../../Composition';
+import { RemoveFunctions, Watcher } from '../../Watcher';
+import { CompositionNode, D3Node, ShapeNode } from '../base';
 
 export class Text extends ShapeNode {
   private _textAlignHorizontal: TTextNode['textAlignHorizontal'];
