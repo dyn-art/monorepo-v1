@@ -7,15 +7,15 @@ import { segmentText } from './segment-text';
 
 export class Font {
   public readonly name: string;
-  private readonly _variants: Record<string, TFontVariant>;
-  private _defaultVariantKey: string | null;
+  private readonly _variants: Record<string, TFontVariant> = {};
+  private _defaultVariantKey: string | null = null;
+
+  private readonly _cachedChars: Record<string, TFontVariant> = {};
 
   public static REGULAR_FONT_WEIGHT = 400;
 
   constructor(name: string) {
     this.name = name;
-    this._variants = {};
-    this._defaultVariantKey = null;
   }
 
   public getVariant(
@@ -56,9 +56,11 @@ export class Font {
     return fontVariant;
   }
 
-  public has(word: string) {
-    // TODO: check in font if font can display word
-    return true;
+  public has(word: string): boolean {
+    if (word === ' ' || word === '\n') {
+      return true;
+    }
+    return this.resolveVariant(word) == null;
   }
 
   // TODO:
@@ -68,6 +70,38 @@ export class Font {
     );
 
     return false;
+  }
+
+  private resolveVariant(word: string): TFontVariant | null {
+    // Check whether char has cached variant
+    if (this._cachedChars[word] != null) {
+      return this._cachedChars[word] as TFontVariant;
+    }
+
+    // Try to find variant that has a glyph for each char in the word
+    let finalVariant: TFontVariant | null = null;
+    for (const variantKey in this._variants) {
+      const variant = this._variants[variantKey];
+      if (variant != null && variant.font.hasAllGlyphs(word)) {
+        finalVariant = variant;
+        break;
+      }
+    }
+
+    // If not variant found, try to use fallback
+    if (finalVariant == null) {
+      finalVariant =
+        this._defaultVariantKey != null
+          ? this._variants[this._defaultVariantKey]
+          : null;
+    }
+
+    // Add variant to cache
+    if (finalVariant != null) {
+      this._cachedChars[word] = finalVariant;
+    }
+
+    return finalVariant;
   }
 
   // ============================================================================
