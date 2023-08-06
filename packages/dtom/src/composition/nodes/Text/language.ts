@@ -40,7 +40,7 @@ const SPECIAL_CODES = {
 
 export type TSpecialCode = keyof typeof SPECIAL_CODES;
 export type TLanguageCode = keyof typeof LANGUAGE_CODES;
-export type TLocaleCode = TSpecialCode | TLanguageCode;
+export type TLocaleCode = TSpecialCode | TLanguageCode | 'unknown';
 
 export const localeCodes = [
   ...Object.keys(LANGUAGE_CODES),

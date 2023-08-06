@@ -64,6 +64,10 @@ export type TComposition = {
    * Paints of the composition.
    */
   paints: Record<string, TPaint>;
+  /**
+   * Typefaces of the composition.
+   */
+  typefaces: Record<string, TTypeface>;
 };
 
 // ============================================================================
@@ -170,9 +174,13 @@ export type TTextNode = {
    */
   fontSize: number;
   /**
-   * The font of the text.
+   * The primary typeface of the text.
    */
-  font: TTypeFace;
+  typefaceId?: string;
+  /**
+   * List of fallback typefaces to use when a character doesn't exist in the primary font.
+   */
+  fallbackTypefaceIds: string[];
   /**
    * The spacing between the individual characters.
    */
@@ -634,7 +642,7 @@ export type TTransform = [
 // Font
 // ============================================================================
 
-export type TTypeFace = {
+export type TTypeface = {
   /**
    * The family of the font (e.g. "Roboto").
    */

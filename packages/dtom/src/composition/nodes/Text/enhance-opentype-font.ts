@@ -18,7 +18,7 @@ export function enhanceOpenTypeFont(
   };
 
   // Method to check whether the font has a matching glyph for each char in the word
-  enhancedFont.hasAllGlyphs = (word: string) => {
+  enhancedFont.canDisplay = (word: string) => {
     enhancedFont._charsWithoutMatchingGlyph = [];
     enhancedFont.stringToGlyphs(word);
     const supportsAllChars =
@@ -32,5 +32,5 @@ export function enhanceOpenTypeFont(
 
 export interface TEnhancedOpenTypeFont extends opentype.Font {
   _charsWithoutMatchingGlyph?: string[];
-  hasAllGlyphs: (word: string) => boolean;
+  canDisplay: (word: string) => boolean;
 }

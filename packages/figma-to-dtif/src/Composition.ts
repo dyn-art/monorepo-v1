@@ -1,15 +1,21 @@
 import { FailedToResolveRootNodeException } from '@/exceptions';
 import {
+  excludeMixed,
   hasChildrenDTIF,
   hasChildrenFigma,
   hasFillDTIF,
   hasFillFigma,
+  isTextNode,
   resetDTIFNodeTransform,
+  sha256,
 } from '@/helpers';
 import { logger } from '@/logger';
-import { transformNode, transformPaint } from '@/transform';
-import { TTransformNodeOptions } from '@/types';
-import { TComposition, TNode, TPaint } from '@pda/types/dtif';
+import { transformNode, transformPaint, transformTypeface } from '@/transform';
+import {
+  TTransformNodeOptions,
+  TTypeFaceWithoutContent as TTypefaceWithoutContent,
+} from '@/types';
+import { TComposition, TNode, TPaint, TTypeface } from '@pda/types/dtif';
 import { extractErrorData, shortId } from '@pda/utils';
 
 export class Composition {
@@ -20,13 +26,17 @@ export class Composition {
   public readonly nodes: Record<string, TNode> = {};
   private _rootId: string;
 
-  // TODO: cache fonts so not fetched & uploaded twice
-  // TODO: cache images so not exported & uploaded twice
-
   // Paints
-  private _toTransformPaints: TToTransformPaint[] = [];
+  private _toTransformPaints: Map<string, Omit<TToTransformPaint, 'id'>> =
+    new Map();
   private _failedToTransformPaints: TToTransformPaint[] = [];
   public readonly paints: Record<string, TPaint> = {};
+
+  // Fonts
+  private _toTransformTypefaces: Map<string, Omit<TToTransformTypeface, 'id'>> =
+    new Map();
+  private _failedToTransformTypefaces: TToTransformTypeface[] = [];
+  public readonly typefaces: Record<string, TTypeface> = {};
 
   public static readonly supportedNodeTypes = [
     'FRAME',
@@ -97,11 +107,24 @@ export class Composition {
     await this.transformPaints(options);
     if (this._failedToTransformPaints.length > 0) {
       logger.error(
-        `One or more fill paints failed the transformation to DTIF paint. Failed fill paints: ${this._failedToTransformNodes
+        `One or more fill paints failed the transformation to DTIF paint. Failed fill paints: ${this._failedToTransformPaints
           .map((toTransformPaint) => toTransformPaint.id)
           .join(', ')}`,
         {
           failedPaints: [...this._failedToTransformPaints],
+        }
+      );
+    }
+
+    // Transform typefaces
+    await this.transformTypefaces(options);
+    if (this._failedToTransformTypefaces.length > 0) {
+      logger.error(
+        `One or more typefaces failed the transformation and export to DTIF typefaces. Failed typefaces: ${this._failedToTransformTypefaces
+          .map((toTransformTypeface) => toTransformTypeface.id)
+          .join(', ')}`,
+        {
+          failedPaints: [...this._failedToTransformTypefaces],
         }
       );
     }
@@ -122,6 +145,7 @@ export class Composition {
       height: this._toTransformRootNode.height,
       nodes: this.nodes,
       paints: this.paints,
+      typefaces: this.typefaces,
       rootId: this._rootId,
     };
 
@@ -177,6 +201,9 @@ export class Composition {
         if (hasFillDTIF(node)) {
           node.fill = { paintIds: toTransformNode.paintIds };
         }
+        if (isTextNode(node)) {
+          node.typefaceId = toTransformNode.typefaceId ?? undefined;
+        }
       } catch (error) {
         const errorData = extractErrorData(error);
         logger.error(
@@ -188,13 +215,14 @@ export class Composition {
   }
 
   public async transformPaints(options: TTransformNodeOptions) {
-    const toTransformPaints = this._toTransformPaints.concat(
-      this._failedToTransformPaints
-    );
+    const toTransformPaints = Array.from(
+      this._toTransformPaints,
+      ([key, value]) => ({ id: key, ...value })
+    ).concat(this._failedToTransformPaints);
     this._failedToTransformPaints = [];
-    this._toTransformPaints = [];
+    this._toTransformPaints = new Map();
 
-    // Transform nodes
+    // Transform paints
     for (const toTransformPaint of toTransformPaints) {
       try {
         const paint = await transformPaint(
@@ -213,17 +241,44 @@ export class Composition {
     }
   }
 
+  public async transformTypefaces(options: TTransformNodeOptions) {
+    const toTransformTypefaces = Array.from(
+      this._toTransformTypefaces,
+      ([key, value]) => ({ id: key, ...value })
+    ).concat(this._failedToTransformTypefaces);
+    this._failedToTransformTypefaces = [];
+    this._toTransformTypefaces = new Map();
+
+    // Transform typefaces
+    for (const toTransformTypeface of toTransformTypefaces) {
+      try {
+        const typeface = await transformTypeface(
+          toTransformTypeface.typeface,
+          toTransformTypeface.node,
+          options
+        );
+        this.transformTypefaces[toTransformTypeface.id] = typeface;
+      } catch (error) {
+        const errorData = extractErrorData(error);
+        logger.error(
+          `Failed to transform typeface '${toTransformTypeface.id}' by error: ${errorData.message}`
+        );
+        this._failedToTransformTypefaces.push(toTransformTypeface);
+      }
+    }
+  }
+
   public lookupNodes(): string | null {
-    let paintCount = 0;
     let nodeCount = 0;
     let rootId: string | null = null;
 
     this._toTransformNodes = [];
-    this._toTransformPaints = [];
+    this._toTransformPaints = new Map();
 
     const walk = (node: SceneNode, isRoot = false) => {
       const childrenIds: string[] = [];
       const paintIds: string[] = [];
+      let typefaceId: string | null = null;
       const nodeId = `${shortId()}-${nodeCount++}`;
       if (isRoot) {
         rootId = nodeId;
@@ -238,12 +293,33 @@ export class Composition {
       }
 
       // Discover fill paints
-      if (hasFillFigma(node) && Array.isArray(node.fills)) {
-        node.fills.forEach((paint) => {
-          const paintId = `${shortId()}-${paintCount++}`;
-          this._toTransformPaints.push({ id: paintId, paint, node });
+      if (hasFillFigma(node)) {
+        const fills = excludeMixed(node, 'fills');
+        fills.forEach((paint) => {
+          const paintId = sha256(JSON.stringify(paint));
+          if (!this._toTransformPaints.has(paintId)) {
+            this._toTransformPaints.set(paintId, { paint, node });
+          }
           paintIds.push(paintId);
         });
+      }
+
+      // Discover typeface
+      if (isTextNode(node)) {
+        const fontName = excludeMixed(node, 'fontName');
+        const fontWeight = excludeMixed(node, 'fontWeight');
+        const typeface: TTypefaceWithoutContent = {
+          family: fontName.family,
+          styleName: fontName.style,
+          fontWeight,
+          style: fontName.style.toLowerCase().includes('italic')
+            ? 'italic'
+            : 'regular',
+        };
+        typefaceId = sha256(JSON.stringify(typeface));
+        if (!this._toTransformTypefaces.has(typefaceId)) {
+          this._toTransformTypefaces.set(typefaceId, { node, typeface });
+        }
       }
 
       this._toTransformNodes.push({
@@ -251,6 +327,7 @@ export class Composition {
         node,
         childrenIds,
         paintIds,
+        typefaceId,
       });
 
       return nodeId;
@@ -275,10 +352,17 @@ type TToTransformNode = {
   node: SceneNode;
   childrenIds: string[];
   paintIds: string[];
+  typefaceId: string | null;
 };
 
 type TToTransformPaint = {
   id: string;
   node: SceneNode;
   paint: Paint;
+};
+
+type TToTransformTypeface = {
+  id: string;
+  node: TextNode;
+  typeface: TTypefaceWithoutContent;
 };

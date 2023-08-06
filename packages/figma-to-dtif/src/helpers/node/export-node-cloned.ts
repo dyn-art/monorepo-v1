@@ -39,12 +39,8 @@ export async function exportNodeCloned(
     // Export node
     const data = await exportNode(clone, exportNodeSettings as ExportSettings);
 
-    // Remove clone after successful export
-    clone.remove();
-
     return data;
-  } catch (error) {
+  } finally {
     clone.remove();
-    throw error;
   }
 }

@@ -1,160 +1,73 @@
-import opentype from 'opentype.js';
 import {
-  TEnhancedOpenTypeFont,
-  enhanceOpenTypeFont,
-} from './enhance-opentype-font';
-import { segmentText } from './segment-text';
+  TFontStyle,
+  TFontWeight,
+  TTypefaceContext,
+  Typeface,
+} from './Typeface';
+import { TLocaleCode } from './language';
 
 export class Font {
   public readonly name: string;
-  private readonly _variants: Record<string, TFontVariant> = {};
-  private _defaultVariantKey: string | null = null;
-
-  private readonly _cachedChars: Record<string, TFontVariant> = {};
-
-  public static REGULAR_FONT_WEIGHT = 400;
+  private readonly _typefaces: Record<string, Typeface> = {};
+  private _defaultTypefaceKey: string | null = null;
 
   constructor(name: string) {
     this.name = name;
   }
 
-  public getVariant(
-    fontWeight: TFontVariant['weight'],
-    fontStyle: TFontVariant['style'] = 'regular'
-  ): TFontVariant | null {
-    const variantKey = this.constructVariantKey(fontWeight, fontStyle);
-    return variantKey in this._variants ? this._variants[variantKey] : null;
+  public getTypeface(
+    fontWeight: TFontWeight,
+    fontStyle: TFontStyle = 'regular',
+    locale: TLocaleCode = 'unknown'
+  ): Typeface | null {
+    const typeFaceKey = Typeface.constructKey(fontWeight, fontStyle, locale);
+    return typeFaceKey in this._typefaces ? this._typefaces[typeFaceKey] : null;
   }
 
-  public addVariant(
-    data: Uint8Array | ArrayBuffer | Buffer,
-    context: TFontContentContext = {}
-  ): TFontVariant {
-    const {
-      style: fontStyle = 'regular',
-      weight: fontWeight = Font.REGULAR_FONT_WEIGHT,
-    } = context;
+  public resolveTypeface(
+    word: string,
+    context: { weight?: TFontWeight; style?: TFontStyle } = {},
+    options: { useFallback?: boolean } = {}
+  ): Typeface | null {
+    const { weight: fontWeight, style: fontStyle } = context;
+    const { useFallback = true } = options;
+    let finalTypeface: Typeface | null = null;
 
-    // Parse font data to opentype font
-    const variantKey = this.constructVariantKey(fontWeight, fontStyle);
-    const font = enhanceOpenTypeFont(
-      opentype.parse(this.toOpentypeCompatible(data))
-    );
-
-    const fontVariant = {
-      font,
-      style: fontStyle,
-      weight: fontWeight,
-    };
-    this._variants[variantKey] = fontVariant;
-
-    // Use first font as default font fallback
-    if (this._defaultVariantKey == null) {
-      this._defaultVariantKey = variantKey;
-    }
-
-    return fontVariant;
-  }
-
-  public has(word: string): boolean {
-    if (word === ' ' || word === '\n') {
-      return true;
-    }
-    return this.resolveVariant(word) == null;
-  }
-
-  // TODO:
-  public getMissingGraphemes(word: string) {
-    const missingGraphemes = segmentText(word, 'grapheme').filter(
-      (grapheme) => !this.has(word)
-    );
-
-    return false;
-  }
-
-  private resolveVariant(word: string): TFontVariant | null {
-    // Check whether char has cached variant
-    if (this._cachedChars[word] != null) {
-      return this._cachedChars[word] as TFontVariant;
-    }
-
-    // Try to find variant that has a glyph for each char in the word
-    let finalVariant: TFontVariant | null = null;
-    for (const variantKey in this._variants) {
-      const variant = this._variants[variantKey];
-      if (variant != null && variant.font.hasAllGlyphs(word)) {
-        finalVariant = variant;
+    // Try to find matching typeface that has a glyph for each char in the word
+    for (const typefaceKey in this._typefaces) {
+      const typeface = this._typefaces[typefaceKey];
+      const matchesWeight =
+        fontWeight == null || fontWeight === typeface.weight;
+      const matchesStyle = fontStyle == null || fontStyle === typeface.style;
+      if (matchesWeight && matchesStyle && typeface.canDisplay(word)) {
+        finalTypeface = typeface;
         break;
       }
     }
 
     // If not variant found, try to use fallback
-    if (finalVariant == null) {
-      finalVariant =
-        this._defaultVariantKey != null
-          ? this._variants[this._defaultVariantKey]
+    if (finalTypeface == null && useFallback) {
+      finalTypeface =
+        this._defaultTypefaceKey != null
+          ? this._typefaces[this._defaultTypefaceKey]
           : null;
     }
 
-    // Add variant to cache
-    if (finalVariant != null) {
-      this._cachedChars[word] = finalVariant;
-    }
-
-    return finalVariant;
+    return finalTypeface;
   }
 
-  // ============================================================================
-  // Helper
-  // ============================================================================
+  public addTypeface(
+    data: Uint8Array | ArrayBuffer | Buffer,
+    context: TTypefaceContext = {}
+  ): Typeface {
+    const typeFace = new Typeface(data, context);
+    this._typefaces[typeFace.key] = typeFace;
 
-  /**
-   * Helper method to build font variant identifier key.
-   *
-   * e.g. 'regular', '100', '200', '200itlaic'
-   */
-  private constructVariantKey(
-    fontWeight: TFontVariant['weight'] = Font.REGULAR_FONT_WEIGHT,
-    fontStyle: TFontVariant['style'] = 'regular'
-  ) {
-    if (fontWeight === Font.REGULAR_FONT_WEIGHT) {
-      return fontStyle;
-    } else if (fontStyle === 'regular') {
-      return `${fontWeight}`;
-    } else {
-      return `${fontWeight}${fontStyle}`;
-    }
-  }
-
-  /**
-   * Helper method to convert data to a format compatible with opentype.js.
-   * This function accepts an ArrayBuffer, a Uint8Array, or a Node.js Buffer.
-   * Note that Node.js Buffer is not available in browsers.
-   */
-  private toOpentypeCompatible(
-    data: ArrayBuffer | Uint8Array | Buffer
-  ): ArrayBuffer {
-    if ('buffer' in data) {
-      // If data has a 'buffer' property, it's a Uint8Array or a Node.js Buffer.
-      // Slice the buffer to get the correct portion.
-      return data.buffer.slice(
-        data.byteOffset,
-        data.byteOffset + data.byteLength
-      );
+    // Use first font as default font fallback
+    if (this._defaultTypefaceKey == null) {
+      this._defaultTypefaceKey = typeFace.key;
     }
 
-    // If data is already an ArrayBuffer, return it directly
-    return data as ArrayBuffer;
+    return typeFace;
   }
 }
-
-type TFontVariantMixin = {
-  weight: number;
-  style: 'regular' | 'italic';
-};
-
-type TFontVariant = {
-  font: TEnhancedOpenTypeFont;
-} & TFontVariantMixin;
-
-type TFontContentContext = Partial<TFontVariantMixin>;

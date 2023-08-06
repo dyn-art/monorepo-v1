@@ -1,4 +1,4 @@
-import { TTypeFace } from '@pda/types/dtif';
+import { TTypeface } from '@pda/types/dtif';
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
@@ -83,7 +83,7 @@ export type TTransformFontOptions = {
   resolveFontContent?: TResolveFontContent;
 };
 
-export type TTypeFaceWithoutContent = Omit<Omit<TTypeFace, 'content'>, 'hash'>;
+export type TTypeFaceWithoutContent = Omit<Omit<TTypeface, 'content'>, 'hash'>;
 
 export type TContentType = {
   name: string;

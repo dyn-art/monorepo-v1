@@ -78,9 +78,8 @@ export function createPaintNode(
   if (containerNode != null) {
     try {
       containerNode.appendChild(paintNode);
-    } catch (error) {
+    } finally {
       paintNode.remove();
-      throw error;
     }
   }
 
