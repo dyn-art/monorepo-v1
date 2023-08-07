@@ -28,13 +28,14 @@ export abstract class CompositionNode {
   protected _d3Node: D3Node | null;
 
   constructor(
+    id: string,
     node: TNode,
     composition: Composition,
     options: TNodeOptions = {}
   ) {
     const { type = 'node' } = options;
     this._type = type;
-    this._id = node.id;
+    this._id = id;
     this._name = node.name;
     this._watcher = new Watcher();
     this._composition = () => composition;

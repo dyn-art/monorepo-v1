@@ -1,13 +1,13 @@
 import { FailedToResolveRootNodeException } from '@/exceptions';
 import {
   excludeMixed,
+  h64,
   hasChildrenDTIF,
   hasChildrenFigma,
   hasFillDTIF,
   hasFillFigma,
   isTextNode,
   resetDTIFNodeTransform,
-  sha256,
 } from '@/helpers';
 import { logger } from '@/logger';
 import { transformNode, transformPaint, transformTypeface } from '@/transform';
@@ -257,7 +257,7 @@ export class Composition {
           toTransformTypeface.node,
           options
         );
-        this.transformTypefaces[toTransformTypeface.id] = typeface;
+        this.typefaces[toTransformTypeface.id] = typeface;
       } catch (error) {
         const errorData = extractErrorData(error);
         logger.error(
@@ -296,7 +296,7 @@ export class Composition {
       if (hasFillFigma(node)) {
         const fills = excludeMixed(node, 'fills');
         fills.forEach((paint) => {
-          const paintId = sha256(JSON.stringify(paint));
+          const paintId = h64(paint);
           if (!this._toTransformPaints.has(paintId)) {
             this._toTransformPaints.set(paintId, { paint, node });
           }
@@ -316,7 +316,7 @@ export class Composition {
             ? 'italic'
             : 'regular',
         };
-        typefaceId = sha256(JSON.stringify(typeface));
+        typefaceId = h64(typeface);
         if (!this._toTransformTypefaces.has(typefaceId)) {
           this._toTransformTypefaces.set(typefaceId, { node, typeface });
         }

@@ -13,7 +13,6 @@ export async function transformFrameNode(
     type: 'FRAME',
     clipsContent: node.clipsContent,
     // Base node mixin
-    id: node.id,
     name: node.name,
     // Scene node mixin
     isLocked: node.locked,

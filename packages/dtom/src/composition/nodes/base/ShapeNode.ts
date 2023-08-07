@@ -23,11 +23,12 @@ export abstract class ShapeNode extends CompositionNode {
   protected readonly _watcher: Watcher<TWatchedShapeNode>;
 
   constructor(
+    id: string,
     node: TShapeNode,
     scene: Composition,
     options: TNodeOptions = {}
   ) {
-    super(node, scene, options);
+    super(id, node, scene, options);
     this._fill = new Fill(node.fill, this);
 
     // Apply mixins
@@ -35,8 +36,7 @@ export abstract class ShapeNode extends CompositionNode {
       effects: node.effects,
     };
     this._geometryMixin = {
-      fillGeometry: node.fillGeometry,
-      strokeGeometry: node.strokeGeometry,
+      geometry: node.geometry,
     };
   }
 

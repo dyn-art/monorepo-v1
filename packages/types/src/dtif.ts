@@ -294,12 +294,6 @@ export type TRectangleCornerMixin = {
 
 export type TBaseNodeMixin = {
   /**
-   * An internal identifier for a node.
-   *
-   * e.g. '1798:14711'
-   */
-  id: string;
-  /**
    * The name of the node.
    *
    * e.g. 'Cool Node'

@@ -7,8 +7,8 @@ function cleanStr(str: string) {
   return str.replace(/[\s\n]/g, '');
 }
 
-describe('Scene class tests', () => {
-  it.each(['test1'])(
+describe('Composition class tests', () => {
+  it.each(['test2'])(
     `should correctly parse '%s.json' to svg and match expected result`,
     async (testCaseName) => {
       // Arrange

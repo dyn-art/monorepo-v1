@@ -12,7 +12,6 @@ export async function transformPolygonNode(
     type: 'POLYGON',
     pointCount: node.pointCount,
     // Base node mixin
-    id: node.id,
     name: node.name,
     // Scene node mixin
     isLocked: node.locked,

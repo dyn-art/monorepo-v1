@@ -6,6 +6,8 @@ import {
 } from './Typeface';
 import { TLocaleCode } from './language';
 
+// TODO: move to font
+
 export class Font {
   public readonly name: string;
   private readonly _typefaces: Record<string, Typeface> = {};

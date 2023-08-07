@@ -13,7 +13,6 @@ export async function transformStarNode(
     pointCount: node.pointCount,
     innerRadiusRation: node.innerRadius,
     // Base node mixin
-    id: node.id,
     name: node.name,
     // Scene node mixin
     isLocked: node.locked,

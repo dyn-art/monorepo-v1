@@ -4,13 +4,13 @@ import { TComposition } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { appendNode } from './append';
-import { Fill } from './fill';
+import { Font } from './font';
 import { CompositionNode, D3Node } from './nodes';
 
 export class Composition {
-  protected readonly _nodes: Record<string, CompositionNode>;
-  protected readonly _fills: Record<string, Fill>;
-  protected _rootNodeId: string | null;
+  protected readonly _nodes: Record<string, CompositionNode> = {};
+  protected readonly _fonts: Record<string, Font> = {};
+  protected _rootNodeId: string | null = null;
 
   private readonly _name: string;
   private readonly _width: number;
@@ -20,7 +20,7 @@ export class Composition {
   protected readonly _watcher: Watcher<TWatchedScene>;
 
   // D3
-  protected _d3Node: D3Node | null;
+  protected _d3Node: D3Node | null = null;
 
   // Init
   private _forInit: {
@@ -33,9 +33,6 @@ export class Composition {
     this._name = dtifComposition.name;
     this._width = dtifComposition.width;
     this._height = dtifComposition.height;
-    this._nodes = {};
-    this._d3Node = null; // Set by init()
-    this._rootNodeId = null; // Set by init()
     this._watcher = new Watcher();
   }
 
@@ -49,8 +46,10 @@ export class Composition {
     const svgNode = await Composition.createSvg(dtifComposition);
 
     // Create root element
+    const rootId = dtifComposition.rootId;
     const root = await appendNode(svgNode, {
-      node: dtifComposition.nodes[dtifComposition.rootId],
+      id: rootId,
+      node: dtifComposition.nodes[rootId],
       composition: this,
       dtifComposition: dtifComposition,
     });

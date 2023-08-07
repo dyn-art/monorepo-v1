@@ -16,7 +16,6 @@ export async function transformEllipseNode(
       innerRadiusRatio: node.arcData.innerRadius,
     },
     // Base node mixin
-    id: node.id,
     name: node.name,
     // Scene node mixin
     isLocked: node.locked,

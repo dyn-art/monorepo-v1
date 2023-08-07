@@ -5,7 +5,6 @@ export async function transformGroupNode(node: GroupNode): Promise<TGroupNode> {
   return {
     type: 'GROUP',
     // Base node mixin
-    id: node.id,
     name: node.name,
     // Scene node mixin
     isLocked: node.locked,

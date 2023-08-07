@@ -11,7 +11,6 @@ export async function transformRectangleNode(
   return {
     type: 'RECTANGLE',
     // Base node mixin
-    id: node.id,
     name: node.name,
     // Scene node mixin
     isLocked: node.locked,

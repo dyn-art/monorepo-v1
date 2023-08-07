@@ -1,13 +1,12 @@
 import { TTextNode } from '@pda/types/dtif';
-import { Composition } from '../../Composition';
-import { RemoveFunctions, Watcher } from '../../Watcher';
-import { CompositionNode, D3Node, ShapeNode } from '../base';
+import { Composition } from '../Composition';
+import { RemoveFunctions, Watcher } from '../Watcher';
+import { CompositionNode, D3Node, ShapeNode } from './base';
 
 export class Text extends ShapeNode {
   private _textAlignHorizontal: TTextNode['textAlignHorizontal'];
   private _textAlignVertical: TTextNode['textAlignVertical'];
   private _fontSize: TTextNode['fontSize'];
-  private _font: TTextNode['font'];
   private _letterSpacing: TTextNode['letterSpacing'];
   private _lineHeight: TTextNode['lineHeight'];
   private _characters: TTextNode['characters'];
@@ -22,8 +21,8 @@ export class Text extends ShapeNode {
     node: TTextNode;
   } | null;
 
-  constructor(node: TTextNode, composition: Composition) {
-    super(node, composition, { type: 'text' });
+  constructor(id: string, node: TTextNode, composition: Composition) {
+    super(id, node, composition, { type: 'text' });
     this._forInit = {
       node,
     };
@@ -31,7 +30,6 @@ export class Text extends ShapeNode {
     this._textAlignHorizontal = node.textAlignHorizontal;
     this._textAlignVertical = node.textAlignVertical;
     this._fontSize = node.fontSize;
-    this._font = node.font;
     this._letterSpacing = node.letterSpacing;
     this._lineHeight = node.lineHeight;
     this._characters = node.characters;

@@ -23,7 +23,6 @@ export async function transformTextNode(
     typefaceId: undefined, // Will be set by Composition class
     fallbackTypefaceIds: [], // Will be set by Composition class
     // Base node mixin
-    id: node.id,
     name: node.name,
     // Scene node mixin
     isLocked: node.locked,

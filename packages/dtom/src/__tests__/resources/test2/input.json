@@ -1,0 +1,89 @@
+{
+  "version": "1.0",
+  "name": "test",
+  "width": 595,
+  "height": 842,
+  "nodes": {
+    "0599d4a07f9ecf47-1": {
+      "type": "TEXT",
+      "textAlignHorizontal": "CENTER",
+      "textAlignVertical": "CENTER",
+      "fontSize": 32,
+      "letterSpacing": { "unit": "PERCENT", "value": 20 },
+      "lineHeight": { "unit": "PIXELS", "value": 38 },
+      "characters": "TEST",
+      "typefaceId": "8eb783e68ab01edc",
+      "fallbackTypefaceIds": [],
+      "id": "2716:220",
+      "name": "TEST",
+      "isLocked": false,
+      "isVisible": true,
+      "height": 38,
+      "width": 100,
+      "relativeTransform": [
+        [1, 0, 248],
+        [0, 1, 402],
+        [0, 0, 1]
+      ],
+      "constraints": { "horizontal": "CENTER", "vertical": "CENTER" },
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": [],
+      "fill": { "paintIds": ["9129df22c2aea2c9"] }
+    },
+    "42db830b78f3e392-0": {
+      "type": "FRAME",
+      "clipsContent": true,
+      "id": "2402:14129",
+      "name": "test",
+      "isLocked": false,
+      "isVisible": true,
+      "childIds": ["0599d4a07f9ecf47-1"],
+      "height": 842,
+      "width": 595,
+      "relativeTransform": [
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1]
+      ],
+      "constraints": { "horizontal": "MIN", "vertical": "MIN" },
+      "bottomLeftRadius": 0,
+      "bottomRightRadius": 0,
+      "topLeftRadius": 0,
+      "topRightRadius": 0,
+      "blendMode": "PASS_THROUGH",
+      "opacity": 1,
+      "isMask": false,
+      "effects": [],
+      "fill": { "paintIds": ["b6ecd5a27e6e1066"] }
+    }
+  },
+  "paints": {
+    "9129df22c2aea2c9": {
+      "type": "SOLID",
+      "blendMode": "NORMAL",
+      "color": { "r": 0, "g": 0, "b": 0 },
+      "opacity": 1,
+      "isVisible": true
+    },
+    "b6ecd5a27e6e1066": {
+      "type": "SOLID",
+      "blendMode": "NORMAL",
+      "color": { "r": 1, "g": 0.6550521850585938, "b": 0.6550521850585938 },
+      "opacity": 1,
+      "isVisible": true
+    }
+  },
+  "typefaces": {
+    "8eb783e68ab01edc": {
+      "family": "Inter",
+      "styleName": "Regular",
+      "fontWeight": 400,
+      "style": "regular",
+      "content": "https://fra1.digitaloceanspaces.com/pda-bucket/a1b6ea987bf52a39d66cfca3e407ec5ce0569eaedbbb595b715469bf185ee35c",
+      "hash": "a1b6ea987bf52a39d66cfca3e407ec5ce0569eaedbbb595b715469bf185ee35c"
+    }
+  },
+  "rootId": "42db830b78f3e392-0"
+}

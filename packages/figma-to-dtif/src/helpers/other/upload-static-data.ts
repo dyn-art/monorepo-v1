@@ -4,7 +4,7 @@ import {
   TUploadStaticData,
   TUploadStaticDataResponse,
 } from '@/types';
-import { sha256 } from './sha256';
+import { sha256 } from '../crypto/sha256';
 
 export async function uploadStaticData(
   callback: TUploadStaticData,

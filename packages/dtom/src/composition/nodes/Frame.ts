@@ -35,8 +35,8 @@ export class Frame extends ShapeNode {
     node: TFrameNode;
   } | null;
 
-  constructor(node: TFrameNode, composition: Composition) {
-    super(node, composition, { type: 'frame' });
+  constructor(id: string, node: TFrameNode, composition: Composition) {
+    super(id, node, composition, { type: 'frame' });
     this._forInit = {
       node,
     };
@@ -101,6 +101,7 @@ export class Frame extends ShapeNode {
       node.childIds.map(async (childId) => {
         // Create node
         const node = await appendNode(childWrapperNode, {
+          id: childId,
           node: dtifComposition.nodes[childId],
           composition: this.composition,
           dtifComposition,

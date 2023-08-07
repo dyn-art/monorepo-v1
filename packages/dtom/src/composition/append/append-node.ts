@@ -5,17 +5,18 @@ import { CompositionNode, D3Node, Frame, Rectangle } from '../nodes';
 export async function appendNode(
   parent: D3Node,
   props: {
+    id: string;
     node: TNode;
     composition: Composition;
     dtifComposition: TComposition;
   }
 ): Promise<CompositionNode | null> {
-  const { node, composition, dtifComposition } = props;
+  const { id, node, composition, dtifComposition } = props;
   switch (node.type) {
     case 'FRAME':
-      return new Frame(node, composition).init(parent, dtifComposition);
+      return new Frame(id, node, composition).init(parent, dtifComposition);
     case 'RECTANGLE':
-      return new Rectangle(node, composition).init(parent, dtifComposition);
+      return new Rectangle(id, node, composition).init(parent, dtifComposition);
     default:
       return null;
   }

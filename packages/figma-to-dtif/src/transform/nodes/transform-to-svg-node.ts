@@ -48,7 +48,6 @@ async function transformToInlineSVGNode(
     isExported: false,
     children: svgObject.children,
     // BaseNode mixin
-    id: node.id,
     name: node.name,
     // SceneNode mixin
     isLocked: node.locked,
@@ -108,7 +107,6 @@ async function transformToExportedSVGNode(
     hash,
     content: content ?? undefined,
     // Base node mixin
-    id: node.id,
     name: node.name,
     // Scene node mixin
     isLocked: node.locked,
