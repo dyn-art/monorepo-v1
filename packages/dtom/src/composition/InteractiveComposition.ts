@@ -1,6 +1,6 @@
 import { TComposition } from '@pda/types/dtif';
 import { notEmpty } from '@pda/utils';
-import { Composition } from './Composition';
+import { Composition, TCompositionOptions } from './Composition';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { CompositionNode, Frame } from './nodes';
 
@@ -15,8 +15,8 @@ export class InteractiveComposition extends Composition {
 
   private onUpdateSelectedNodesCallback: TOnUpdateSelectedNodesCallback | null;
 
-  constructor(composition: TComposition) {
-    super(composition);
+  constructor(composition: TComposition, options: TCompositionOptions = {}) {
+    super(composition, options);
     this._raycastNodeIds = [];
     this._lastSelectedNodeId = null;
     this._selectedNodeIds = [];

@@ -310,8 +310,8 @@ export class Composition {
         const fontWeight = excludeMixed(node, 'fontWeight');
         const typeface: TTypefaceWithoutContent = {
           family: fontName.family,
-          styleName: fontName.style,
-          fontWeight,
+          name: fontName.style,
+          weight: fontWeight,
           style: fontName.style.toLowerCase().includes('italic')
             ? 'italic'
             : 'regular',

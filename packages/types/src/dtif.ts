@@ -644,7 +644,7 @@ export type TTypeface = {
   /**
    * The name of the style displayed in UI.
    */
-  styleName: string;
+  name: string;
   /**
    * The style of the font.
    */
@@ -652,7 +652,7 @@ export type TTypeface = {
   /**
    * The weight of the font (e.g. 400 for "Regular", 700 for "Bold").
    */
-  fontWeight: number;
+  weight: number;
   /**
    * The hash of the font file. Used to identify the file.
    */

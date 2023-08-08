@@ -1,4 +1,5 @@
 import { TVector } from '@pda/types/dtif';
+import { shortId } from '@pda/utils';
 import opentype from 'opentype.js';
 import {
   TEnhancedOpenTypeFont,
@@ -7,7 +8,10 @@ import {
 import { TLocaleCode } from './language';
 
 export class Typeface {
+  public readonly id: string;
   public readonly key: string;
+
+  public readonly displayName?: string;
 
   public readonly weight: number;
   public readonly style: TFontStyle;
@@ -17,12 +21,15 @@ export class Typeface {
 
   constructor(
     data: ArrayBuffer | Uint8Array | Buffer,
-    context: TTypefaceContext = {}
+    context: TTypefaceContext = {},
+    options: TTypefaceOptions = {}
   ) {
     const {
       style: fontStyle = 'regular',
       weight: fontWeight = Typeface.REGULAR_FONT_WEIGHT,
     } = context;
+    const { id = shortId() } = options;
+    this.id = id;
     this.style = fontStyle;
     this.weight = fontWeight;
     this.key = Typeface.constructKey(fontWeight, fontStyle);
@@ -198,4 +205,8 @@ export type TFontWeight = number;
 export type TTypefaceContext = {
   style?: TFontStyle;
   weight?: TFontWeight;
+};
+export type TTypefaceOptions = {
+  id?: string;
+  displayName?: string;
 };

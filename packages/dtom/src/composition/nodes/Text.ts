@@ -1,7 +1,13 @@
-import { TTextNode } from '@pda/types/dtif';
+import { TComposition, TTextNode } from '@pda/types/dtif';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
+import { Fill } from '../fill';
+import { Typeface } from '../font';
 import { CompositionNode, D3Node, ShapeNode } from './base';
+
+// TODO:
+// 1. Load typefaces in Composition (FontManager)
+// 2. Text get typeface by id in constructor (fallback on default if not found)
 
 export class Text extends ShapeNode {
   private _textAlignHorizontal: TTextNode['textAlignHorizontal'];
@@ -10,9 +16,14 @@ export class Text extends ShapeNode {
   private _letterSpacing: TTextNode['letterSpacing'];
   private _lineHeight: TTextNode['lineHeight'];
   private _characters: TTextNode['characters'];
+  private _typeface: Typeface | null;
 
   // D3 ids
   private readonly _d3RootNodeId: string;
+  private readonly _d3FillClipPathId: string;
+  private readonly _d3FillClipPathDefsNodeId: string;
+  private readonly _d3FillClippedShapeNodeId: string;
+  private readonly _d3FillNodeId: string;
 
   protected readonly _watcher: Watcher<TWatchedTextNode>;
 
@@ -23,6 +34,10 @@ export class Text extends ShapeNode {
 
   constructor(id: string, node: TTextNode, composition: Composition) {
     super(id, node, composition, { type: 'text' });
+    this._typeface =
+      node.typefaceId != null
+        ? composition.fontManager.getTypefaceById(node.typefaceId)
+        : null;
     this._forInit = {
       node,
     };
@@ -38,19 +53,33 @@ export class Text extends ShapeNode {
     this._d3RootNodeId = this.getD3NodeId();
   }
 
-  public async init(parent: D3Node) {
+  public async init(parent: D3Node, dtifComposition: TComposition) {
     if (this._forInit == null) {
       return this;
     }
     const { node } = this._forInit;
+
+    // this.typeface = await dtifComposition.loadTypeface(dtifCompositon.typefaces[node.typefaceId])
 
     // Create D3 node
     this._d3Node = await Text.createD3Node(parent, {
       node,
       ids: {
         rootNodeId: this._d3RootNodeId,
+        fillClipPathId: this._d3FillClipPathId,
+        fillClipPathDefsNodeId: this._d3FillClipPathDefsNodeId,
+        fillClippedShapeNodeId: this._d3FillClippedShapeNodeId,
+        fillNodeId: this._d3FillNodeId,
       },
     });
+
+    // Retrieve fill wrapper node
+    const fillWrapperNode = this._d3Node?.getChildNodeById(this._d3FillNodeId);
+    if (fillWrapperNode == null) {
+      return this;
+    }
+    // and append fill paints
+    this._fill.init(fillWrapperNode, dtifComposition);
 
     this._forInit = null;
     return this;
@@ -74,21 +103,49 @@ export class Text extends ShapeNode {
       node: TTextNode;
       ids: {
         rootNodeId: string;
+        fillClipPathId: string;
+        fillClipPathDefsNodeId: string;
+        fillClippedShapeNodeId: string;
+        fillNodeId: string;
       };
     }
   ) {
     const {
-      ids: { rootNodeId },
+      ids: {
+        rootNodeId,
+        fillClipPathId,
+        fillClipPathDefsNodeId,
+        fillClippedShapeNodeId,
+        fillNodeId,
+      },
       node,
     } = props;
 
     // Create root element
     const root = await CompositionNode.createWrapperD3Node(parent, {
       id: rootNodeId,
-      node: props.node,
+      node,
     });
 
-    // TODO:
+    // Create fill clip path element
+    const fillClipPathDefsNode = root.append('defs', {
+      id: fillClipPathDefsNodeId,
+    });
+    const fillClipPathNode = fillClipPathDefsNode.append('clipPath', {
+      id: fillClipPathId,
+    });
+    fillClipPathNode.append('path', {
+      id: fillClippedShapeNodeId,
+      attributes: {
+        p: '', // TODO: create text path
+      },
+    });
+
+    // Create fill wrapper element
+    await Fill.createFillWrapperD3Node(root, {
+      id: fillNodeId,
+      clipPathId: fillClipPathId,
+    });
 
     return root;
   }

@@ -1,20 +1,52 @@
+import { shortId } from '@pda/utils';
+import { FontManager } from './FontManager';
 import {
   TFontStyle,
   TFontWeight,
   TTypefaceContext,
+  TTypefaceOptions,
   Typeface,
 } from './Typeface';
 import { TLocaleCode } from './language';
 
-// TODO: move to font
-
 export class Font {
+  public readonly id: string;
   public readonly name: string;
-  private readonly _typefaces: Record<string, Typeface> = {};
+
+  private readonly _typefaceKeyToIdMap: Map<string, string> = new Map();
   private _defaultTypefaceKey: string | null = null;
 
-  constructor(name: string) {
+  private readonly _fontManager: () => FontManager;
+
+  constructor(
+    name: string,
+    fontManager: FontManager,
+    options: TFontOptions = {}
+  ) {
+    const { id = shortId() } = options;
+    this.id = id;
     this.name = name;
+    this._fontManager = () => fontManager;
+  }
+
+  public setTypeface(typeface: Typeface) {
+    this._fontManager().setTypeface(typeface);
+    this._typefaceKeyToIdMap[typeface.key] = typeface.id;
+
+    // Use first typeface as default typeface for fallback
+    if (this._defaultTypefaceKey == null) {
+      this._defaultTypefaceKey = typeface.key;
+    }
+  }
+
+  public createTypeface(
+    data: Uint8Array | ArrayBuffer | Buffer,
+    context: TTypefaceContext = {},
+    options: TTypefaceOptions = {}
+  ): Typeface {
+    const typeface = new Typeface(data, context, options);
+    this.setTypeface(typeface);
+    return typeface;
   }
 
   public getTypeface(
@@ -22,8 +54,12 @@ export class Font {
     fontStyle: TFontStyle = 'regular',
     locale: TLocaleCode = 'unknown'
   ): Typeface | null {
-    const typeFaceKey = Typeface.constructKey(fontWeight, fontStyle, locale);
-    return typeFaceKey in this._typefaces ? this._typefaces[typeFaceKey] : null;
+    const typefaceKey = Typeface.constructKey(fontWeight, fontStyle, locale);
+    const typefaceId = this._typefaceKeyToIdMap[typefaceKey];
+    if (typefaceId == null) {
+      return null;
+    }
+    return this._fontManager().getTypefaceById(typefaceId);
   }
 
   public resolveTypeface(
@@ -36,8 +72,8 @@ export class Font {
     let finalTypeface: Typeface | null = null;
 
     // Try to find matching typeface that has a glyph for each char in the word
-    for (const typefaceKey in this._typefaces) {
-      const typeface = this._typefaces[typefaceKey];
+    for (const typefaceKey in this._typefaceKeyToIdMap) {
+      const typeface = this._typefaceKeyToIdMap[typefaceKey];
       const matchesWeight =
         fontWeight == null || fontWeight === typeface.weight;
       const matchesStyle = fontStyle == null || fontStyle === typeface.style;
@@ -51,25 +87,14 @@ export class Font {
     if (finalTypeface == null && useFallback) {
       finalTypeface =
         this._defaultTypefaceKey != null
-          ? this._typefaces[this._defaultTypefaceKey]
+          ? this._typefaceKeyToIdMap[this._defaultTypefaceKey] ?? null
           : null;
     }
 
     return finalTypeface;
   }
-
-  public addTypeface(
-    data: Uint8Array | ArrayBuffer | Buffer,
-    context: TTypefaceContext = {}
-  ): Typeface {
-    const typeFace = new Typeface(data, context);
-    this._typefaces[typeFace.key] = typeFace;
-
-    // Use first font as default font fallback
-    if (this._defaultTypefaceKey == null) {
-      this._defaultTypefaceKey = typeFace.key;
-    }
-
-    return typeFace;
-  }
 }
+
+export type TFontOptions = {
+  id?: string;
+};

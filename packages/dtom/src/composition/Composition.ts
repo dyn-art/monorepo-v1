@@ -4,18 +4,20 @@ import { TComposition } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { appendNode } from './append';
-import { Font } from './font';
+import { Font, FontManager } from './font';
 import { CompositionNode, D3Node } from './nodes';
 
 export class Composition {
-  protected readonly _nodes: Record<string, CompositionNode> = {};
-  protected readonly _fonts: Record<string, Font> = {};
-  protected _rootNodeId: string | null = null;
-
   private readonly _name: string;
   private readonly _width: number;
   private readonly _height: number;
   private readonly _version: string;
+
+  protected readonly _nodes: Record<string, CompositionNode> = {};
+  protected _rootNodeId: string | null = null;
+
+  protected readonly _fonts: Record<string, Font> = {};
+  public readonly fontManager: FontManager;
 
   protected readonly _watcher: Watcher<TWatchedScene>;
 
@@ -27,13 +29,18 @@ export class Composition {
     dtifComposition: TComposition;
   } | null;
 
-  constructor(dtifComposition: TComposition) {
+  constructor(
+    dtifComposition: TComposition,
+    options: TCompositionOptions = {}
+  ) {
+    const { fontManager = new FontManager() } = options;
     this._forInit = { dtifComposition };
     this._version = dtifComposition.version;
     this._name = dtifComposition.name;
     this._width = dtifComposition.width;
     this._height = dtifComposition.height;
     this._watcher = new Watcher();
+    this.fontManager = fontManager;
   }
 
   public async init() {
@@ -41,6 +48,12 @@ export class Composition {
       return this;
     }
     const { dtifComposition } = this._forInit;
+
+    // Resolve typefaces
+    for (const typefaceId in dtifComposition.typefaces) {
+      const typeface = dtifComposition.typefaces[typefaceId];
+      this.fontManager.loadTypeface({ ...typeface, id: typefaceId });
+    }
 
     // Create D3 node
     const svgNode = await Composition.createSvg(dtifComposition);
@@ -130,3 +143,7 @@ export class Composition {
 }
 
 type TWatchedScene = RemoveFunctions<Composition>;
+
+export type TCompositionOptions = {
+  fontManager?: FontManager;
+};
