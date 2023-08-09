@@ -2,7 +2,7 @@ import { TComposition, TTextNode } from '@pda/types/dtif';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
 import { Fill } from '../fill';
-import { Typeface } from '../font';
+import { Space, Typeface } from '../font';
 import { CompositionNode, D3Node, ShapeNode } from './base';
 
 // TODO:
@@ -17,6 +17,11 @@ export class Text extends ShapeNode {
   private _lineHeight: TTextNode['lineHeight'];
   private _characters: TTextNode['characters'];
   private _typeface: Typeface | null;
+
+  private _tabSize = 8;
+  private _tabWidth: number;
+  private _absoluteLetterSpacing: number | null;
+  private _absoluteLineHeight: number | null;
 
   // D3 ids
   private readonly _d3RootNodeId: string;
@@ -49,6 +54,11 @@ export class Text extends ShapeNode {
     this._lineHeight = node.lineHeight;
     this._characters = node.characters;
 
+    this._absoluteLetterSpacing = this.getAbsoluteLetterSpacing(
+      node.letterSpacing
+    );
+    this._absoluteLineHeight = this.getAbsoluteLineHeight(node.lineHeight);
+
     // Define D3 node ids
     this._d3RootNodeId = this.getD3NodeId();
   }
@@ -59,7 +69,26 @@ export class Text extends ShapeNode {
     }
     const { node } = this._forInit;
 
-    // this.typeface = await dtifComposition.loadTypeface(dtifCompositon.typefaces[node.typefaceId])
+    if (node.typefaceId != null) {
+      // Get typeface (was loaded during Composition initialization)
+      const typeface = this.composition.fontManager.getTypefaceById(
+        node.typefaceId
+      );
+      if (typeface != null) {
+        this._typeface = typeface;
+        const letterSpacing =
+          this._absoluteLetterSpacing ??
+          this.getAbsoluteLetterSpacing(node.letterSpacing); // Recalculate if AUTO
+
+        // Calculate tab width
+        const spaceWidth =
+          typeface.measureGrapheme(Space, {
+            fontSize: this._fontSize,
+            letterSpacing,
+          }) ?? this._fontSize;
+        this._tabWidth = spaceWidth * this._tabSize;
+      }
+    }
 
     // Create D3 node
     this._d3Node = await Text.createD3Node(parent, {
@@ -91,6 +120,36 @@ export class Text extends ShapeNode {
 
   public getWatcher() {
     return this._watcher;
+  }
+
+  public get characters() {
+    return this._characters;
+  }
+
+  public getAbsoluteLetterSpacing(
+    letterSpacing: TTextNode['letterSpacing']
+  ): number {
+    switch (letterSpacing.unit) {
+      case 'PIXELS':
+        return letterSpacing.value;
+      case 'PERCENT':
+        return this._fontSize * (letterSpacing.value / 100);
+      case 'AUTO':
+        // TODO:
+        return 0;
+    }
+  }
+
+  public getAbsoluteLineHeight(lineHeight: TTextNode['lineHeight']): number {
+    switch (lineHeight.unit) {
+      case 'PIXELS':
+        return lineHeight.value;
+      case 'PERCENT':
+        return this._fontSize * (lineHeight.value / 100);
+      case 'AUTO':
+        // TODO:
+        return 0;
+    }
   }
 
   // ============================================================================

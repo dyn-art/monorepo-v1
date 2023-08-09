@@ -51,7 +51,11 @@ export class D3Node<GElement extends BaseType = SVGElement> {
     appendCSS(element, styles);
 
     // Create node
-    const node = new D3Node<SVGElement>(type, element, { id, children });
+    const node = new D3Node<SVGElement>(
+      type,
+      element as unknown as TD3Selection<SVGElement>,
+      { id, children }
+    );
     if (this._children != null) {
       this._children[id] = node;
     } else {

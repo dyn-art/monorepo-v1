@@ -2,9 +2,10 @@ import d3 from '@/d3';
 import { appendAttributes, appendCSS } from '@/helpers';
 import { TComposition } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
+import { TD3Selection } from '../types';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { appendNode } from './append';
-import { Font, FontManager } from './font';
+import { FontManager } from './font';
 import { CompositionNode, D3Node } from './nodes';
 
 export class Composition {
@@ -16,7 +17,6 @@ export class Composition {
   protected readonly _nodes: Record<string, CompositionNode> = {};
   protected _rootNodeId: string | null = null;
 
-  protected readonly _fonts: Record<string, Font> = {};
   public readonly fontManager: FontManager;
 
   protected readonly _watcher: Watcher<TWatchedScene>;
@@ -52,7 +52,7 @@ export class Composition {
     // Resolve typefaces
     for (const typefaceId in dtifComposition.typefaces) {
       const typeface = dtifComposition.typefaces[typefaceId];
-      this.fontManager.loadTypeface({ ...typeface, id: typefaceId });
+      await this.fontManager.loadTypeface({ ...typeface, id: typefaceId });
     }
 
     // Create D3 node
@@ -115,7 +115,9 @@ export class Composition {
 
   public static async createSvg(scene: TComposition) {
     // Create svg element
-    const svgElement = (await d3()).create('svg');
+    const svgElement = (await d3()).create(
+      'svg'
+    ) as unknown as TD3Selection<SVGElement>;
     appendAttributes(svgElement, {
       version: '1.1',
       xmlns: 'http://www.w3.org/2000/svg',

@@ -7,7 +7,7 @@ import {
   TTypefaceOptions,
   Typeface,
 } from './Typeface';
-import { TLocaleCode } from './language';
+import { TLocaleCode } from './helper';
 
 export class Font {
   public readonly id: string;
@@ -44,7 +44,7 @@ export class Font {
     context: TTypefaceContext = {},
     options: TTypefaceOptions = {}
   ): Typeface {
-    const typeface = new Typeface(data, context, options);
+    const typeface = new Typeface(this, data, context, options);
     this.setTypeface(typeface);
     return typeface;
   }
@@ -54,7 +54,11 @@ export class Font {
     fontStyle: TFontStyle = 'regular',
     locale: TLocaleCode = 'unknown'
   ): Typeface | null {
-    const typefaceKey = Typeface.constructKey(fontWeight, fontStyle, locale);
+    const typefaceKey = Typeface.buildTypefaceKey(
+      fontWeight,
+      fontStyle,
+      locale
+    );
     const typefaceId = this._typefaceKeyToIdMap[typefaceKey];
     if (typefaceId == null) {
       return null;

@@ -1,15 +1,20 @@
+import { toArrayBuffer } from '@/helpers';
+import { logger } from '@/logger';
 import { TVector } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
 import opentype from 'opentype.js';
+import { Font } from './Font';
+import { TLocaleCode, segmentText } from './helper';
 import {
   TEnhancedOpenTypeFont,
   enhanceOpenTypeFont,
-} from './enhance-opentype-font';
-import { TLocaleCode } from './language';
+} from './helper/enhance-opentype-font';
 
 export class Typeface {
   public readonly id: string;
   public readonly key: string;
+
+  public readonly font: Font;
 
   public readonly displayName?: string;
 
@@ -19,7 +24,13 @@ export class Typeface {
 
   public static REGULAR_FONT_WEIGHT = 400;
 
+  private readonly _graphemeCache: Map<
+    string,
+    { width?: number; canDisplay?: boolean }
+  > = new Map();
+
   constructor(
+    font: Font,
     data: ArrayBuffer | Uint8Array | Buffer,
     context: TTypefaceContext = {},
     options: TTypefaceOptions = {}
@@ -32,10 +43,9 @@ export class Typeface {
     this.id = id;
     this.style = fontStyle;
     this.weight = fontWeight;
-    this.key = Typeface.constructKey(fontWeight, fontStyle);
-    this.opentype = enhanceOpenTypeFont(
-      opentype.parse(Typeface.toOpentypeCompatible(data))
-    );
+    this.key = Typeface.buildTypefaceKey(fontWeight, fontStyle);
+    this.opentype = enhanceOpenTypeFont(opentype.parse(toArrayBuffer(data)));
+    this.font = font;
   }
 
   /**
@@ -118,6 +128,77 @@ export class Typeface {
     return this.opentype.canDisplay(word);
   }
 
+  public measureGrapheme(
+    grapheme: string,
+    config: {
+      fontSize: number;
+      letterSpacing: number;
+    }
+  ): number | null {
+    const { fontSize, letterSpacing } = config;
+
+    // Check whether grapheme width is cached
+    const cachedGrapheme = this._graphemeCache.get(grapheme);
+    if (cachedGrapheme != null && cachedGrapheme.width != null) {
+      return cachedGrapheme.width;
+    }
+
+    // Check whether typeface can display grapheme
+    let canDisplay: boolean;
+    if (cachedGrapheme != null && cachedGrapheme.canDisplay != null) {
+      canDisplay = cachedGrapheme.canDisplay;
+    } else {
+      canDisplay = this.opentype.canDisplay(grapheme);
+    }
+    if (!canDisplay) {
+      logger.warn(
+        `Couldn't calculate width for grapheme '${grapheme}' with font '${
+          this.font.name
+        }' and typeface '${
+          this.displayName ?? this.key
+        }' as no corresponding glyph found!`
+      );
+      return null;
+    }
+
+    // Calculate width
+    const width = this.opentype.getAdvanceWidth(grapheme, fontSize, {
+      letterSpacing: letterSpacing / fontSize,
+    });
+
+    // Add calculated width for grapheme to cache
+    if (cachedGrapheme != null) {
+      cachedGrapheme.width = width;
+      cachedGrapheme.canDisplay = canDisplay;
+    } else {
+      this._graphemeCache.set(grapheme, { width, canDisplay });
+    }
+
+    return width;
+  }
+
+  public async measureText(
+    text: string,
+    config: { fontSize: number; letterSpacing: number }
+  ): Promise<number> {
+    const { fontSize } = config;
+
+    const graphemes = await segmentText(text, 'grapheme');
+
+    // Calculate text width based on the width of the graphemes the text consists of
+    let width = 0;
+    for (const grapheme of graphemes) {
+      const graphemeWidth = this.measureGrapheme(grapheme, config);
+      if (graphemeWidth != null) {
+        width += graphemeWidth;
+      } else {
+        width += fontSize; // as fallback
+      }
+    }
+
+    return width;
+  }
+
   /**
    * Retrieves the SVG path data representation of the given text string using the current typeface.
    *
@@ -149,14 +230,14 @@ export class Typeface {
   // ============================================================================
 
   /**
-   * Helper method to construct a font variant identifier.
+   * Helper method to build a typeface identifier.
    *
    * The identifier construction is inspired by the Google Font API.
    * https://developers.google.com/fonts/docs/developer_api
    *
    * e.g. 'regular', '100', '200', '200itlaic'
    */
-  public static constructKey(
+  public static buildTypefaceKey(
     fontWeight: TTypefaceContext['weight'] = Typeface.REGULAR_FONT_WEIGHT,
     fontStyle: TTypefaceContext['style'] = 'regular',
     locale: TLocaleCode = 'unknown'
@@ -176,27 +257,6 @@ export class Typeface {
     }
 
     return key;
-  }
-
-  /**
-   * Helper method to convert data to a format compatible with opentype.js.
-   * This function accepts an ArrayBuffer, a Uint8Array, or a Node.js Buffer.
-   * Note that Node.js Buffer is not available in browsers.
-   */
-  public static toOpentypeCompatible(
-    data: ArrayBuffer | Uint8Array | Buffer
-  ): ArrayBuffer {
-    if ('buffer' in data) {
-      // If data has a 'buffer' property, it's a Uint8Array or a Node.js Buffer.
-      // Slice the buffer to get the correct portion.
-      return data.buffer.slice(
-        data.byteOffset,
-        data.byteOffset + data.byteLength
-      );
-    }
-
-    // If data is already an ArrayBuffer, return it directly
-    return data as ArrayBuffer;
   }
 }
 

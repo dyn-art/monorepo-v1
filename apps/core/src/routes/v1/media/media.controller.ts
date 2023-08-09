@@ -99,9 +99,10 @@ export const getFontSource: TExpressController<'/v1/media/font/source', 'get'> =
       const { family, font_weight, style } = req.query;
 
       // Try to fetch font from google api
-      const font = await googleService.downloadWebFontWOFF2File(family, {
+      const font = await googleService.downloadFontFile(family, {
         fontWeight: font_weight,
         style,
+        capability: 'TTF', // As opentype.js doesn't support WOFF2
       });
       if (font == null) {
         res.status(404).send();

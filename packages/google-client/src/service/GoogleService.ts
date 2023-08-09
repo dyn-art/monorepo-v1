@@ -36,22 +36,24 @@ export class GoogleService {
     }
   }
 
-  public async getWebFontWOFF2FileURL(
+  public async getFontFileURL(
     family: string,
     options: {
       fontWeight?: number;
       fontStyle?: 'italic' | 'regular';
+      capability?: 'TTF' | 'WOFF2';
     } = {}
   ): Promise<string | null> {
     const {
       fontWeight = GoogleService.REGULAR_FONT_WEIGHT,
       fontStyle = 'regular',
+      capability = 'TTF',
     } = options;
     let fileUrl: string | null = null;
 
     // Fetch matching fonts to font family
     const searchResult = await this.getWebFonts({
-      capability: 'WOFF2',
+      capability: capability === 'WOFF2' ? 'WOFF2' : undefined, // Default is TTF
       family,
     });
     const fonts = searchResult?.items;
@@ -61,7 +63,7 @@ export class GoogleService {
 
     // Check whether searched font variant is present
     // in googles matched font family variants
-    const fontVariantKey = this.getFontVariantKey(fontWeight, fontStyle);
+    const fontVariantKey = this.buildFontVariantKey(fontWeight, fontStyle);
     for (const item of fonts) {
       if (
         item.variants != null &&
@@ -83,12 +85,16 @@ export class GoogleService {
     return fileUrl;
   }
 
-  public async downloadWebFontWOFF2File(
+  public async downloadFontFile(
     family: string,
-    options: { fontWeight?: number; style?: 'italic' | 'regular' } = {}
+    options: {
+      fontWeight?: number;
+      style?: 'italic' | 'regular';
+      capability?: 'TTF' | 'WOFF2';
+    } = {}
   ): Promise<Uint8Array | null> {
     // Get font download url
-    const downloadUrl = await this.getWebFontWOFF2FileURL(family, options);
+    const downloadUrl = await this.getFontFileURL(family, options);
     if (downloadUrl == null) {
       return null;
     }
@@ -110,7 +116,7 @@ export class GoogleService {
 
   // Build font variant identifier key
   // e.g. 'regular', '100', '200', '200itlaic'
-  public getFontVariantKey(
+  public buildFontVariantKey(
     fontWeight: number = GoogleService.REGULAR_FONT_WEIGHT,
     fontStyle: 'regular' | 'italic' = 'regular'
   ) {

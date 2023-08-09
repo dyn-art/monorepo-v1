@@ -4,7 +4,7 @@
   "width": 595,
   "height": 842,
   "nodes": {
-    "0599d4a07f9ecf47-1": {
+    "e9aa8c48fcbf31dc-1": {
       "type": "TEXT",
       "textAlignHorizontal": "CENTER",
       "textAlignVertical": "CENTER",
@@ -12,9 +12,8 @@
       "letterSpacing": { "unit": "PERCENT", "value": 20 },
       "lineHeight": { "unit": "PIXELS", "value": 38 },
       "characters": "TEST",
-      "typefaceId": "8eb783e68ab01edc",
+      "typefaceId": "557bb7b9660baa9c",
       "fallbackTypefaceIds": [],
-      "id": "2716:220",
       "name": "TEST",
       "isLocked": false,
       "isVisible": true,
@@ -32,14 +31,13 @@
       "effects": [],
       "fill": { "paintIds": ["9129df22c2aea2c9"] }
     },
-    "42db830b78f3e392-0": {
+    "9a72b8e9819ba819-0": {
       "type": "FRAME",
       "clipsContent": true,
-      "id": "2402:14129",
       "name": "test",
       "isLocked": false,
       "isVisible": true,
-      "childIds": ["0599d4a07f9ecf47-1"],
+      "childIds": ["e9aa8c48fcbf31dc-1"],
       "height": 842,
       "width": 595,
       "relativeTransform": [
@@ -76,14 +74,14 @@
     }
   },
   "typefaces": {
-    "8eb783e68ab01edc": {
+    "557bb7b9660baa9c": {
       "family": "Inter",
-      "styleName": "Regular",
-      "fontWeight": 400,
+      "name": "Regular",
+      "weight": 400,
       "style": "regular",
-      "content": "https://fra1.digitaloceanspaces.com/pda-bucket/a1b6ea987bf52a39d66cfca3e407ec5ce0569eaedbbb595b715469bf185ee35c",
-      "hash": "a1b6ea987bf52a39d66cfca3e407ec5ce0569eaedbbb595b715469bf185ee35c"
+      "content": "https://fra1.digitaloceanspaces.com/pda-bucket/de611394b2fd5d4a4d2c744197e07d1aea8036caaeee685d6c13e881792fba74",
+      "hash": "de611394b2fd5d4a4d2c744197e07d1aea8036caaeee685d6c13e881792fba74"
     }
   },
-  "rootId": "42db830b78f3e392-0"
+  "rootId": "9a72b8e9819ba819-0"
 }

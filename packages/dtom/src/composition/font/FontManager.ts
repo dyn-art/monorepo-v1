@@ -1,3 +1,5 @@
+import { apiClient } from '@/api';
+import { toArrayBuffer } from '@/helpers';
 import { TTypeface } from '@pda/types/dtif';
 import { Font } from './Font';
 import { Typeface } from './Typeface';
@@ -45,8 +47,20 @@ export class FontManager {
     typeface: TTypeface & { id?: string }
   ): Promise<Typeface | null> {
     const font = this.createFont(typeface.family);
-    const content = null as any;
-    if (content == null) {
+    let content: ArrayBuffer | null = null;
+
+    // Try to parse content as ArrayBuffer
+    if (typeof typeface.content === 'string') {
+      const response = await apiClient.get(typeface.content, {
+        parseAs: 'arrayBuffer',
+      });
+      if (!response.isError) {
+        content = response.data;
+      }
+    } else if (Array.isArray(typeface.content)) {
+      content = toArrayBuffer(typeface.content);
+    }
+    if (!(content instanceof ArrayBuffer)) {
       return null;
     }
 

@@ -1,6 +1,6 @@
 import { TComposition, TNode } from '@pda/types/dtif';
 import { Composition } from '../Composition';
-import { CompositionNode, D3Node, Frame, Rectangle } from '../nodes';
+import { CompositionNode, D3Node, Frame, Rectangle, Text } from '../nodes';
 
 export async function appendNode(
   parent: D3Node,
@@ -17,6 +17,8 @@ export async function appendNode(
       return new Frame(id, node, composition).init(parent, dtifComposition);
     case 'RECTANGLE':
       return new Rectangle(id, node, composition).init(parent, dtifComposition);
+    case 'TEXT':
+      return new Text(id, node, composition).init(parent, dtifComposition);
     default:
       return null;
   }
