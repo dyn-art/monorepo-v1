@@ -1,4 +1,4 @@
-import d3 from '@/d3';
+import { d3 } from '@/d3';
 import { appendAttributes, appendCSS } from '@/helpers';
 import { TComposition } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';

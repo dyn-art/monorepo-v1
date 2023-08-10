@@ -50,5 +50,5 @@ function defaultBreak(content: string): TWord[] {
   return result;
 }
 
-type TWordBreak = 'break-all' | 'keep-all' | 'uax-14';
-type TWord = { word: string; requiredBreak: boolean };
+export type TWordBreak = 'break-all' | 'keep-all' | 'uax-14';
+export type TWord = { word: string; requiredBreak: boolean };

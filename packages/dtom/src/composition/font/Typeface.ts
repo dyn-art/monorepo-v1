@@ -49,12 +49,12 @@ export class Typeface {
   }
 
   /**
-   * Calculates the font metric for ascender or descender.
+   * Calculates the font metric for ascender, descender, or lineGap.
    *
    * According to W3C standards:
-   * 1. For OpenType or TrueType fonts, it's recommended to use metrics "sTypoAscender" and "sTypoDescender"
-   *    from the font's OS/2 table when available.
-   * 2. In the absence of these metrics, the "Ascent" and "Descent" metrics from the HHEA table should be employed.
+   * 1. For OpenType or TrueType fonts, it's recommended to use metrics "sTypoAscender", "sTypoDescender",
+   *    and "sTypoLineGap" from the font's OS/2 table when available.
+   * 2. In the absence of these metrics, the "Ascent", "Descent", and "LineGap" metrics from the HHEA table should be employed.
    *
    * Both metrics are then scaled to the current element's font size.
    *
@@ -62,64 +62,88 @@ export class Typeface {
    * @see {@link https://www.w3.org/TR/CSS2/visudet.html#leading CSS 2 Visual formatting model details}
    *
    * @param fontSize - The current element's font size.
-   * @param metric - The desired font metric ('ascender' or 'descender').
-   * @param useOS2Table - A flag to indicate if the OS/2 table should be used. Default is `false`.
+   * @param metric - The desired font metric ('ascender', 'descender', or 'lineGap').
    * @returns The calculated metric value scaled to the font size.
    */
-  public calculateFontMetric(
+  public getFontMetric(
     fontSize: number,
-    metric: 'ascender' | 'descender',
-    useOS2Table = false
+    metric: 'ascender' | 'descender' | 'lineGap'
   ) {
-    let tableValue: number | null = null;
-    if (useOS2Table) {
-      tableValue =
-        metric === 'ascender'
-          ? this.opentype.tables.os2?.sTypoAscender
-          : this.opentype.tables.os2?.sTypoDescender;
+    let tableValue: number;
+
+    switch (metric) {
+      case 'ascender':
+        tableValue =
+          this.opentype.tables.os2?.sTypoAscender ??
+          this.opentype.tables.hhea?.ascender ??
+          this.opentype.ascender;
+        break;
+      case 'descender':
+        tableValue =
+          this.opentype.tables.os2?.sTypoDescender ??
+          this.opentype.tables.hhea?.descent ??
+          this.opentype.descender;
+        break;
+      case 'lineGap':
+        tableValue =
+          this.opentype.tables.os2?.sTypoLineGap ??
+          this.opentype.tables.hhea?.lineGap ??
+          0;
+        break;
     }
-    const metricValue = tableValue ?? this.opentype[metric];
-    return (metricValue / this.opentype.unitsPerEm) * fontSize;
+
+    return (tableValue / this.opentype.unitsPerEm) * fontSize;
   }
 
   /**
-   * Calculates the baseline for a given text based on font size and line height.
+   * Calculates the baseline for a given text based on font size and optional line height.
+   * If no line height is provided, it calculates using the natural height of the text.
    *
    * @param fontSize - The font size of the text.
-   * @param lineHeight - The line height used for the text.
+   * @param relativeLineHeight - Optional line height used for the text.
    * @returns The calculated baseline for the text.
    */
-  public baseline(fontSize: number, lineHeight: number): number {
-    const ascender = this.calculateFontMetric(fontSize, 'ascender');
-    const descender = this.calculateFontMetric(fontSize, 'descender');
-    const glyphHeight = this.height(fontSize, lineHeight);
+  public getBaseline(fontSize: number, relativeLineHeight = 1.2): number {
+    const ascender = this.getFontMetric(fontSize, 'ascender');
+    const descender = this.getFontMetric(fontSize, 'descender');
+
+    const glyphHeight = this.getHeight(fontSize, relativeLineHeight);
     const { yMax, yMin } = this.opentype.tables.head;
 
-    // Calculate the scaled glyph height and the baseline offset
+    // Calculate the baseline offset
     const scaledGlyphHeight = ascender - descender;
     const baselineOffset = (yMax / (yMax - yMin) - 1) * scaledGlyphHeight;
 
-    return glyphHeight * ((1.2 / lineHeight + 1) / 2) + baselineOffset;
+    return glyphHeight / 2 + baselineOffset;
   }
 
   /**
-   * Calculates the height of a given text based on font size and line height.
+   * Calculates the height of a given text based on font size and optional line height.
+   * If no line height is provided, it calculates the natural height of the text.
    *
    * @param fontSize - The font size of the text.
-   * @param lineHeight - The line height used for the text.
+   * @param relativeLineHeight - Optional line height used for the text.
    * @returns The calculated height for the text.
    */
-  public height(fontSize: number, lineHeight: number): number {
-    const ascender = this.calculateFontMetric(fontSize, 'ascender');
-    const descender = this.calculateFontMetric(fontSize, 'descender');
-    return ((ascender - descender) * lineHeight) / 1.2;
+  public getHeight(fontSize: number, relativeLineHeight = 1.2): number {
+    const ascender = this.getFontMetric(fontSize, 'ascender');
+    const descender = this.getFontMetric(fontSize, 'descender');
+    const lineGap = this.getFontMetric(fontSize, 'lineGap');
+
+    // Natural text height.
+    const naturalHeight = ascender - descender + lineGap;
+
+    // If lineHeight is provided, multiply it with the natural height.
+    return relativeLineHeight
+      ? naturalHeight * relativeLineHeight
+      : naturalHeight;
   }
 
   /**
    * Determines if the typeface contains glyphs for every character in the specified word.
    *
-   * @param {string} word - The word or string to verify for display compatibility.
-   * @returns {boolean} Returns `true` if the typeface can display the entire word, otherwise `false`.
+   * @param word - The word or string to verify for display compatibility.
+   * @returns Returns `true` if the typeface can display the entire word, otherwise `false`.
    */
   public canDisplay(word: string): boolean {
     if (word === ' ' || word === '\n') {
@@ -128,14 +152,21 @@ export class Typeface {
     return this.opentype.canDisplay(word);
   }
 
+  /**
+   * Calculates the width of a given grapheme based on font size and optional letter spacing.
+   *
+   * @param grapheme - The grapheme to calculate the width from.
+   * @param config - Configuration
+   * @returns The calculated width for the grapheme.
+   */
   public measureGrapheme(
     grapheme: string,
     config: {
       fontSize: number;
-      letterSpacing: number;
+      relativeLetterSpacing?: number;
     }
   ): number | null {
-    const { fontSize, letterSpacing } = config;
+    const { fontSize, relativeLetterSpacing: letterSpacing = 0 } = config;
 
     // Check whether grapheme width is cached
     const cachedGrapheme = this._graphemeCache.get(grapheme);
@@ -156,7 +187,7 @@ export class Typeface {
           this.font.name
         }' and typeface '${
           this.displayName ?? this.key
-        }' as no corresponding glyph found!`
+        }' as no corresponding glyph could be found!`
       );
       return null;
     }
@@ -177,9 +208,16 @@ export class Typeface {
     return width;
   }
 
+  /**
+   * Calculates the width of a given text based on font size and optional letter spacing.
+   *
+   * @param grapheme - The text to calculate the width from.
+   * @param config - Configuration
+   * @returns The calculated width for the text.
+   */
   public async measureText(
     text: string,
-    config: { fontSize: number; letterSpacing: number }
+    config: { fontSize: number; relativeLetterSpacing?: number }
   ): Promise<number> {
     const { fontSize } = config;
 
@@ -202,12 +240,9 @@ export class Typeface {
   /**
    * Retrieves the SVG path data representation of the given text string using the current typeface.
    *
-   * @param {string} text - The text string to convert to SVG path data.
-   * @param {Object} config - Configuration object for the SVG conversion.
-   * @param {number} config.fontSize - Size of the font in SVG units.
-   * @param {TVector} config.position - Start position of the text. This is where the baseline of the first character will be drawn.
-   * @param {number} config.letterSpacing - The amount of space (in SVG units) to insert between letters. This is divided by the font size for scaling.
-   * @returns {string} The SVG path data representation of the text.
+   * @param text - The text string to convert to SVG path data.
+   * @param config - Configuration
+   * @returns The SVG path data representation of the text.
    */
   public getSVG(
     text: string,
