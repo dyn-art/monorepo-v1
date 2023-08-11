@@ -10,8 +10,8 @@ import { segmentText } from './segment-text';
  */
 export async function splitByBreakOpportunities(
   text: string,
-  wordBreak: TWordBreak = 'uax-14'
-): Promise<TWord[]> {
+  wordBreak: TTextBreak = 'uax-14'
+): Promise<TTextSegment[]> {
   switch (wordBreak) {
     case 'break-all':
       return breakAll(text);
@@ -22,33 +22,33 @@ export async function splitByBreakOpportunities(
   }
 }
 
-async function breakAll(content: string): Promise<TWord[]> {
-  const words = await segmentText(content, 'grapheme');
-  return words.map((word) => ({ word, requiredBreak: false }));
+async function breakAll(content: string): Promise<TTextSegment[]> {
+  const segments = await segmentText(content, 'grapheme');
+  return segments.map((segment) => ({ segment, requiredBreak: false }));
 }
 
-async function keepAll(content: string): Promise<TWord[]> {
-  const words = await segmentText(content, 'word');
-  return words.map((word) => ({ word, requiredBreak: false }));
+async function keepAll(content: string): Promise<TTextSegment[]> {
+  const segments = await segmentText(content, 'word');
+  return segments.map((segment) => ({ segment, requiredBreak: false }));
 }
 
 // https://www.npmjs.com/package/linebreak
-function defaultBreak(content: string): TWord[] {
+function defaultBreak(content: string): TTextSegment[] {
   const breaker = new LineBreaker(content);
-  const result: { word: string; requiredBreak: boolean }[] = [];
+  const textSegments: TTextSegment[] = [];
   let lastBreakPoint = 0;
   let nextBreak = breaker.nextBreak();
 
   while (nextBreak) {
-    const word = content.slice(lastBreakPoint, nextBreak.position);
-    result.push({ word, requiredBreak: nextBreak.required });
+    const segment = content.slice(lastBreakPoint, nextBreak.position);
+    textSegments.push({ segment, requiredBreak: nextBreak.required });
 
     lastBreakPoint = nextBreak.position;
     nextBreak = breaker.nextBreak();
   }
 
-  return result;
+  return textSegments;
 }
 
-export type TWordBreak = 'break-all' | 'keep-all' | 'uax-14';
-export type TWord = { word: string; requiredBreak: boolean };
+export type TTextBreak = 'break-all' | 'keep-all' | 'uax-14';
+export type TTextSegment = { segment: string; requiredBreak: boolean };

@@ -3,7 +3,13 @@ import { TComposition, TTextNode, TVector } from '@pda/types/dtif';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
 import { Fill } from '../fill';
-import { Space, TWord, Typeface, detectTabs } from '../font';
+import {
+  Space,
+  TTextSegment,
+  Typeface,
+  detectTabs,
+  segmentText,
+} from '../font';
 import { CompositionNode, D3Node, ShapeNode } from './base';
 
 export class Text extends ShapeNode {
@@ -240,50 +246,257 @@ export class Text extends ShapeNode {
   }
 
   public async textLayout(
-    words: TWord[],
+    textSegments: TTextSegment[],
     width: number,
     options: TTextLayoutOptions = {}
   ): Promise<TTextLayoutResult | null> {
     const { allowBreakWord = false, allowSoftWrap = true } = options;
-    const lines: TTextLayoutLine[] = [];
-
     if (this._typeface == null) {
       return null;
     }
+    let segments = [...textSegments];
 
-    const currentLineWidth = 0;
-    let currentLineHeight = 0;
-    const currentBaselineOffset = 0;
-    const currentWordPositions: TTextLayoutWord[] = [];
+    // Obtain baseline and height properties from the typeface
+    const typefaceBaseline = this._typeface.getBaseline(
+      this._fontSize,
+      this._relativeLineHeight
+    );
+    const typefaceHeight = this._typeface.getHeight(
+      this._fontSize,
+      this._relativeLineHeight
+    );
 
-    const i = 0;
-    while (i < words.length) {
-      const word = words[i].word;
-      const forceBreak = words[i].requiredBreak;
+    // Layout properties
+    let height = 0;
+    let maxWidth = 0;
 
-      const textWidth = await this.getTextWidthConsideringTabs(word, {
-        currentLineWidth,
+    // Line properties
+    const lines: TTextLayoutLine[] = [];
+    let currentLine = this.initLine();
+
+    // Process each text segment
+    let segmentIndex = 0;
+    while (segmentIndex < segments.length) {
+      const segment = segments[segmentIndex].segment;
+      const forceBreak = segments[segmentIndex].requiredBreak;
+
+      // Calculate segment width and trailing whitespace
+      const segmentWidth = await this.getTextWidthConsideringTabs(segment, {
+        currentLineWidth: currentLine.width,
       });
-      const lineEndingWhitespaceWidth =
-        await this.calculateTrailingWhitespaceWidth(word, { textWidth });
+      const trailingWhitespaceWidth =
+        await this.calculateTrailingWhitespaceWidth(segment, {
+          textWidth: width,
+        });
 
-      // When starting a new line from an empty line,
-      // we should push one extra line height
-      if (forceBreak && currentLineHeight === 0) {
-        currentLineHeight = this._typeface?.getHeight(
-          this._fontSize,
-          this._relativeLineHeight
-        );
+      const willWrap = this.shouldTextSegmentWrap({
+        segmentWidth,
+        containerWidth: width,
+        firstChar: segment[0],
+        allowSoftWrap,
+        currentLineWidth: currentLine.width,
+        trailingWhitespaceWidth,
+      });
+
+      // Handle word breaking if required
+      if (
+        this.needToBreakTextSegment({
+          segmentWidth: segmentWidth,
+          containerWidth: width,
+          willWrap,
+          forceBreak,
+          allowBreakWord,
+        })
+      ) {
+        // Break the word into multiple segments and continue the loop
+        segments = await this.handleTextSegmentBreak({
+          segment: segment,
+          segmentIndex: segmentIndex,
+          segments,
+        });
+
+        // Start a new line
+        lines.push(currentLine);
+        height += currentLine.height;
+        currentLine = this.initLine();
+
+        continue;
       }
 
-      // TODO:
+      // Handle line breaking/wrapping
+      if (forceBreak || willWrap) {
+        // Start a new line
+        lines.push(currentLine);
+        height += currentLine.height;
+        currentLine = this.initLine({
+          width: segmentWidth,
+          height: segmentWidth > 0 ? typefaceHeight : 0,
+          baselineOffset: segmentWidth > 0 ? typefaceBaseline : 0,
+          segments: [],
+        });
+
+        // If it's naturally broken, we update the max width.
+        // Since if there are multiple lines, the width should fit the
+        // container.
+        if (!forceBreak) {
+          maxWidth = Math.max(maxWidth, width);
+        }
+      }
+      // It fits into the current line.
+      else {
+        currentLine.width += segmentWidth;
+      }
+
+      // Calculate the maximum width encountered
+      maxWidth = Math.max(maxWidth, currentLine.width);
+
+      // Add the segment to the current line
+      this.processTextSegment({
+        line: currentLine,
+        height,
+        segment,
+        segmentWidth,
+        typeface: this._typeface,
+        typefaceHeight,
+      });
+
+      segmentIndex++;
     }
 
+    return { width: maxWidth, height, lines };
+  }
+
+  // Initializes and returns the properties for a new line
+  private initLine(
+    initialValues: {
+      width?: number;
+      height?: number;
+      baselineOffset?: number;
+      segments?: TTextLayoutSegment[];
+    } = {}
+  ): TTextLayoutLine {
+    const {
+      width = 0,
+      height = 0,
+      baselineOffset = 0,
+      segments = [],
+    } = initialValues;
     return {
-      width: 0,
-      height: 0,
-      lines,
+      width,
+      height,
+      baselineOffset,
+      segments,
     };
+  }
+
+  // Determines whether the segment should wrap to the next line.
+  private shouldTextSegmentWrap(config: {
+    firstChar: string;
+    containerWidth: number;
+    allowSoftWrap: boolean;
+    segmentWidth: number;
+    trailingWhitespaceWidth: number;
+    currentLineWidth: number;
+  }): boolean {
+    const {
+      firstChar,
+      containerWidth,
+      allowSoftWrap,
+      currentLineWidth,
+      trailingWhitespaceWidth,
+      segmentWidth,
+    } = config;
+    const allowedAtBeginning = ',.!?:-@)>]}%#'.indexOf(firstChar) === 0;
+    return (
+      allowedAtBeginning &&
+      segmentWidth + currentLineWidth >
+        containerWidth + trailingWhitespaceWidth &&
+      allowSoftWrap
+    );
+  }
+
+  // Determines if the text segment needs to be broken across lines
+  private needToBreakTextSegment(config: {
+    segmentWidth: number;
+    containerWidth: number;
+    willWrap: boolean;
+    forceBreak: boolean;
+    allowBreakWord: boolean;
+  }): boolean {
+    const {
+      segmentWidth,
+      containerWidth,
+      willWrap,
+      forceBreak,
+      allowBreakWord,
+    } = config;
+    return (
+      allowBreakWord &&
+      segmentWidth > containerWidth &&
+      (willWrap || forceBreak)
+    );
+  }
+
+  // Breaks the text segment into characters
+  // and adds them back into the text segments array
+  private async handleTextSegmentBreak(config: {
+    segment: string;
+    segmentIndex: number;
+    segments: TTextSegment[];
+  }): Promise<TTextSegment[]> {
+    const { segment, segmentIndex, segments } = config;
+    const newSegments = [...segments];
+    const graphemes = await segmentText(segment, 'grapheme');
+    newSegments.splice(
+      segmentIndex,
+      1,
+      ...graphemes.map((char) => ({ segment: char, requiredBreak: false }))
+    );
+    return newSegments;
+  }
+
+  // Processes a text segment and updates the line with the segment details
+  private async processTextSegment(config: {
+    line: TTextLayoutLine;
+    segment: string;
+    segmentWidth: number;
+    height: number;
+    typefaceHeight: number;
+    typeface: Typeface;
+  }) {
+    const { line, segment, segmentWidth, height, typefaceHeight, typeface } =
+      config;
+
+    let x = line.width - segmentWidth;
+
+    if (segmentWidth === 0) {
+      line.segments.push({
+        position: { y: height, x },
+        width: 0,
+        height: typefaceHeight,
+        isImage: false,
+        text: segment,
+      });
+    } else {
+      const words = await segmentText(segment, 'word');
+
+      for (const word of words) {
+        const wordWidth = await typeface.measureText(word, {
+          fontSize: this._fontSize,
+          relativeLetterSpacing: this._relativeLetterSpacing,
+        });
+
+        line.segments.push({
+          position: { y: height, x },
+          width: wordWidth,
+          height: typefaceHeight,
+          isImage: false, // TODO: Determine if segment represents an image
+          text: word,
+        });
+
+        x += wordWidth;
+      }
+    }
   }
 
   // ============================================================================
@@ -396,20 +609,19 @@ export class Text extends ShapeNode {
 
 type TWatchedTextNode = RemoveFunctions<Text>;
 
-type TTextLayoutWord = {
+type TTextLayoutSegment = {
   text: string;
   position: TVector;
   width: number;
   height: number;
-  line: number;
-  lineIndex: number;
   isImage: boolean;
 };
 
 type TTextLayoutLine = {
-  lineWidth: number;
-  baseline: number;
-  words: TTextLayoutWord[];
+  width: number;
+  height: number;
+  baselineOffset: number;
+  segments: TTextLayoutSegment[];
 };
 
 type TTextLayoutResult = {
