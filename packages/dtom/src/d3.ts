@@ -1,3 +1,7 @@
+// TODO: make it so that Composition class requires similar structure to D3
+//  but not actual D3 so that a basic svg builder can also be used
+// (e.g. on server to render thumbnail where no interaction is required)
+
 const d3 = (() => {
   let d3: typeof import('d3-selection');
 

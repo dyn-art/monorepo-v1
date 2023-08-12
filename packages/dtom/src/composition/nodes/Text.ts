@@ -3,13 +3,7 @@ import { TComposition, TTextNode, TVector } from '@pda/types/dtif';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
 import { Fill } from '../fill';
-import {
-  Space,
-  TTextSegment,
-  Typeface,
-  detectTabs,
-  segmentText,
-} from '../font';
+import { Space, TTextSegment, Typeface, detectTabs } from '../font';
 import { CompositionNode, D3Node, ShapeNode } from './base';
 
 export class Text extends ShapeNode {
@@ -27,7 +21,7 @@ export class Text extends ShapeNode {
   private _relativeLineHeight: number;
 
   // Yoga
-  private readonly _yogaNode: ReturnType<Yoga['Node']['create']>;
+  private _yogaNode: ReturnType<Yoga['Node']['create']> | null;
 
   // D3 ids
   private readonly _d3RootNodeId: string;
@@ -61,10 +55,7 @@ export class Text extends ShapeNode {
     );
     this._relativeLineHeight = this.getRelativeLineHeight(node.lineHeight);
 
-    this._yogaNode = this.createYogaNode(
-      this._textAlignHorizontal,
-      this._textAlignVertical
-    );
+    this._yogaNode = null;
     this._typeface =
       node.typefaceId != null
         ? composition.fontManager.getTypefaceById(node.typefaceId)
@@ -79,6 +70,11 @@ export class Text extends ShapeNode {
       return this;
     }
     const { node } = this._forInit;
+
+    this._yogaNode = await Text.createYogaNode(
+      this._textAlignHorizontal,
+      this._textAlignVertical
+    );
 
     if (node.typefaceId != null) {
       // Get typeface (was loaded during Composition initialization)
@@ -163,11 +159,22 @@ export class Text extends ShapeNode {
     }
   }
 
-  public async measureText(text: string) {
+  public measureText(text: string) {
     return this._typeface?.measureText(text, {
       fontSize: this._fontSize,
       relativeLetterSpacing: this._relativeLetterSpacing,
-    }) as unknown as number;
+    });
+  }
+
+  public getHeight() {
+    return this._typeface?.getHeight(this._fontSize, this._relativeLineHeight);
+  }
+
+  public getBaseline() {
+    return this._typeface?.getBaseline(
+      this._fontSize,
+      this._relativeLineHeight
+    );
   }
 
   /**
@@ -177,12 +184,12 @@ export class Text extends ShapeNode {
    * @param options - Options
    * @returns The width of the text taking into account the tabs.
    */
-  private async getTextWidthConsideringTabs(
+  private getTextWidthConsideringTabs(
     text: string,
     options: {
       currentLineWidth?: number;
     } = {}
-  ): Promise<number> {
+  ): number {
     const { currentLineWidth = 0 } = options;
     let textWidth = 0;
     if (text.length === 0 || this._typeface == null) {
@@ -199,8 +206,8 @@ export class Text extends ShapeNode {
       // Separate the text at the detected tab position
       const textBeforeTab = text.slice(0, index);
       const textAfterTab = text.slice(index + tabCount);
-      const textWidthBeforeTab = await this.measureText(textBeforeTab);
-      const textWidthAfterTab = await this.measureText(textAfterTab);
+      const textWidthBeforeTab = this.measureText(textBeforeTab) as number;
+      const textWidthAfterTab = this.measureText(textAfterTab) as number;
 
       // Calculate the effective width after considering the tabs.
       // We add the `currentWidth` to the `textWidthBeforeTab` to ensure
@@ -220,7 +227,7 @@ export class Text extends ShapeNode {
     }
     // If the text doesn't contain any tabs
     else {
-      textWidth = await this.measureText(text);
+      textWidth = this.measureText(text) as number;
     }
 
     return textWidth;
@@ -233,23 +240,23 @@ export class Text extends ShapeNode {
    * @param options - Options
    * @returns Width of the trailing whitespace.
    */
-  public async calculateTrailingWhitespaceWidth(
+  private calculateTrailingWhitespaceWidth(
     text: string,
     options: { textWidth?: number } = {}
   ) {
-    const { textWidth = await this.measureText(text) } = options;
+    const { textWidth = this.measureText(text) as number } = options;
     const widthWithoutTrailingWhitespace =
       text.trimEnd() === text
         ? textWidth
-        : await this.measureText(text.trimEnd());
+        : (this.measureText(text.trimEnd()) as number);
     return textWidth - widthWithoutTrailingWhitespace;
   }
 
-  public async textLayout(
+  private textLayout(
     textSegments: TTextSegment[],
     width: number,
     options: TTextLayoutOptions = {}
-  ): Promise<TTextLayoutResult | null> {
+  ): TTextLayoutResult | null {
     const { allowBreakWord = false, allowSoftWrap = true } = options;
     if (this._typeface == null) {
       return null;
@@ -257,14 +264,8 @@ export class Text extends ShapeNode {
     let segments = [...textSegments];
 
     // Obtain baseline and height properties from the typeface
-    const typefaceBaseline = this._typeface.getBaseline(
-      this._fontSize,
-      this._relativeLineHeight
-    );
-    const typefaceHeight = this._typeface.getHeight(
-      this._fontSize,
-      this._relativeLineHeight
-    );
+    const typefaceBaseline = this.getBaseline() as number;
+    const typefaceHeight = this.getHeight() as number;
 
     // Layout properties
     let height = 0;
@@ -281,13 +282,15 @@ export class Text extends ShapeNode {
       const forceBreak = segments[segmentIndex].requiredBreak;
 
       // Calculate segment width and trailing whitespace
-      const segmentWidth = await this.getTextWidthConsideringTabs(segment, {
+      const segmentWidth = this.getTextWidthConsideringTabs(segment, {
         currentLineWidth: currentLine.width,
       });
-      const trailingWhitespaceWidth =
-        await this.calculateTrailingWhitespaceWidth(segment, {
+      const trailingWhitespaceWidth = this.calculateTrailingWhitespaceWidth(
+        segment,
+        {
           textWidth: width,
-        });
+        }
+      );
 
       const willWrap = this.shouldTextSegmentWrap({
         segmentWidth,
@@ -309,7 +312,7 @@ export class Text extends ShapeNode {
         })
       ) {
         // Break the word into multiple segments and continue the loop
-        segments = await this.handleTextSegmentBreak({
+        segments = this.handleTextSegmentBreak({
           segment: segment,
           segmentIndex: segmentIndex,
           segments,
@@ -439,14 +442,17 @@ export class Text extends ShapeNode {
 
   // Breaks the text segment into characters
   // and adds them back into the text segments array
-  private async handleTextSegmentBreak(config: {
+  private handleTextSegmentBreak(config: {
     segment: string;
     segmentIndex: number;
     segments: TTextSegment[];
-  }): Promise<TTextSegment[]> {
+  }): TTextSegment[] {
     const { segment, segmentIndex, segments } = config;
     const newSegments = [...segments];
-    const graphemes = await segmentText(segment, 'grapheme');
+    const graphemes = this._typeface?.textSegmenter.segment(
+      segment,
+      'grapheme'
+    ) as string[];
     newSegments.splice(
       segmentIndex,
       1,
@@ -478,7 +484,10 @@ export class Text extends ShapeNode {
         text: segment,
       });
     } else {
-      const words = await segmentText(segment, 'word');
+      const words = this._typeface?.textSegmenter.segment(
+        segment,
+        'word'
+      ) as string[];
 
       for (const word of words) {
         const wordWidth = await typeface.measureText(word, {
@@ -503,26 +512,27 @@ export class Text extends ShapeNode {
   // Yoga
   // ============================================================================
 
-  private createYogaNode(
+  private static async createYogaNode(
     textAlignHorizontal: TTextNode['textAlignHorizontal'],
     textAlignVertical: TTextNode['textAlignVertical']
   ) {
-    const textContainer = yoga.Node.create();
+    const Yoga = await yoga();
+    const textContainer = Yoga.Node.create();
 
     // Determine align items
     let alignItems;
     switch (textAlignVertical) {
       case 'TOP':
-        alignItems = yoga.ALIGN_FLEX_START;
+        alignItems = Yoga.ALIGN_FLEX_START;
         break;
       case 'CENTER':
-        alignItems = yoga.ALIGN_CENTER;
+        alignItems = Yoga.ALIGN_CENTER;
         break;
       case 'BOTTOM':
-        alignItems = yoga.ALIGN_FLEX_END;
+        alignItems = Yoga.ALIGN_FLEX_END;
         break;
       default:
-        alignItems = yoga.ALIGN_FLEX_END;
+        alignItems = Yoga.ALIGN_FLEX_END;
     }
     textContainer.setAlignItems(alignItems);
 
@@ -530,19 +540,19 @@ export class Text extends ShapeNode {
     let justifyContent;
     switch (textAlignHorizontal) {
       case 'LEFT':
-        justifyContent = yoga.JUSTIFY_FLEX_START;
+        justifyContent = Yoga.JUSTIFY_FLEX_START;
         break;
       case 'CENTER':
-        justifyContent = yoga.JUSTIFY_CENTER;
+        justifyContent = Yoga.JUSTIFY_CENTER;
         break;
       case 'RIGHT':
-        justifyContent = yoga.JUSTIFY_FLEX_END;
+        justifyContent = Yoga.JUSTIFY_FLEX_END;
         break;
       case 'JUSTIFIED':
-        justifyContent = yoga.ALIGN_SPACE_BETWEEN;
+        justifyContent = Yoga.ALIGN_SPACE_BETWEEN;
         break;
       default:
-        justifyContent = yoga.JUSTIFY_FLEX_START;
+        justifyContent = Yoga.JUSTIFY_FLEX_START;
     }
     textContainer.setJustifyContent(justifyContent);
 

@@ -1,7 +1,7 @@
 import { TComposition } from '@pda/types/dtif';
 import fs from 'fs';
 import path from 'path';
-import { Composition } from '../composition';
+import { Composition, TextSegmenter } from '../composition';
 
 function cleanStr(str: string) {
   return str.replace(/[\s\n]/g, '');
@@ -11,6 +11,8 @@ describe('Composition class tests', () => {
   it.each(['test2'])(
     `should correctly parse '%s.json' to svg and match expected result`,
     async (testCaseName) => {
+      await TextSegmenter.loadIntlSegmenterPolyfill();
+
       // Arrange
       const dtifJson = fs.readFileSync(
         path.resolve(__dirname, `./resources/${testCaseName}/input.json`),

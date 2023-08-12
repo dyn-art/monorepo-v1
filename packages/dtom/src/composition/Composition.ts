@@ -5,7 +5,7 @@ import { shortId } from '@pda/utils';
 import { TD3Selection } from '../types';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { appendNode } from './append';
-import { FontManager } from './font';
+import { FontManager, TextSegmenter } from './font';
 import { CompositionNode, D3Node } from './nodes';
 
 export class Composition {
@@ -33,7 +33,9 @@ export class Composition {
     dtifComposition: TComposition,
     options: TCompositionOptions = {}
   ) {
-    const { fontManager = new FontManager() } = options;
+    const textSegmenter = options.text?.textSegmenter;
+    const { text: { fontManager = new FontManager({ textSegmenter }) } = {} } =
+      options;
     this._forInit = { dtifComposition };
     this._version = dtifComposition.version;
     this._name = dtifComposition.name;
@@ -147,5 +149,8 @@ export class Composition {
 type TWatchedScene = RemoveFunctions<Composition>;
 
 export type TCompositionOptions = {
-  fontManager?: FontManager;
+  text?: {
+    fontManager?: FontManager;
+    textSegmenter?: TextSegmenter;
+  };
 };

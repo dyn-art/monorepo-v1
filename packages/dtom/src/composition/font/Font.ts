@@ -1,5 +1,6 @@
 import { shortId } from '@pda/utils';
 import { FontManager } from './FontManager';
+import { TextSegmenter } from './TextSegmenter';
 import {
   TFontStyle,
   TFontWeight,
@@ -17,16 +18,18 @@ export class Font {
   private _defaultTypefaceKey: string | null = null;
 
   private readonly _fontManager: () => FontManager;
+  private readonly _defaultTextSegmenter: TextSegmenter;
 
   constructor(
     name: string,
     fontManager: FontManager,
     options: TFontOptions = {}
   ) {
-    const { id = shortId() } = options;
+    const { id = shortId(), textSegmenter = new TextSegmenter() } = options;
     this.id = id;
     this.name = name;
     this._fontManager = () => fontManager;
+    this._defaultTextSegmenter = textSegmenter;
   }
 
   public setTypeface(typeface: Typeface) {
@@ -44,7 +47,14 @@ export class Font {
     context: TTypefaceContext = {},
     options: TTypefaceOptions = {}
   ): Typeface {
-    const typeface = new Typeface(this, data, context, options);
+    const { textSegmenter = this._defaultTextSegmenter, ...restOptions } =
+      options;
+    const typeface = new Typeface(data, {
+      ...context,
+      ...restOptions,
+      textSegmenter,
+      font: this,
+    });
     this.setTypeface(typeface);
     return typeface;
   }
@@ -101,4 +111,5 @@ export class Font {
 
 export type TFontOptions = {
   id?: string;
+  textSegmenter?: TextSegmenter;
 };

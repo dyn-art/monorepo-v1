@@ -1,14 +1,21 @@
 import { apiClient } from '@/api';
 import { toArrayBuffer } from '@/helpers';
 import { TTypeface } from '@pda/types/dtif';
-import { Font } from './Font';
+import { Font, TFontOptions } from './Font';
+import { TextSegmenter } from './TextSegmenter';
 import { Typeface } from './Typeface';
 
 export class FontManager {
   private readonly _typefaces: Record<string, Typeface> = {};
   private readonly _fonts: Record<string, Font> = {};
-
   private readonly _fontNameToIdMap: Map<string, string> = new Map();
+
+  private readonly _defaultTextSegmenter: TextSegmenter;
+
+  constructor(options: TFontManagerOptions = {}) {
+    const { textSegmenter = new TextSegmenter() } = options;
+    this._defaultTextSegmenter = textSegmenter;
+  }
 
   public setTypeface(typeface: Typeface) {
     this._typefaces[typeface.id] = typeface;
@@ -23,7 +30,7 @@ export class FontManager {
     this._fontNameToIdMap.set(font.name, font.id);
   }
 
-  public createFont(name: string): Font {
+  public createFont(name: string, options: TFontOptions = {}): Font {
     // Check whether font with the name already exists
     const fontId = this._fontNameToIdMap.get(name);
     if (fontId != null) {
@@ -34,7 +41,12 @@ export class FontManager {
     }
 
     // Create new font
-    const font = new Font(name, this);
+    const { textSegmenter = this._defaultTextSegmenter, ...restOptions } =
+      options;
+    const font = new Font(name, this, {
+      ...restOptions,
+      textSegmenter,
+    });
     this.setFont(font);
     return font;
   }
@@ -74,3 +86,7 @@ export class FontManager {
     );
   }
 }
+
+type TFontManagerOptions = {
+  textSegmenter?: TextSegmenter;
+};

@@ -4,7 +4,8 @@ import { TVector } from '@pda/types/dtif';
 import { shortId } from '@pda/utils';
 import opentype from 'opentype.js';
 import { Font } from './Font';
-import { TLocaleCode, segmentText } from './helper';
+import { TextSegmenter } from './TextSegmenter';
+import { TLocaleCode } from './helper';
 import {
   TEnhancedOpenTypeFont,
   enhanceOpenTypeFont,
@@ -15,9 +16,9 @@ export class Typeface {
   public readonly key: string;
 
   public readonly font: Font;
+  public readonly textSegmenter: TextSegmenter;
 
   public readonly displayName?: string;
-
   public readonly weight: number;
   public readonly style: TFontStyle;
   public readonly opentype: TEnhancedOpenTypeFont;
@@ -30,22 +31,23 @@ export class Typeface {
   > = new Map();
 
   constructor(
-    font: Font,
     data: ArrayBuffer | Uint8Array | Buffer,
-    context: TTypefaceContext = {},
-    options: TTypefaceOptions = {}
+    config: TTypefaceConfig
   ) {
     const {
+      font,
+      id = shortId(),
+      textSegmenter = new TextSegmenter(),
       style: fontStyle = 'regular',
       weight: fontWeight = Typeface.REGULAR_FONT_WEIGHT,
-    } = context;
-    const { id = shortId() } = options;
+    } = config;
     this.id = id;
     this.style = fontStyle;
     this.weight = fontWeight;
     this.key = Typeface.buildTypefaceKey(fontWeight, fontStyle);
     this.opentype = enhanceOpenTypeFont(opentype.parse(toArrayBuffer(data)));
     this.font = font;
+    this.textSegmenter = textSegmenter;
   }
 
   /**
@@ -215,13 +217,13 @@ export class Typeface {
    * @param config - Configuration
    * @returns The calculated width for the text.
    */
-  public async measureText(
+  public measureText(
     text: string,
     config: { fontSize: number; relativeLetterSpacing?: number }
-  ): Promise<number> {
+  ): number {
     const { fontSize } = config;
 
-    const graphemes = await segmentText(text, 'grapheme');
+    const graphemes = this.textSegmenter.segment(text, 'grapheme');
 
     // Calculate text width based on the width of the graphemes the text consists of
     let width = 0;
@@ -304,4 +306,9 @@ export type TTypefaceContext = {
 export type TTypefaceOptions = {
   id?: string;
   displayName?: string;
+  textSegmenter?: TextSegmenter;
 };
+export type TTypefaceConfig = {
+  font: Font;
+} & TTypefaceContext &
+  TTypefaceOptions;
