@@ -68,7 +68,7 @@ async function build() {
         await tsc.compile();
         break;
       case 'rollup':
-        await rollup.compile(
+        await rollup.compileAll(
           rollup.createPackageConfig({
             format: 'esm',
             isProduction,
@@ -79,7 +79,7 @@ async function build() {
             tsconfig: tsConfigPath,
           })
         );
-        await rollup.compile(
+        await rollup.compileAll(
           rollup.createPackageConfig({
             format: 'cjs',
             isProduction,
