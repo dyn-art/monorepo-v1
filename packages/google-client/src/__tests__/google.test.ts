@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { createGoogleService } from '../service';
 
 describe('google tests', () => {

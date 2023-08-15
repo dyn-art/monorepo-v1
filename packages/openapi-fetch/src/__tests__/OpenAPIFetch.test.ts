@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest';
 import { OpenAPIFetchClient, RawFetchClient } from '../clients';
 import { isRequestException } from '../utils';
 import { paths } from './resources/mock-openapi-types';

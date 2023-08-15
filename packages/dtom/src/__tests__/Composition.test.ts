@@ -1,16 +1,14 @@
 import { TComposition } from '@pda/types/dtif';
 import fs from 'fs';
 import path from 'path';
+import { describe, expect, it } from 'vitest';
 import { Composition, TextSegmenter } from '../composition';
 
-function cleanStr(str: string) {
-  return str.replace(/[\s\n]/g, '');
-}
+describe('dtom tests', () => {
+  const testCases = ['test2'];
 
-describe('Composition class tests', () => {
-  it.each(['test2'])(
-    `should correctly parse '%s.json' to svg and match expected result`,
-    async (testCaseName) => {
+  for (const testCaseName of testCases) {
+    it(`should correctly parse '${testCaseName}.json' to svg and match expected result`, async () => {
       await TextSegmenter.loadIntlSegmenterPolyfill();
 
       // Arrange
@@ -31,8 +29,12 @@ describe('Composition class tests', () => {
       console.log('\n\n---\n\n', svgResult, '\n\n---\n\n');
 
       // Assert
-      expect(result).not.toBeNull();
-      expect(cleanStr(svgResult)).toStrictEqual(cleanStr(expectedResult));
-    }
-  );
+      expect(result).not.toBe(null);
+      expect(cleanStr(svgResult)).toBe(cleanStr(expectedResult));
+    });
+  }
 });
+
+function cleanStr(str: string) {
+  return str.replace(/[\s\n]/g, '');
+}

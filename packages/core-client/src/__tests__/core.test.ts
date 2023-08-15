@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { createCoreService } from '../service';
 
 describe('core tests', () => {

@@ -47,13 +47,11 @@
     "@types/express-serve-static-core": "^4.17.35",
     "@types/node": "^18.15.13",
     "@types/node-cron": "^3.0.7",
-    "eslint": "^8.38.0",
     "eslint-config-pda-base": "workspace:*",
     "nodemon": "^2.0.22",
     "openapi-typescript": "^6.2.8",
     "prisma": "^4.13.0",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^4.9.5"
+    "tsconfig-paths": "^4.2.0"
   }
 }

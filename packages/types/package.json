@@ -25,7 +25,6 @@
   },
   "scripts": {
     "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod --buildStrategy=typesonly",
-    "start:dev": "tsc -w",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",
@@ -37,8 +36,6 @@
   "dependencies": {},
   "devDependencies": {
     "@pda/tsconfig": "workspace:*",
-    "typescript": "^4.9.5",
-    "eslint": "^8.38.0",
     "eslint-config-pda-base": "workspace:*"
   },
   "files": [

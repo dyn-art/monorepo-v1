@@ -33,6 +33,7 @@
         "./packages/svgson",
         "./packages/types",
         "./packages/utils",
+        "./packages/viteconfig"
     ],
     "cSpell.words": [
         "pda"

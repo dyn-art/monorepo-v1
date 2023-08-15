@@ -1,3 +1,12 @@
+import {
+  SpyInstance,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
 import { LOG_LEVEL, Logger } from '../logger';
 
 describe('Logger class tests', () => {
@@ -6,7 +15,7 @@ describe('Logger class tests', () => {
 
   const setupConsoleSpies = (consoleTypes) => {
     consoleTypes.forEach((type) => {
-      consoleSpies[type] = jest.spyOn(console, type);
+      consoleSpies[type] = vi.spyOn(console, type);
     });
   };
 
@@ -79,7 +88,7 @@ describe('Logger class tests', () => {
   it('should call the callback correctly', () => {
     // Arrange
     const logger = new Logger({ level: LOG_LEVEL.DEBUG });
-    const callback = jest.fn();
+    const callback = vi.fn();
     logger.registerCallback(callback, { level: LOG_LEVEL.DEBUG });
 
     // Act
@@ -123,7 +132,7 @@ describe('Logger class tests', () => {
     const mockTimestamp = 1628749130000; // Arbitrary timestamp value
     const mockDate = new Date(mockTimestamp).toLocaleString();
     const originalDateNow = Date.now;
-    jest.spyOn(Date, 'now').mockReturnValue(mockTimestamp);
+    vi.spyOn(Date, 'now').mockReturnValue(mockTimestamp);
 
     const logger = new Logger({ level: LOG_LEVEL.DEBUG, showTimestamp: true });
 
@@ -141,5 +150,5 @@ describe('Logger class tests', () => {
 });
 
 type ConsoleSpies<T extends ReadonlyArray<string>> = {
-  [K in T[number]]: jest.SpyInstance;
+  [K in T[number]]: SpyInstance;
 };

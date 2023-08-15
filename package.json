@@ -28,6 +28,7 @@
     "chalk": "^5.2.0",
     "concurrently": "^8.1.0",
     "esbuild": "^0.17.19",
+    "eslint": "^8.38.0",
     "esno": "^0.17.0",
     "execa": "^7.1.1",
     "prettier": "^2.8.7",
@@ -43,6 +44,7 @@
     "shx": "^0.3.4",
     "turbo": "^1.9.3",
     "typescript": "^5.1.6",
+    "vitest": "^0.34.1",
     "yargs": "^17.7.2"
   },
   "engines": {

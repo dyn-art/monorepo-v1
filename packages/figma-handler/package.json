@@ -26,9 +26,7 @@
     "@figma/plugin-typings": "^1.64.0",
     "@pda/tsconfig": "workspace:*",
     "@types/node": "^18.15.13",
-    "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
-    "typescript": "^4.9.5"
+    "eslint-config-pda-base": "workspace:*"
   },
   "files": [
     "dist",
