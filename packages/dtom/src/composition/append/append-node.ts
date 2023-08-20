@@ -18,7 +18,12 @@ export async function appendNode(
     case 'RECTANGLE':
       return new Rectangle(id, node, composition).init(parent, dtifComposition);
     case 'TEXT':
-      return new Text(id, node, composition).init(parent, dtifComposition);
+      try {
+        return new Text(id, node, composition).init(parent, dtifComposition);
+      } catch (e) {
+        // TODO: Return static text node if e.g. typeface couldn't be loaded
+        return null;
+      }
     default:
       return null;
   }

@@ -1,4 +1,5 @@
-import { Yoga, yoga } from '@/yoga';
+import { NoTypefaceFoundException } from '@/exceptions';
+import { logger } from '@/logger';
 import { TComposition, TTextNode, TVector } from '@pda/types/dtif';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
@@ -13,15 +14,25 @@ export class Text extends ShapeNode {
   private _letterSpacing: TTextNode['letterSpacing'];
   private _lineHeight: TTextNode['lineHeight'];
   private _characters: TTextNode['characters'];
-  private _typeface: Typeface | null;
+  private _typeface: Typeface;
 
   private _tabSize = 8;
   private _tabWidth: number;
   private _relativeLetterSpacing: number;
   private _relativeLineHeight: number;
 
+  /*
+  NOTE: Avoid using a Yoga node for each word/line.
+
+  Reasons:
+  - Overhead: Each node increases computation and memory usage.
+  - Complexity: More nodes complicate layout logic.
+  - Disrupted Flow: Yoga may not preserve natural text nuances.
+  
+  We'll revisit this when the full composition supports flex layout.
+  */
   // Yoga
-  private _yogaNode: ReturnType<Yoga['Node']['create']> | null;
+  // private _yogaNode: ReturnType<Yoga['Node']['create']> | null;
 
   // D3 ids
   private readonly _d3RootNodeId: string;
@@ -55,14 +66,23 @@ export class Text extends ShapeNode {
     );
     this._relativeLineHeight = this.getRelativeLineHeight(node.lineHeight);
 
-    this._yogaNode = null;
-    this._typeface =
-      node.typefaceId != null
-        ? composition.fontManager.getTypefaceById(node.typefaceId)
-        : null;
+    // this._yogaNode = null;
+    this._typeface = this.loadTypeface(node.typefaceId);
 
     // Define D3 node ids
     this._d3RootNodeId = this.getD3NodeId();
+  }
+
+  private loadTypeface(typefaceId?: string): Typeface {
+    if (typefaceId == null) {
+      throw new NoTypefaceFoundException();
+    }
+    const typeface =
+      this._composition().fontManager.getTypefaceById(typefaceId);
+    if (typeface == null) {
+      throw new NoTypefaceFoundException();
+    }
+    return typeface;
   }
 
   public async init(parent: D3Node, dtifComposition: TComposition) {
@@ -71,29 +91,30 @@ export class Text extends ShapeNode {
     }
     const { node } = this._forInit;
 
-    this._yogaNode = await Text.createYogaNode(
-      this._textAlignHorizontal,
-      this._textAlignVertical
+    // Create Yoga node
+    // this._yogaNode = await Text.createYogaNode(
+    //   this._textAlignHorizontal,
+    //   this._textAlignVertical
+    // );
+
+    // Calculate tab width
+    const spaceWidth =
+      this._typeface.measureGrapheme(Space, {
+        fontSize: this._fontSize,
+        relativeLetterSpacing: this._relativeLetterSpacing,
+      }) ?? this._fontSize;
+    this._tabWidth = spaceWidth * this._tabSize;
+
+    // Split characters into words
+    const words = this._typeface.textSegmenter.splitByBreakOpportunities(
+      this.characters
     );
 
-    if (node.typefaceId != null) {
-      // Get typeface (was loaded during Composition initialization)
-      const typeface = this.composition.fontManager.getTypefaceById(
-        node.typefaceId
-      );
+    // Calculate initial text layout
+    const textLayout = this.textLayout(words, this.width);
 
-      if (typeface != null) {
-        this._typeface = typeface;
-
-        // Calculate tab width
-        const spaceWidth =
-          typeface.measureGrapheme(Space, {
-            fontSize: this._fontSize,
-            relativeLetterSpacing: this._relativeLetterSpacing,
-          }) ?? this._fontSize;
-        this._tabWidth = spaceWidth * this._tabSize;
-      }
-    }
+    // TODO:
+    logger.info('Jeff');
 
     // Create D3 node
     this._d3Node = await Text.createD3Node(parent, {
@@ -160,7 +181,7 @@ export class Text extends ShapeNode {
   }
 
   public measureText(text: string) {
-    return this._typeface?.measureText(text, {
+    return this._typeface.measureText(text, {
       fontSize: this._fontSize,
       relativeLetterSpacing: this._relativeLetterSpacing,
     });
@@ -206,8 +227,8 @@ export class Text extends ShapeNode {
       // Separate the text at the detected tab position
       const textBeforeTab = text.slice(0, index);
       const textAfterTab = text.slice(index + tabCount);
-      const textWidthBeforeTab = this.measureText(textBeforeTab) as number;
-      const textWidthAfterTab = this.measureText(textAfterTab) as number;
+      const textWidthBeforeTab = this.measureText(textBeforeTab);
+      const textWidthAfterTab = this.measureText(textAfterTab);
 
       // Calculate the effective width after considering the tabs.
       // We add the `currentWidth` to the `textWidthBeforeTab` to ensure
@@ -227,7 +248,7 @@ export class Text extends ShapeNode {
     }
     // If the text doesn't contain any tabs
     else {
-      textWidth = this.measureText(text) as number;
+      textWidth = this.measureText(text);
     }
 
     return textWidth;
@@ -244,11 +265,9 @@ export class Text extends ShapeNode {
     text: string,
     options: { textWidth?: number } = {}
   ) {
-    const { textWidth = this.measureText(text) as number } = options;
+    const { textWidth = this.measureText(text) } = options;
     const widthWithoutTrailingWhitespace =
-      text.trimEnd() === text
-        ? textWidth
-        : (this.measureText(text.trimEnd()) as number);
+      text.trimEnd() === text ? textWidth : this.measureText(text.trimEnd());
     return textWidth - widthWithoutTrailingWhitespace;
   }
 
@@ -256,11 +275,8 @@ export class Text extends ShapeNode {
     textSegments: TTextSegment[],
     width: number,
     options: TTextLayoutOptions = {}
-  ): TTextLayoutResult | null {
+  ): TTextLayoutResult {
     const { allowBreakWord = false, allowSoftWrap = true } = options;
-    if (this._typeface == null) {
-      return null;
-    }
     let segments = [...textSegments];
 
     // Obtain baseline and height properties from the typeface
@@ -359,12 +375,12 @@ export class Text extends ShapeNode {
         height,
         segment,
         segmentWidth,
-        typeface: this._typeface,
         typefaceHeight,
       });
 
       segmentIndex++;
     }
+    lines.push(currentLine);
 
     return { width: maxWidth, height, lines };
   }
@@ -468,10 +484,8 @@ export class Text extends ShapeNode {
     segmentWidth: number;
     height: number;
     typefaceHeight: number;
-    typeface: Typeface;
   }) {
-    const { line, segment, segmentWidth, height, typefaceHeight, typeface } =
-      config;
+    const { line, segment, segmentWidth, height, typefaceHeight } = config;
 
     let x = line.width - segmentWidth;
 
@@ -490,10 +504,7 @@ export class Text extends ShapeNode {
       ) as string[];
 
       for (const word of words) {
-        const wordWidth = await typeface.measureText(word, {
-          fontSize: this._fontSize,
-          relativeLetterSpacing: this._relativeLetterSpacing,
-        });
+        const wordWidth = this.measureText(word);
 
         line.segments.push({
           position: { y: height, x },
@@ -512,52 +523,55 @@ export class Text extends ShapeNode {
   // Yoga
   // ============================================================================
 
-  private static async createYogaNode(
-    textAlignHorizontal: TTextNode['textAlignHorizontal'],
-    textAlignVertical: TTextNode['textAlignVertical']
-  ) {
-    const Yoga = await yoga();
-    const textContainer = Yoga.Node.create();
+  // private static async createYogaNode(
+  //   textAlignHorizontal: TTextNode['textAlignHorizontal'],
+  //   textAlignVertical: TTextNode['textAlignVertical']
+  // ) {
+  //   const Yoga = await yoga();
+  //   const textContainer = Yoga.Node.create();
 
-    // Determine align items
-    let alignItems;
-    switch (textAlignVertical) {
-      case 'TOP':
-        alignItems = Yoga.ALIGN_FLEX_START;
-        break;
-      case 'CENTER':
-        alignItems = Yoga.ALIGN_CENTER;
-        break;
-      case 'BOTTOM':
-        alignItems = Yoga.ALIGN_FLEX_END;
-        break;
-      default:
-        alignItems = Yoga.ALIGN_FLEX_END;
-    }
-    textContainer.setAlignItems(alignItems);
+  //   // TODO: this needs to be applied to the parent actually
+  //   // -> TextContainer & TextWrapperContainer
 
-    // Determine justify content
-    let justifyContent;
-    switch (textAlignHorizontal) {
-      case 'LEFT':
-        justifyContent = Yoga.JUSTIFY_FLEX_START;
-        break;
-      case 'CENTER':
-        justifyContent = Yoga.JUSTIFY_CENTER;
-        break;
-      case 'RIGHT':
-        justifyContent = Yoga.JUSTIFY_FLEX_END;
-        break;
-      case 'JUSTIFIED':
-        justifyContent = Yoga.ALIGN_SPACE_BETWEEN;
-        break;
-      default:
-        justifyContent = Yoga.JUSTIFY_FLEX_START;
-    }
-    textContainer.setJustifyContent(justifyContent);
+  //   // Determine align items
+  //   let alignItems;
+  //   switch (textAlignVertical) {
+  //     case 'TOP':
+  //       alignItems = Yoga.ALIGN_FLEX_START;
+  //       break;
+  //     case 'CENTER':
+  //       alignItems = Yoga.ALIGN_CENTER;
+  //       break;
+  //     case 'BOTTOM':
+  //       alignItems = Yoga.ALIGN_FLEX_END;
+  //       break;
+  //     default:
+  //       alignItems = Yoga.ALIGN_FLEX_END;
+  //   }
+  //   textContainer.setAlignItems(alignItems);
 
-    return textContainer;
-  }
+  //   // Determine justify content
+  //   let justifyContent;
+  //   switch (textAlignHorizontal) {
+  //     case 'LEFT':
+  //       justifyContent = Yoga.JUSTIFY_FLEX_START;
+  //       break;
+  //     case 'CENTER':
+  //       justifyContent = Yoga.JUSTIFY_CENTER;
+  //       break;
+  //     case 'RIGHT':
+  //       justifyContent = Yoga.JUSTIFY_FLEX_END;
+  //       break;
+  //     case 'JUSTIFIED':
+  //       justifyContent = Yoga.ALIGN_SPACE_BETWEEN;
+  //       break;
+  //     default:
+  //       justifyContent = Yoga.JUSTIFY_FLEX_START;
+  //   }
+  //   textContainer.setJustifyContent(justifyContent);
+
+  //   return textContainer;
+  // }
 
   // ============================================================================
   // D3
