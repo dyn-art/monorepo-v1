@@ -5,8 +5,8 @@ import {
   sha256,
 } from '@/helpers';
 import { TSVGCompatibleNode, TTransformNodeOptions } from '@/types';
-import { svgParser } from '@pda/svgson';
-import { TSVGNode } from '@pda/types/dtif';
+import { svgParser } from '@dyn/svgson';
+import { TSVGNode } from '@dyn/types/dtif';
 
 export async function transformToSVGNode(
   node: TSVGCompatibleNode,

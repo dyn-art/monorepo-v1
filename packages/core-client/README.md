@@ -1,1 +1,1 @@
-# `@pda/core-client`
+# `@dyn/core-client`

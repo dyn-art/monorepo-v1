@@ -36,7 +36,7 @@
         "./packages/viteconfig"
     ],
     "cSpell.words": [
-        "pda"
+        "dyn"
     ],
     "files.associations": { 
         "*.scss": "postcss",

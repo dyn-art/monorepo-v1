@@ -1,4 +1,4 @@
-import { TComposition, TNode } from '@pda/types/dtif';
+import { TComposition, TNode } from '@dyn/types/dtif';
 import { Composition } from '../Composition';
 import { CompositionNode, D3Node, Frame, Rectangle, Text } from '../nodes';
 

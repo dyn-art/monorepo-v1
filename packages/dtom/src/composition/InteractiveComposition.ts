@@ -1,5 +1,5 @@
-import { TComposition } from '@pda/types/dtif';
-import { notEmpty } from '@pda/utils';
+import { TComposition } from '@dyn/types/dtif';
+import { notEmpty } from '@dyn/utils';
 import { Composition, TCompositionOptions } from './Composition';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { CompositionNode, Frame } from './nodes';

@@ -1,5 +1,5 @@
 {
-  "name": "@pda/google-client",
+  "name": "@dyn/google-client",
   "version": "0.0.0",
   "description": "Client library to communicate with the Google API",
   "private": true,
@@ -20,14 +20,15 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/openapi-fetch": "workspace:*",
-    "@pda/logger": "workspace:*"
+    "@dyn/logger": "workspace:*",
+    "@dyn/openapi-fetch": "workspace:*",
+    "@types/node": "^18.15.13"
   },
   "devDependencies": {
-    "@pda/viteconfig": "workspace:*",
-    "@pda/tsconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
+    "@dyn/viteconfig": "workspace:*",
     "dotenv": "^16.0.3",
-    "eslint-config-pda-base": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*",
     "openapi-typescript": "^6.2.8"
   },
   "files": [

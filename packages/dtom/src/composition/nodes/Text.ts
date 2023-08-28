@@ -1,6 +1,6 @@
 import { NoTypefaceFoundException } from '@/exceptions';
 import { logger } from '@/logger';
-import { TComposition, TTextNode, TVector } from '@pda/types/dtif';
+import { TComposition, TTextNode, TVector } from '@dyn/types/dtif';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
 import { Fill } from '../fill';

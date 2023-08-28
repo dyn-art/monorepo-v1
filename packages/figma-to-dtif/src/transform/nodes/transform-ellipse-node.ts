@@ -1,6 +1,6 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
 import { TTransformNodeOptions } from '@/types';
-import { TEffect, TEllipseNode, TVectorPath } from '@pda/types/dtif';
+import { TEffect, TEllipseNode, TVectorPath } from '@dyn/types/dtif';
 
 export async function transformEllipseNode(
   node: EllipseNode,

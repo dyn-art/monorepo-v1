@@ -1,4 +1,4 @@
-import { TEffect } from '@pda/types/dtif';
+import { TEffect } from '@dyn/types/dtif';
 import { D3Node } from '../nodes';
 
 export async function appendEffect(

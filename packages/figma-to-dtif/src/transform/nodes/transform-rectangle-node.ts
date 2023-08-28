@@ -1,6 +1,6 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
 import { TTransformNodeOptions } from '@/types';
-import { TEffect, TRectangleNode, TVectorPath } from '@pda/types/dtif';
+import { TEffect, TRectangleNode, TVectorPath } from '@dyn/types/dtif';
 
 export async function transformRectangleNode(
   node: RectangleNode,

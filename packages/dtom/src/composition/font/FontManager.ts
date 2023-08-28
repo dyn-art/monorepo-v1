@@ -1,6 +1,6 @@
 import { apiClient } from '@/api';
 import { toArrayBuffer } from '@/helpers';
-import { TTypeface } from '@pda/types/dtif';
+import { TTypeface } from '@dyn/types/dtif';
 import { Font, TFontOptions } from './Font';
 import { TextSegmenter } from './TextSegmenter';
 import { Typeface } from './Typeface';

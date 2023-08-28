@@ -1,5 +1,5 @@
 {
-  "name": "@pda/svgson",
+  "name": "@dyn/svgson",
   "version": "0.0.0",
   "description": "SVG to JSON",
   "private": true,
@@ -19,17 +19,17 @@
   "author": "@bennodev19",
   "license": "MIT",
   "devDependencies": {
-    "@pda/viteconfig": "workspace:*",
-    "@pda/tsconfig": "workspace:*",
+    "@dyn/viteconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/node": "^18.15.13",
-    "eslint-config-pda-base": "workspace:*"
+    "eslint-config-dyn-base": "workspace:*"
   },
   "files": [
     "dist",
     "README.md"
   ],
   "dependencies": {
-    "@pda/logger": "workspace:*",
+    "@dyn/logger": "workspace:*",
     "fast-xml-parser": "^4.2.5"
   }
 }

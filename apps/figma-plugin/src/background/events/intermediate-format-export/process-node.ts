@@ -5,9 +5,9 @@ import {
   TUploadStaticData,
   sha256,
   toComposition,
-} from '@pda/figma-to-dtif';
-import { TComposition } from '@pda/types/dtif';
-import { extractErrorData } from '@pda/utils';
+} from '@dyn/figma-to-dtif';
+import { TComposition } from '@dyn/types/dtif';
+import { extractErrorData } from '@dyn/utils';
 import { TIntermediateFormatExportEvent, logger } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
 import { coreService, uploadDataToBucket } from '../../core/services';

@@ -1,5 +1,5 @@
 import { getIdentifier, hasFill } from '@/components/canvas/utils';
-import { TNode } from '@pda/types/dtif';
+import { TNode } from '@dyn/types/dtif';
 import React from 'react';
 import { GradientPaint, ImagePaint, SolidPaint } from './components';
 

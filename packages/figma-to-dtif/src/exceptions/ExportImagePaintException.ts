@@ -1,4 +1,4 @@
-import { extractErrorData } from '@pda/utils';
+import { extractErrorData } from '@dyn/utils';
 import { PaintException } from './PaintException';
 
 export class ExportImagePaintException extends PaintException {

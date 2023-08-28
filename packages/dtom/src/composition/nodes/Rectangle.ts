@@ -3,7 +3,7 @@ import {
   TComposition,
   TRectangleCornerMixin,
   TRectangleNode,
-} from '@pda/types/dtif';
+} from '@dyn/types/dtif';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
 import { Fill } from '../fill';

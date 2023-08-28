@@ -1,5 +1,5 @@
 {
-  "name": "@pda/openapi-fetch",
+  "name": "@dyn/openapi-fetch",
   "version": "0.0.0",
   "description": "Fetch using defined OpenAPI types",
   "private": true,
@@ -19,15 +19,15 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/utils": "workspace:*",
+    "@dyn/utils": "workspace:*",
     "cross-fetch": "^3.1.6",
     "url-parse": "^1.5.10"
   },
   "devDependencies": {
-    "@pda/viteconfig": "workspace:*",
-    "@pda/tsconfig": "workspace:*",
+    "@dyn/viteconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/url-parse": "^1.4.8",
-    "eslint-config-pda-base": "workspace:*"
+    "eslint-config-dyn-base": "workspace:*"
   },
   "files": [
     "dist",

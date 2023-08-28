@@ -3,7 +3,7 @@ import {
   getIdentifier,
   transformToCSS,
 } from '@/components/canvas/utils';
-import { TEllipseNode } from '@pda/types/dtif';
+import { TEllipseNode } from '@dyn/types/dtif';
 import React from 'react';
 import { Fill } from '../other';
 

@@ -5,8 +5,8 @@ import {
   TTransformNodeOptions,
   TTypeFaceWithoutContent,
 } from '@/types';
-import { TTypeface } from '@pda/types/dtif';
-import { extractErrorData } from '@pda/utils';
+import { TTypeface } from '@dyn/types/dtif';
+import { extractErrorData } from '@dyn/utils';
 
 export async function transformTypeface(
   typeface: TTypeFaceWithoutContent,

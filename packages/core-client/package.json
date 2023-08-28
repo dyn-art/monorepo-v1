@@ -1,7 +1,7 @@
 {
-  "name": "@pda/core-client",
+  "name": "@dyn/core-client",
   "version": "0.0.0",
-  "description": "Client library to communicate with the PDA-Core API",
+  "description": "Client library to communicate with the dyn-Core API",
   "private": true,
   "source": "./src/index.ts",
   "main": "./dist/cjs/index.js",
@@ -19,14 +19,15 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/openapi-fetch": "workspace:*",
-    "@pda/logger": "workspace:*"
+    "@dyn/logger": "workspace:*",
+    "@dyn/openapi-fetch": "workspace:*",
+    "@types/node": "^18.15.13"
   },
   "devDependencies": {
-    "@pda/viteconfig": "workspace:*",
-    "@pda/tsconfig": "workspace:*",
-    "@pda/types": "workspace:*",
-    "eslint-config-pda-base": "workspace:*"
+    "@dyn/tsconfig": "workspace:*",
+    "@dyn/types": "workspace:*",
+    "@dyn/viteconfig": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*"
   },
   "files": [
     "dist",

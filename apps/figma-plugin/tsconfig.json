@@ -7,6 +7,6 @@
     "outDir": "./dist",
     "rootDirs": ["./src", "./develop"],
   },
-  "extends": "@pda/tsconfig/react-base.json",
+  "extends": "@dyn/tsconfig/react-base.json",
   "include": ["src", "develop"]
 }

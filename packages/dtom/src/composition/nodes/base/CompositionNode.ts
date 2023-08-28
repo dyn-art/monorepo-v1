@@ -5,7 +5,7 @@ import {
   TLayoutMixin,
   TNode,
   TTransform,
-} from '@pda/types/dtif';
+} from '@dyn/types/dtif';
 import { matrix, multiply } from 'mathjs';
 import { Composition } from '../../Composition';
 import { RemoveFunctions, Watcher } from '../../Watcher';

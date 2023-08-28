@@ -1,5 +1,5 @@
 {
-  "name": "eslint-config-pda-base",
+  "name": "eslint-config-dyn-base",
   "version": "0.0.0",
   "description": "Eslint Configuration",
   "main": "index.js",

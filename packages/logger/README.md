@@ -1,6 +1,6 @@
-# `@pda/logger`
+# `@dyn/logger`
 
-The `@pda/logger` package is a powerful, flexible logging utility for JavaScript applications. It supports various logging levels, custom log categories, and customizable log styling.
+The `@dyn/logger` package is a powerful, flexible logging utility for JavaScript applications. It supports various logging levels, custom log categories, and customizable log styling.
 
 ## Features
 - Supports common log levels (debug, info, success, warn, error).
@@ -11,16 +11,16 @@ The `@pda/logger` package is a powerful, flexible logging utility for JavaScript
 - Permits custom styling of log messages in the console (browser context).
 
 ## Installation
-To add `@pda/logger` to your project, use:
+To add `@dyn/logger` to your project, use:
 
 ```bash
-npm install @pda/logger
+npm install @dyn/logger
 ```
 
 ## Usage
 
 ```js
-import { Logger, LOG_LEVEL } from '@pda/logger';
+import { Logger, LOG_LEVEL } from '@dyn/logger';
 
 // Initialize the Logger
 const logger = new Logger({

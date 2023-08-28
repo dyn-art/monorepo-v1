@@ -1,4 +1,4 @@
-import { extractErrorData } from '@pda/utils';
+import { extractErrorData } from '@dyn/utils';
 import { NodeException } from './NodeException';
 
 export class UploadStaticDataException extends NodeException {

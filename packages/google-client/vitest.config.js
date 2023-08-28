@@ -1,5 +1,5 @@
 import { defineConfig, mergeConfig } from 'vitest/config';
-import { nodeConfig } from '@pda/viteconfig';
+import { nodeConfig } from '@dyn/viteconfig';
 
 require('dotenv').config({ path: '.env.test.local' });
 

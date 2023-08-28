@@ -1,5 +1,5 @@
 {
-  "name": "@pda/ads-renderer",
+  "name": "@dyn/ads-renderer",
   "version": "0.0.0",
   "description": "Utility library to work with Music and communicate with Spotify or Genius",
   "private": true,
@@ -24,7 +24,7 @@
     "remotion": "^3.3.83"
   },
   "devDependencies": {
-    "@pda/tsconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@remotion/bundler": "^3.3.83",
     "@remotion/cli": "^3.3.83",
     "@remotion/media-utils": "^3.3.83",
@@ -40,7 +40,7 @@
     "d3": "^7.8.4",
     "d3-geo": "^3.1.0",
     "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*",
     "eslint-plugin-tailwindcss-jsx": "^0.0.1",
     "geojson": "^0.5.0",
     "postcss": "^8.4.23",

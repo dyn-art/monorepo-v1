@@ -1,6 +1,6 @@
-import { LOG_LEVEL, Logger } from '@pda/logger';
+import { LOG_LEVEL, Logger } from '@dyn/logger';
 
 export const logger = new Logger({
-  prefix: '@pda/discord-handler',
+  prefix: '@dyn/discord-handler',
   level: LOG_LEVEL.INFO,
 });

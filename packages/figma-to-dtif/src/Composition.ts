@@ -15,8 +15,8 @@ import {
   TTransformNodeOptions,
   TTypeFaceWithoutContent as TTypefaceWithoutContent,
 } from '@/types';
-import { TComposition, TNode, TPaint, TTypeface } from '@pda/types/dtif';
-import { extractErrorData, shortId } from '@pda/utils';
+import { TComposition, TNode, TPaint, TTypeface } from '@dyn/types/dtif';
+import { extractErrorData, shortId } from '@dyn/utils';
 
 export class Composition {
   // Nodes

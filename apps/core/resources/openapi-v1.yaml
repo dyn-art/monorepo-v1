@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: "@pda/core"
-  description: "API documentation for @pda/core"
+  title: "@dyn/core"
+  description: "API documentation for @dyn/core"
   version: 1.0.0
   contact:
     email: dev@physical.art

@@ -1,5 +1,5 @@
-import { InteractiveComposition, d3 } from '@pda/dtom';
-import { TComposition } from '@pda/types/dtif';
+import { InteractiveComposition, d3 } from '@dyn/dtom';
+import { TComposition } from '@dyn/types/dtif';
 import React from 'react';
 
 export function useComposition(composition: TComposition) {

@@ -1,4 +1,4 @@
-import { TImagePaintFill } from '@pda/types/dtif';
+import { TImagePaintFill } from '@dyn/types/dtif';
 
 export function handleImageFillMode(
   imageUrl: string,

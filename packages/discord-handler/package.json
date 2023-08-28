@@ -1,5 +1,5 @@
 {
-  "name": "@pda/discord-handler",
+  "name": "@dyn/discord-handler",
   "version": "0.0.0",
   "description": "Discord Handler",
   "private": true,
@@ -19,18 +19,18 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/logger": "workspace:*",
-    "@pda/utils": "workspace:*"
+    "@dyn/logger": "workspace:*",
+    "@dyn/utils": "workspace:*"
   },
   "peerDependencies": {
     "discord.js": "^14.9.0"
   },
   "devDependencies": {
-    "@pda/viteconfig": "workspace:*",
-    "@pda/tsconfig": "workspace:*",
+    "@dyn/viteconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/node": "^18.15.13",
     "discord.js": "^14.9.0",
-    "eslint-config-pda-base": "workspace:*"
+    "eslint-config-dyn-base": "workspace:*"
   },
   "files": [
     "dist",

@@ -1,4 +1,4 @@
-import { TNode } from '@pda/types/dtif';
+import { TNode } from '@dyn/types/dtif';
 import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { EUIPageRoute, TOnSelectFrameEvent, logger } from '../../../shared';

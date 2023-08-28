@@ -1,5 +1,5 @@
 {
-  "name": "@pda/utils",
+  "name": "@dyn/utils",
   "version": "0.0.0",
   "description": "Utilities",
   "private": true,
@@ -19,10 +19,10 @@
   "author": "@bennodev19",
   "license": "MIT",
   "devDependencies": {
-    "@pda/tsconfig": "workspace:*",
-    "@pda/viteconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
+    "@dyn/viteconfig": "workspace:*",
     "@types/node": "^18.15.13",
-    "eslint-config-pda-base": "workspace:*"
+    "eslint-config-dyn-base": "workspace:*"
   },
   "files": [
     "dist",

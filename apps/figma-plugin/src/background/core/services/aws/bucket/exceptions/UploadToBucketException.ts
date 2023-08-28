@@ -1,4 +1,4 @@
-import { extractErrorData } from '@pda/utils';
+import { extractErrorData } from '@dyn/utils';
 
 export class UploadToBucketException extends Error {
   public readonly throwable?: Error;

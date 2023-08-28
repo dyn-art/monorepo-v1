@@ -1,6 +1,6 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
 import { TTransformNodeOptions } from '@/types';
-import { TEffect, TFrameNode, TVectorPath } from '@pda/types/dtif';
+import { TEffect, TFrameNode, TVectorPath } from '@dyn/types/dtif';
 
 export async function transformFrameNode(
   node: FrameNode | ComponentNode | InstanceNode,

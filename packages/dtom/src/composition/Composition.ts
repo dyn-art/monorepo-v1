@@ -1,7 +1,7 @@
 import { d3 } from '@/d3';
 import { appendAttributes, appendCSS } from '@/helpers';
-import { TComposition } from '@pda/types/dtif';
-import { shortId } from '@pda/utils';
+import { TComposition } from '@dyn/types/dtif';
+import { shortId } from '@dyn/utils';
 import { TD3Selection } from '../types';
 import { RemoveFunctions, Watcher } from './Watcher';
 import { appendNode } from './append';

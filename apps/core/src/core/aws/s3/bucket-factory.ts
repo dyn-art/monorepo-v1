@@ -1,4 +1,4 @@
-import S3 from '@pda/s3';
+import S3 from '@dyn/s3';
 import s3Config from '../../../environment/config/s3.config';
 
 export function bucket(name: string) {

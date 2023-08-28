@@ -1,5 +1,5 @@
 import { TTransformNodeOptions } from '@/types';
-import { TGradientPaintExported } from '@pda/types/dtif';
+import { TGradientPaintExported } from '@dyn/types/dtif';
 import { exportAndUploadNode, exportNode, sha256 } from '../../helpers';
 
 export async function transformToExportedGradientPaint(

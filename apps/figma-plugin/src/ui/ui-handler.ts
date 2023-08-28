@@ -1,4 +1,4 @@
-import { FigmaUIHandler } from '@pda/figma-handler';
+import { FigmaUIHandler } from '@dyn/figma-handler';
 import { TBackgroundFigmaMessageEvent, TUIFigmaMessageEvent } from '../shared';
 
 export const uiHandler: TUIHandler = new FigmaUIHandler<

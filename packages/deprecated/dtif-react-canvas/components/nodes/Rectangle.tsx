@@ -3,7 +3,7 @@ import {
   getIdentifier,
   transformToCSS,
 } from '@/components/canvas/utils';
-import { TRectangleNode } from '@pda/types/dtif';
+import { TRectangleNode } from '@dyn/types/dtif';
 import React from 'react';
 import { Fill } from '../other';
 

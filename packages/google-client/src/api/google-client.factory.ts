@@ -1,4 +1,4 @@
-import { OpenAPIFetchClient } from '@pda/openapi-fetch';
+import { OpenAPIFetchClient } from '@dyn/openapi-fetch';
 import { googleConfig } from '../environment';
 import { paths } from '../gen/webfonts-v1';
 

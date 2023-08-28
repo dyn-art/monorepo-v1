@@ -1,4 +1,4 @@
-import { shortId } from '@pda/utils';
+import { shortId } from '@dyn/utils';
 import { FontManager } from './FontManager';
 import { TextSegmenter } from './TextSegmenter';
 import {

@@ -1,4 +1,4 @@
-# `@pda/ads-renderer`
+# `@dyn/ads-renderer`
 
 > Render tasks related to advertisement
 

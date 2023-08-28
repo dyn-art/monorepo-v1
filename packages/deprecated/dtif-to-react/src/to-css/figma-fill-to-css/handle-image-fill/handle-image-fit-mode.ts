@@ -1,4 +1,4 @@
-import { TImagePaintFit } from '@pda/types/dtif';
+import { TImagePaintFit } from '@dyn/types/dtif';
 
 export function handleImageFitMode(imageUrl: string, fill: TImagePaintFit) {
   return {

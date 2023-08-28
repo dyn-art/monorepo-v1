@@ -1,4 +1,4 @@
-import { shortId } from '@pda/utils';
+import { shortId } from '@dyn/utils';
 
 export class Watcher<GWatchedObj> {
   private readonly callbacks: {

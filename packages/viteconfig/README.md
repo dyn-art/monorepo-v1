@@ -1,1 +1,1 @@
-# `@pda/viteconfig`
+# `@dyn/viteconfig`

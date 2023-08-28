@@ -1,4 +1,4 @@
-import { TVector } from '@pda/types/dtif';
+import { TVector } from '@dyn/types/dtif';
 
 export type TXYWH = {
   width: number;

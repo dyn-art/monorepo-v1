@@ -1,5 +1,5 @@
 import { rgbToCSS } from '@/helpers/css';
-import { TRGB, TSolidPaint } from '@pda/types/dtif';
+import { TRGB, TSolidPaint } from '@dyn/types/dtif';
 import colorConvert from 'color-convert';
 import { RemoveFunctions, Watcher } from '../../Watcher';
 import { D3Node, ShapeNode } from '../../nodes';

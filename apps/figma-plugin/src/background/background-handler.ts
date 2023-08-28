@@ -1,4 +1,4 @@
-import { FigmaBackgroundHandler } from '@pda/figma-handler';
+import { FigmaBackgroundHandler } from '@dyn/figma-handler';
 import { TBackgroundFigmaMessageEvent, TUIFigmaMessageEvent } from '../shared';
 import { events } from './events';
 

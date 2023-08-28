@@ -1,4 +1,4 @@
-import { TNode } from '@pda/types/dtif';
+import { TNode } from '@dyn/types/dtif';
 
 export function resetFigmaNodeTransform(node: SceneNode): SceneNode {
   if ('x' in node) {

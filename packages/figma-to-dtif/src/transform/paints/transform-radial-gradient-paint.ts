@@ -3,7 +3,7 @@ import { TTransformNodeOptions } from '@/types';
 import {
   TGradientPaintExported,
   TRadialGradientPaintInline,
-} from '@pda/types/dtif';
+} from '@dyn/types/dtif';
 import { transformToExportedGradientPaint } from './transform-to-exported-gradient-paint';
 
 export async function transformRadialGradientPaint(

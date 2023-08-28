@@ -2,7 +2,7 @@ import {
   OpenAPIFetchClient,
   RawFetchClient,
   isStatusCode,
-} from '@pda/openapi-fetch';
+} from '@dyn/openapi-fetch';
 import { paths } from '../gen/webfonts-v1';
 import { logger } from '../logger';
 

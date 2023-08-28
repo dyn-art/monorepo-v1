@@ -1,6 +1,6 @@
 import { useText } from '@/components/canvas/hooks';
 import { getIdentifier } from '@/components/canvas/utils';
-import { TTextNode, TVectorPath } from '@pda/types/dtif';
+import { TTextNode, TVectorPath } from '@dyn/types/dtif';
 import React, { SVGAttributes } from 'react';
 
 const InnerText: React.FC<TProps> = (props) => {

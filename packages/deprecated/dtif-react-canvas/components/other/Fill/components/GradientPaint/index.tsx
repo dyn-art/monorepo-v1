@@ -1,4 +1,4 @@
-import { TGradientPaint, TNode } from '@pda/types/dtif';
+import { TGradientPaint, TNode } from '@dyn/types/dtif';
 import React from 'react';
 import { LinearGradientPaint, RadialGradientPaint } from './components';
 

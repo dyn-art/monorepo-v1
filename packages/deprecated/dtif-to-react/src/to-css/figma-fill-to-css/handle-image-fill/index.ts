@@ -1,4 +1,4 @@
-import { TImagePaint, TNode } from '@pda/types/dtif';
+import { TImagePaint, TNode } from '@dyn/types/dtif';
 import { getS3BucketURLFromHash } from '../../../utils';
 import { handleImageCropMode } from './handle-image-crop-mode';
 import { handleImageFillMode } from './handle-image-fill-mode';

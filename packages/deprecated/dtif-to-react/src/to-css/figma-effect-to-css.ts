@@ -3,7 +3,7 @@ import {
   TDropShadowEffect,
   TEffect,
   TInnerShadowEffect,
-} from '@pda/types/dtif';
+} from '@dyn/types/dtif';
 import React from 'react';
 import { figmaRGBToCss } from './figma-rgb-to-css';
 

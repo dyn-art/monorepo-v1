@@ -1,4 +1,4 @@
-import { CompositionNode } from '@pda/dtif-to-svg';
+import { CompositionNode } from '@dyn/dtif-to-svg';
 import React from 'react';
 import { useMatrixTransform, useWatcher } from '../../../../hooks';
 import { EHandleSide, TXYWH } from '../../types';

@@ -1,3 +1,3 @@
-import { RawFetchClientThrow } from '@pda/openapi-fetch';
+import { RawFetchClientThrow } from '@dyn/openapi-fetch';
 
 export const fetchClient = new RawFetchClientThrow();

@@ -1,1 +1,1 @@
-# `@pda/types`
+# `@dyn/types`

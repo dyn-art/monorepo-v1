@@ -1,5 +1,5 @@
 spring.datasource:
-  url: jdbc:postgresql://localhost:5001/pda?autoReconnect=true&currentSchema=order_process
+  url: jdbc:postgresql://localhost:5001/dyn?autoReconnect=true&currentSchema=order_process
   username: postgres
   password: postgres
   driver-class-name: org.postgresql.Driver

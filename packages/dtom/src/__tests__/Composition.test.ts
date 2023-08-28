@@ -1,4 +1,4 @@
-import { TComposition } from '@pda/types/dtif';
+import { TComposition } from '@dyn/types/dtif';
 import fs from 'fs';
 import path from 'path';
 import { describe, expect, it } from 'vitest';

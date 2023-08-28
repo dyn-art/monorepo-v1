@@ -1,5 +1,5 @@
 import { TOpenAPIRequest, TOpenAPIResponse } from '@/types';
-import { paths } from '@pda/types/core';
+import { paths } from '@dyn/types/core';
 import { Router } from 'express';
 import authRoutes from './auth';
 import mediaRoutes from './media';

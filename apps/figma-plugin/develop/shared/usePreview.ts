@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { LOG_LEVEL, Logger } from '@pda/logger';
+import { LOG_LEVEL, Logger } from '@dyn/logger';
 
 export const logger = new Logger({
   prefix: 'usePreview',

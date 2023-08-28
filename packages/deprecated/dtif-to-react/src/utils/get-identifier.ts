@@ -1,4 +1,4 @@
-import { TNode } from '@pda/types/dtif';
+import { TNode } from '@dyn/types/dtif';
 
 /**
  * Helper function to get a unique React component id and key based on a node.

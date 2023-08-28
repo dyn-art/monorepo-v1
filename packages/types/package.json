@@ -1,5 +1,5 @@
 {
-  "name": "@pda/types",
+  "name": "@dyn/types",
   "version": "0.0.0",
   "description": "Types for the Design Tree Interchange Format (DTIF).",
   "private": true,
@@ -35,8 +35,8 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@pda/tsconfig": "workspace:*",
-    "eslint-config-pda-base": "workspace:*"
+    "@dyn/tsconfig": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*"
   },
   "files": [
     "dist",

@@ -1,3 +1,3 @@
-import { RawFetchClient } from '@pda/openapi-fetch';
+import { RawFetchClient } from '@dyn/openapi-fetch';
 
 export const apiClient = new RawFetchClient();

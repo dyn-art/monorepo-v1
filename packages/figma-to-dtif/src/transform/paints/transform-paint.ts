@@ -1,6 +1,6 @@
 import { UnsupportedFigmaPaintException } from '@/exceptions';
 import { TTransformNodeOptions } from '@/types';
-import { TPaint } from '@pda/types/dtif';
+import { TPaint } from '@dyn/types/dtif';
 import { transformImagePaint } from './transform-image-paint';
 import { transformLinearGradientPaint } from './transform-linear-gradient-paint';
 import { transformRadialGradientPaint } from './transform-radial-gradient-paint';

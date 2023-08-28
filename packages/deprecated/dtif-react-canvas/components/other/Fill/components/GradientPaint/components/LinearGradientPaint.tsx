@@ -3,7 +3,7 @@ import {
   getIdentifier,
   rgbToCSS,
 } from '@/components/canvas/utils';
-import { TLinearGradientPaintInline, TNode } from '@pda/types/dtif';
+import { TLinearGradientPaintInline, TNode } from '@dyn/types/dtif';
 import React from 'react';
 
 const LinearGradientPaint: React.FC<TProps> = (props) => {

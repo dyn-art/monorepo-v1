@@ -1,5 +1,5 @@
 import { getIdentifier, rgbToCSS } from '@/components/canvas/utils';
-import { TNode, TPaintMixin } from '@pda/types/dtif';
+import { TNode, TPaintMixin } from '@dyn/types/dtif';
 import React from 'react';
 
 const SolidPaint: React.FC<TProps> = (props) => {

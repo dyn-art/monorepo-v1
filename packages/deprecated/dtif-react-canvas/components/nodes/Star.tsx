@@ -3,7 +3,7 @@ import {
   getIdentifier,
   transformToCSS,
 } from '@/components/canvas/utils';
-import { TStarNode } from '@pda/types/dtif';
+import { TStarNode } from '@dyn/types/dtif';
 import React from 'react';
 import { Fill } from '../other';
 

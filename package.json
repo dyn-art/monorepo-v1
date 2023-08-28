@@ -42,7 +42,7 @@
     "rollup-plugin-typescript-paths": "^1.4.0",
     "rollup-plugin-visualizer": "^5.9.0",
     "shx": "^0.3.4",
-    "turbo": "^1.10.12",
+    "turbo": "^1.10.13",
     "typescript": "^5.1.6",
     "vitest": "^0.34.1",
     "yargs": "^17.7.2"

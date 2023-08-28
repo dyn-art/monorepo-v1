@@ -5,7 +5,7 @@ import {
   getIdentifier,
   transformToCSS,
 } from '@/components/canvas/utils';
-import { TImagePaintCrop, TNode } from '@pda/types/dtif';
+import { TImagePaintCrop, TNode } from '@dyn/types/dtif';
 import React from 'react';
 
 const ImageCropPaint: React.FC<TProps> = (props) => {

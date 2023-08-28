@@ -1,5 +1,5 @@
-import { TEllipseArcData, TVector } from '@pda/types/dtif';
-import { notEmpty } from '@pda/utils';
+import { TEllipseArcData, TVector } from '@dyn/types/dtif';
+import { notEmpty } from '@dyn/utils';
 
 /**
  * Constructs a ellipse SVG path string based on the given arc data

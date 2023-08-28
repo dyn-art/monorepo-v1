@@ -1,5 +1,5 @@
 import { getElementId } from '@/helpers/other';
-import { TBlendMode, TPaint } from '@pda/types/dtif';
+import { TBlendMode, TPaint } from '@dyn/types/dtif';
 import { RemoveFunctions, Watcher } from '../../Watcher';
 import { D3Node } from '../../nodes';
 import { Fill } from '../Fill';

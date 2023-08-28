@@ -1,8 +1,8 @@
 import {
   OpenAPIFetchClientThrow,
   TRequestMiddleware,
-} from '@pda/openapi-fetch';
-import { paths } from '@pda/types/core';
+} from '@dyn/openapi-fetch';
+import { paths } from '@dyn/types/core';
 import { coreConfig } from '../environment';
 
 export function createCoreClient(

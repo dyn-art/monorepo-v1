@@ -1,4 +1,4 @@
-import { TVector } from '@pda/types/dtif';
+import { TVector } from '@dyn/types/dtif';
 
 /**
  * Constructs a star SVG path string based on the given point count

@@ -1,5 +1,5 @@
-import { InteractiveComposition } from '@pda/dtom';
-import { TVector } from '@pda/types/dtif';
+import { InteractiveComposition } from '@dyn/dtom';
+import { TVector } from '@dyn/types/dtif';
 import React from 'react';
 
 export function pointerEventToCompositionPoint(

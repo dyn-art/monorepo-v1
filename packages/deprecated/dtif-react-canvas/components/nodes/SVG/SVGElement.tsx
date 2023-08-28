@@ -1,4 +1,4 @@
-import { TSVGElement } from '@pda/types/dtif';
+import { TSVGElement } from '@dyn/types/dtif';
 import React from 'react';
 import { toCamelCase } from '../../../utils';
 

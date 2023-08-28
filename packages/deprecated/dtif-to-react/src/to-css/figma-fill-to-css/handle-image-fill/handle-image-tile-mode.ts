@@ -1,4 +1,4 @@
-import { TImagePaintTile } from '@pda/types/dtif';
+import { TImagePaintTile } from '@dyn/types/dtif';
 
 export function handleImageTileMode(imageUrl: string, fill: TImagePaintTile) {
   return {

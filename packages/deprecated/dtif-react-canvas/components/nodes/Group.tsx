@@ -1,5 +1,5 @@
 import { getIdentifier } from '@/components/canvas/utils';
-import { TGroupNode } from '@pda/types/dtif';
+import { TGroupNode } from '@dyn/types/dtif';
 import React from 'react';
 import Node from './Node';
 

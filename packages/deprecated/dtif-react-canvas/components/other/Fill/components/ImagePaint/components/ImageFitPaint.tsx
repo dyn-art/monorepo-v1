@@ -1,5 +1,5 @@
 import { getIdentifier } from '@/components/canvas/utils';
-import { TImagePaintFit, TNode } from '@pda/types/dtif';
+import { TImagePaintFit, TNode } from '@dyn/types/dtif';
 import React from 'react';
 
 const ImageFitPaint: React.FC<TProps> = (props) => {

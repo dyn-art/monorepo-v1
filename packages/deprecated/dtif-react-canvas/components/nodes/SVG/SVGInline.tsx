@@ -1,4 +1,4 @@
-import { TSVGNodeInline } from '@pda/types/dtif';
+import { TSVGNodeInline } from '@dyn/types/dtif';
 import React from 'react';
 import SVGElement from './SVGElement';
 

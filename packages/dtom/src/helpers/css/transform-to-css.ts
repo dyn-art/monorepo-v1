@@ -1,4 +1,4 @@
-import { TTransform } from '@pda/types/dtif';
+import { TTransform } from '@dyn/types/dtif';
 import type { CSSProperties } from 'react';
 import {
   T2DMatrixData,

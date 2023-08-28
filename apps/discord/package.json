@@ -1,5 +1,5 @@
 {
-  "name": "@pda/discord",
+  "name": "@dyn/discord",
   "version": "0.0.0",
   "description": "Discord App",
   "private": true,
@@ -16,16 +16,16 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/discord-handler": "workspace:*",
+    "@dyn/discord-handler": "workspace:*",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
-    "@pda/viteconfig": "workspace:*",
-    "@pda/tsconfig": "workspace:*",
+    "@dyn/viteconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/node": "^18.15.13",
     "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*",
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1"
   }

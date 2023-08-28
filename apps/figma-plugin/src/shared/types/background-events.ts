@@ -1,5 +1,5 @@
-import { TBaseFigmaMessageEvent } from '@pda/figma-handler';
-import { TTransformNodeOptions } from '@pda/figma-to-dtif';
+import { TBaseFigmaMessageEvent } from '@dyn/figma-handler';
+import { TTransformNodeOptions } from '@dyn/figma-to-dtif';
 import { EUIPageRoute } from './other';
 
 export interface TIntermediateFormatExportEvent extends TBaseFigmaMessageEvent {

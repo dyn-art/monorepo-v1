@@ -1,4 +1,4 @@
-# `@pda/product-renderer`
+# `@dyn/product-renderer`
 
 > Render tasks related to products like posters
 

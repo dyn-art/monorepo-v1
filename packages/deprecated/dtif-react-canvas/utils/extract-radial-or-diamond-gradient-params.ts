@@ -1,4 +1,4 @@
-import { TTransform, TVector } from '@pda/types/dtif';
+import { TTransform, TVector } from '@dyn/types/dtif';
 import matrixInverse from 'matrix-inverse';
 import { applyMatrixToPoint } from './apply-matrix-to-point';
 

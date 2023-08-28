@@ -1,5 +1,5 @@
 import { getIdentifier, transformToCSS } from '@/components/canvas/utils';
-import { TTextNode } from '@pda/types/dtif';
+import { TTextNode } from '@dyn/types/dtif';
 import React from 'react';
 import { Fill } from '../../other';
 import InnerText from './InnerText';

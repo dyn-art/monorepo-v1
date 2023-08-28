@@ -1,5 +1,5 @@
-import { extractTransformMatrixData } from '@pda/dtom';
-import { TTransform } from '@pda/types/dtif';
+import { extractTransformMatrixData } from '@dyn/dtom';
+import { TTransform } from '@dyn/types/dtif';
 import React from 'react';
 
 export function useMatrixTransform(transform: TTransform) {

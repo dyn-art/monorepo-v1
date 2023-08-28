@@ -1,4 +1,4 @@
-import { TChildrenMixin } from '@pda/types/dtif';
+import { TChildrenMixin } from '@dyn/types/dtif';
 
 export function hasChildrenFigma(obj: any): obj is ChildrenMixin {
   return obj != null && typeof obj === 'object' && 'children' in obj;

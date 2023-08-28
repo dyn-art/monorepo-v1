@@ -1,6 +1,6 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
 import { TTransformNodeOptions } from '@/types';
-import { TEffect, TStarNode, TVectorPath } from '@pda/types/dtif';
+import { TEffect, TStarNode, TVectorPath } from '@dyn/types/dtif';
 
 export async function transformStarNode(
   node: StarNode,

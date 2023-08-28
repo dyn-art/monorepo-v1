@@ -1,5 +1,5 @@
 import { getIdentifier, transformToCSS } from '@/components/canvas/utils';
-import { TFrameNode } from '@pda/types/dtif';
+import { TFrameNode } from '@dyn/types/dtif';
 import React from 'react';
 import { Fill } from '../other';
 import Node from './Node';

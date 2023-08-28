@@ -1,4 +1,4 @@
-import { TTextNode } from '@pda/types/dtif';
+import { TTextNode } from '@dyn/types/dtif';
 import React from 'react';
 import { TLine, useLines } from '../useLines';
 import { useTextDimensions } from '../useTextDimensions';

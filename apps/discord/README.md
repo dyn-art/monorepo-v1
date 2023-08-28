@@ -1,1 +1,1 @@
-# `@pda/discord`
+# `@dyn/discord`

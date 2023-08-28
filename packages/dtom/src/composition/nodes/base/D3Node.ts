@@ -1,7 +1,7 @@
 import { appendAttributes, appendCSS } from '@/helpers';
 import { logger } from '@/logger';
 import { TD3Selection } from '@/types';
-import { shortId } from '@pda/utils';
+import { shortId } from '@dyn/utils';
 import { BaseType } from 'd3-selection';
 import { CSSProperties } from 'react';
 

@@ -1,4 +1,4 @@
-import { DCClientHandler } from '@pda/discord-handler';
+import { DCClientHandler } from '@dyn/discord-handler';
 import { Client, IntentsBitField } from 'discord.js';
 import path from 'path';
 import { discordConfig } from './environment';

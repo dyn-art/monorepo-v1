@@ -1,5 +1,5 @@
 {
-  "name": "@pda/viteconfig",
+  "name": "@dyn/viteconfig",
   "version": "0.0.0",
   "description": "Vite Configuration",
   "private": true,
@@ -24,8 +24,8 @@
     "vitest": "^0.34.1"
   },
   "devDependencies": {
-    "@pda/tsconfig": "workspace:*",
-    "eslint-config-pda-base": "workspace:*"
+    "@dyn/tsconfig": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

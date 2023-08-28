@@ -3,7 +3,7 @@ import {
   getIdentifier,
   rgbToCSS,
 } from '@/components/canvas/utils';
-import { TNode, TRadialGradientPaintInline } from '@pda/types/dtif';
+import { TNode, TRadialGradientPaintInline } from '@dyn/types/dtif';
 import React from 'react';
 
 const RadialGradientPaint: React.FC<TProps> = (props) => {

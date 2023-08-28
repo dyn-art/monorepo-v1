@@ -1,5 +1,5 @@
 import { coreService } from '@/core/api';
-import { TComposition } from '@pda/types/dtif';
+import { TComposition } from '@dyn/types/dtif';
 import { LoaderArgs, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';

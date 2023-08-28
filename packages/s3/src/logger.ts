@@ -1,6 +1,6 @@
-import { LOG_LEVEL, Logger } from '@pda/logger';
+import { LOG_LEVEL, Logger } from '@dyn/logger';
 
 export const logger = new Logger({
-  prefix: '@pda/s3',
+  prefix: '@dyn/s3',
   level: LOG_LEVEL.INFO,
 });

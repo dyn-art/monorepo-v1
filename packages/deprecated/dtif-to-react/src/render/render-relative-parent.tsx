@@ -1,4 +1,4 @@
-import { TFrameNode } from '@pda/types/dtif';
+import { TFrameNode } from '@dyn/types/dtif';
 import React from 'react';
 import { applyScaleToMatrix } from '../utils';
 import { renderFrame } from './render-frame';

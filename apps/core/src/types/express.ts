@@ -3,8 +3,8 @@ import {
   TRequestPathParamsObject,
   TRequestQueryParamsObject,
   TResponseBody,
-} from '@pda/openapi-fetch';
-import { paths } from '@pda/types/core';
+} from '@dyn/openapi-fetch';
+import { paths } from '@dyn/types/core';
 import express from 'express';
 import * as core from 'express-serve-static-core';
 import { ValidationChain } from 'express-validator';

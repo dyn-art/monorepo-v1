@@ -1,6 +1,6 @@
 import { convert2DMatrixTo3DMatrix, excludeMixed } from '@/helpers';
 import { TTransformNodeOptions } from '@/types';
-import { TEffect, TTextNode, TVectorPath } from '@pda/types/dtif';
+import { TEffect, TTextNode, TVectorPath } from '@dyn/types/dtif';
 
 export async function transformTextNode(
   node: TextNode,

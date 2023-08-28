@@ -1,5 +1,5 @@
 import { getBucketURLFromHash } from '@/components/canvas/utils';
-import { TImagePaint, TNode } from '@pda/types/dtif';
+import { TImagePaint, TNode } from '@dyn/types/dtif';
 import React from 'react';
 import {
   ImageCropPaint,

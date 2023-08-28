@@ -1,1 +1,1 @@
-console.log('@pda/ads-renderer');
+console.log('@dyn/ads-renderer');

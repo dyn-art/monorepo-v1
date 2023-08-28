@@ -1,4 +1,4 @@
-import { TImagePaintCrop, TNode } from '@pda/types/dtif';
+import { TImagePaintCrop, TNode } from '@dyn/types/dtif';
 import { T2DMatrixData, extractMatrixData } from '../../../utils';
 import { figmaTransformToCSS } from '../../figma-transform-to-css';
 

@@ -1,4 +1,4 @@
-import { TFrameNode, TPaint, TRectangleNode, TTextNode } from '@pda/types/dtif';
+import { TFrameNode, TPaint, TRectangleNode, TTextNode } from '@dyn/types/dtif';
 import React from 'react';
 import { figmaBlendModeToCSS } from '../figma-blend-mode-to-css';
 import { handleExportedGradientFill } from './handle-exported-gradient-fill';

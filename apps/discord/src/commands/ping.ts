@@ -1,4 +1,4 @@
-import { CommandType, ComponentType, TCommandMeta } from '@pda/discord-handler';
+import { CommandType, ComponentType, TCommandMeta } from '@dyn/discord-handler';
 import {
   ActionRowBuilder,
   ButtonBuilder,

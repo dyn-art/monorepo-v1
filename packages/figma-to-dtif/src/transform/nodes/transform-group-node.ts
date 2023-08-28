@@ -1,5 +1,5 @@
 import { convert2DMatrixTo3DMatrix } from '@/helpers';
-import { TGroupNode } from '@pda/types/dtif';
+import { TGroupNode } from '@dyn/types/dtif';
 
 export async function transformGroupNode(node: GroupNode): Promise<TGroupNode> {
   return {

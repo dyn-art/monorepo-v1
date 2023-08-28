@@ -1,4 +1,4 @@
-import { RawFetchClient } from '@pda/openapi-fetch';
+import { RawFetchClient } from '@dyn/openapi-fetch';
 import crypto from 'crypto';
 import { etsyConfig } from '../environment';
 import {

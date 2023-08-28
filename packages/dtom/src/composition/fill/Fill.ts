@@ -1,4 +1,4 @@
-import { TComposition, TFillMixin } from '@pda/types/dtif';
+import { TComposition, TFillMixin } from '@dyn/types/dtif';
 import { appendPaint } from '../append';
 import { D3Node, ShapeNode } from '../nodes';
 import { Paint } from './paints';

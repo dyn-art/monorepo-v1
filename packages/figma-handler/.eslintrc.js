@@ -5,5 +5,5 @@ const ERROR = 2;
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
-  extends: ['pda-base'],
+  extends: ['dyn-base'],
 };

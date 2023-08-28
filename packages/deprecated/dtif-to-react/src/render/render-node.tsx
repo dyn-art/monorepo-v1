@@ -1,4 +1,4 @@
-import { TNode } from '@pda/types/dtif';
+import { TNode } from '@dyn/types/dtif';
 import React from 'react';
 import { TInherit } from '../types';
 import { renderFrame } from './render-frame';

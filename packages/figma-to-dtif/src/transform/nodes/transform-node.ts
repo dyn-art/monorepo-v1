@@ -6,7 +6,7 @@ import {
 } from '@/exceptions';
 import { isSVGCompatibleNode } from '@/helpers';
 import { TTransformNodeOptions } from '@/types';
-import { TNode, TSVGNode } from '@pda/types/dtif';
+import { TNode, TSVGNode } from '@dyn/types/dtif';
 import { transformEllipseNode } from './transform-ellipse-node';
 import { transformFrameNode } from './transform-frame-node';
 import { transformGroupNode } from './transform-group-node';

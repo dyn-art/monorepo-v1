@@ -1,4 +1,4 @@
-import { TSolidPaint } from '@pda/types/dtif';
+import { TSolidPaint } from '@dyn/types/dtif';
 
 export function transformSolidPaint(paint: SolidPaint): TSolidPaint {
   return {

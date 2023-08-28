@@ -1,4 +1,4 @@
-import { RemoveFunctions, Watcher } from '@pda/dtom';
+import { RemoveFunctions, Watcher } from '@dyn/dtom';
 import React from 'react';
 
 export function useWatcher<

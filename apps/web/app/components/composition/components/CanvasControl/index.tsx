@@ -1,6 +1,6 @@
 import { logger } from '@/core/logger';
-import { InteractiveComposition } from '@pda/dtif-to-svg';
-import { TVector } from '@pda/types/dtif';
+import { InteractiveComposition } from '@dyn/dtif-to-svg';
+import { TVector } from '@dyn/types/dtif';
 import React from 'react';
 import { pointerEventToCompositionPoint } from '../../utils';
 import { SelectionBox } from './components';

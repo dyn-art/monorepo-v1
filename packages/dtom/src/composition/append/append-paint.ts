@@ -1,4 +1,4 @@
-import { TPaint } from '@pda/types/dtif';
+import { TPaint } from '@dyn/types/dtif';
 import { Fill, Paint, SolidPaint } from '../fill';
 import { D3Node } from '../nodes';
 

@@ -1,4 +1,4 @@
-import { notEmpty } from '@pda/utils';
+import { notEmpty } from '@dyn/utils';
 
 /**
  * Constructs a rectangle SVG path string based on the given border radian

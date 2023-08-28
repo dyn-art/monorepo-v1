@@ -9,7 +9,7 @@ import {
   uploadStaticData,
 } from '@/helpers';
 import { TTransformNodeOptions } from '@/types';
-import { TImagePaint } from '@pda/types/dtif';
+import { TImagePaint } from '@dyn/types/dtif';
 
 export async function transformImagePaint(
   paint: ImagePaint,

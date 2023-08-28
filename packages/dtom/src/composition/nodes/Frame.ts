@@ -2,8 +2,8 @@ import {
   TComposition,
   TFrameNode,
   TRectangleCornerMixin,
-} from '@pda/types/dtif';
-import { notEmpty } from '@pda/utils';
+} from '@dyn/types/dtif';
+import { notEmpty } from '@dyn/utils';
 import { Composition } from '../Composition';
 import { RemoveFunctions, Watcher } from '../Watcher';
 import { appendNode } from '../append';

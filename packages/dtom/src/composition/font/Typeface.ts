@@ -1,7 +1,7 @@
 import { toArrayBuffer } from '@/helpers';
 import { logger } from '@/logger';
-import { TVector } from '@pda/types/dtif';
-import { shortId } from '@pda/utils';
+import { TVector } from '@dyn/types/dtif';
+import { shortId } from '@dyn/utils';
 import opentype from 'opentype.js';
 import { Font } from './Font';
 import { TextSegmenter } from './TextSegmenter';

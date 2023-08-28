@@ -1,4 +1,4 @@
-import { InteractiveComposition } from '@pda/dtif-to-svg';
+import { InteractiveComposition } from '@dyn/dtif-to-svg';
 import React from 'react';
 import { useWatcher } from '../../../../hooks';
 import { EHandleSide, TXYWH } from '../../types';

@@ -1,1 +1,1 @@
-# `@pda/core`
+# `@dyn/core`

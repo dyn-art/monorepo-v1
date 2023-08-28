@@ -1,5 +1,5 @@
 {
-  "name": "@pda/dtif-to-react",
+  "name": "@dyn/dtif-to-react",
   "version": "0.0.0",
   "description": "Provides utilities to convert the Design Tree Interchange Format (DTIF) into static ReactJs components.",
   "private": true,
@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "@figma-plugin/helpers": "^0.15.2",
-    "@pda/logger": "workspace:*",
+    "@dyn/logger": "workspace:*",
     "mathjs": "^11.8.0",
     "webfontloader": "^1.6.28"
   },
@@ -29,14 +29,14 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@pda/types": "workspace:*",
-    "@pda/tsconfig": "workspace:*",
+    "@dyn/types": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@types/webfontloader": "^1.6.35",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*",
     "postcss": "^8.4.23",
     "rollup-plugin-postcss": "^4.0.2",
     "typescript": "^4.9.5"

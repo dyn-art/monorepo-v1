@@ -1,5 +1,5 @@
-import { applyScaleToMatrix, renderNode } from '@pda/dtif-to-react';
-import { TFrameNode } from '@pda/types/dtif';
+import { applyScaleToMatrix, renderNode } from '@dyn/dtif-to-react';
+import { TFrameNode } from '@dyn/types/dtif';
 import React from 'react';
 import { continueRender, delayRender } from 'remotion';
 import './style.css';

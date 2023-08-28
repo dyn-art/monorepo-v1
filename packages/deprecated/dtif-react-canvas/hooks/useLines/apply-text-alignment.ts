@@ -1,4 +1,4 @@
-import { TTextNode } from '@pda/types/dtif';
+import { TTextNode } from '@dyn/types/dtif';
 import { TLine } from '.';
 
 export function applyTextAlignment(props: {

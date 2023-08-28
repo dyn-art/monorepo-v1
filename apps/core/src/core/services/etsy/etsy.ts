@@ -1,5 +1,5 @@
 import { etsyConfig } from '@/environment';
-import { EtsyService, OAuth2Service, createEtsyClient } from '@pda/etsy-client';
+import { EtsyService, OAuth2Service, createEtsyClient } from '@dyn/etsy-client';
 
 export const etsyAuthService = new OAuth2Service({
   clientId: etsyConfig.auth.clientId,

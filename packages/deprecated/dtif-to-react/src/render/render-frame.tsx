@@ -1,4 +1,4 @@
-import { TFrameNode } from '@pda/types/dtif';
+import { TFrameNode } from '@dyn/types/dtif';
 import React from 'react';
 import { figmaEffectToCSS } from '../to-css';
 import { figmaBlendModeToCSS } from '../to-css/figma-blend-mode-to-css';

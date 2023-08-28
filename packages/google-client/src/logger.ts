@@ -1,6 +1,6 @@
-import { LOG_LEVEL, Logger } from '@pda/logger';
+import { LOG_LEVEL, Logger } from '@dyn/logger';
 
 export const logger = new Logger({
-  prefix: '@pda/google-client',
+  prefix: '@dyn/google-client',
   level: LOG_LEVEL.INFO,
 });
