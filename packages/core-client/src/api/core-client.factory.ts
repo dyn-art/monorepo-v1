@@ -1,8 +1,8 @@
 import {
   OpenAPIFetchClientThrow,
   TRequestMiddleware,
-} from '@pda/openapi-fetch';
-import { paths } from '@pda/types/core';
+} from '@dyn/openapi-fetch';
+import { paths } from '@dyn/types/core';
 import { coreConfig } from '../environment';
 
 export function createCoreClient(
@@ -12,11 +12,11 @@ export function createCoreClient(
     options;
   const requestMiddleware: TRequestMiddleware[] = [];
   if (corsApiKey != null) {
-    requestMiddleware.push(async (requestInit) => {
-      const { headers = {} } = requestInit;
-      const newHeaders = { ...headers };
+    requestMiddleware.push(async (data) => {
+      const { requestInit } = data;
+      const newHeaders = { ...(requestInit.headers ?? {}) };
       newHeaders['X-CORS-API-KEY'] = corsApiKey;
-      return { ...requestInit, headers: newHeaders };
+      return { requestInit: { ...requestInit, headers: newHeaders } };
     });
   }
   return new OpenAPIFetchClientThrow<paths>(baseUrl, {

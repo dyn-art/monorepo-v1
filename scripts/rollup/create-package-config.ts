@@ -15,20 +15,19 @@ import esbuild from 'rollup-plugin-esbuild';
 import nodeExternals from 'rollup-plugin-node-externals';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { Logger } from '../utils';
+import { typescriptPaths } from './plugins/rollup-plugin-typescript-paths';
 
 const logger = new Logger('create-package-config');
 
-export function createPackageConfig(options: TCreatePackageOptions = {}) {
+export function createPackageConfig(
+  options: TCreatePackageOptions = {}
+): RollupOptions[] {
   // Resolve package.json
   const packageJsonPath = path.resolve(process.cwd(), './package.json');
   const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
   const {
     format = 'esm',
-    inputPath = path.resolve(
-      process.cwd(),
-      'source' in packageJson ? packageJson.source : './src/index.ts'
-    ),
     tsconfig = path.resolve(process.cwd(), './tsconfig.json'),
     rollupOptions = {},
     isProduction,
@@ -37,100 +36,120 @@ export function createPackageConfig(options: TCreatePackageOptions = {}) {
     analyze = false,
   } = options;
 
-  // Specific module format configuration
-  const configureProps = {
-    outputPath: options.outputPath,
-    output: {
-      name: packageJson.name,
-      preserveModules,
-      sourcemap,
-    },
-    packageJson,
-    preserveModules,
-  };
-  const { output, visualizeFilePath } =
-    format === 'esm'
-      ? configureESM(configureProps)
-      : configureCJS(configureProps);
-
-  // Log path to visualization
-  if (analyze) {
-    logger.info(`Visualized at: ${visualizeFilePath}`);
+  // Resolve paths
+  const paths: TPath[] = [];
+  if (Array.isArray(options.paths)) {
+    paths.push(...options.paths);
+  } else if (typeof options.paths === 'object' && options.paths != null) {
+    paths.push(options.paths);
+  } else {
+    paths.push(
+      ...resolvePathsFromPackageJson(packageJson, { format, preserveModules })
+    );
   }
 
-  // Extract properties from custom rollup options to merge them into the final options
-  const {
-    output: rollupOptionsOutput = {},
-    plugins: rollupOptionsPlugins = [],
-    ...rollupOptionsRest
-  } = rollupOptions;
+  return paths.map((paths) => {
+    const { input: inputPath, output: outputPath } = paths;
 
-  return defineConfig({
-    input: inputPath,
-    output: { ...output, ...rollupOptionsOutput },
-    plugins: arrangePlugins(
-      [
-        // Automatically declares NodeJS built-in modules like (node:path, node:fs) as external.
-        // This prevents Rollup from trying to bundle these built-in modules,
-        // which can cause unresolved dependencies warnings.
-        nodeExternals(),
-        // Resolve and bundle dependencies from node_modules
-        nodeResolve({
-          extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    // Specific module format configuration
+    const moduleConfig: TConfigureModuleConfig = {
+      outputPath,
+      outputOptions: {
+        name: packageJson.name,
+        preserveModules,
+        sourcemap,
+      },
+      preserveModules,
+    };
+    const { output, visualizeFilePath } =
+      format === 'esm'
+        ? configureESM(moduleConfig)
+        : configureCJS(moduleConfig);
+
+    // Log path to visualization
+    if (analyze) {
+      logger.info(`Visualized at: ${visualizeFilePath}`);
+    }
+
+    // Extract properties from custom rollup options to merge them into the final options
+    const {
+      output: rollupOptionsOutput = {},
+      plugins: rollupOptionsPlugins = [],
+      ...rollupOptionsRest
+    } = rollupOptions;
+
+    return defineConfig({
+      input: inputPath,
+      output: { ...output, ...rollupOptionsOutput },
+      plugins: arrangePlugins(
+        [
+          // Automatically declares NodeJS built-in modules like (node:path, node:fs) as external.
+          // This prevents Rollup from trying to bundle these built-in modules,
+          // which can cause unresolved dependencies warnings.
+          nodeExternals(),
+          // Resolve and bundle dependencies from node_modules
+          nodeResolve({
+            extensions: ['.ts', '.tsx', '.js', '.jsx'],
+          }),
+          // Resolve and bundle .json files
+          json(),
+          // Convert CommonJS modules (from node_modules) into ES modules targeted by this app
+          commonjs(),
+          // Automatically resolve path aliases set in the compilerOptions section of tsconfig.json
+          typescriptPaths({
+            tsConfigPath: tsconfig,
+            preserveExtensions: true,
+          }),
+          // Transpile TypeScript code to JavaScript (ES6), and minify in production
+          esbuild({
+            tsconfig,
+            minify: isProduction,
+            target: 'es6',
+            exclude: [/node_modules/],
+            loaders: {
+              '.json': 'json',
+            },
+            sourceMap: false, // Configured in rollup 'output' object
+          }),
+          // typescript(/* */), // Obsolete as esbuild takes care of configuring typescript
+          // babel(/* */), // Obsolete as esbuild takes care of converting ES2015+ modules into compatible JavaScript files
+          // terser(/* */), // Obsolete as esbuild takes care of minifying
+          !preserveModules && bundleSize(),
+          ...(analyze && visualizeFilePath != null
+            ? [
+                visualizer({
+                  title: packageJson.name,
+                  filename: visualizeFilePath,
+                  sourcemap: true,
+                  gzipSize: true,
+                }),
+                // visualizer({
+                //   title: packageJson.name,
+                //   filename: visualizeFilePath,
+                //   sourcemap: true,
+                //   gzipSize: true,
+                //   template: 'raw-data',
+                // }),
+              ]
+            : []),
+        ],
+        rollupOptionsPlugins
+      ),
+      // Exclude peer dependencies and dependencies from bundle for these reasons:
+      // 1. To prevent duplication: If every package included a copy of all its dependencies,
+      //    there would be a lot of duplication in node_modules.
+      // 2. To enable better versioning: This way, npm can handle installing the latest compatible version.
+      // 3. For improved security: If a security vulnerability is found in a dependency,
+      //    npm can update it without needing to update this package.
+      // 4. Auto Installation: Package managers automatically install these dependencies, so no need to bundle them.
+      external: [
+        ...Object.keys({
+          ...(packageJson.dependencies || {}),
+          ...(packageJson.peerDependencies || {}),
         }),
-        // Resolve and bundle .json files
-        json(),
-        // Convert CommonJS modules (from node_modules) into ES modules targeted by this app
-        commonjs(),
-        // Transpile TypeScript code to JavaScript (ES6), and minify in production
-        esbuild({
-          tsconfig,
-          minify: isProduction,
-          target: 'es6',
-          exclude: [/node_modules/],
-          loaders: {
-            '.json': 'json',
-          },
-          sourceMap: false, // Configured in rollup 'output' object
-        }),
-        // typescript(/* */), // Obsolete as esbuild takes care of configuring typescript
-        // babel(/* */), // Obsolete as esbuild takes care of converting ES2015+ modules into compatible JavaScript files
-        // terser(/* */), // Obsolete as esbuild takes care of minifying
-        !preserveModules && bundleSize(),
-        ...(analyze && visualizeFilePath != null
-          ? [
-              visualizer({
-                title: packageJson.name,
-                filename: visualizeFilePath,
-                sourcemap: true,
-                gzipSize: true,
-              }),
-              // visualizer({
-              //   title: packageJson.name,
-              //   filename: visualizeFilePath,
-              //   sourcemap: true,
-              //   gzipSize: true,
-              //   template: 'raw-data',
-              // }),
-            ]
-          : []),
       ],
-      rollupOptionsPlugins
-    ),
-    // Exclude peer dependencies and dependencies from bundle for these reasons:
-    // 1. To prevent duplication: If every package included a copy of all its dependencies,
-    //    there would be a lot of duplication in node_modules.
-    // 2. To enable better versioning: This way, npm can handle installing the latest compatible version.
-    // 3. For improved security: If a security vulnerability is found in a dependency,
-    //    npm can update it without needing to update this package.
-    // 4. Auto Installation: Package managers automatically install these dependencies, so no need to bundle them.
-    external: [
-      ...Object.keys({
-        ...(packageJson.dependencies || {}),
-        ...(packageJson.peerDependencies || {}),
-      }),
-    ],
-    ...rollupOptionsRest,
+      ...rollupOptionsRest,
+    });
   });
 }
 
@@ -141,22 +160,15 @@ export function createPackageConfig(options: TCreatePackageOptions = {}) {
  * and it's supported in modern browsers and Node.js (version 14 onwards with the --experimental-modules flag, and without flag from version 15).
  * The created bundles are tree-shakeable, meaning unused exports can be removed by build tools to reduce bundle size.
  */
-function configureESM(props: TConfigureModuleProps): TConfigureModuleResponse {
-  const outputPath =
-    props.outputPath ??
-    getDefaultOutputPath(props.packageJson, {
-      defaultPath: './dist/esm/index.js',
-      dir: props.preserveModules,
-      packageJsonProperty: 'module',
-    });
+function configureESM(
+  config: TConfigureModuleConfig
+): TConfigureModuleResponse {
+  const { outputOptions, preserveModules = true, outputPath } = config;
   return {
     output: {
-      ...props.output,
+      ...outputOptions,
       ...{
-        [props.preserveModules ? 'dir' : 'file']: path.resolve(
-          process.cwd(),
-          outputPath
-        ),
+        [preserveModules ? 'dir' : 'file']: outputPath,
         format: 'esm',
       },
     },
@@ -173,22 +185,15 @@ function configureESM(props: TConfigureModuleProps): TConfigureModuleResponse {
  * or libraries that target Node.js or need to support older environments.
  * Note: Tree-shaking is generally not supported in CommonJS modules.
  */
-function configureCJS(props: TConfigureModuleProps): TConfigureModuleResponse {
-  const outputPath =
-    props.outputPath ??
-    getDefaultOutputPath(props.packageJson, {
-      defaultPath: './dist/cjs/index.js',
-      dir: props.preserveModules,
-      packageJsonProperty: 'main',
-    });
+function configureCJS(
+  config: TConfigureModuleConfig
+): TConfigureModuleResponse {
+  const { outputOptions, preserveModules = true, outputPath } = config;
   return {
     output: {
-      ...props.output,
+      ...outputOptions,
       ...{
-        [props.preserveModules ? 'dir' : 'file']: path.resolve(
-          process.cwd(),
-          outputPath
-        ),
+        [preserveModules ? 'dir' : 'file']: outputPath,
         format: 'cjs',
         exports: 'named',
       },
@@ -251,16 +256,65 @@ function arrangePlugins(
   return arrangedPlugins.map((plugin) => plugin.plugin);
 }
 
-function getDefaultOutputPath(
+function resolveOutputPathFromPackageJson(
   packageJson: any,
-  options: TGetDefaultOutputPathOptions
-) {
-  const rawModule =
-    packageJson[options.packageJsonProperty] ?? options.defaultPath;
-  const module = options.dir
-    ? rawModule.replace(/\/[^\/]*\.js$/, '') // remove '/index.js' if bundling to dir
-    : rawModule;
-  return module;
+  config: TResolveOutputPathFromPackageJsonConfig
+): string {
+  const { format, preserveModules } = config;
+  let relativeOutputPath = `./dist/${format}/index.js`;
+  const formatToPropertyMap = {
+    esm: 'module',
+    cjs: 'main',
+  };
+  const propertyKey = formatToPropertyMap[format];
+  const propertyValue = packageJson[propertyKey];
+  if (typeof propertyValue === 'string') {
+    relativeOutputPath = propertyValue;
+  }
+  relativeOutputPath = preserveModules
+    ? relativeOutputPath.replace(/\/[^\/]*\.js$/, '') // remove '/index.js' if bundling to dir
+    : relativeOutputPath;
+  return path.resolve(process.cwd(), relativeOutputPath);
+}
+
+function resolveInputPathFromPackageJson(packageJson: any): string {
+  let relativeInputPath = './src/index.ts';
+  const propertyValue = packageJson['source'];
+  if (typeof propertyValue === 'string') {
+    relativeInputPath = propertyValue;
+  }
+  return path.resolve(process.cwd(), relativeInputPath);
+}
+
+function resolvePathsFromPackageJson(
+  packageJson: any,
+  config: TResolvePathsFromPackageJsonConfig
+): TPath[] {
+  const { preserveModules, format } = config;
+  const paths: TPath[] = [];
+
+  const exports = packageJson['exports'];
+  if (typeof exports === 'object') {
+    for (const exportKey in exports) {
+      paths.push({
+        input: resolveInputPathFromPackageJson(exports[exportKey]),
+        output: resolveOutputPathFromPackageJson(exports[exportKey], {
+          preserveModules,
+          format,
+        }),
+      });
+    }
+  } else {
+    paths.push({
+      input: resolveInputPathFromPackageJson(packageJson),
+      output: resolveOutputPathFromPackageJson(packageJson, {
+        preserveModules,
+        format,
+      }),
+    });
+  }
+
+  return paths;
 }
 
 function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
@@ -283,8 +337,7 @@ type TCustomPlugin = {
 
 export type TCreatePackageOptions = {
   format?: 'esm' | 'cjs';
-  inputPath?: string;
-  outputPath?: string;
+  paths?: TPath | TPath[];
   tsconfig?: string;
   isProduction?: boolean;
   preserveModules?: boolean;
@@ -295,17 +348,23 @@ export type TCreatePackageOptions = {
   };
 };
 
-type TGetDefaultOutputPathOptions = {
-  packageJsonProperty: string;
-  defaultPath: string;
-  dir: boolean;
+type TPath = {
+  output: string;
+  input: string;
 };
 
-type TConfigureModuleProps = {
-  outputPath?: string;
-  packageJson: any;
-  preserveModules: any;
-  output: OutputOptions;
+type TResolveOutputPathFromPackageJsonConfig = {
+  format: 'esm' | 'cjs';
+  preserveModules: boolean;
+};
+
+type TResolvePathsFromPackageJsonConfig =
+  TResolveOutputPathFromPackageJsonConfig;
+
+type TConfigureModuleConfig = {
+  outputPath: string;
+  preserveModules?: boolean;
+  outputOptions: OutputOptions;
 };
 
 type TConfigureModuleResponse = {

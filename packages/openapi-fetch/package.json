@@ -1,5 +1,5 @@
 {
-  "name": "@pda/openapi-fetch",
+  "name": "@dyn/openapi-fetch",
   "version": "0.0.0",
   "description": "Fetch using defined OpenAPI types",
   "private": true,
@@ -13,25 +13,21 @@
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",
-    "test": "jest"
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/utils": "workspace:*",
+    "@dyn/utils": "workspace:*",
     "cross-fetch": "^3.1.6",
     "url-parse": "^1.5.10"
   },
   "devDependencies": {
-    "@pda/jest-presets": "workspace:^",
-    "@pda/tsconfig": "workspace:*",
-    "@types/jest": "^29.5.1",
+    "@dyn/viteconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/url-parse": "^1.4.8",
-    "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
-    "jest": "^29.5.0",
-    "typescript": "^4.9.5"
+    "eslint-config-dyn-base": "workspace:*"
   },
   "files": [
     "dist",

@@ -1,4 +1,4 @@
-import { TNode } from '@pda/types/dtif';
+import { TNode } from '@dyn/types/dtif';
 import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { EUIPageRoute, TOnSelectFrameEvent, logger } from '../../../shared';
@@ -48,7 +48,7 @@ const DTIFExport: React.FC = () => {
       callback: async (instance: TUIHandler, args) => {
         setIsExporting(false);
         if (args.type === 'success') {
-          setExportedNode(args.content);
+          setExportedNode(args.content.root);
           logger.info('Export result', { args });
           copyToClipboard(JSON.stringify(args.content));
         }

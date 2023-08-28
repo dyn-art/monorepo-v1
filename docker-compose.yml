@@ -1,38 +1,38 @@
 version: '3.9'
 
 services:
-#  core:
-#    # Container name (defaults to the service name)
-#    container_name: 'pda-core'
+  #  core:
+  #    # Container name (defaults to the service name)
+  #    container_name: 'dyn-core'
 
-#    # Build the 'backend' container using the 'Dockerfile' in the current directory
-#    build: .
+  #    # Build the 'backend' container using the 'Dockerfile' in the current directory
+  #    build: .
 
-#    # Restart the container automatically if it crashes or the system reboots
-#    restart: always
+  #    # Restart the container automatically if it crashes or the system reboots
+  #    restart: always
 
-#    # Start this container only after the 'db' service has started
-#    depends_on:
-#      - db
+  #    # Start this container only after the 'db' service has started
+  #    depends_on:
+  #      - db
 
-#    # Map internal port 9000 to external port 5000, allowing access via 'localhost:5000'
-#    ports:
-#      - '5000:9000'
+  #    # Map internal port 9000 to external port 5000, allowing access via 'localhost:5000'
+  #    ports:
+  #      - '5000:9000'
 
-#    # Load environment variables from the '.env' file
-#    env_file:
-#      - .env
+  #    # Load environment variables from the '.env' file
+  #    env_file:
+  #      - .env
 
   db:
     # Container name (defaults to the service name), used for inter-container connections
-    container_name: 'pda-db'
+    container_name: 'dyn-db'
 
     # Use the official Postgres image from DockerHub as the container blueprint
     image: 'postgres:latest'
 
     # Restart the container automatically if it crashes or the system reboots
     restart: always
-    
+
     # Map internal port 5432 (Postgres default) to external port 5001 for external access
     # Syntax: [external_port]:[internal_container_port]
     ports:
@@ -46,6 +46,6 @@ services:
 
     # Set environment variables for the PostgreSQL container
     environment:
-      POSTGRES_USER: 'postgres'      # PostgreSQL user for database connections
-      POSTGRES_PASSWORD: 'postgres'  # PostgreSQL password for database connections
-      POSTGRES_DB: 'pda'             # Default PostgreSQL database, created at first launch
+      POSTGRES_USER: 'postgres' # PostgreSQL user for database connections
+      POSTGRES_PASSWORD: 'postgres' # PostgreSQL password for database connections
+      POSTGRES_DB: 'dyn' # Default PostgreSQL database, created at first launch

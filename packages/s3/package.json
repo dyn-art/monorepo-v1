@@ -1,5 +1,5 @@
 {
-  "name": "@pda/s3",
+  "name": "@dyn/s3",
   "version": "0.0.0",
   "description": "S3 utility library",
   "private": true,
@@ -21,14 +21,14 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.332.0",
     "@aws-sdk/s3-request-presigner": "^3.332.0",
-    "@pda/logger": "workspace:*"
+    "@dyn/logger": "workspace:*"
   },
   "devDependencies": {
     "@aws-sdk/types": "^3.329.0",
-    "@pda/tsconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/node": "^18.15.13",
     "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*",
     "typescript": "^4.9.5"
   },
   "files": [

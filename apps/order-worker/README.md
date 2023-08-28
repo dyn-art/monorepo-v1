@@ -1,1 +1,1 @@
-# `@pda/renderer`
+# `@dyn/renderer`

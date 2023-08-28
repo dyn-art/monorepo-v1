@@ -1,6 +1,10 @@
 import express, { Express } from 'express';
 import morganLogger from 'morgan';
-import { errorMiddlewares, securityMiddlewares } from './middlewares';
+import {
+  errorMiddlewares,
+  queryObjectParserMiddleware,
+  securityMiddlewares,
+} from './middlewares';
 import routes from './routes';
 
 const app: Express = express();
@@ -16,6 +20,9 @@ app.use(...securityMiddlewares);
 
 // Add middleware to parse JSON request bodies
 app.use(express.json());
+
+// Add middle ware to parse express query object
+app.use(queryObjectParserMiddleware());
 
 // Register application routes
 app.use('/', routes);

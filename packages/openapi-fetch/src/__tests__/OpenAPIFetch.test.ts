@@ -1,3 +1,4 @@
+import { describe, it } from 'vitest';
 import { OpenAPIFetchClient, RawFetchClient } from '../clients';
 import { isRequestException } from '../utils';
 import { paths } from './resources/mock-openapi-types';
@@ -8,7 +9,12 @@ describe('OpenAPIFetch class tests', () => {
     const rawClient = new RawFetchClient('some-base-url');
     rawClient.get('test');
 
-    const test = await rawClient.get<'test'>('test');
+    const test = await rawClient.get('test', {
+      parseAs: 'blob',
+    });
+    if (!test.isError) {
+      const jeff = test.data;
+    }
 
     const response = await client.get(
       '/v1/media/pre-signed-download-url/{key}',
@@ -22,6 +28,7 @@ describe('OpenAPIFetch class tests', () => {
         querySerializer: (query) => {
           return '';
         },
+        parseAs: 'arrayBuffer',
       }
     );
 

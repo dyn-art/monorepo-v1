@@ -1,4 +1,4 @@
-import { components } from '@pda/types/core';
+import { components } from '@dyn/types/core';
 import express from 'express';
 import { AppError } from '../AppError';
 

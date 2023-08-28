@@ -1,6 +1,6 @@
-import S3 from './S3';
+import Bucket from './Bucket';
 
-export * from './S3';
-export { S3 };
+export * from './Bucket';
+export { Bucket };
 
-export default S3;
+export default Bucket;

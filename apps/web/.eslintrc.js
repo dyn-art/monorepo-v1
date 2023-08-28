@@ -5,5 +5,5 @@ const ERROR = 2;
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
-  extends: ['pda-base', '@remix-run/eslint-config'],
+  extends: ['dyn-base', '@remix-run/eslint-config'],
 };

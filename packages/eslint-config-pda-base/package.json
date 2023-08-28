@@ -1,5 +1,5 @@
 {
-  "name": "eslint-config-pda-base",
+  "name": "eslint-config-dyn-base",
   "version": "0.0.0",
   "description": "Eslint Configuration",
   "main": "index.js",
@@ -17,11 +17,6 @@
     "eslint-config-turbo": "^1.9.3",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.32.2"
-  },
-  "devDependencies": {
-    "eslint": "^8.38.0",
-    "prettier": "^2.8.7",
-    "typescript": "^4.9.5"
   },
   "publishConfig": {
     "access": "public"

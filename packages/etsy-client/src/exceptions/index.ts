@@ -1,4 +1,4 @@
-import { NetworkException } from '@pda/openapi-fetch';
+import { NetworkException } from '@dyn/openapi-fetch';
 
 export * from './EtsyServiceException';
 export * from './RefreshTokenExpiredException';

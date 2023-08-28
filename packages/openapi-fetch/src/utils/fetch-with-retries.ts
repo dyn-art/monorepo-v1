@@ -1,4 +1,4 @@
-import { sleep } from '@pda/utils';
+import { sleep } from '@dyn/utils';
 // import { fetch } from 'cross-fetch';
 
 export async function fetchWithRetries(

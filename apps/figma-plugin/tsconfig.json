@@ -5,8 +5,8 @@
       "./node_modules/@figma"
     ],
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDirs": ["./src", "./develop"],
   },
-  "extends": "@pda/tsconfig/react-base.json",
-  "include": ["src", "../../packages/figma-to-dtif/src/format-frame-node.ts"]
+  "extends": "@dyn/tsconfig/react-base.json",
+  "include": ["src", "develop"]
 }

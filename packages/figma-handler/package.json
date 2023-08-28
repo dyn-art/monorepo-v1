@@ -1,5 +1,5 @@
 {
-  "name": "@pda/figma-handler",
+  "name": "@dyn/figma-handler",
   "version": "0.0.0",
   "description": "Figma Handler",
   "private": true,
@@ -19,16 +19,14 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/logger": "workspace:*",
-    "@pda/utils": "workspace:*"
+    "@dyn/logger": "workspace:*",
+    "@dyn/utils": "workspace:*"
   },
   "devDependencies": {
     "@figma/plugin-typings": "^1.64.0",
-    "@pda/tsconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/node": "^18.15.13",
-    "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
-    "typescript": "^4.9.5"
+    "eslint-config-dyn-base": "workspace:*"
   },
   "files": [
     "dist",

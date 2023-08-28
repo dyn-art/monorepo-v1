@@ -1,5 +1,5 @@
 {
-  "name": "@pda/svgson",
+  "name": "@dyn/svgson",
   "version": "0.0.0",
   "description": "SVG to JSON",
   "private": true,
@@ -13,27 +13,23 @@
     "lint": "eslint --cache \"**/*.{js,ts}\"",
     "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",
-    "test": "jest"
+    "test": "vitest run"
   },
   "keywords": [],
   "author": "@bennodev19",
   "license": "MIT",
   "devDependencies": {
-    "@pda/jest-presets": "workspace:*",
-    "@pda/tsconfig": "workspace:*",
-    "@types/jest": "^29.5.1",
+    "@dyn/viteconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/node": "^18.15.13",
-    "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
-    "jest": "^29.5.0",
-    "typescript": "^4.9.5"
+    "eslint-config-dyn-base": "workspace:*"
   },
   "files": [
     "dist",
     "README.md"
   ],
   "dependencies": {
-    "@pda/logger": "workspace:*",
+    "@dyn/logger": "workspace:*",
     "fast-xml-parser": "^4.2.5"
   }
 }

@@ -1,4 +1,4 @@
-import { uuidv4 } from '@pda/utils';
+import { uuidv4 } from '@dyn/utils';
 import FigmaUIHandler from '../FigmaUIHandler';
 import { uiLogger } from '../logger';
 import UIEvent, { TUIEventMeta } from './UIEvent';

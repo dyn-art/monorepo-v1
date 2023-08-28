@@ -1,5 +1,5 @@
 {
-  "name": "@pda/order-worker",
+  "name": "@dyn/order-worker",
   "version": "0.0.0",
   "description": "Renderer Backend",
   "private": true,
@@ -16,16 +16,15 @@
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/logger": "workspace:*",
-    "@pda/product-renderer": "workspace:*",
+    "@dyn/logger": "workspace:*",
     "dotenv": "^16.0.3",
     "express": "^4.18.2"
   },
   "devDependencies": {
-    "@pda/tsconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/node": "^18.15.13",
     "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*",
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"

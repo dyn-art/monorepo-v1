@@ -1,5 +1,5 @@
 {
-  "name": "@pda/web",
+  "name": "@dyn/web",
   "version": "0.0.0",
   "description": "Web App",
   "private": true,
@@ -14,10 +14,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@pda/core-client": "workspace:*",
-    "@pda/logger": "workspace:*",
-    "@pda/openapi-fetch": "workspace:*",
-    "@pda/utils": "workspace:*",
+    "@dyn/core-client": "workspace:*",
+    "@dyn/dtom": "workspace:*",
+    "@dyn/logger": "workspace:*",
+    "@dyn/openapi-fetch": "workspace:*",
+    "@dyn/utils": "workspace:*",
     "@radix-ui/react-slot": "^1.0.2",
     "@remix-run/css-bundle": "^1.17.1",
     "@remix-run/node": "^1.17.1",
@@ -40,8 +41,8 @@
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
-    "@pda/tsconfig": "workspace:*",
-    "@pda/types": "workspace:^",
+    "@dyn/tsconfig": "workspace:*",
+    "@dyn/types": "workspace:^",
     "@remix-run/dev": "^1.17.1",
     "@remix-run/eslint-config": "^1.17.1",
     "@remix-run/serve": "^1.17.1",
@@ -49,9 +50,7 @@
     "@types/lodash.memoize": "^4.1.7",
     "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.11",
-    "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
-    "typescript": "^5.0.4"
+    "eslint-config-dyn-base": "workspace:*"
   },
   "engines": {
     "node": ">=14.0.0"

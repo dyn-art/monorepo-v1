@@ -6,8 +6,11 @@ import {
   TFetchResponseError,
   THttpMethod,
   TOpenAPIFetchClientOptions,
+  TParseAs,
   TQuerySerializer,
   TRequestMiddleware,
+  TRequestMiddlewareData,
+  TURLParams,
 } from '../../types';
 import {
   buildURI,
@@ -67,6 +70,7 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
   public async fetch<
     GPathKeys extends keyof GPaths,
     GHttpMethod extends THttpMethod,
+    GParseAs extends TParseAs = 'json',
     GPathMethod extends GHttpMethod extends keyof GPaths[GPathKeys]
       ? GPaths[GPathKeys][GHttpMethod]
       : unknown = GHttpMethod extends keyof GPaths[GPathKeys]
@@ -78,9 +82,10 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
     options?: TFetchOptionsWithBody<
       GHttpMethod extends keyof GPaths[GPathKeys]
         ? GPaths[GPathKeys][GHttpMethod]
-        : never
+        : never,
+      GParseAs
     >
-  ): Promise<TFetchResponse<GPathMethod>> {
+  ): Promise<TFetchResponse<GPathMethod, GParseAs>> {
     const {
       headers = {},
       parseAs = 'json',
@@ -101,15 +106,10 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
       queryParams == null
     );
 
-    // Build final URL
-    const finalURL = buildURI(origin, {
-      path: parsedPath,
-      params: {
-        path: pathParams,
-        query: queryParams,
-      },
-      querySerializer,
-    });
+    const urlParams: TURLParams = {
+      path: pathParams != null ? { ...pathParams } : null,
+      query: queryParams != null ? { ...queryParams } : null,
+    };
 
     // Build request init object
     let requestInit: RequestInit = {
@@ -126,14 +126,28 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
 
     // Call middlewares
     try {
-      requestInit = await this.processRequestMiddlewares(
+      const middlewaresResponse = await this.processRequestMiddlewares(
         this._requestMiddlewares,
-        requestInit,
+        {
+          requestInit,
+          queryParams: urlParams.query,
+          pathParams: urlParams.path,
+        },
         middlewareProps
       );
+      requestInit = middlewaresResponse.requestInit;
+      urlParams.path = middlewaresResponse.pathParams;
+      urlParams.query = middlewaresResponse.queryParams;
     } catch (error) {
       return this.mapMiddlewareException(error);
     }
+
+    // Build final URL
+    const finalURL = buildURI(origin, {
+      path: parsedPath,
+      params: urlParams,
+      querySerializer,
+    });
 
     // Send request
     let response: Response;
@@ -153,8 +167,8 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
           typeof response.clone === 'function' ? response.clone() : response;
         try {
           data =
-            typeof cloned[parseAs] === 'function'
-              ? await cloned[parseAs]()
+            typeof cloned[parseAs as TParseAs] === 'function'
+              ? await cloned[parseAs as TParseAs]()
               : await cloned.text();
         } catch (error) {
           data = cloned.text();
@@ -186,12 +200,16 @@ export class OpenAPIFetchClientBase<GPaths extends {} = {}> {
 
   private async processRequestMiddlewares(
     middlewares: TRequestMiddleware[],
-    init: RequestInit,
+    data: TRequestMiddlewareData,
     middlewareProps: Record<string, any> = {}
-  ) {
-    let result = init;
+  ): Promise<TRequestMiddlewareData> {
+    let result = { ...data };
     for (const middleware of middlewares) {
-      result = await middleware(result, middlewareProps);
+      const middlewareResult = await middleware({
+        ...result,
+        props: middlewareProps,
+      });
+      result = { ...data, ...middlewareResult };
     }
     return result;
   }

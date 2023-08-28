@@ -1,7 +1,7 @@
 # Packages
 
-- `eslint-config-pda-base`: Base [`Eslint`](https://eslint.org/) configuration
-- `eslint-config-pda-server`: [`Eslint`](https://eslint.org/) configurations for
+- `eslint-config-dyn-base`: Base [`Eslint`](https://eslint.org/) configuration
+- `eslint-config-dyn-server`: [`Eslint`](https://eslint.org/) configurations for
   server side applications
 - `etsy`: Utility library to communicate with
   [Etsy](https://www.etsy.com/developers/documentation/getting_started/api_basics)

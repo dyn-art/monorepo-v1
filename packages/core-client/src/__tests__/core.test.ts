@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { createCoreService } from '../service';
 
 describe('core tests', () => {
@@ -6,9 +7,7 @@ describe('core tests', () => {
     const coreService = createCoreService();
 
     // When
-    const response = await coreService.downloadJsonFromS3(
-      '0989cce5edf8af5698ced8e06a9daa2924620f03b0601cd3c4914ea1e3fd64a6'
-    );
+    const response = await coreService.downloadWebFontWOFF2File('Roboto');
     // const response = await coreService.getPreSignedUploadUrl(
     //   'test',
     //   'public:readonly',

@@ -1,4 +1,4 @@
-import { uuidv4 } from '@pda/utils';
+import { uuidv4 } from '@dyn/utils';
 import FigmaBackgroundHandler from '../FigmaBackgroundHandler';
 import { backgroundLogger } from '../logger';
 import BackgroundEvent, { TBackgroundEventMeta } from './BackgroundEvent';

@@ -1,0 +1,38 @@
+{
+  "name": "@dyn/google-client",
+  "version": "0.0.0",
+  "description": "Client library to communicate with the Google API",
+  "private": true,
+  "source": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod",
+    "start:dev": "tsc -w",
+    "generate:openapi": "npx openapi-typescript ./resources/openapi-v1.json -o ./src/gen/v1.ts",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "dependencies": {
+    "@dyn/logger": "workspace:*",
+    "@dyn/openapi-fetch": "workspace:*",
+    "@types/node": "^18.15.13"
+  },
+  "devDependencies": {
+    "@dyn/tsconfig": "workspace:*",
+    "@dyn/viteconfig": "workspace:*",
+    "dotenv": "^16.0.3",
+    "eslint-config-dyn-base": "workspace:*",
+    "openapi-typescript": "^6.2.8"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}

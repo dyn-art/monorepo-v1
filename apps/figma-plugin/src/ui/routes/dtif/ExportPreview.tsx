@@ -1,10 +1,6 @@
-import { renderNode, renderRelativeParent } from '@pda/dtif-to-react';
-import { isFrameNode } from '@pda/figma-to-dtif';
-import { TNode } from '@pda/types/dtif';
+import { TNode } from '@dyn/types/dtif';
 import clsx from 'clsx';
-import Prism from 'prismjs';
 import React from 'react';
-import toJSXString from 'react-element-to-jsx-string';
 import { JSONTree } from 'react-json-tree';
 import { ClipboardButton } from '../../components/native';
 
@@ -34,32 +30,32 @@ const ExportPreview: React.FC<TProps> = (props) => {
   // ============================================================================
 
   // Render node as JSXs
-  React.useEffect(() => {
-    const renderNodeAsJSX = async () => {
-      if (node != null && activeTab === EPreviewTabs.PREVIEW) {
-        setTimeout(async () => {
-          const jsxNode = await (isFrameNode(node)
-            ? renderRelativeParent(node, 0.2)
-            : renderNode(node, { isLocked: false, isVisible: true }));
-          setNodeAsJSX(jsxNode);
-          setNodeAsJSXString(toJSXString(jsxNode as React.ReactElement));
-        });
-      }
-    };
-    renderNodeAsJSX();
-  }, [node, activeTab === EPreviewTabs.PREVIEW]);
+  // React.useEffect(() => {
+  //   const renderNodeAsJSX = async () => {
+  //     if (node != null && activeTab === EPreviewTabs.PREVIEW) {
+  //       setTimeout(async () => {
+  //         const jsxNode = await (isFrameNode(node)
+  //           ? renderRelativeParent(node, 0.2)
+  //           : renderNode(node, { isLocked: false, isVisible: true }));
+  //         setNodeAsJSX(jsxNode);
+  //         setNodeAsJSXString(toJSXString(jsxNode as React.ReactElement));
+  //       });
+  //     }
+  //   };
+  //   renderNodeAsJSX();
+  // }, [node, activeTab === EPreviewTabs.PREVIEW]);
 
   // Find an highlight all code snippets in the page
-  React.useEffect(() => {
-    // setIsLoadingHighlight(true); // Directly set in callback to avoid waiting for next render cycle
-    // Wrapped in timeout to avoid UI lag and instead highlight after switch
-    if (activeTab === EPreviewTabs.JSX) {
-      setTimeout(() => {
-        Prism.highlightAll();
-        setIsLoadingHighlight(false);
-      });
-    }
-  }, [nodeAsJSXString, activeTab === EPreviewTabs.JSX]);
+  // React.useEffect(() => {
+  //   // setIsLoadingHighlight(true); // Directly set in callback to avoid waiting for next render cycle
+  //   // Wrapped in timeout to avoid UI lag and instead highlight after switch
+  //   if (activeTab === EPreviewTabs.JSX) {
+  //     setTimeout(() => {
+  //       Prism.highlightAll();
+  //       setIsLoadingHighlight(false);
+  //     });
+  //   }
+  // }, [nodeAsJSXString, activeTab === EPreviewTabs.JSX]);
 
   // ============================================================================
   // Render

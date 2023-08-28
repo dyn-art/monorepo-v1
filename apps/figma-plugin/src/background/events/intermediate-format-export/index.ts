@@ -1,4 +1,4 @@
-import { TBackgroundEventMeta } from '@pda/figma-handler';
+import { TBackgroundEventMeta } from '@dyn/figma-handler';
 import { TBackgroundFigmaMessageEvent } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
 import { processNode } from './process-node';

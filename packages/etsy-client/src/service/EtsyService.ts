@@ -2,7 +2,7 @@ import {
   OpenAPIFetchClient,
   ServiceException,
   isStatusCode,
-} from '@pda/openapi-fetch';
+} from '@dyn/openapi-fetch';
 import { paths } from '../gen/v3';
 import { logger } from '../logger';
 

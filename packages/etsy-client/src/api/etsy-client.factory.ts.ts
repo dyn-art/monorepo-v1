@@ -1,4 +1,4 @@
-import { OpenAPIFetchClient } from '@pda/openapi-fetch';
+import { OpenAPIFetchClient } from '@dyn/openapi-fetch';
 import { etsyConfig } from '../environment';
 import { paths } from '../gen/v3';
 import { OAuth2Service } from './OAuth2Service';
@@ -11,7 +11,8 @@ export function createEtsyClient(
   return new OpenAPIFetchClient<paths>(baseUrl, {
     requestMiddleware: [
       // Authorization headers middleware
-      async (requestInit, props) => {
+      async (data) => {
+        const { requestInit, props } = data;
         const { headers = {} } = requestInit;
         const newHeaders = { ...headers };
         newHeaders['x-api-key'] = authService._config.clientId;
@@ -21,7 +22,8 @@ export function createEtsyClient(
             newHeaders['Authorization'] = `Bearer ${token}`;
           }
         }
-        return { ...requestInit, headers: newHeaders };
+        requestInit['headers'] = newHeaders;
+        return { requestInit };
       },
     ],
   });

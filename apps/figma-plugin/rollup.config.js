@@ -121,7 +121,7 @@ export default [
   },
   // Configuration for UI code
   {
-    input: isPreview ? './src/preview-ui/index.tsx' : './src/ui/index.tsx',
+    input: isPreview ? './develop/preview-ui/index.tsx' : './src/ui/index.tsx',
     output: {
       file: './dist/ui.js',
       format: 'es',

@@ -1,4 +1,5 @@
-import { defineConfig, OptionalAttributes } from '../define-config';
+import { describe, expect, it } from 'vitest';
+import { OptionalAttributes, defineConfig } from '../define-config';
 
 describe('defineConfig() method tests', () => {
   type TTestConfig = {

@@ -19,28 +19,24 @@
         "./apps/figma-plugin",
         "./apps/order-worker",
         "./apps/web",
-        "./packages/ads-renderer",
-        "./packages/ads-renderer/ui",
         "./packages/core-client",
         "./packages/discord-handler",
-        "./packages/dtif-to-react",
+        "./packages/dtom",
         "./packages/etsy-client",
         "./packages/figma-handler",
         "./packages/figma-to-dtif",
+        "./packages/google-client",
         "./packages/logger",
         "./packages/map",
-        "./packages/music",
         "./packages/openapi-fetch",
-        "./packages/product-renderer",
-        "./packages/product-renderer/ui",
-        "./packages/product-renderer/scripts",
         "./packages/s3",
         "./packages/svgson",
         "./packages/types",
         "./packages/utils",
+        "./packages/viteconfig"
     ],
     "cSpell.words": [
-        "pda"
+        "dyn"
     ],
     "files.associations": { 
         "*.scss": "postcss",

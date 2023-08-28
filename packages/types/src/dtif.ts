@@ -31,28 +31,43 @@ export type TNodeTypes =
 // ============================================================================
 
 /**
- * Represents the scene or workspace in which all nodes exist.
+ * Represents the composition in which all nodes exist.
  */
-export type TScene = {
+export type TComposition = {
+  /**
+   * Version of the composition type declaration (for internal use).
+   */
   version: '1.0';
   /**
-   * The name of the scene.
+   * The name of the composition.
    *
-   * e.g. 'My super cool scene'
+   * e.g. 'My super cool composition'
    */
   name: string;
   /**
-   * The width of the scene.
+   * The width of the composition.
    */
   width: number;
   /**
-   * The height of the scene.
+   * The height of the composition.
    */
   height: number;
   /**
-   * The root node of the scene.
+   * The root node id of the composition.
    */
-  root: TFrameNode;
+  rootId: string;
+  /**
+   * Nodes of the composition.
+   */
+  nodes: Record<string, TNode>;
+  /**
+   * Paints of the composition.
+   */
+  paints: Record<string, TPaint>;
+  /**
+   * Typefaces of the composition.
+   */
+  typefaces: Record<string, TTypeface>;
 };
 
 // ============================================================================
@@ -70,19 +85,115 @@ export type TFrameNode = {
    * A boolean indicating whether the frame clips its content to its bounding box.
    */
   clipsContent: boolean;
-} & TDefaultShapeMixin &
+} & TShapeNodeMixin &
   TChildrenMixin &
   TRectangleCornerMixin &
-  TFillsMixin;
+  TConstraintsMixin;
+
+/**
+ * The group node is a container used to semantically group related nodes. You can think of them as a folder in the layers panel.
+ * It is different from FrameNode,
+ * which defines layout and is closer to a <div> in HTML.
+ *
+ * Groups are always positioned and sized to fit their content.
+ * As such, while you can move or resize a group,
+ * you should also expect that a group's position and size will change
+ * if you change its content.
+ */
+export type TGroupNode = {
+  type: 'GROUP';
+} & TCompositionNodeMixin &
+  TChildrenMixin;
 
 /**
  * The rectangle node is a basic shape node representing a rectangle.
  */
 export type TRectangleNode = {
   type: 'RECTANGLE';
-} & TDefaultShapeMixin &
-  TRectangleCornerMixin &
-  TFillsMixin;
+} & TShapeNodeMixin &
+  TRectangleCornerMixin;
+
+/**
+ * The ellipse node is a basic shape node representing an ellipse.
+ * Note that a circle is an ellipse where width == height.
+ */
+export type TEllipseNode = {
+  type: 'ELLIPSE';
+  /**
+   * Exposes the values of the sweep
+   * and ratio handles used in our UI to create arcs and donuts.
+   */
+  arcData: TEllipseArcData;
+} & TShapeNodeMixin;
+
+/**
+ * The star node is a basic shape node representing
+ * a star with a set number of points.
+ */
+export type TStarNode = {
+  type: 'STAR';
+  /**
+   * Number of "spikes", or outer points of the star. Must be an integer >= 3.
+   */
+  pointCount: number;
+  /**
+   * Ratio of the inner radius to the outer radius.
+   */
+  innerRadiusRation: number;
+} & TShapeNodeMixin;
+
+/**
+ * The polygon node is a basic shape node representing
+ * a regular convex polygon with three or more sides.
+ */
+export type TPolygonNode = {
+  type: 'POLYGON';
+  /**
+   * Number of sides of the polygon. Must be an integer >= 3.
+   */
+  pointCount: number;
+} & TShapeNodeMixin;
+
+/**
+ * The text node represents text where both the whole node
+ * or individual character ranges can have properties
+ * such as color (paints), font size, font name, etc.
+ */
+export type TTextNode = {
+  type: 'TEXT';
+  /**
+   * The horizontal alignment of the text with respect to the textbox.
+   */
+  textAlignHorizontal: 'LEFT' | 'CENTER' | 'RIGHT' | 'JUSTIFIED';
+  /**
+   * The vertical alignment of the text with respect to the textbox.
+   */
+  textAlignVertical: 'TOP' | 'CENTER' | 'BOTTOM';
+  /**
+   * The size of the font. Has minimum value of 1.
+   */
+  fontSize: number;
+  /**
+   * The primary typeface of the text.
+   */
+  typefaceId?: string;
+  /**
+   * List of fallback typefaces to use when a character doesn't exist in the primary font.
+   */
+  fallbackTypefaceIds: string[];
+  /**
+   * The spacing between the individual characters.
+   */
+  letterSpacing: TLetterSpacing;
+  /**
+   * The spacing between the lines in a paragraph of text.
+   */
+  lineHeight: TLineHeight;
+  /**
+   * The raw characters in the text node.
+   */
+  characters: string;
+} & TShapeNodeMixin;
 
 /**
  * The SVG node is the most general representation of shape,
@@ -108,18 +219,18 @@ export type TSVGNodeExported = {
    */
   format: 'JPG' | 'PNG' | 'SVG';
   /**
-   * The hash of the exported file. Used to identifies the file.
+   * The hash of the exported SVG file. Used to identify the file.
    */
   hash: string;
   /**
-   * Optional content of the exported file.
+   * Optional content of the exported SVG file.
    * It can be either an array of bytes that contains the exported file's data inline,
    * or a URL string pointing to the file location.
    *
    * If not set the content can to be searched by the hash.
    */
   content?: Uint8Array | string;
-} & TDefaultShapeMixin;
+} & TCompositionNodeMixin;
 
 /**
  * The SVG node exported represents the SVG node
@@ -135,132 +246,32 @@ export type TSVGNodeInline = {
    * An array of SVG element children that define the SVG content.
    */
   children: TSVGElement['children'];
-} & TDefaultShapeMixin;
-
-/**
- * The text node represents text where both the whole node
- * or individual character ranges can have properties
- * such as color (fills), font size, font name, etc.
- */
-export type TTextNode = {
-  type: 'TEXT';
-  /**
-   * The horizontal alignment of the text with respect to the textbox.
-   */
-  textAlignHorizontal: 'LEFT' | 'CENTER' | 'RIGHT' | 'JUSTIFIED';
-  /**
-   * The vertical alignment of the text with respect to the textbox.
-   */
-  textAlignVertical: 'TOP' | 'CENTER' | 'BOTTOM';
-  /**
-   * The size of the font. Has minimum value of 1.
-   */
-  fontSize: number;
-  /**
-   * The font family (e.g. "Inter"), and font style (e.g. "Regular").
-   */
-  fontName: TFontName;
-  /**
-   * The weight of the font (e.g. 400 for "Regular", 700 for "Bold").
-   */
-  fontWeight: number;
-  /**
-   * The spacing between the individual characters.
-   */
-  letterSpacing: TLetterSpacing;
-  /**
-   * The spacing between the lines in a paragraph of text.
-   */
-  lineHeight: TLineHeight;
-  /**
-   * The raw characters in the text node.
-   */
-  characters: string;
-} & TDefaultShapeMixin &
-  TFillsMixin;
-
-/**
- * The group node is a container used to semantically group related nodes. You can think of them as a folder in the layers panel.
- * It is different from FrameNode,
- * which defines layout and is closer to a <div> in HTML.
- *
- * Groups are always positioned and sized to fit their content.
- * As such, while you can move or resize a group,
- * you should also expect that a group's position and size will change
- * if you change its content.
- */
-export type TGroupNode = {
-  type: 'GROUP';
-} & TBaseNodeMixin &
-  TSceneNodeMixin &
-  TChildrenMixin &
-  TBlendMixin &
-  TLayoutMixin;
-
-/**
- * The ellipse node is a basic shape node representing an ellipse.
- * Note that a circle is an ellipse where width == height.
- */
-export type TEllipseNode = {
-  type: 'ELLIPSE';
-  /**
-   * Exposes the values of the sweep
-   * and ratio handles used in our UI to create arcs and donuts.
-   */
-  arcData: TEllipseArcData;
-} & TDefaultShapeMixin &
-  TFillsMixin;
-
-/**
- * The star node is a basic shape node representing
- * a star with a set number of points.
- */
-export type TStarNode = {
-  type: 'STAR';
-  /**
-   * Number of "spikes", or outer points of the star. Must be an integer >= 3.
-   */
-  pointCount: number;
-  /**
-   * Ratio of the inner radius to the outer radius.
-   */
-  innerRadiusRation: number;
-} & TDefaultShapeMixin &
-  TFillsMixin;
-
-/**
- * The polygon node is a basic shape node representing
- * a regular convex polygon with three or more sides.
- */
-export type TPolygonNode = {
-  type: 'POLYGON';
-  /**
-   * Number of sides of the polygon. Must be an integer >= 3.
-   */
-  pointCount: number;
-} & TDefaultShapeMixin &
-  TFillsMixin;
+} & TCompositionNodeMixin;
 
 export type TNode =
   | TFrameNode
-  | TRectangleNode
-  | TTextNode
   | TGroupNode
+  | TRectangleNode
   | TEllipseNode
   | TStarNode
   | TPolygonNode
+  | TTextNode
   | TSVGNode;
 
 // ============================================================================
 // Mixins
 // ============================================================================
 
-export type TDefaultShapeMixin = TBaseNodeMixin &
+export type TCompositionNodeMixin = TBaseNodeMixin &
+  TCompositionMixin &
   TLayoutMixin &
-  TBlendMixin &
+  TBlendMixin;
+
+export type TShapeNodeMixin = TCompositionNodeMixin &
   TEffectsMixin &
   TGeometryMixin &
-  TSceneNodeMixin;
+  TFillMixin &
+  TConstraintsMixin;
 
 export type TRectangleCornerMixin = {
   /**
@@ -283,12 +294,6 @@ export type TRectangleCornerMixin = {
 
 export type TBaseNodeMixin = {
   /**
-   * An internal identifier for a node.
-   *
-   * e.g. '1798:14711'
-   */
-  id: string;
-  /**
    * The name of the node.
    *
    * e.g. 'Cool Node'
@@ -298,11 +303,11 @@ export type TBaseNodeMixin = {
 
 export type TChildrenMixin = {
   /**
-   * The list of children, sorted back-to-front.
+   * The list of children node ids, sorted back-to-front.
    * That is, the first child in the array is the bottommost layer in the scene,
    * and the last child in the array is the topmost layer.
    */
-  children: Array<TNode>;
+  childIds: string[];
 };
 
 export type TLayoutMixin = {
@@ -315,20 +320,32 @@ export type TLayoutMixin = {
    */
   height: number;
   /**
-   * The position of a node relative to its containing parent as a Transform matrix.
+   * The position of the node relative to its containing parent as a Transform matrix.
    * Not used for scaling, see width and height instead.
    */
   relativeTransform: TTransform;
 };
 
-export type TFillsMixin = {
+export type TConstraintsMixin = {
   /**
-   * The paints used to fill the area of the shape.
+   * Constraints of the node relative to its containing parent.
    */
-  fills: Array<TPaint>;
+  constraints?: {
+    horizontal: TConstraintType;
+    vertical: TConstraintType;
+  };
 };
 
-export type TSceneNodeMixin = {
+export type TFillMixin = {
+  fill: {
+    /**
+     * The paintIds used to fill the area of the shape.
+     */
+    paintIds: string[];
+  };
+};
+
+export type TCompositionMixin = {
   /**
    * Whether the node is visible or not.
    */
@@ -364,14 +381,16 @@ export type TEffectsMixin = {
 };
 
 export type TGeometryMixin = {
-  /**
-   * An array of paths representing the object fills relative to the node.
-   */
-  fillGeometry: TVectorPath[];
-  /**
-   * An array of paths representing the object strokes relative to the node.
-   */
-  strokeGeometry: TVectorPath[];
+  geometry?: {
+    /**
+     * An array of paths representing the object fill relative to the node.
+     */
+    fill: TVectorPath[];
+    /**
+     * An array of paths representing the object strokes relative to the node.
+     */
+    stroke: TVectorPath[];
+  };
 };
 
 // ============================================================================
@@ -432,20 +451,18 @@ export type TEffect = TDropShadowEffect | TInnerShadowEffect | TBlurEffect;
 // Paints
 // ============================================================================
 
+export type TBasePaintMixin = {
+  opacity: number;
+  blendMode: TBlendMode;
+  isVisible: boolean;
+};
+
 export type TSolidPaint = {
   type: 'SOLID';
   color: TRGB;
-  opacity: number;
-  blendMode: TBlendMode;
-};
+} & TBasePaintMixin;
 
 export type TGradientPaint = TGradientPaintExported | TGradientPaintInline;
-
-export type TGradientPaintBase = {
-  visible: boolean;
-  opacity: number;
-  blendMode: TBlendMode;
-};
 
 export type TGradientPaintInline =
   | TLinearGradientPaintInline
@@ -458,28 +475,28 @@ export type TLinearGradientPaintInline = {
   isExported: false;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
-} & TGradientPaintBase;
+} & TBasePaintMixin;
 
 export type TRadialGradientPaintInline = {
   type: 'GRADIENT_RADIAL';
   isExported: false;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
-} & TGradientPaintBase;
+} & TBasePaintMixin;
 
 export type TAngularGradientPaintInline = {
   type: 'GRADIENT_ANGULAR';
   isExported: false;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
-} & TGradientPaintBase;
+} & TBasePaintMixin;
 
 export type TDiamondGradientPaintInline = {
   type: 'GRADIENT_DIAMOND';
   isExported: false;
   transform: TTransform;
   gradientStops: Array<TColorStop>;
-} & TGradientPaintBase;
+} & TBasePaintMixin;
 
 export type TGradientPaintExported = {
   type:
@@ -488,10 +505,20 @@ export type TGradientPaintExported = {
     | 'GRADIENT_ANGULAR'
     | 'GRADIENT_DIAMOND';
   isExported: true;
-  format: 'JPG' | 'SVG';
+  format: 'JPG' | 'PNG' | 'SVG';
+  /**
+   * The hash of the exported gradient file. Used to identify the file.
+   */
   hash: string;
-  inline?: Uint8Array;
-} & TGradientPaintBase;
+  /**
+   * Optional content of the exported gradient file.
+   * It can be either an array of bytes that contains the exported file's data inline,
+   * or a URL string pointing to the file location.
+   *
+   * If not set the content can to be searched by the hash.
+   */
+  content?: Uint8Array | string;
+} & TBasePaintMixin;
 
 export type TImagePaint =
   | TImagePaintFill
@@ -503,37 +530,44 @@ export type TImagePaintFill = {
   type: 'IMAGE';
   scaleMode: 'FILL';
   rotation: number;
-} & TImagePaintMixin;
+} & TBaseImagePaintMixin;
 
 export type TImagePaintFit = {
   type: 'IMAGE';
   scaleMode: 'FIT';
   rotation: number;
-} & TImagePaintMixin;
+} & TBaseImagePaintMixin;
 
 export type TImagePaintCrop = {
   type: 'IMAGE';
   scaleMode: 'CROP';
   transform: TTransform;
-} & TImagePaintMixin;
+} & TBaseImagePaintMixin;
 
 export type TImagePaintTile = {
   type: 'IMAGE';
   scaleMode: 'TILE';
   rotation: number;
   scalingFactor: number;
-} & TImagePaintMixin;
+} & TBaseImagePaintMixin;
 
-export type TImagePaintMixin = {
+export type TBaseImagePaintMixin = {
+  /**
+   * The hash of the image file. Used to identify the file.
+   */
   hash: string;
-  inline?: Uint8Array;
+  /**
+   * Optional content of the image file.
+   * It can be either an array of bytes that contains the exported file's data inline,
+   * or a URL string pointing to the file location.
+   *
+   * If not set the content can to be searched by the hash.
+   */
+  content?: Uint8Array | string;
   filters?: TImageFilters;
-  opacity: number;
-  blendMode: TBlendMode;
-  visible: boolean;
   width: number;
   height: number;
-};
+} & TBasePaintMixin;
 
 export type TImageFilters = {
   exposure?: number;
@@ -553,7 +587,7 @@ export type TColorStop = {
 export type TEmbedPaint = {
   type: 'EMBED';
   embedData: TEmbedMetaData;
-};
+} & TBasePaintMixin;
 
 export type TPaint = TSolidPaint | TGradientPaint | TImagePaint | TEmbedPaint;
 
@@ -602,9 +636,35 @@ export type TTransform = [
 // Font
 // ============================================================================
 
-export type TFontName = {
+export type TTypeface = {
+  /**
+   * The family of the font (e.g. "Roboto").
+   */
   family: string;
-  style: string;
+  /**
+   * The name of the style displayed in UI.
+   */
+  name: string;
+  /**
+   * The style of the font.
+   */
+  style: 'regular' | 'italic';
+  /**
+   * The weight of the font (e.g. 400 for "Regular", 700 for "Bold").
+   */
+  weight: number;
+  /**
+   * The hash of the font file. Used to identify the file.
+   */
+  hash?: string;
+  /**
+   * Optional content of the font file.
+   * It can be either an array of bytes that contains the exported file's data inline,
+   * or a URL string pointing to the file location.
+   *
+   * If not set the content can to be searched by the hash.
+   */
+  content?: Uint8Array | string;
 };
 
 export type TLetterSpacing =
@@ -687,3 +747,5 @@ export type TSVGElement = {
    */
   children: TSVGElement[];
 };
+
+type TConstraintType = 'MIN' | 'CENTER' | 'MAX' | 'STRETCH' | 'SCALE';

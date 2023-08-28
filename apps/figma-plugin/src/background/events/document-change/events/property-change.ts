@@ -1,4 +1,4 @@
-import { isRemovedNode } from '@pda/figma-to-dtif';
+import { isRemovedNode } from '@dyn/figma-to-dtif';
 import { EUIPageRoute } from '../../../../shared';
 import { TBackgroundHandler } from '../../../background-handler';
 import { ACTIVE_UI_ROUTE, SELECTED_NODE_IDS } from '../../../core/ui';
