@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@figma"
+    ],
+    "paths": {
+      "@/*": ["./src/*"],
+    },
+  },
+  "extends": "@dyn/tsconfig/shared-library.json",
+  "include": ["src"],
+}

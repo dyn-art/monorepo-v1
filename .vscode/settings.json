@@ -14,24 +14,32 @@
 	    "**/node_modules": true,
 	},
     "eslint.workingDirectories": [
-        "./apps/chrome",
         "./apps/core",
         "./apps/discord",
-        "./apps/web",
+        "./apps/figma-plugin",
         "./apps/order-worker",
-        "./packages/ai",
+        "./apps/web",
+        "./packages/core-client",
         "./packages/discord-handler",
-        "./packages/etsy",
+        "./packages/dtom",
+        "./packages/etsy-client",
+        "./packages/figma-handler",
+        "./packages/figma-to-dtif",
+        "./packages/google-client",
         "./packages/logger",
         "./packages/map",
-        "./packages/music",
-        "./packages/ads-renderer",
-        "./packages/ads-renderer/ui",
-        "./packages/poster-renderer",
+        "./packages/openapi-fetch",
+        "./packages/s3",
+        "./packages/svgson",
+        "./packages/types",
         "./packages/utils",
+        "./packages/viteconfig"
     ],
     "cSpell.words": [
-        "pda"
+        "dyn"
     ],
-    "files.associations": { "*.scss": "postcss" },
+    "files.associations": { 
+        "*.scss": "postcss",
+        "*.ts": "typescript",
+    },
 }

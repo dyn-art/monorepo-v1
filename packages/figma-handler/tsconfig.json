@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "typeRoots": [
+      "./node_modules/@figma"
+    ],
+    "lib": ["es2015", "dom"],
+    "target": "es5",
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "extends": "@dyn/tsconfig/shared-library.json",
+  "include": ["src"],
+  "exclude": [
+    "**/__tests__/*",
+    "**/*.test.ts"
+  ]
+}

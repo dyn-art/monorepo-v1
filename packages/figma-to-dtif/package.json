@@ -1,0 +1,41 @@
+{
+  "name": "@dyn/figma-to-dtif",
+  "version": "0.0.0",
+  "description": "Provides utilities to convert Figma design node tree into the Design Tree Interchange Format (DTIF).",
+  "private": true,
+  "source": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod",
+    "start:dev": "tsc -w",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "dependencies": {
+    "@dyn/logger": "workspace:*",
+    "@dyn/svgson": "workspace:*",
+    "@dyn/utils": "workspace:*",
+    "crypto-js": "^4.1.1",
+    "xxhashjs": "^0.2.2"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.64.0",
+    "@dyn/tsconfig": "workspace:*",
+    "@dyn/types": "workspace:*",
+    "@types/crypto-js": "^4.1.1",
+    "@types/node": "^18.15.13",
+    "@types/xxhashjs": "^0.2.2",
+    "eslint-config-dyn-base": "workspace:*"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}

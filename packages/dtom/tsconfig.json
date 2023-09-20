@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "paths": {
+      "@/*": ["./src/*"],
+    },
+  },
+  "extends": "@dyn/tsconfig/shared-library.json",
+  "include": ["src"],
+}

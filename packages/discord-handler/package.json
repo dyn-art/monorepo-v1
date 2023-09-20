@@ -1,39 +1,36 @@
 {
-  "name": "@pda/discord-handler",
+  "name": "@dyn/discord-handler",
   "version": "0.0.0",
-  "description": "Discord Command Handler",
+  "description": "Discord Handler",
   "private": true,
-  "main": "./dist/index.js",
   "source": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "shx rm -rf dist && tsc",
+    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod",
     "start:dev": "tsc -w",
     "lint": "eslint --cache \"**/*.{js,ts}\"",
-    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx -rf .turbo",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
     "install:clean": "pnpm run clean && pnpm install",
-    "test": "jest"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "@bennodev19",
   "license": "MIT",
   "dependencies": {
-    "@pda/logger": "workspace:*",
-    "@pda/utils": "workspace:*"
+    "@dyn/logger": "workspace:*",
+    "@dyn/utils": "workspace:*"
   },
   "peerDependencies": {
     "discord.js": "^14.9.0"
   },
   "devDependencies": {
-    "@pda/jest-presets": "workspace:*",
-    "@pda/tsconfig": "workspace:*",
-    "@types/jest": "^29.5.1",
+    "@dyn/viteconfig": "workspace:*",
+    "@dyn/tsconfig": "workspace:*",
     "@types/node": "^18.15.13",
     "discord.js": "^14.9.0",
-    "eslint": "^8.38.0",
-    "eslint-config-pda-base": "workspace:*",
-    "jest": "^29.5.0",
-    "typescript": "^4.9.5"
+    "eslint-config-dyn-base": "workspace:*"
   },
   "files": [
     "dist",

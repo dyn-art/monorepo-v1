@@ -1,0 +1,38 @@
+{
+  "name": "@dyn/s3",
+  "version": "0.0.0",
+  "description": "S3 utility library",
+  "private": true,
+  "source": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod",
+    "start:dev": "tsc -w",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.332.0",
+    "@aws-sdk/s3-request-presigner": "^3.332.0",
+    "@dyn/logger": "workspace:*"
+  },
+  "devDependencies": {
+    "@aws-sdk/types": "^3.329.0",
+    "@dyn/tsconfig": "workspace:*",
+    "@types/node": "^18.15.13",
+    "eslint": "^8.38.0",
+    "eslint-config-dyn-base": "workspace:*",
+    "typescript": "^4.9.5"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}

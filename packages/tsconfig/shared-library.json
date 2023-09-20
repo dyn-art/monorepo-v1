@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Shared Library",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "lib": ["es2019"],
+    "target": "es2019",
+    "module": "esnext",
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src"]
+}

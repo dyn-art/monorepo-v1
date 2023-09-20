@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "extends": "@dyn/tsconfig/react-base.json",
+  "include": ["src"]
+}

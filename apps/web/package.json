@@ -1,0 +1,58 @@
+{
+  "name": "@dyn/web",
+  "version": "0.0.0",
+  "description": "Web App",
+  "private": true,
+  "sideEffects": false,
+  "scripts": {
+    "build": "remix build",
+    "build:vercel": "cd ../.. && turbo run build --scope=web --include-dependencies --no-deps",
+    "start:dev": "remix dev",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@dyn/core-client": "workspace:*",
+    "@dyn/dtom": "workspace:*",
+    "@dyn/logger": "workspace:*",
+    "@dyn/openapi-fetch": "workspace:*",
+    "@dyn/utils": "workspace:*",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@remix-run/css-bundle": "^1.17.1",
+    "@remix-run/node": "^1.17.1",
+    "@remix-run/react": "^1.17.1",
+    "@remix-run/vercel": "^1.17.1",
+    "@types/webfontloader": "^1.6.35",
+    "@vercel/node": "^2.10.3",
+    "class-variance-authority": "^0.6.0",
+    "clsx": "^1.2.1",
+    "html-to-image": "^1.11.11",
+    "isbot": "^3.6.8",
+    "lodash.memoize": "^4.1.2",
+    "lucide-react": "^0.246.0",
+    "matrix-inverse": "^2.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "reduce-css-calc": "^2.1.8",
+    "tailwind-merge": "^1.13.2",
+    "tailwindcss-animate": "^1.0.6",
+    "webfontloader": "^1.6.28"
+  },
+  "devDependencies": {
+    "@dyn/tsconfig": "workspace:*",
+    "@dyn/types": "workspace:^",
+    "@remix-run/dev": "^1.17.1",
+    "@remix-run/eslint-config": "^1.17.1",
+    "@remix-run/serve": "^1.17.1",
+    "@types/dom-to-image": "^2.6.4",
+    "@types/lodash.memoize": "^4.1.7",
+    "@types/react": "^18.0.35",
+    "@types/react-dom": "^18.0.11",
+    "eslint-config-dyn-base": "workspace:*"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

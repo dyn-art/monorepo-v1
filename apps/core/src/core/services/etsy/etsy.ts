@@ -1,7 +1,7 @@
-import { EtsyClient, EtsyService, OAuth2Service } from '@pda/etsy';
-import { etsyConfig } from '../../../environment';
+import { etsyConfig } from '@/environment';
+import { EtsyService, OAuth2Service, createEtsyClient } from '@dyn/etsy-client';
 
-const authService = new OAuth2Service({
+export const etsyAuthService = new OAuth2Service({
   clientId: etsyConfig.auth.clientId,
   scopes: etsyConfig.auth.scopes,
   redirectUrl: etsyConfig.auth.redirectUrl,
@@ -10,5 +10,4 @@ const authService = new OAuth2Service({
     expiresAt: etsyConfig.auth.refreshTokenExpiresAt,
   },
 });
-export const etsyClient = new EtsyClient(authService);
-export const etsyService = new EtsyService(etsyClient);
+export const etsyService = new EtsyService(createEtsyClient(etsyAuthService));

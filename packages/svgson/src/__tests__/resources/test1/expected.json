@@ -1,0 +1,127 @@
+{
+  "type": "svg",
+  "attributes": {
+    "width": "595",
+    "height": "842",
+    "viewBox": "0 0 595 842",
+    "fill": "none",
+    "xmlns": "http://www.w3.org/2000/svg"
+  },
+  "children": [
+    {
+      "type": "rect",
+      "attributes": { "width": "595", "height": "842", "fill": "#FFA7A7" },
+      "children": []
+    },
+    {
+      "type": "rect",
+      "attributes": {
+        "x": "248",
+        "y": "371",
+        "width": "100",
+        "height": "100",
+        "fill": "url(#paint0_linear_2278_14016)"
+      },
+      "children": []
+    },
+    {
+      "type": "rect",
+      "attributes": {
+        "x": "248",
+        "y": "201",
+        "width": "100",
+        "height": "100",
+        "fill": "url(#paint1_radial_2278_14016)"
+      },
+      "children": []
+    },
+    {
+      "type": "text",
+      "attributes": { "x": "20", "y": "35", "class": "small" },
+      "children": [],
+      "value": "My"
+    },
+    {
+      "type": "text",
+      "attributes": { "x": "40", "y": "35", "class": "heavy" },
+      "children": [],
+      "value": "cat"
+    },
+    {
+      "type": "text",
+      "attributes": { "x": "55", "y": "55", "class": "small" },
+      "children": [],
+      "value": "is"
+    },
+    {
+      "type": "text",
+      "attributes": { "x": "65", "y": "55", "class": "Rrrrr" },
+      "children": [],
+      "value": "Grumpy!"
+    },
+    {
+      "type": "defs",
+      "attributes": {},
+      "children": [
+        {
+          "type": "linearGradient",
+          "attributes": {
+            "id": "paint0_linear_2278_14016",
+            "x1": "320",
+            "y1": "407",
+            "x2": "266.5",
+            "y2": "421",
+            "gradientUnits": "userSpaceOnUse"
+          },
+          "children": [
+            {
+              "type": "stop",
+              "attributes": { "stop-color": "#FF0000" },
+              "children": []
+            },
+            {
+              "type": "stop",
+              "attributes": { "offset": "0.291667", "stop-color": "#0C9B00" },
+              "children": []
+            },
+            {
+              "type": "stop",
+              "attributes": { "offset": "0.578125", "stop-color": "#00F0FF" },
+              "children": []
+            },
+            {
+              "type": "stop",
+              "attributes": { "offset": "0.854167", "stop-color": "#B400B8" },
+              "children": []
+            },
+            { "type": "stop", "attributes": { "offset": "1" }, "children": [] }
+          ]
+        },
+        {
+          "type": "radialGradient",
+          "attributes": {
+            "id": "paint1_radial_2278_14016",
+            "cx": "0",
+            "cy": "0",
+            "r": "1",
+            "gradientUnits": "userSpaceOnUse",
+            "gradientTransform": "translate(298 251) rotate(55.3533) scale(74.7563)"
+          },
+          "children": [
+            {
+              "type": "stop",
+              "attributes": { "stop-color": "#FF0000" },
+              "children": []
+            },
+            {
+              "type": "stop",
+              "attributes": { "offset": "0.457292", "stop-color": "#00FF38" },
+              "children": []
+            },
+            { "type": "stop", "attributes": { "offset": "1" }, "children": [] }
+          ]
+        }
+      ]
+    }
+  ]
+}

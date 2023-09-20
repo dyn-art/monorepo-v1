@@ -1,4 +1,4 @@
-import { uuidv4 } from '@pda/utils';
+import { uuidv4 } from '@dyn/utils';
 import DcClientHandler from '../DcClientHandler';
 import { logger } from '../logger';
 import {

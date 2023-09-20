@@ -1,5 +1,4 @@
 import fs, { Dirent } from 'fs';
-import { logger } from '../logger';
 
 // TODO: find cache busting mechanism that works with NodeJs
 async function importFresh(filePath: string) {
@@ -13,7 +12,7 @@ export async function readFile<T = unknown>(
   try {
     return await importFresh(filePath);
   } catch (error) {
-    logger.error(`Failed to resolve file at path: '${filePath}'`, error);
+    console.error(`Failed to resolve file at path: '${filePath}'`, error);
   }
   return null;
 }
@@ -24,7 +23,7 @@ export function readDir(dirPath: string): Dirent[] {
       withFileTypes: true, // Allows to detect folders (via isDirectory())
     });
   } catch (error) {
-    logger.error(`Failed to resolve directory at path: '${dirPath}'`, error);
+    console.error(`Failed to resolve directory at path: '${dirPath}'`, error);
   }
   return [];
 }

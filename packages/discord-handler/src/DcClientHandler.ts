@@ -1,8 +1,8 @@
-import { defineConfig } from '@pda/utils';
+import { defineConfig } from '@dyn/utils';
 import { Client } from 'discord.js';
-import { CommandsHandler } from './command-handler';
+import { CommandsHandler } from './commands-handler';
 import { ComponentsHandler } from './components-handler';
-import { EventsHandler } from './event-handler';
+import { EventsHandler } from './events-handler';
 
 export default class DcClientHandler {
   private readonly _client: Client;
@@ -19,7 +19,7 @@ export default class DcClientHandler {
     const commandsConfig =
       commands != null
         ? defineConfig(commands, {
-            commandPrefix: 'pda.',
+            commandPrefix: 'dyn.',
             fileSuffixes: ['.ts', '.js'],
           })
         : null;

@@ -1,0 +1,62 @@
+{
+    "files": [],
+    "references": [
+        {
+            "path": "apps/core"
+        },
+        {
+            "path": "apps/discord"
+        },
+        {
+            "path": "apps/figma-plugin"
+        },
+        {
+            "path": "apps/order-worker"
+        },
+        {
+            "path": "apps/web"
+        },
+        {
+            "path": "packages/core-client"
+        },
+        {
+            "path": "packages/discord-handler"
+        },
+        {
+            "path": "packages/dtom"
+        },
+        {
+            "path": "packages/etsy-client"
+        },
+        {
+            "path": "packages/figma-handler"
+        },
+        {
+            "path": "packages/figma-to-dtif"
+        },
+        {
+            "path": "packages/google-client"
+        },
+        {
+            "path": "packages/logger"
+        },
+        {
+            "path": "packages/openapi-fetch"
+        },
+        {
+            "path": "packages/s3"
+        },
+        {
+            "path": "packages/svgson"
+        },
+        {
+            "path": "packages/types"
+        },
+        {
+            "path": "packages/utils"
+        },
+        {
+            "path": "packages/viteconfig"
+        }
+    ]
+}

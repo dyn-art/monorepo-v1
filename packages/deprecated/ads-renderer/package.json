@@ -1,0 +1,62 @@
+{
+  "name": "@dyn/ads-renderer",
+  "version": "0.0.0",
+  "description": "Utility library to work with Music and communicate with Spotify or Genius",
+  "private": true,
+  "source": "./src/index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "echo \"Local project to render ads.\"",
+    "start:dev": "tsc -w",
+    "start:remotion": "remotion preview ./ui/src/index.ts --config ./ui/remotion.config.ts",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "clean": "shx rm -rf bundle && shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "dependencies": {
+    "@remotion/renderer": "^3.3.83",
+    "remotion": "^3.3.83"
+  },
+  "devDependencies": {
+    "@dyn/tsconfig": "workspace:*",
+    "@remotion/bundler": "^3.3.83",
+    "@remotion/cli": "^3.3.83",
+    "@remotion/media-utils": "^3.3.83",
+    "@types/node": "^18.15.13",
+    "@types/react": "^18.0.37",
+    "@types/react-dom": "^18.0.11",
+    "@types/web": "^0.0.99",
+    "autoprefixer": "^10.4.14",
+    "axios": "^1.3.6",
+    "axios-hooks": "^4.0.0",
+    "clsx": "^1.2.1",
+    "css-loader": "^6.7.3",
+    "d3": "^7.8.4",
+    "d3-geo": "^3.1.0",
+    "eslint": "^8.38.0",
+    "eslint-config-dyn-base": "workspace:*",
+    "eslint-plugin-tailwindcss-jsx": "^0.0.1",
+    "geojson": "^0.5.0",
+    "postcss": "^8.4.23",
+    "postcss-loader": "^7.2.4",
+    "postcss-preset-env": "^8.3.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "style-loader": "^3.3.2",
+    "tailwindcss": "^3.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "webpack": "^5.80.0"
+  },
+  "files": [
+    "dist",
+    "bundle",
+    "README.md"
+  ]
+}

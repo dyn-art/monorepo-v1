@@ -1,35 +1,28 @@
-import cors from 'cors';
 import express, { Express } from 'express';
-import helmet from 'helmet';
-import logger from 'morgan';
-import config from './environment/config';
-import { errorMiddlewares, rateLimiterMiddleware } from './middlewares';
+import morganLogger from 'morgan';
+import {
+  errorMiddlewares,
+  queryObjectParserMiddleware,
+  securityMiddlewares,
+} from './middlewares';
 import routes from './routes';
 
 const app: Express = express();
 
-// Add logging middleware for development
-app.use(logger('dev'));
-
-// Add Helmet middleware to protect against common web vulnerabilities
-app.use(helmet());
-
-// Configure CORS (Cross-Origin Resource Sharing) middleware
-app.use(
-  cors({
-    origin: config.app.corsOrigins,
-    credentials: true, // Enable Access-Control-Allow-Credentials
-  })
-);
-
 // Enable 'trust proxy' to reveal the real client IP address for rate limiting
 app.set('trust proxy', 1);
 
-// Add rate limiting middleware
-app.use(rateLimiterMiddleware);
+// Add logging middleware for development
+app.use(morganLogger('dev'));
+
+// Add security handling middlewares
+app.use(...securityMiddlewares);
 
 // Add middleware to parse JSON request bodies
 app.use(express.json());
+
+// Add middle ware to parse express query object
+app.use(queryObjectParserMiddleware());
 
 // Register application routes
 app.use('/', routes);

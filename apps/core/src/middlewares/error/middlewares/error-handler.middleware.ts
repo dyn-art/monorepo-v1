@@ -1,6 +1,6 @@
+import { components } from '@dyn/types/core';
 import express from 'express';
 import { AppError } from '../AppError';
-import { TErrorJsonResponseDto } from '../types';
 
 /**
  * Error handling middleware for handling application-specific errors and unknown errors.
@@ -10,33 +10,38 @@ import { TErrorJsonResponseDto } from '../types';
  * https://reflectoring.io/express-error-handling/
  */
 export function errorHandlerMiddleware(
-  err: any,
+  err: unknown,
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) {
   let statusCode = 500;
-  const jsonResponse: TErrorJsonResponseDto = {
-    error: 'not-set',
+  const jsonResponse: components['schemas']['ServerError'] = {
+    error_code: '#ERR_UNKNOWN',
     error_description: null,
     error_uri: null,
+    additional_errors: [],
   };
 
   // Handle application-specific errors (instances of AppError)
   if (err instanceof AppError) {
-    statusCode = err.statusCode;
-    jsonResponse.error = err.message;
-    jsonResponse.error_description = err.description;
-    jsonResponse.error_uri = err.uri;
+    statusCode = err.status;
+    jsonResponse.error_code = err.code;
+    jsonResponse.error_description = err.description ?? null;
+    jsonResponse.error_uri = err.uri ?? null;
+    jsonResponse.additional_errors = err.additionalErrors as any;
   }
+
   // Handle unknown errors
-  else {
-    if (err.message != null) {
-      jsonResponse.error = err.message;
+  else if (typeof err === 'object' && err != null) {
+    if ('message' in err && typeof err.message === 'string') {
+      jsonResponse.error_description = err.message;
     }
-    if (typeof err.status === 'number') {
-      statusCode = err.status;
+    if ('code' in err && typeof err.code === 'string') {
+      jsonResponse.error_code = err.code;
     }
+  } else {
+    jsonResponse.error_description = 'An unknown error occurred!';
   }
 
   // Send the error response with appropriate status code

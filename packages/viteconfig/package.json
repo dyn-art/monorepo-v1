@@ -1,0 +1,33 @@
+{
+  "name": "@dyn/viteconfig",
+  "version": "0.0.0",
+  "description": "Vite Configuration",
+  "private": true,
+  "source": "./src/index.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "dependencies": {
+    "vite-tsconfig-paths": "^4.2.0"
+  },
+  "peerDependencies": {
+    "vitest": "^0.34.1"
+  },
+  "devDependencies": {
+    "@dyn/tsconfig": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

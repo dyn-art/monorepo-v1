@@ -14,10 +14,19 @@ module.exports = {
     'prettier',
   ],
   parserOptions: {
-    project: ['tsconfig.json'],
+    project: ['./tsconfig.json'],
   },
-  ignorePatterns: ['.eslintrc.js', 'node_modules', 'jest.config.js'],
+  ignorePatterns: [
+    '.eslintrc.js',
+    'node_modules',
+    '*.config.js',
+    'scripts',
+    'dist',
+    'build',
+    'bundle',
+  ],
   rules: {
+    // Typescript Eslint
     '@typescript-eslint/no-use-before-define': OFF,
     '@typescript-eslint/lines-between-class-members': OFF,
     '@typescript-eslint/naming-convention': WARNING,
@@ -27,6 +36,7 @@ module.exports = {
     '@typescript-eslint/no-empty-interface': WARNING,
     '@typescript-eslint/ban-types': WARNING,
 
+    // Turbo
     'turbo/no-undeclared-env-vars': WARNING,
   },
 };

@@ -1,0 +1,45 @@
+{
+  "name": "@dyn/types",
+  "version": "0.0.0",
+  "description": "Types for the Design Tree Interchange Format (DTIF).",
+  "private": true,
+  "exports": {
+    "dtif": {
+      "source": "./src/dtif.ts",
+      "types": "./dist/dtif.d.ts"
+    },
+    "core": {
+      "source": "./src/core/index.ts",
+      "types": "./dist/core/index.d.ts"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "dtif": [
+        "./dist/dtif.d.ts"
+      ],
+      "core": [
+        "./dist/core/index.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "shx rm -rf dist && npx esno ../../scripts/build-ts-package.ts --prod --buildStrategy=typesonly",
+    "lint": "eslint --cache \"**/*.{js,ts}\"",
+    "clean": "shx rm -rf dist && shx rm -rf node_modules && shx rm -rf .turbo",
+    "install:clean": "pnpm run clean && pnpm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "@bennodev19",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@dyn/tsconfig": "workspace:*",
+    "eslint-config-dyn-base": "workspace:*"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}
