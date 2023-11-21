@@ -11,7 +11,6 @@ import { extractErrorData } from '@dyn/utils';
 import { TIntermediateFormatExportEvent, logger } from '../../../shared';
 import { TBackgroundHandler } from '../../background-handler';
 import { coreService, uploadDataToBucket } from '../../core/services';
-import { stringToUint8Array } from '../../core/utils/json-to-uint8array';
 
 export async function processNode(
   instance: TBackgroundHandler,
@@ -61,7 +60,7 @@ export async function processNode(
     // Upload the node as JSON string to bucket
     const json = JSON.stringify(toExportNode);
     const key = options.nameAsBucketId ? node.name : sha256(json);
-    await uploadDataToBucket(key, stringToUint8Array(json), 'application/json');
+    // await uploadDataToBucket(key, stringToUint8Array(json), 'application/json');
 
     // Post success message and notify the user
     handleSuccess(instance, node, toExportNode, key);

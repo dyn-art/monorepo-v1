@@ -23,12 +23,14 @@
     "@dyn/openapi-fetch": "workspace:*",
     "@dyn/utils": "workspace:*",
     "color-convert": "^2.0.1",
+    "d3-selection": "^3.0.0",
     "emoji-regex": "^10.2.1",
     "intl-segmenter-polyfill": "^0.4.4",
     "linebreak": "^1.1.0",
     "mathjs": "^11.8.0",
     "opentype.js": "^1.3.4",
-    "webfontloader": "^1.6.28"
+    "webfontloader": "^1.6.28",
+    "yoga-wasm-web": "^0.3.3"
   },
   "peerDependencies": {
     "jsdom": "^22.1.0"

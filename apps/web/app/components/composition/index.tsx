@@ -1,4 +1,4 @@
-import { TComposition } from '@dyn/types/dtif';
+import type { TComposition } from '@dyn/types/dtif';
 import React from 'react';
 import { Canvas, CanvasControl } from './components';
 import { useComposition } from './hooks';
